@@ -1,0 +1,494 @@
+
+#line 3 1111
+
+// Type definitions
+//
+#define texture 	texture2D
+
+#define half 		float
+#define half2      	vec2
+#define half3      	vec3
+#define half4      	vec4
+
+#define float2      vec2
+#define float3      vec3
+#define float4      vec4
+#define int2        ivec2
+#define int3        ivec3
+#define int4        ivec4
+#define uint2       uvec2
+#define uint3       uvec3
+#define uint4       uvec4
+#define float2x2    mat2
+#define float3x3    mat3
+#define float4x4    mat4
+#define lerp        mix
+#define	frac		fract
+#define mad( a, b, c ) ( a * b + c )
+//#define saturate(x)	clamp( x, 0.0, 1.0 )
+#define mul( a, b ) a * b
+#define pow2( x )   x * x
+
+const float PI                      = 3.1415926535897;
+const float TWOPI                   = 2.0 * PI;
+const float ONE_OVER_PI           	= 1.0 / PI;
+const float ONE_OVER_TWOPI         	= 1.0 / TWOPI;
+const float DEG_TO_RAD              = PI / 180.0;
+const float RAD_TO_DEG              = 180.0 / PI;
+
+const float3 ZAxis 					= float3( 0, 0, 1 );
+
+const float2 AllHalfOnes2           = float2( 0.5 );
+const float3 AllHalfOnes3           = float3( 0.5 );
+const float4 AllHalfOnes4           = float4( 0.5 );
+const float3 AllOnes3               = float3( 1.0 );
+const float3 AllMinusOnes3          = float3( -1.0 );
+const float3 AllTwos3               = float3( 2.0 );
+
+// These are useful for tagging effect parameter color space conversion annotations
+const float LINEAR_TO_SRGB          = 0.4545454545;  // 1.0 / 2.2
+const float SRGB_TO_LINEAR          = 2.2;
+
+// From: http://chilliant.blogspot.pt/2012/08/srgb-approximations-for-hlsl.html
+float ToLinearApprox( float sRGB )   
+{
+    float RGB = sRGB * (sRGB * (sRGB * 0.305306011 + 0.682171111) + 0.012522878); 
+    return RGB;
+}
+float3 ToLinearApprox( float3 sRGB )
+{
+    float3 RGB = sRGB * (sRGB * (sRGB * 0.305306011 + 0.682171111) + 0.012522878); 
+    return RGB;
+}
+
+// From: http://chilliant.blogspot.pt/2012/08/srgb-approximations-for-hlsl.html
+float ToSRGBApprox( float v )
+{
+    float S1 = sqrt( v );
+    float S2 = sqrt( S1 );
+    float S3 = sqrt( S2 );
+    float sRGB = 0.585122381 * S1 + 0.783140355 * S2 - 0.368262736 * S3;
+    return sRGB;
+} 
+float3 ToSRGBApprox( float3 linearRGB )
+{
+    // Even better approximation at the most of a "madd"
+    float3 S1 = sqrt( linearRGB );
+    float3 S2 = sqrt( S1 );
+    float3 S3 = sqrt(S2 );
+    float3 sRGB = 0.662002687 * S1 + 0.684122060 * S2 - 0.323583601 * S3 - 0.225411470 * linearRGB;
+    // float3 S1 = sqrt( linearRGB );
+    // float3 S2 = sqrt( S1 );
+    // float3 S3 = sqrt( S2 );
+    // float3 sRGB = 0.585122381 * S1 + 0.783140355 * S2 - 0.368262736 * S3;
+    return sRGB;
+}
+
+float   Luminance( float3 color )   { return dot( color, float3( 0.2126, 0.7152, 0.0722 ) ); }
+
+
+uniform float4      Params0;
+uniform float4      Params1;
+uniform float4      Params2;
+
+#define AmbientIntensity    Params0.x
+#define DiffuseIntensity    Params0.y
+#define SpecularIntensity   Params0.z
+#define NormalMapIntensity  Params0.w
+
+#define CloudsIntensity     Params1.x
+#define CloudsShadowIntensity Params1.y
+#define CloudsShadowOffset  Params1.z
+#define NightDayMixFactor   Params1.w
+
+#define Roughness           Params2.x
+//#define HalfLambertPower    Params2.y
+#define RimAngle            Params2.z
+#define DiffuseRimIntensity Params2.w
+
+uniform float3      ViewPosition;
+uniform float3      LightDirection; // = - float3( 0.15, 1.0, 0.6 );
+
+//
+uniform sampler2D   DiffuseMap;
+uniform sampler2D   NormalMap;
+uniform sampler2D   SpecularMap;
+uniform sampler2D   CloudsMap;
+//uniform sampler2D   CloudsNormalMap;
+uniform sampler2D   NightLightsMap;
+uniform float 		Time;
+
+//
+varying float2 		texcoord;
+varying float3 		positionWS;
+varying float3 		normalWS;
+
+
+
+struct  SHIrradianceCoeffs_s
+{
+    float4 L00;                         // Band 0
+    float4 L1m1, L10, L11;              // Band 1
+    float4 L2m2, L2m1, L20, L21, L22;   // Band 2
+};
+
+
+// Get irradiance color by SH, passed as a CB
+// NOTE: We only use bands 0,1,2
+float3 GetIrradianceFromSH( float3 N, SHIrradianceCoeffs_s SHIrradianceCoeffs )
+{
+    //------------------------------------------------------------------
+    // These are variables to hold x,y,z and squares and products
+
+    // We now define the constants
+    float x = N.x;
+    float y = N.y;
+    float z = N.z;
+
+    const float c1 = 0.429043;
+    const float c2 = 0.511664;
+    const float c3 = 0.743125;
+    const float c4 = 0.886227;
+    const float c5 = 0.247708;
+
+    // We now compute the squares and products needed
+    float x2 = x * x;
+    float y2 = y * y;
+    float z2 = z * z;
+    float xy = x * y;
+    float yz = y * z;
+    float xz = x * z;
+
+    // Finally, we compute equation 13
+    // From: http://graphics.stanford.edu/papers/envmap/envmaprender.in
+    // http://graphics.stanford.edu/papers/envmap/envmap.pdf
+    return ( c1 * SHIrradianceCoeffs.L22.xyz * ( x2 - y2 ) + c3 * SHIrradianceCoeffs.L20.xyz * z2 + c4 * SHIrradianceCoeffs.L00.xyz - c5 * SHIrradianceCoeffs.L20.xyz
+            + 2.0 * c1 * ( SHIrradianceCoeffs.L2m2.xyz * xy + SHIrradianceCoeffs.L21.xyz * xz + SHIrradianceCoeffs.L2m1.xyz * yz )
+            + 2.0 * c2 * ( SHIrradianceCoeffs.L11.xyz * x + SHIrradianceCoeffs.L1m1.xyz * y + SHIrradianceCoeffs.L10.xyz * z ) );
+}
+
+//------------------------------------------------------------------------------
+// Applies the filmic curve from John Hable's presentation
+// More details at : http://filmicgames.com/archives/75
+float3 ToneMapFilmicALU( float3 color )
+{
+    color = max( float3( 0.0 ), color - float3(0.004) );
+    color = ( color * ( 6.2 * color + float3( 0.5 ) ) ) / (color * (6.2 * color + float3( 1.7 ) ) + float3( 0.06 ) );
+    return color;
+//    // Result has 1/2.2 baked in
+//    return ToLinear( color );
+}
+
+// ACES
+// From: https://knarkowicz.wordpress.com/2016/01/06/aces-filmic-tone-mapping-curve/
+//
+float3 ToneMapACESFilm( float3 x )
+{
+    float a = 2.51;
+    float b = 0.03;
+    float c = 2.43;
+    float d = 0.59;
+    float e = 0.14;
+    return saturate((x*(a*x+b))/(x*(c*x+d)+e));
+}
+
+float ComputeSpecularOcclusion( float NoV, float AO, float roughness )
+{
+    return saturate( pow( NoV + AO, roughness ) - 1.0 + AO );
+}
+
+
+float CalculateSpecular( in float3 N, in float3 H, in float roughness )
+{
+    // Convert roughness to a specular power
+    float specPower = pow( 2.0, 10.0 * saturate(1.0 - roughness) + 1.0 );
+
+    float NoH = saturate( dot( N, H) );
+    return pow( NoH, specPower) * ((specPower + 8.0) / (8.0 * PI));
+}
+
+float3 CalculateFresnel( float3 specularAlbedo, in float3 H, in float3 L )
+{
+    float3 fresnel = specularAlbedo;
+    fresnel += (AllOnes3 - specularAlbedo) * pow((1.0 - saturate( dot(H, L))), 5.0);
+
+    // Turn off specular if spec albedo == 0
+    fresnel *= saturate( dot( specularAlbedo, float3( 333.0 ) ) );
+
+    return fresnel;
+}
+
+float CalculateFresnelTerm( in float3 H, in float3 L, float power )
+{
+    float fresnel = 0.0;
+    fresnel = pow( 1.0 - ( saturate( dot(H, L) ) ), power ); //5.0 );
+
+    // Turn off specular if spec albedo == 0
+    //fresnel *= saturate( dot( 0.0, 333.0 ) );
+
+    return fresnel;
+}
+
+
+//
+highp mat3 Transpose( in highp mat3 inMatrix )
+{
+    highp vec3 i0 = inMatrix[0];
+    highp vec3 i1 = inMatrix[1];
+    highp vec3 i2 = inMatrix[2];
+
+    highp mat3 outMatrix = mat3(
+                 vec3(i0.x, i1.x, i2.x),
+                 vec3(i0.y, i1.y, i2.y),
+                 vec3(i0.z, i1.z, i2.z)
+                 );
+
+    return outMatrix;
+}
+
+//
+/*highp mat4 Transpose( in highp mat4 inMatrix )
+{
+    highp vec4 i0 = inMatrix[0];
+    highp vec4 i1 = inMatrix[1];
+    highp vec4 i2 = inMatrix[2];
+    highp vec4 i3 = inMatrix[3];
+
+    highp mat4 outMatrix = mat4(
+                 vec4(i0.x, i1.x, i2.x, i3.x),
+                 vec4(i0.y, i1.y, i2.y, i3.y),
+                 vec4(i0.z, i1.z, i2.z, i3.z),
+                 vec4(i0.w, i1.w, i2.w, i3.w)
+                 );
+
+    return outMatrix;
+}*/
+
+
+//
+float3x3 Inverse3x3( float3x3 M )
+{
+    float3x3 M_t = Transpose( M ); 
+    float det = dot( cross( M_t[0], M_t[1] ), M_t[2] );
+    float3x3 adjugate = float3x3( cross( M_t[1], M_t[2] ),
+                          		 cross( M_t[2], M_t[0] ),
+                          		 cross( M_t[0], M_t[1] ) );
+    return adjugate / det;
+}
+
+
+// http://www.thetenthplanet.de/archives/1180
+mat3 cotangent_frame(vec3 N, vec3 p, vec2 uv)
+{
+    // get edge vectors of the pixel triangle
+    vec3 dp1 = dFdx( p );
+    vec3 dp2 = dFdy( p );
+    vec2 duv1 = dFdx( uv );
+    vec2 duv2 = dFdy( uv );
+ 
+    // solve the linear system
+    vec3 dp2perp = cross( dp2, N );
+    vec3 dp1perp = cross( N, dp1 );
+    vec3 T = dp2perp * duv1.x + dp1perp * duv2.x;
+    vec3 B = dp2perp * duv1.y + dp1perp * duv2.y;
+ 
+    // construct a scale-invariant frame 
+    float invmax = inversesqrt( max( dot(T,T), dot(B,B) ) );
+    return mat3( T * invmax, B * invmax, N );
+}
+
+#define NORM_255 ( 255.0 / 127.0 )
+#define NORM_128 ( 128.0 / 127.0 )
+vec3 perturb_normal( vec3 N, vec3 V, vec2 texcoord )
+{
+    // assume N, the interpolated vertex normal and 
+    // V, the view vector (vertex to eye)
+   	vec3 map = texture( NormalMap, texcoord ).xyz;
+	map = map * NORM_255 - NORM_128;
+    mat3 TBN = cotangent_frame( N, -V, texcoord );
+    return normalize( TBN * map );
+}
+
+//
+float3 Normal( float3 P, float3 normalTS, float3 NWS, float2 uv )
+{
+    float3 dp1 = dFdx( P );
+    float3 dp2 = dFdy( P );
+    float2 duv1 = dFdx( uv );
+    float2 duv2 = dFdy( uv );
+
+    float3 N = NWS; //normalize( cross( dp1, dp2 ) );
+
+    float3x3 p_mat = float3x3( dp1, dp2, N );
+    float3x3 uv_mat = float3x3( float3( duv1, 0.0 ), float3( duv2, 0.0 ), float3(0.0, 0.0, 1.0) );
+    float3x3 TBN = mul( p_mat, Inverse3x3( uv_mat ) );
+
+    float3 normalWS = mul( TBN, normalTS );
+
+    return normalize( normalWS.xyz );
+}
+
+
+//
+void main()
+{
+    SHIrradianceCoeffs_s SHCoeffs;
+    // /* Band 0 */ {  4.561910789405168000,  4.338831236354429200,  4.549443672552561300 },
+    SHCoeffs.L00 = float4( 4.561910789405168000,  4.338831236354429200,  4.549443672552561300, 0.0 );
+    // /* Band 1 */
+    // { -1.066899773558486000, -1.345496977489223100, -1.833896706071564700 },
+    // {  6.230533384268796700,  6.243590726282771000,  6.734506428177562400 },
+    // { -0.409898387196239890, -0.407305903505398800, -0.419154388937415800 },
+    SHCoeffs.L1m1 = float4( -1.066899773558486000, -1.345496977489223100, -1.833896706071564700, 0.0 );
+    SHCoeffs.L10  = float4(  6.230533384268796700,  6.243590726282771000,  6.734506428177562400, 0.0 );
+    SHCoeffs.L11  = float4( -0.409898387196239890, -0.407305903505398800, -0.419154388937415800, 0.0 );
+    // /* Band 2 */
+    // {  0.180521589985128070,  0.181593800661971640,  0.213711851853369020 },
+    // { -2.675540875284603700, -2.993401496076991000, -3.844916227520071200 },
+    // {  7.100179885362138100,  6.982958493407225300,  7.333083163362351400 },
+    // { -0.799345351688743430, -0.724684938555545170, -0.723962216050280770 },
+    // {  0.077810336762314650, -0.102120561717781100, -0.385290003048672840 },
+    SHCoeffs.L2m2 = float4(  0.180521589985128070,  0.181593800661971640,  0.213711851853369020, 0.0 );
+    SHCoeffs.L2m1 = float4( -2.675540875284603700, -2.993401496076991000, -3.844916227520071200, 0.0 );
+    SHCoeffs.L20  = float4(  7.100179885362138100,  6.982958493407225300,  7.333083163362351400, 0.0 );
+    SHCoeffs.L21  = float4( -0.799345351688743430, -0.724684938555545170, -0.723962216050280770, 0.0 );
+    SHCoeffs.L22  = float4(  0.077810336762314650, -0.102120561717781100, -0.385290003048672840, 0.0 );
+
+
+    float2 uvs = texcoord; // + float2( Time*0.01, 0.0 );
+
+	float3 P = positionWS.xyz;
+    float3 V = normalize( ViewPosition - P.xyz );
+    float3 L = normalize( -LightDirection );
+
+
+    float2 cloudsTexelSize = float2( 1.0/2048.0, 1.0/1024.0 );
+    float2 cloudsShadowOffsetDir = -L.xy * CloudsShadowOffset;
+    
+    float2 texcoordClouds = uvs;
+
+    float4 diffuseTexel = texture( DiffuseMap, uvs );
+    diffuseTexel.rgb = ToLinearApprox( diffuseTexel.rgb );
+    float4 specularMaskTexel = texture( SpecularMap, uvs );
+    float specularMask = Luminance( specularMaskTexel.rgb );
+    //specularMaskTexel.rgb = ToLinearApprox( specularMaskTexel.rgb );
+    float4 cloudsTexel = texture( CloudsMap, texcoordClouds );
+    //cloudsTexel.a = Luminance( cloudsTexel.rgb );
+    cloudsTexel.rgb = ToLinearApprox( cloudsTexel.rgb );
+    float4 cloudsTexel2 = texture( CloudsMap, texcoordClouds - ( cloudsTexelSize * cloudsShadowOffsetDir ) );
+    //cloudsTexel2.a = Luminance( cloudsTexel2.rgb );
+    float4 nightLightsTexel = texture( NightLightsMap, uvs );
+    nightLightsTexel.rgb = ToLinearApprox( nightLightsTexel.rgb );
+
+
+
+#if 1 //ENABLE_NORMAL_MAPPING
+    float3 NFace = normalize( normalWS );
+    //float3 NFace = normalize( cross( dFdx(P), dFdy(P) ) );
+    float3 N1TS = texture( NormalMap, uvs ).rgb;
+	//float3 N2TS = texture( DetailNormalMap, VertexData.baricentric.xy * DetailNormalMapUVScale ).rgb;
+	float3 NBaseTS = normalize( mad( N1TS, AllTwos3, AllMinusOnes3 ) );
+	//float3 NTS = NormalBlend( N1TS, N2TS );
+	//NTS = lerp( NBaseTS, NTS, NormalMapIntensity );
+	//float3 N = Normal( P, NBaseTS, NFace, texcoord );
+	float3 N = perturb_normal( NFace, V, uvs );
+	N = lerp( NFace, N, NormalMapIntensity );
+#else
+    float3 N = normalize( normalWS );
+    //float3 N = normalize( cross( dFdx(P), dFdy(P) ) );
+#endif
+
+    float3 H = normalize( L + V );
+
+    float NoV = dot( N, V );
+    float NoL = smoothstep( -0.4, 0.0, dot( N, L ) );
+    float NoLFace = smoothstep( -0.4, 0.0, dot( NFace, L ) );
+    //float NoL = dot( N, L );
+    //float NoLFace = max( 0.0, dot( NFace, L ) );
+    float halfLambert = dot( N, L ) * 0.5 + 0.5;
+    float halfLambertFace = dot( NFace, L ) * 0.5 + 0.5;
+
+    // Wrap lighting
+    float wrap = RimAngle;
+    float wrapDiffuse = max( 0.0, ( NoL + wrap ) / ( 1.0 + wrap ) );
+    float wrapDiffuseFace = max( 0.0, ( NoLFace + wrap ) / ( 1.0 + wrap ) );
+
+    float outline = pow( NoV, 4.0 );
+
+    float AO = 1.0;
+
+    float cloudsShadow = saturate( 1.0 - cloudsTexel2.a * CloudsShadowIntensity );
+
+    float shadow = NoLFace * cloudsShadow;
+
+    float dayNightT = 1.0 - smoothstep( 0.0, NightDayMixFactor, saturate( NoLFace ) );
+    //float dayNightT = 1.0 - smoothstep( 0.0, NightDayMixFactor, saturate( NoLFace ) );
+
+    float3 diffuseAlbedo = diffuseTexel.rgb;
+    float3 specularAlbedo = float3( 0.8, 0.9, 1.0 );
+
+    float3 ambientColor = GetIrradianceFromSH( N, SHCoeffs );
+
+    float diffuseFactor = NoL;//smoothstep( -0.25, 0.0, NoL );
+    //float diffuseFactor = max( 0.0, NoL );
+    //float diffuseFactor = pow( halfLambert, HalfLambertPower );
+
+    float3 diffuseColor = ( diffuseAlbedo * ONE_OVER_PI ) * diffuseFactor;
+
+    float roughness = Roughness;
+
+    float specularFactor = CalculateSpecular( N, H, roughness );
+    float3 specularColor = specularAlbedo * specularFactor;
+    
+    float3 fresnel = CalculateFresnel( specularAlbedo, H, L );
+    float3 fresnel2 = CalculateFresnel( specularAlbedo*0.1, V, N );
+    float fresnelTerm = CalculateFresnelTerm( V, NFace, 18.0 );
+
+    float specularOcclusion = ComputeSpecularOcclusion( NoV, AO, roughness );
+
+    float3 finalColor = float3( 0.0 );
+
+    // Ambient
+	//finalColor.rgb += saturate( ambientColor * AmbientIntensity ) * AO;
+    // Diffuse
+    finalColor.rgb += ( diffuseColor * cloudsShadow * DiffuseIntensity ) * AO * shadow;
+    // Wrap lighting
+    //finalColor.rgb += float3( diffuseAlbedo * wrapDiffuse * DiffuseRimIntensity ); // * ( 1.0 - NoV);
+    // Rim (Fresnel ) lighting
+    //finalColor.rgb += float3( float3(0.0,0.5,1.0) * fresnelTerm ) * 0.133;
+    // Specular
+    finalColor.rgb += ( specularMaskTexel.rgb * specularColor * specularOcclusion * SpecularIntensity * fresnel ) * AO * shadow;
+    // Clouds
+    finalColor.rgb += ( lerp( finalColor.rgb, finalColor.rgb + ( cloudsTexel.rgb * cloudsTexel.a ), cloudsTexel.a ) * (NoLFace + (wrapDiffuse * DiffuseRimIntensity)) * CloudsIntensity );
+    // Night Diffuse
+    finalColor.rgb += nightLightsTexel.rgb * dayNightT; // * ( 1.0 - NoV);
+    //finalColor.rgb = lerp( finalColor.rgb, nightLightsTexel.rgb * 1.05, dayNightT );
+
+    // DEBUG:
+//    float tt = smoothstep( 0.0, 0.3, saturate( (NoLFace) + 0.0 ) );
+//    finalColor = float3( tt ); //pow( 1.0 - saturate(NoL*0.5+0.5), 4.0 ) );
+//    finalColor = lerp( diffuseTexel.rgb, nightLightsTexel.rgb, 1.0 - tt );
+    //finalColor = float3( pow( 1.0 - NoV, 1.0 ) * wrapDiffuse * diffuseAlbedo );
+    //finalColor = fresnel;
+    //finalColor = fresnel2;
+    //finalColor.rgb = float3( specularAlbedo * fresnelTerm ) * 4.0;
+    //finalColor = float3( fresnelTerm ) * specularAlbedo;
+    //finalColor = float3( wrapDiffuse );
+    //finalColor = specularMaskTexel.rgb;
+    //finalColor = float3( specularOcclusion );
+    //finalColor = H;
+    //finalColor = N * AllHalfOnes3 + AllHalfOnes3;
+    //finalColor = NBaseTS * AllHalfOnes3 + AllHalfOnes3;
+    //finalColor = P / 50.0;
+    //finalColor = float3( diffuseAlbedo * 1.0 * saturate( float3( wrapDiffuse ) ) );
+    //finalColor = float3( diffuseAlbedo * 4.0 * saturate( step( 0.0, dot(NFace,L) ) ) );
+    //finalColor = float3( diffuseFactor );
+    //finalColor = float3( halfNoL );
+
+    // Tonemap
+    finalColor.rgb = ToneMapFilmicALU( finalColor.rgb );
+    //finalColor.rgb = ToSRGBApprox( ToneMapACESFilm( finalColor.rgb ) );
+
+
+    gl_FragColor = float4( finalColor, 1.0 );
+}
