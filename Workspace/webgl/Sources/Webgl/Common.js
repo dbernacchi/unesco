@@ -38,7 +38,7 @@ PX =
     , kLocationMarkerScale: 0.8
     , kLocationMarkerDetail: 16
     , kLocationMarkerZScale: 0.05
-    , kMaxGridSize: 5
+    , kMaxGridSize: 2
     , kLocationTextSize: 110.0
     , kLocationColor: 0x00ffff
     , kLocationMouseOverColor: 0xff00ff
@@ -46,7 +46,7 @@ PX =
     , kCameraFovY: 36.0
     , kCameraNearPlane: 1.0
     , kCameraFarPlane: 1000.0
-    , kCameraMinDistance: 35.0
+    , kCameraMinDistance: 51.0
     , kCameraMaxDistance: 100.0
     , kGlobalTimeScale: 1.0
 

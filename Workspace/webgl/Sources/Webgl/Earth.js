@@ -20,6 +20,7 @@ UG.LocationMarker = function()
     this.text = "";
     this.latlon = new THREE.Vector2();
     this.position = new THREE.Vector3();
+    this.markerCount = 0;
 };
 UG.LocationMarker.prototype =
 {

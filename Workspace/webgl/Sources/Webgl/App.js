@@ -479,7 +479,9 @@ function ParseLocationData( locationsJson )
 
 function Setup()
 {
-    var aspectRatio = windowWidth / windowHeight;
+    var minDim = Math.min( windowWidth, windowHeight );
+    var maxDim = Math.min( windowWidth, windowHeight );
+    var aspectRatio = maxDim / minDim;
 
     // Parse locations from json
     ParseLocationData( PX.AssetsDatabase["LocationsJson"] );
@@ -999,6 +1001,7 @@ function Update( time, frameTime )
                     locationMarkers[i].text = String( c.markers_.length );
                     locationMarkers[i].latlon.set( clusterCenter.lat(), clusterCenter.lng() );
                     locationMarkers[i].position.copy( PX.Utils.FromLatLon( clusterCenter.lat(), clusterCenter.lng(), PX.kEarthScale, 0.0 ) );
+                    locationMarkers[i].markerCount = c.markers_.length;
                     locationMarkerCount++;
                 }
             }
@@ -1015,6 +1018,7 @@ function Update( time, frameTime )
                         locationMarkers[ locationMarkerCount ].text = locations[ locationMarkerCount ].name;
                         locationMarkers[ locationMarkerCount ].latlon.set( markerPos.lat(), markerPos.lng() );
                         locationMarkers[ locationMarkerCount ].position.copy( PX.Utils.FromLatLon( markerPos.lat(), markerPos.lng(), PX.kEarthScale, 0.0 ) );
+                        locationMarkers[i].markerCount = 1;
                         locationMarkerCount++;
 
                         //console.log( locationMarkers[idx].latlon, locationMarkers[idx].text );
@@ -1022,10 +1026,6 @@ function Update( time, frameTime )
                 }
 
             }
-
-            // Callback on cluster click
-            ClusterOnClickCallback( locationMarkerCount, locationMarkers );
-
 
             doLocationsGather = false;
         }
@@ -1533,8 +1533,9 @@ function OnMouseUp(event)
             cameraSourcePoint = camera.position.clone();
             cameraTargetPoint = intersects[ 0 ].object.position.clone().normalize();
 
-            Params.CameraDistance *= 1.0 - ( 1.0 / PX.kZoomMaxLevel );
-            Params.CameraDistance = PX.Clamp( Params.CameraDistance, PX.kCameraMinDistance, PX.kCameraMaxDistance );
+            Params.CameraDistance = PX.Lerp( PX.kCameraMinDistance, PX.kCameraMaxDistance, 0.0 );
+            //Params.CameraDistance *= 1.0 - ( 1.0 / PX.kZoomMaxLevel );
+            //Params.CameraDistance = PX.Clamp( Params.CameraDistance, PX.kCameraMinDistance, PX.kCameraMaxDistance );
 
             var position = { x : cameraSourcePoint.x, y: cameraSourcePoint.y, z: cameraSourcePoint.z };
             var target = { x : cameraTargetPoint.x*Params.CameraDistance, y: cameraTargetPoint.y*Params.CameraDistance, z: cameraTargetPoint.z*Params.CameraDistance };
@@ -1567,17 +1568,21 @@ function OnMouseUp(event)
                         markerCluster.setGridSize( Params.MapGridSize );
 
                         map.setZoom( zoomLevel );
-                        doLocationsGather = true;
+                        //doLocationsGather = true;
                         visibleClustersCount = 0;
 
                     }
                 }
+
+                // Callback on cluster click
+                ClusterOnClickCallback( locationMarkers[i].count, locationMarkers[i] );
+
             });
             break;
         }
     }
 
-    doLocationsGather = true;
+    //doLocationsGather = true;
     visibleClustersCount = 0;
     //visibleMarkersCount = 0;
 }
@@ -1604,7 +1609,7 @@ function OnMouseWheel( event )
         markerCluster.setGridSize( Params.MapGridSize );
 
         map.setZoom( zoomLevel );
-        doLocationsGather = true;
+        //doLocationsGather = true;
         visibleClustersCount = 0;
         //visibleMarkersCount = 0;
     }
