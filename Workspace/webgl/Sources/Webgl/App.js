@@ -121,9 +121,9 @@ $(window).focus(function(e)
 });
 
 
-var ClusterOnClickCallback = function( count, data )
+var ClusterOnClickCallback = function( uuid, object )
 {
-    console.log( count, data );
+    console.log( uuid, object);
 };
 
 THREE.DefaultLoadingManager.onProgress = function( item, loaded, total )
@@ -1575,7 +1575,7 @@ function OnMouseUp(event)
                 }
 
                 // Callback on cluster click
-                ClusterOnClickCallback( locationMarkers[i].count, locationMarkers[i] );
+                ClusterOnClickCallback( "UUID-25345634", locationMarkers[i] );
 
             });
             break;
