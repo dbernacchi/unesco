@@ -207,7 +207,8 @@ function CreateRenderer()
 
     renderer = new THREE.WebGLRenderer( { antialias: true, precision: precision, stencil: false, alpha: false } );
     renderer.setClearColor( 0x000000, 1 );
-    //renderer.gammaOutput = true;
+    renderer.gammaInput = true;
+    renderer.gammaOutput = true;
     element = renderer.domElement;
     container = document.getElementById( "glContainer" );
     container.style.top = "0px";
@@ -524,8 +525,8 @@ function Setup()
     locationsGroup.position.set( 0, 0, 0 );
     for( var i=0; i<locations.length; ++i )
     {
-        //var mat = new THREE.MeshLambertMaterial( { color: PX.kLocationColor, emissive: 0x003333 } );
-        var mat = new THREE.MeshBasicMaterial( { color: PX.kLocationColor } );
+        var mat = new THREE.MeshLambertMaterial( { color: PX.kLocationColor, emissive: 0x003333 } );
+        //var mat = new THREE.MeshBasicMaterial( { color: PX.kLocationColor } );
         //mat.depthWrite = false;
         var geom = new THREE.CylinderGeometry( PX.kLocationMarkerScale, PX.kLocationMarkerScale, PX.kLocationMarkerScale, PX.kLocationMarkerDetail, 1 );
         //var geom = new THREE.CylinderGeometry( PX.kLocationMarkerScale, PX.kLocationMarkerScale, PX.kLocationMarkerScale*0.33, 16, 1 );
@@ -562,9 +563,9 @@ function Setup()
 
     // Create scene's Sun light
     //
-    /*sunLight = new THREE.DirectionalLight( 0xffffff );
+    sunLight = new THREE.DirectionalLight( 0xffffff );
     sunLight.position.set( 0.7, 0.0, 1.0 );
-    scene.add( sunLight );*/
+    scene.add( sunLight );
 
 /*
     earthOrbitControls = new THREE.OrbitControls( camera, renderer.domElement );
@@ -1172,7 +1173,7 @@ function Update( time, frameTime )
             //billboardGeometry.vertices[i].set( p.x, p.y, p.z );
             locationMeshes[i].position.copy( loc.position );
             //locationMeshes[i].scale.set( locationScale, locationScale, locationScale ); //( ( c.markers_.length > 0 ) ? c.markers_.length : 1.0 ) );
-            locationMeshes[i].scale.set( locationScale, locationScale, locationScale ); // * ( c.markers_.length > 0 ? c.markers_.length * PX.kLocationMarkerZScale : 1.0 ) );
+            locationMeshes[i].scale.set( locationScale, locationScale, locationScale * ( loc.markerCount > 0 ? loc.markerCount * PX.kLocationMarkerZScale : 1.0 ) );
             locationMeshes[i].lookAt( PX.ZeroVector );
 	    }
         //billboardGeometry.verticesNeedUpdate = true;
@@ -1190,13 +1191,15 @@ function Update( time, frameTime )
         {
             var loc = locationMarkers[i];
 
+            var ttt = ( loc.markerCount > 0 ? loc.markerCount * PX.kLocationMarkerZScale : 1.0 );
+
             // Use distance to camera for constant size
             distToCamera.subVectors( camera.position, loc.position );
             var locationScale = distToCamera.length();
             locationScale = ( locationScale / PX.kCameraMaxDistance );
 
             var smallOffset = 0.001;
-            var p = PX.Utils.FromLatLon( loc.latlon.x, loc.latlon.y, PX.kEarthScale, smallOffset + (locationScale * PX.kLocationMarkerScale) );
+            var p = PX.Utils.FromLatLon( loc.latlon.x, loc.latlon.y, PX.kEarthScale, smallOffset + (ttt * locationScale * PX.kLocationMarkerScale) );
 
             matTrans = matTrans.makeTranslation( p.x, p.y, p.z );
             //matRot.makeRotationFromQuaternion( locationMeshes[i].quaternion );
@@ -1583,7 +1586,7 @@ function OnMouseUp(event)
     }
 
     //doLocationsGather = true;
-    visibleClustersCount = 0;
+    //visibleClustersCount = 0;
     //visibleMarkersCount = 0;
 }
 

@@ -35,11 +35,11 @@ PX =
 
     , kEarthScale: 30.0
     , kEarthDetail: 50
-    , kLocationMarkerScale: 0.8
+    , kLocationMarkerScale: 0.6
     , kLocationMarkerDetail: 16
-    , kLocationMarkerZScale: 0.05
-    , kMaxGridSize: 2
-    , kLocationTextSize: 110.0
+    , kLocationMarkerZScale: 0.25
+    , kMaxGridSize: 1
+    , kLocationTextSize: 120.0
     , kLocationColor: 0x00ffff
     , kLocationMouseOverColor: 0xff00ff
 
@@ -50,7 +50,7 @@ PX =
     , kCameraMaxDistance: 100.0
     , kGlobalTimeScale: 1.0
 
-    , kZoomMaxLevel: 4.0
+    , kZoomMaxLevel: 3.0
 
     , XAxis: new THREE.Vector3(1, 0, 0)
     , YAxis: new THREE.Vector3(0, 1, 0)
