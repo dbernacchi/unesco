@@ -1533,6 +1533,8 @@ function OnMouseUp(event)
         var intersects = g_Raycaster.intersectObject( locationMeshes[i], false );
         if( intersects.length > 0 )
         {
+            //intersects[0].object.material.color = PX.kLocationMouseClickedColor;
+
             cameraSourcePoint = camera.position.clone();
             cameraTargetPoint = intersects[ 0 ].object.position.clone().normalize();
 

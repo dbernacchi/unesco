@@ -35,13 +35,14 @@ PX =
 
     , kEarthScale: 30.0
     , kEarthDetail: 50
-    , kLocationMarkerScale: 0.6
+    , kLocationMarkerScale: 0.65
     , kLocationMarkerDetail: 16
     , kLocationMarkerZScale: 0.25
     , kMaxGridSize: 1
     , kLocationTextSize: 120.0
     , kLocationColor: 0x00ffff
     , kLocationMouseOverColor: 0xff00ff
+    , kLocationMouseClickedColor: 0xff7f00
 
     , kCameraFovY: 36.0
     , kCameraNearPlane: 1.0
