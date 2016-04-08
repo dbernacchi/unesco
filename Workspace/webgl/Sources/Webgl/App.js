@@ -120,6 +120,12 @@ $(window).focus(function(e)
 {
 });
 
+
+var ClusterOnClickCallback = function( count, data )
+{
+    console.log( count, data );
+};
+
 THREE.DefaultLoadingManager.onProgress = function( item, loaded, total )
 {
     var percentage = Math.round( ( loaded / total ) * 80.0 );
@@ -1016,6 +1022,10 @@ function Update( time, frameTime )
                 }
 
             }
+
+            // Callback on cluster click
+            ClusterOnClickCallback( locationMarkerCount, locationMarkers );
+
 
             doLocationsGather = false;
         }
