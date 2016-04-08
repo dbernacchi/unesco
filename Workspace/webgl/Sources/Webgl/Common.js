@@ -46,12 +46,11 @@ PX =
     , kCameraFovY: 36.0
     , kCameraNearPlane: 1.0
     , kCameraFarPlane: 1000.0
-    , kCameraMinDistance: 51.0
+    , kCameraMinDistance: 60.0
     , kCameraMaxDistance: 100.0
     , kGlobalTimeScale: 1.0
 
     , kZoomMaxLevel: 4.0
-
 
     , XAxis: new THREE.Vector3(1, 0, 0)
     , YAxis: new THREE.Vector3(0, 1, 0)

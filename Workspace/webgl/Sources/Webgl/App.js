@@ -480,7 +480,7 @@ function ParseLocationData( locationsJson )
 function Setup()
 {
     var minDim = Math.min( windowWidth, windowHeight );
-    var maxDim = Math.min( windowWidth, windowHeight );
+    var maxDim = Math.max( windowWidth, windowHeight );
     var aspectRatio = maxDim / minDim;
 
     // Parse locations from json
