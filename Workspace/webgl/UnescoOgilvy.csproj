@@ -52,9 +52,11 @@
     <Content Include="index.html" />
     <Content Include="Sources\Webgl\App.js" />
     <Content Include="Sources\Webgl\Common.js" />
+    <Content Include="Sources\Webgl\Database.js" />
     <Content Include="Sources\Webgl\Detector.js" />
     <Content Include="Sources\Webgl\Earth.js" />
     <Content Include="Sources\Webgl\Loaders.js" />
+    <Content Include="Sources\Webgl\LocationMarkers.js" />
     <Content Include="Sources\Webgl\Main.js" />
     <Content Include="Sources\Webgl\TextRenderer.js" />
     <Content Include="Sources\Webgl\Utils.js" />

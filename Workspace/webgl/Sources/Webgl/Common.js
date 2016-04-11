@@ -35,6 +35,7 @@ PX =
 
     , kEarthScale: 30.0
     , kEarthDetail: 50
+    , kMarkerOffsetFromEarthSurface: 0.0
     , kLocationMarkerScale: 0.65
     , kLocationMarkerDetail: 16
     , kLocationMarkerZScale: 0.25

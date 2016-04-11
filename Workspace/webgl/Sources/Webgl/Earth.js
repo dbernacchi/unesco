@@ -4,6 +4,7 @@
 //
 var Location = function()
 { 
+    this.GUID = "";
     this.name = null;       // Location name
     this.latlon = null;     // Lat/long
     this.position = null;   // 3D position in sphere
@@ -17,6 +18,7 @@ Location.prototype =
 //
 UG.LocationMarker = function()
 { 
+    this.GUID = "";
     this.text = "";
     this.latlon = new THREE.Vector2();
     this.position = new THREE.Vector3();

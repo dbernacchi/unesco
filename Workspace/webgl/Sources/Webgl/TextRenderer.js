@@ -25,7 +25,7 @@ PX.TextRenderer.prototype =
         this.bmFontDescriptor = bmFontDescriptor;
 
         //this.material = new THREE.MeshBasicMaterial( { map: texture, color: 0xff0000 } );
-        this.material = new THREE.MeshBasicMaterial( { map: texture, color: 0x000000, opacity: 1.5, transparent: true } );
+        this.material = new THREE.MeshBasicMaterial( { map: texture, color: 0x000000, opacity: 1.2, transparent: true } );
         this.material.side = THREE.DoubleSide;
         //this.material.depthWrite = false;
         //textRenderMaterial.depthTest = false;
