@@ -33,6 +33,8 @@ PX =
     //
     , EPSILON: 0.001
 
+    , StartLatLon: { x: 6.3377571, y: 43.139408 }
+
     , kEarthScale: 30.0
     , kEarthDetail: 50
     , kMarkerOffsetFromEarthSurface: 0.0
@@ -80,6 +82,24 @@ PX =
     {
         //return b*t + (a - t*a);
         return (a + t*(b - a) );
+    }
+
+	, Step: function( x, t )
+	{	
+		return ( x >= t ) ? 1.0 : 0.0;
+	}        
+
+    , Pulse: function( a, b, x )
+    {
+		return PX.Step( a, x ) - PX.Step( b, x );
+    }
+
+    , CubicPulse: function( c, w, x )
+    {
+        x = Math.abs(x - c);
+        if( x > w ) return 0.0;
+        x /= w;
+        return 1.0 - x * x * ( 3.0 - 2.0 * x );
     }
 
     , Saturate: function( x )
@@ -164,5 +184,5 @@ var Params =
     , Longitude: 0.0
     , ZoomLevel: 0.0
     , Intersects: 0
-    , Dummy: 50.0
+    , Dummy: 0
 };

@@ -48,4 +48,20 @@ PX.Utils =
         vector.y = (-(vector.y - 1.0) / 2.0) * height;
         return vector;
     }
+
+    , Orthogonal: function( v )
+    {
+        var x = Math.abs(v.x);
+        var y = Math.abs(v.y);
+        var z = Math.abs(v.z);
+
+        var other = x < y ? (x < z ? PX.XAxis : PX.ZAxis) : (y < z ? PX.YAxis : PX.ZAxis);
+        return new THREE.Vector3().crossVectors( v, other );
+    }
+
+    , Pulse: function( time, frequency ) 
+    {
+        return ( Math.sin( 2.0 * Math.PI * frequency * time ) );
+        //return 0.5 * ( 1.0 + Math.sin( 2.0 * Math.PI * frequency * time ) );
+    }
 }

@@ -7,6 +7,7 @@ UG.LocationMarker = function()
     this.text = "";
     this.latlon = new THREE.Vector2();
     this.position = new THREE.Vector3();
+    this.scale = new THREE.Vector3();
     this.markerCount = 0;
     this.clicks = 0; // Number of clicks on this marker. 1: align camera, 2: open right menu, 3: in menu
 };
@@ -29,6 +30,8 @@ UG.LocationMarkers = function()
 
 	this.markerCluster = null;
     this.doPopulation = true;
+
+    var tween = null;
 };
 
 UG.LocationMarkers.prototype =
@@ -124,29 +127,38 @@ UG.LocationMarkers.prototype =
             var loc = this.markers[i];
 
             // Use distance to camera for constant size
-            distToCamera.subVectors( camera.position, loc.position );
-            var locationScale = distToCamera.length();
-            locationScale = ( locationScale / PX.kCameraMaxDistance );
+            if( locationsIntroAnimDone ) 
+            {
+                distToCamera.subVectors( camera.position, loc.position );
+                var locationScale = distToCamera.length();
+                locationScale = ( locationScale / PX.kCameraMaxDistance );
+                loc.scale.set( locationScale, locationScale, locationScale );
 
-            //console.log( i, p.x, p.y, p.z );
-            //billboardGeometry.vertices[i].set( p.x, p.y, p.z );
+                var per = i / (this.markersCount-1);
+                var pulse = PX.CubicPulse( 0.0, 0.8, Math.sin(time*2.0+i) );
+                //var pulse = PX.Saturate( PX.Utils.Pulse( (2.0*Math.PI*per) + time, 0.5 ) );
+                //loc.scale.x += pulse * 0.1;
+                //loc.scale.y += pulse * 0.1;
+                loc.scale.z += pulse * 0.1;
+            }
+
             this.meshes[i].position.copy( loc.position );
-            this.meshes[i].scale.set( locationScale, locationScale, locationScale * PX.kLocationMarkerZScale );
-            //this.meshes[i].scale.set( locationScale, locationScale, locationScale * ( loc.markerCount > 0 ? loc.markerCount * PX.kLocationMarkerZScale : 1.0 ) );
+            //this.meshes[i].scale.set( loc.scale.x, loc.scale.y, loc.scale.z * PX.kLocationMarkerZScale );
+            this.meshes[i].scale.set( loc.scale.x, loc.scale.y, loc.scale.z * ( loc.markerCount > 0 ? loc.markerCount * PX.kLocationMarkerZScale : 1.0 ) );
             this.meshes[i].lookAt( PX.ZeroVector );
 
             // Text Info
             //
-            var ttt = (1.0) * PX.kLocationMarkerZScale;
-            //var ttt = ( loc.markerCount > 0 ? loc.markerCount * PX.kLocationMarkerZScale : 1.0 );
+            //var ttt = (1.0) * PX.kLocationMarkerZScale;
+            var ttt = ( loc.markerCount > 0 ? loc.markerCount * PX.kLocationMarkerZScale : 1.0 );
 
             var smallOffset = 0.001;
-            var p = PX.Utils.FromLatLon( loc.latlon.x, loc.latlon.y, PX.kEarthScale, smallOffset + (ttt * locationScale * PX.kLocationMarkerScale) );
+            var p = PX.Utils.FromLatLon( loc.latlon.x, loc.latlon.y, PX.kEarthScale, smallOffset + (ttt * loc.scale.z * PX.kLocationMarkerScale) );
 
             matTrans = matTrans.makeTranslation( p.x, p.y, p.z );
-            //matRot.makeRotationFromQuaternion( locationMeshes[i].quaternion );
-            matRot.makeRotationFromEuler( this.meshes[i].rotation );
-            matScale.makeScale( locationScale, locationScale, locationScale );
+            matRot.makeRotationFromQuaternion( this.meshes[i].quaternion );
+            //matRot.makeRotationFromEuler( this.meshes[i].rotation );
+            matScale.makeScale( loc.scale.x, loc.scale.y, loc.scale.z );
             matRes.multiplyMatrices( matTrans, matRot );
             matRes.multiplyMatrices( matRes, matScale );
             //matRes = locationMeshes[i].matrixWorld;
@@ -165,6 +177,7 @@ UG.LocationMarkers.prototype =
         for( var i=0; i<this.markersCount; ++i )
         {
             var intersects = raycaster.intersectObject( this.meshes[ i ], false );
+            //console.log( intersects );
             if( intersects.length > 0 )
             {
                 intersects[ 0 ].object.material.color.set( PX.kLocationMouseOverColor );
@@ -174,20 +187,20 @@ UG.LocationMarkers.prototype =
             }
         }
 
-        return null;
+        return -1;
     }
 
 
-    , PopulateMarkers: function( markerCluster, locations )
+    , PopulateMarkers: function( markerCluster, locations, camera )
     {
         var clusterCount = markerCluster.getTotalClusters();
         //console.log( "clusterCount:", clusterCount );
 
         if( clusterCount > 0 )
         {
-            this.markersCount = clusterCount;
-
             this.doPopulation = false;
+
+            var distToCamera = new THREE.Vector3();
 
             //if( zoomLevel < PX.kZoomMaxLevel )
             {
@@ -200,9 +213,29 @@ UG.LocationMarkers.prototype =
 
                     this.markers[i].text = String( c.markers_.length );
                     this.markers[i].latlon.set( clusterCenter.lat(), clusterCenter.lng() );
+                    this.markers[i].scale.set( PX.EPSILON, PX.EPSILON, PX.EPSILON );
                     this.markers[i].position.copy( PX.Utils.FromLatLon( clusterCenter.lat(), clusterCenter.lng(), PX.kEarthScale, PX.kMarkerOffsetFromEarthSurface ) );
                     this.markers[i].markerCount = c.markers_.length;
-                    //this.markersCount++;
+
+                    this.markersCount++;
+
+                    // Use distance to camera for constant size
+                    distToCamera.subVectors( camera.position, this.markers[i].position );
+                    var locationScale = distToCamera.length();
+                    locationScale = ( locationScale / PX.kCameraMaxDistance );
+
+                    var target = new THREE.Vector3( locationScale, locationScale, locationScale );
+                    this.markers[i].tween = new TWEEN.Tween( this.markers[i].scale ).to( target, 2000.0/clusterCount );
+                    this.markers[i].tween.easing( TWEEN.Easing.Sinusoidal.InOut );
+                    this.markers[i].tween.delay( 3000 + ((i * 2000)/clusterCount) );
+                    this.markers[i].tween.start();
+                    if( i === clusterCount-1 )
+                    {
+                        this.markers[i].tween.onComplete( function()
+                        {
+                            locationsIntroAnimDone = true;
+                        });
+                    }
                 }
             }
             /*else
