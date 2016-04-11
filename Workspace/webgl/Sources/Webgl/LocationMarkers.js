@@ -166,8 +166,8 @@ UG.LocationMarkers.prototype =
             if( intersects.length > 0 )
             {
                 intersects[ 0 ].object.material.color.set( PX.kLocationMouseOverColor );
-                this.markers[ i ].clicks ++;
-                return this.meshes[ i ];
+                this.markers[ i ].clicks++;
+                return i;
                 //break;
             }
         }

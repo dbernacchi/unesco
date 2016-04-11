@@ -51,8 +51,11 @@ var markerCluster;
 var zoomLevel = 0.0;
 var prevZoomLevel = 0.0;
 
+var prevClickedLocationIndex = -1;
+
 var cameraTargetPoint = null;
 var cameraSourcePoint = null;
+var cameraLookAtPoint = null;
 
 var earthOrbitControls = null;
 
@@ -539,10 +542,11 @@ function Setup()
     //
     camera = new THREE.PerspectiveCamera( PX.kCameraFovY, aspectRatio, PX.kCameraNearPlane, PX.kCameraFarPlane );
     camera.updateProjectionMatrix();
-    var camPos = PX.Utils.FromLatLon( 0.0, 0.0, Params.CameraDistance, 0.0 );
+    var camPos = new THREE.Vector3( 0.0, 0.0, Params.CameraDistance );
+    //var camPos = PX.Utils.FromLatLon( 0.0, 0.0, Params.CameraDistance, 0.0 );
     camera.position.set( camPos.x, camPos.y, camPos.z );
-    var currentCamLookAt = new THREE.Vector3(0, 0, 0);
-    camera.lookAt( currentCamLookAt );
+    cameraLookAtPoint = PX.ZeroVector.clone();
+    camera.lookAt( cameraLookAtPoint );
     scene.add( camera );
 
     // Create Globe
@@ -560,22 +564,6 @@ function Setup()
     sunLight = new THREE.DirectionalLight( 0xffffff );
     sunLight.position.set( 0.7, 0.0, 1.0 );
     scene.add( sunLight );
-
-/*
-    earthOrbitControls = new THREE.OrbitControls( camera, renderer.domElement );
-    earthOrbitControls.enableDamping = true;
-    earthOrbitControls.dampingFactor = 0.1;
-    earthOrbitControls.rotateSpeed = 0.05;
-    earthOrbitControls.minDistance = PX.kCameraMinDistance;
-    earthOrbitControls.maxDistance = PX.kCameraMaxDistance; //Params.CameraDistance;
-    earthOrbitControls.minPolarAngle = Math.PI * 0.1;
-    earthOrbitControls.maxPolarAngle = Math.PI * 0.9;
-    earthOrbitControls.enablePan = false;
-    earthOrbitControls.enableKeys = false;
-    earthOrbitControls.target.set( 0, 0, 0 );
-    earthOrbitControls.position0.set( Params.CameraDistance*Math.cos(PX.ToRadians(90)), 0, Params.CameraDistance*Math.sin(PX.ToRadians(90)) );
-    earthOrbitControls.reset();
-    earthOrbitControls.update();*/
 
 
     // Update camera position to look at latlon: 0, 0
@@ -717,13 +705,13 @@ function Setup()
     // Setup scene for intro
     //
 
-    var camPosSrc = PX.Utils.FromLatLon( 0.0, -30.0, Params.CameraDistance, 0.0 );
+/*    var camPosSrc = PX.Utils.FromLatLon( 0.0, -30.0, Params.CameraDistance, 0.0 );
     camera.position.copy( camPosSrc );
     var camPosDest = PX.Utils.FromLatLon( 0.0, 0.0, Params.CameraDistance, 0.0 );
     var tween = new TWEEN.Tween( camera.position ).to( camPosDest, 2000.0 );
     tween.easing( TWEEN.Easing.Sinusoidal.InOut );
     tween.delay( 2100 );
-    tween.start();
+    tween.start();*/
 
     var target = { x : 1.0, y: 1.0, z: 1.0 };
     locationMarkers.locationsGroup.scale.set( PX.EPSILON, PX.EPSILON, PX.EPSILON );
@@ -748,7 +736,7 @@ function Setup()
 function InitStats()
 {
     g_Stats = new Stats();
-    g_Stats.setMode( 0 ); // 0: fps, 1: ms, 2: mb
+    g_Stats.setMode( 1 ); // 0: fps, 1: ms, 2: mb
     // align top-left
     g_Stats.domElement.style.position = 'absolute';
     g_Stats.domElement.style.left = '0px';
@@ -861,8 +849,9 @@ function Update( time, frameTime )
             earthOrbitControls.reset();
             earthOrbitControls.update();
 
-            var camPos = PX.Utils.FromLatLon( 0.0, 0.0, Params.CameraDistance, 0.0 );
-            camera.position.set( camPos.x, camPos.y, camPos.z );
+            //var camPos = PX.Utils.FromLatLon( 0.0, 0.0, Params.CameraDistance, 0.0 );
+            //camera.position.set( camPos.x, camPos.y, camPos.z );
+            //camera.lookAt( PX.ZeroVector );
         }
 
         // Step earth rotation
@@ -932,7 +921,7 @@ function Update( time, frameTime )
 */
 
         // Make sure camera is always looking at origin
-        camera.lookAt( PX.ZeroVector );
+        //camera.lookAt( PX.ZeroVector );
 
 
         // Change latitude min/max
@@ -1106,13 +1095,89 @@ function OnMouseUp(event)
 
     // Intersection test per mesh
     //
+    var animTime = 1000.0;
     for( var i=0; i<locationsDB.length; i++ )
     {
-        var touchedLocation = locationMarkers.Intersects( g_Raycaster );
-        if( touchedLocation )
+        var idx = locationMarkers.Intersects( g_Raycaster );
+        if( idx )
         {
-            cameraSourcePoint = camera.position.clone();
-            cameraTargetPoint = touchedLocation.position.clone().normalize();
+            var sameLoc = ( prevClickedLocationIndex === idx ) ? true: false;
+
+            if( prevClickedLocationIndex !== -1 && !sameLoc )
+            {
+                locationMarkers.markers[prevClickedLocationIndex].clicks = 0;
+            }
+            if( sameLoc && locationMarkers.markers[idx].clicks > 2 )
+            {
+                locationMarkers.markers[idx].clicks = 1;
+            }
+
+            //
+            prevClickedLocationIndex = idx;
+
+            if( locationMarkers.markers[idx].clicks === 2 )
+            {
+                // Compute right vector
+                var dir0 = locationMarkers.meshes[idx].position.clone().normalize();
+                var right = new THREE.Vector3();
+                right.crossVectors( PX.YAxis, dir0 );
+                right.multiplyScalar( PX.kEarthScale );
+
+
+                //Params.CameraDistance = PX.Lerp( PX.kCameraMinDistance, PX.kCameraMaxDistance, 0.0 );
+                //Params.CameraDistance *= 1.0 - ( 1.0 / PX.kZoomMaxLevel );
+                //Params.CameraDistance = PX.Clamp( Params.CameraDistance, PX.kCameraMinDistance, PX.kCameraMaxDistance );
+
+                var position = camera.position.clone();
+                var target = camera.position.clone().add( right );
+                var tween = new TWEEN.Tween( position ).to( target, animTime );
+                tween.easing( TWEEN.Easing.Quadratic.InOut );
+                //tween.delay( 50 );
+                tween.start();
+                tween.onStart(function()
+                {
+                });
+                tween.onUpdate(function()
+                {
+                    camera.position.x = position.x;
+                    camera.position.y = position.y;
+                    camera.position.z = position.z;
+                });
+                tween.onComplete(function()
+                {
+                    earthOrbitControls.enabled = false;
+                });
+
+                // LookAt
+                var cameraTargetPoint2 = cameraLookAtPoint.clone().add( right );
+                var position2 = { x : cameraLookAtPoint.x, y: cameraLookAtPoint.y, z: cameraLookAtPoint.z };
+                var target2 = { x : cameraTargetPoint2.x, y: cameraTargetPoint2.y, z: cameraTargetPoint2.z };
+                tween = new TWEEN.Tween( position2 ).to( target2, animTime );
+                tween.easing( TWEEN.Easing.Quadratic.InOut );
+                //tween.delay( 50 );
+                tween.start();
+                tween.onStart(function()
+                {
+                });
+                tween.onUpdate(function()
+                {
+                    camera.lookAt( new THREE.Vector3( position2.x, position2.y, position2.z ) );
+                    cameraLookAtPoint.copy( position2 );
+                    if( earthOrbitControls ) earthOrbitControls.target.copy( new THREE.Vector3( position2.x, position2.y, position2.z ) );
+                });
+                tween.onComplete(function()
+                {
+                });
+
+                break;
+            }
+
+
+            // Point camera in location's direction
+            //
+
+            var cameraSourcePoint = camera.position.clone();
+            var cameraTargetPoint = locationMarkers.meshes[idx].position.clone().normalize();
 
             Params.CameraDistance = PX.Lerp( PX.kCameraMinDistance, PX.kCameraMaxDistance, 0.0 );
             //Params.CameraDistance *= 1.0 - ( 1.0 / PX.kZoomMaxLevel );
@@ -1120,7 +1185,7 @@ function OnMouseUp(event)
 
             var position = { x : cameraSourcePoint.x, y: cameraSourcePoint.y, z: cameraSourcePoint.z };
             var target = { x : cameraTargetPoint.x*Params.CameraDistance, y: cameraTargetPoint.y*Params.CameraDistance, z: cameraTargetPoint.z*Params.CameraDistance };
-            var tween = new TWEEN.Tween( position ).to( target, 1000 );
+            var tween = new TWEEN.Tween( position ).to( target, animTime );
             tween.easing( TWEEN.Easing.Quadratic.InOut );
             //tween.delay( 50 );
             tween.start();
@@ -1135,6 +1200,8 @@ function OnMouseUp(event)
             });
             tween.onComplete(function()
             {
+                earthOrbitControls.enabled = true;
+
                 if( zoomLevel < PX.kZoomMaxLevel )
                 {
                     //
@@ -1160,26 +1227,36 @@ function OnMouseUp(event)
                         markerCluster.setGridSize( Params.MapGridSize );
 
                         map.setZoom( zoomLevel );
-                        //doLocationsGather = true;
-                        //visibleClustersCount = 0;
 
-                        locationMarkers.doPopulation = true;
-
+                        // Recompute the markers
+                        //locationMarkers.doPopulation = true;
                     }
                 }
 
                 // Callback on cluster click
-                ClusterOnClickCallback( "GUID-25345634", touchedLocation );
+                ClusterOnClickCallback( "GUID-25345634", locationMarkers.markers[ idx ] );
 
             });
+
+            // LookAt
+            var position2 = cameraLookAtPoint.clone();
+            position2.add( camera.getWorldDirection() );
+            console.log( position2 );
+            var target2 = { x : 0, y: 0, z: 0 };
+            var tween2 = new TWEEN.Tween( position2 ).to( target2, animTime );
+            tween2.easing( TWEEN.Easing.Quadratic.InOut );
+            //tween.delay( 50 );
+            tween2.start();
+            tween2.onUpdate(function()
+            {
+                camera.lookAt( position2 );
+                cameraLookAtPoint.copy( position2 );
+                if( earthOrbitControls ) earthOrbitControls.target.copy( new THREE.Vector3( position2.x, position2.y, position2.z ) );
+            });
+
             break;
         }
     }
-
-    //doLocationsGather = true;
-    //visibleClustersCount = 0;
-    //visibleMarkersCount = 0;
-
 }
 
 function OnMouseMove(event)
@@ -1191,8 +1268,7 @@ function OnMouseMove(event)
 
 function OnMouseWheel( event )
 {
-/*
-    var distanceToCenter = ( camera.position.length() );
+/*    var distanceToCenter = ( camera.position.length() );
 
     //
     prevZoomLevel = zoomLevel;
@@ -1205,9 +1281,8 @@ function OnMouseWheel( event )
         markerCluster.setGridSize( Params.MapGridSize );
 
         map.setZoom( zoomLevel );
-        //doLocationsGather = true;
-        //visibleClustersCount = 0;
-        //visibleMarkersCount = 0;
+
+        locationMarkers.doPopulation = true;
     }
 
     Params.CameraDistance = PX.Clamp( distanceToCenter, PX.kCameraMinDistance, PX.kCameraMaxDistance );

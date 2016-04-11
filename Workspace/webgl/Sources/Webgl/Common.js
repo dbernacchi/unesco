@@ -48,7 +48,7 @@ PX =
     , kCameraFovY: 36.0
     , kCameraNearPlane: 1.0
     , kCameraFarPlane: 1000.0
-    , kCameraMinDistance: 60.0
+    , kCameraMinDistance: 75 //60.0
     , kCameraMaxDistance: 100.0
     , kGlobalTimeScale: 1.0
 
