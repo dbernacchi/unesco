@@ -140,6 +140,7 @@ var Params =
     Latitude: 38.7223
     , Longitude: 9.1393
     , MainScene: true
+    , ShowMaps: false
     , CameraDistance: 100.0
     , Art_CameraDistance: 100.0
     , AmbientIntensity: 0.00033

@@ -13,7 +13,7 @@
     display: inline-block;
     width: 200px;
     height: 150px;
-    //display: none;
+    z-index: -1000;
 }
 .preloaderBG
 {
@@ -81,8 +81,8 @@ if(!Detector.webgl)
     Detector.addGetWebGLMessage();
 }
 </script>
-<div id="glContainer"></div>
 <div id="map"></div>
+<div id="glContainer"></div>
 <div class="preloaderBG" id="preloaderBG"></div>
 <div class="preloaderFG" id="preloaderFG"></div>
 <script src="Sources/Webgl/Common.js"></script>

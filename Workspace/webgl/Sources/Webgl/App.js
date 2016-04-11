@@ -740,7 +740,7 @@ function InitStats()
     // align top-left
     g_Stats.domElement.style.position = 'absolute';
     g_Stats.domElement.style.left = '0px';
-    g_Stats.domElement.style.top = '200px';
+    g_Stats.domElement.style.top = '90%';
     document.body.appendChild( g_Stats.domElement );
 }
 
@@ -763,6 +763,11 @@ function InitGUI()
             //LoadScene( "data/models/06_Mihrab_of_the_Mosque_Al_Hasan/Mihrab of the mosque al Hasan.gltf", artefactScene );
             tempIsLoaded = true;
         }
+    });
+    g_GUI.add( Params, 'ShowMaps' ).onChange( function( newValue ) 
+    {
+        var maps = $("#map");
+        maps.css( "z-index", newValue?1000:-1000 );
     });
     g_GUI.addFolder( "Earth Shading" );
     g_GUI.add( Params, "AmbientIntensity" ).min(0.0);
