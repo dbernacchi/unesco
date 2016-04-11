@@ -48,7 +48,7 @@ PX =
     , kCameraFovY: 36.0
     , kCameraNearPlane: 1.0
     , kCameraFarPlane: 1000.0
-    , kCameraMinDistance: 75 //60.0
+    , kCameraMinDistance: 65 //60.0
     , kCameraMaxDistance: 100.0
     , kGlobalTimeScale: 1.0
 
@@ -156,9 +156,9 @@ var Params =
     , HalfLambertPower: 2.0
     , RimAngle: 0.4
     , DiffuseRimIntensity: 0.25
-    , LightDirX: 0.15
+    , LightDirX: 0.5
     , LightDirY: 1.0
-    , LightDirZ: 0.6
+    , LightDirZ: -0.2
     , MapGridSize: PX.kMaxGridSize
     , Latitude: 0.0
     , Longitude: 0.0

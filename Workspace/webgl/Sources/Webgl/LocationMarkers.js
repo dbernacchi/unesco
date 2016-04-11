@@ -77,6 +77,7 @@ UG.LocationMarkers.prototype =
 	        var lm = new UG.LocationMarker();
 	        lm.text = "";
 	        lm.position.copy( locations[i].position );
+            lm.clicks = 0;
 	        this.markers.push( lm );
 
 	        this.locationsGroup.add( mesh );
@@ -102,7 +103,8 @@ UG.LocationMarkers.prototype =
         for( var i=0; i<this.markersCount; ++i )
         {
             // restore original color
-            this.meshes[ i ].material.color.set( PX.kLocationColor );
+            if( this.markers[ i ].clicks === 0 )
+                this.meshes[ i ].material.color.set( PX.kLocationColor );
 
             // Default all locations to far far away
             this.meshes[i].position.set( 10000, 0, 0 );
@@ -166,7 +168,7 @@ UG.LocationMarkers.prototype =
             if( intersects.length > 0 )
             {
                 intersects[ 0 ].object.material.color.set( PX.kLocationMouseOverColor );
-                this.markers[ i ].clicks++;
+                //this.markers[ i ].clicks++;
                 return i;
                 //break;
             }
@@ -179,7 +181,7 @@ UG.LocationMarkers.prototype =
     , PopulateMarkers: function( markerCluster, locations )
     {
         var clusterCount = markerCluster.getTotalClusters();
-        console.log( "clusterCount:", clusterCount );
+        //console.log( "clusterCount:", clusterCount );
 
         if( clusterCount > 0 )
         {

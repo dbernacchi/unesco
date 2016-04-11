@@ -53,9 +53,9 @@ var prevZoomLevel = 0.0;
 
 var prevClickedLocationIndex = -1;
 
-var cameraTargetPoint = null;
-var cameraSourcePoint = null;
 var cameraLookAtPoint = null;
+
+var worldRotationOnLocClick = new THREE.Quaternion();
 
 var earthOrbitControls = null;
 
@@ -122,7 +122,7 @@ $(window).focus(function(e)
 
 var ClusterOnClickCallback = function( uuid, object )
 {
-    console.log( uuid, object);
+    //console.log( uuid, object);
 };
 
 THREE.DefaultLoadingManager.onProgress = function( item, loaded, total )
@@ -485,8 +485,11 @@ function InitMarkerCluster()
     {
         zoom: 0,
         center: center,
-        mapTypeId: google.maps.MapTypeId.HYBRID
+        disableDefaultUI: true,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+        //mapTypeId: google.maps.MapTypeId.HYBRID
     });
+    map.mapTypeControl = false;
 
     /*var bounds = new google.maps.LatLngBounds();
     for (var i = 0; i < locations.length; i++) 
@@ -908,7 +911,11 @@ function Update( time, frameTime )
         // Check to see if any tree was hit
         //
 
-//        var markerIndex = locationMarkers.Intersects( g_Raycaster );
+        var markerIndex = locationMarkers.Intersects( g_Raycaster );
+        /*if( markerIndex )
+        {
+            locationMarkers.meshes[ markerIndex ].material.color.set( PX.kLocationMouseOverColor );
+        }*/
 
 /*
 
@@ -966,11 +973,12 @@ function Update( time, frameTime )
     //var nowDate = new Date();
     //var sunLatLon = SunCalc.getPositionLatLon( nowDate, 0, 0 );
     //var ppp = PX.Utils.FromLatLon( PX.ToDegrees(sunLatLon.lat), PX.ToDegrees(sunLatLon.lon), PX.kEarthScale, 0.0 );
-    var ppp = new THREE.Vector3( 0.5, 1.0, -0.2 );
+    var ppp = new THREE.Vector3( Params.LightDirX, Params.LightDirY, Params.LightDirZ );
+    /*var ppp = new THREE.Vector3( 0.5, 1.0, -0.2 );
     ppp = ppp.normalize();
     Params.LightDirX = ppp.x;
     Params.LightDirY = ppp.y;
-    Params.LightDirZ = ppp.z;
+    Params.LightDirZ = ppp.z;*/
     if( sunLight ) sunLight.position.set( ppp.x, ppp.y, ppp.z );
 
     // Fade in
@@ -1106,9 +1114,11 @@ function OnMouseUp(event)
         var idx = locationMarkers.Intersects( g_Raycaster );
         if( idx )
         {
+            locationMarkers.markers[ idx ].clicks++;
+
             var sameLoc = ( prevClickedLocationIndex === idx ) ? true: false;
 
-            if( prevClickedLocationIndex !== -1 && !sameLoc )
+            if( !sameLoc && prevClickedLocationIndex !== -1 )
             {
                 locationMarkers.markers[prevClickedLocationIndex].clicks = 0;
             }
@@ -1116,6 +1126,10 @@ function OnMouseUp(event)
             {
                 locationMarkers.markers[idx].clicks = 1;
             }
+            /*if( !sameLoc && locationMarkers.markers[idx].clicks > 0 )
+            {
+                locationMarkers.markers[idx].clicks = 0;
+            }*/
 
             //
             prevClickedLocationIndex = idx;
@@ -1126,7 +1140,21 @@ function OnMouseUp(event)
                 var dir0 = locationMarkers.meshes[idx].position.clone().normalize();
                 var right = new THREE.Vector3();
                 right.crossVectors( PX.YAxis, dir0 );
-                right.multiplyScalar( PX.kEarthScale );
+                right.multiplyScalar( PX.kEarthScale * 1.5 );
+
+
+                var positionw = { x: 0 };
+                var targetw = { x: 1 };
+                var tweenw = new TWEEN.Tween( positionw ).to( targetw, animTime );
+                tweenw.easing( TWEEN.Easing.Quadratic.InOut );
+                tweenw.start();
+                tweenw.onUpdate(function()
+                {
+                    var start = new THREE.Quaternion().setFromAxisAngle( PX.YAxis, 0 );
+                    var end = new THREE.Quaternion().setFromAxisAngle( PX.YAxis, PX.ToRadians(45) );
+                    THREE.Quaternion.slerp( start, end, earth.mesh.quaternion, positionw.x );
+                    THREE.Quaternion.slerp( start, end, locationMarkers.locationsGroup.quaternion, positionw.x );
+                });
 
 
                 //Params.CameraDistance = PX.Lerp( PX.kCameraMinDistance, PX.kCameraMaxDistance, 0.0 );
@@ -1180,6 +1208,18 @@ function OnMouseUp(event)
 
             // Point camera in location's direction
             //
+
+                var positionw = { x: 0, y: earth.mesh.rotation.y, z: 0 };
+                var targetw = { x: 0, y: 0, z: 0 };
+                var tweenw = new TWEEN.Tween( positionw ).to( targetw, animTime );
+                tweenw.easing( TWEEN.Easing.Quadratic.InOut );
+                tweenw.start();
+                tweenw.onUpdate(function()
+                {
+                    earth.mesh.rotation.y = positionw.y;
+                    locationMarkers.locationsGroup.rotation.y = positionw.y;
+                });
+
 
             var cameraSourcePoint = camera.position.clone();
             var cameraTargetPoint = locationMarkers.meshes[idx].position.clone().normalize();
@@ -1240,13 +1280,12 @@ function OnMouseUp(event)
 
                 // Callback on cluster click
                 ClusterOnClickCallback( "GUID-25345634", locationMarkers.markers[ idx ] );
-
             });
 
             // LookAt
             var position2 = cameraLookAtPoint.clone();
             position2.add( camera.getWorldDirection() );
-            console.log( position2 );
+            //console.log( position2 );
             var target2 = { x : 0, y: 0, z: 0 };
             var tween2 = new TWEEN.Tween( position2 ).to( target2, animTime );
             tween2.easing( TWEEN.Easing.Quadratic.InOut );
