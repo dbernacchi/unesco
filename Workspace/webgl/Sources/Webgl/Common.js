@@ -7,14 +7,17 @@ var PX = {};
 // Precision timer
 //
 var timeNow;
-var startTime;
-if (this.performance && performance.now) {
-    timeNow = function () {
+if (this.performance && performance.now) 
+{
+    timeNow = function () 
+    {
         return performance.now() * 0.001;
     };
 }
-else {
-    timeNow = function () {
+else 
+{
+    timeNow = function () 
+    {
         return Date.now() * 0.001;
     };
 }
@@ -29,6 +32,23 @@ PX =
 
     AssetsDatabase: []
 
+
+    // App Params
+    //
+    //, AppStates:
+    //{
+    , AppStateUnknown:             -1
+    , AppStateEntry:                0
+    , AppStateEntryToIntro:         1
+    , AppStateIntro:                2
+    , AppStateIntroToLevel0:        3
+    , AppStateLevel0:               4
+    , AppStateLevel0ToLevel1:       5
+    , AppStateLevel1:               6
+    //}
+
+    , AppState: PX.AppStateUnknown
+
     // Constants
     //
     , EPSILON: 0.001
@@ -38,14 +58,14 @@ PX =
     , kEarthScale: 30.0
     , kEarthDetail: 50
     , kMarkerOffsetFromEarthSurface: 0.0
-    , kLocationMarkerScale: 0.65
+    , kLocationMarkerScale: 0.7
     , kLocationMarkerDetail: 16
     , kLocationMarkerZScale: 0.125
     , kAvoidanceSpeed: 0.031
     //, kAvoidanceSpeed: 6.0
     , kMaxGridSize: 4
     , kLocationTextSize: 120.0
-    , kLocationColor: 0x000055
+    , kLocationColor: 0x000015
     , kLocationColors: [ 0x000055, 0x0000ff, 0xffffff ]
     , kLocationMouseOverColor: 0xff00ff
     , kLocationMouseClickedColor: 0xff7f00
@@ -54,7 +74,7 @@ PX =
     , kCameraNearPlane: 1.0
     , kCameraFarPlane: 200.0
     , kCameraMinDistance: 50 //60.0
-    , kCameraMaxDistance: 100.0
+    , kCameraMaxDistance: 120.0
     //, kGlobalTimeScale: 1.0
 
     , kZoomMaxLevel: 3.0
@@ -166,8 +186,8 @@ var Params =
     , WindowHeight: 0
     , MainScene: true
     , ShowMaps: false
-    , CameraDistance: 100.0
-    , Level0MarkerRadius: 35.0
+    , CameraDistance: PX.kCameraMaxDistance
+    , Level0MarkerRadius: 30.0
     , AnimTime: 2.0
     , Art_CameraDistance: 100.0
     , AmbientIntensity: 0.00033

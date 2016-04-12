@@ -689,8 +689,20 @@ function Setup()
         //locationsIntroAnimDone = true;
     });*/
 
+    //PX.AppState = PX.AppStateEntry;
 
-    locationMarkers.TweenLevel0( 1, 1.0 * 1000.0, 3.5 * 1000.0, null );
+/*    locationMarkers.TweenLevel0( 1, 1.0 * 1000.0, 3.5 * 1000.0
+    , function()
+    {
+        PX.AppState = PX.AppStateIntroToLevel0;
+    }
+    , function()
+    {
+        PX.AppState = PX.AppStateLevel0;
+    });*/
+
+    // Set App state
+    PX.AppState = PX.AppStateEntry;
 
 
     //
@@ -835,7 +847,7 @@ function Update( time, frameTime )
 
 
         //
-        if( !earthOrbitControls && locationsIntroAnimDone )
+        if( !earthOrbitControls && locationsIntroAnimDone && PX.AppState >= PX.AppStateLevel0 )
         {
             earthOrbitControls = new THREE.OrbitControls( camera, renderer.domElement );
             earthOrbitControls.enableDamping = true;

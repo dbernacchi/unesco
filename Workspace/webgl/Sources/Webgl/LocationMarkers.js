@@ -54,6 +54,8 @@ UG.LocationMarkers = function()
     //var tween = null;
 
     this.avoidanceCount = 0;
+
+    this.state = 0;
 };
 
 UG.LocationMarkers.prototype =
@@ -122,10 +124,10 @@ UG.LocationMarkers.prototype =
 	    scene.add( this.locationsGroup );
 
 
-        this.billboardMaterial = new THREE.PointsMaterial( { size: Params.Level0MarkerRadius, sizeAttenuation: false, color: 0xffffff, opacity: 0.75, map: PX.AssetsDatabase[ "Circle" ], transparent: true } );
+        this.billboardMaterial = new THREE.PointsMaterial( { size: Params.Level0MarkerRadius, sizeAttenuation: false, color: 0xffffff, opacity: 0.8, map: PX.AssetsDatabase[ "Circle" ], transparent: true } );
         this.billboardMaterial.vertexColors = THREE.VertexColors;
-        this.billboardMaterial.depthTest = false;
-        this.billboardMaterial.depthWrite = false;
+        //this.billboardMaterial.depthTest = false;
+        //this.billboardMaterial.depthWrite = false;
         this.billboardGeometry = new THREE.BufferGeometry();
 
 		var positions = new Float32Array( locations.length * 3 );
@@ -184,22 +186,26 @@ UG.LocationMarkers.prototype =
     }
 
 
-    , TweenLevel0: function( targetValue, time, delay, onCompleteCallback )
+    , TweenLevel0: function( targetValue, time, delay, onStartCB, onCompleteCB )
     {
         var target = { x : targetValue, y: targetValue, z: targetValue };
         var tween = new TWEEN.Tween( this.billboardsGroup.scale ).to( target, time );
         tween.easing( TWEEN.Easing.Quintic.InOut );
         tween.delay( (delay === undefined ) ? 0 : delay );
         tween.start();
+        tween.onStart( function()
+        {
+            if( onStartCB ) onStartCB();
+        });
         tween.onComplete( function()
         {
             locationsIntroAnimDone = true;
 
-            if( onCompleteCallback ) onCompleteCallback();
+            if( onCompleteCB ) onCompleteCB();
         });
     }
 
-    , TweenLevel1: function( targetValue, time, delay, onCompleteCallback )
+    , TweenLevel1: function( targetValue, time, delay, onStartCB, onCompleteCB )
     {
         //this.locationsGroup.scale.set( 1, 1, 1 );
         var target = { x : targetValue, y: targetValue, z: targetValue };
@@ -207,9 +213,13 @@ UG.LocationMarkers.prototype =
         tween.easing( TWEEN.Easing.Quintic.InOut );
         tween.delay( (delay === undefined ) ? 0 : delay );
         tween.start();
+        tween.onStart( function()
+        {
+            if( onStartCB ) onStartCB();
+        });
         tween.onComplete( function()
         {
-            if( onCompleteCallback ) onCompleteCallback();
+            if( onCompleteCB ) onCompleteCB();
         });
     }
 
@@ -227,36 +237,50 @@ UG.LocationMarkers.prototype =
 
         //console.log( this.avoidanceCount );
 
-        if( this.zoomLevel === 0 )
+        switch( PX.AppState )
         {
-            for( var i=0; i<this.markersCount; ++i )
+            case PX.AppStateIntro:
             {
-		        this.geomPositionArray[i*3+0] = 10000;
-		        this.geomPositionArray[i*3+1] = 0;
-		        this.geomPositionArray[i*3+2] = 0;
+                //this.UpdateLevel0( time, frameTime, camera );
+                break;
             }
-
-            this.UpdateLevel0( time, frameTime, camera );
-        }
-        else
-        {
-            //
-            for( var i=0; i<this.meshes.length; ++i )
+            case PX.AppStateIntroToLevel0:
             {
-                // restore original color
-                /*if( this.markers[ i ].clicks === 0 )
+                this.UpdateLevel0( time, frameTime, camera );
+                break;
+            }
+            case PX.AppStateLevel0:
+            {
+                for( var i=0; i<this.markersCount; ++i )
                 {
-                    this.meshes[ i ].material.color.copy( this.markers[i].color );
-                }*/
+		            this.geomPositionArray[i*3+0] = 10000;
+		            this.geomPositionArray[i*3+1] = 0;
+		            this.geomPositionArray[i*3+2] = 0;
+                }
 
-                // Default all locations to far far away
-                this.meshes[i].position.set( 10000, 0, 0 );
-	   	    }
+                this.UpdateLevel0( time, frameTime, camera );
+                break;
+            }
+            case PX.AppStateLevel0ToLevel1:
+            {
+                this.UpdateLevel0( time, frameTime, camera );
+                this.UpdateLevel1( time, frameTime, camera );
+                break;
+            }
+            case PX.AppStateLevel1:
+            {
+                for( var i=0; i<this.meshes.length; ++i )
+                {
+                    // Default all locations to far far away
+                    this.meshes[i].position.set( 10000, 0, 0 );
+	   	        }
 
-            this.UpdateLevel1( time, frameTime, camera );
+                this.UpdateLevel1( time, frameTime, camera );
+                break;
+            }
+            default:
+                break;
         }
-
-        //console.log( this.zoomLevel );
     }
 
 
@@ -332,7 +356,7 @@ UG.LocationMarkers.prototype =
 		        this.geomPositionArray[i*3+1] = pp.y;
 		        this.geomPositionArray[i*3+2] = 0;
 
-                this.textRenderer2.AppendText2D( loc.text, pp, 9, this.billboardsGroup.scale.x, true );
+                this.textRenderer2.AppendText2D( loc.text, pp, 8.5, this.billboardsGroup.scale.x, true );
             }
             else
             {
@@ -429,6 +453,11 @@ UG.LocationMarkers.prototype =
         if( this.doPopulation )
             return;
 
+        for( var i=0; i<this.markersCount; ++i )
+        {
+            this.meshes[ i ].material.color.copy( this.markers[ i ].color );
+        }
+
         // Intersection test per mesh
         for( var i=0; i<this.markersCount; ++i )
         {
@@ -438,10 +467,6 @@ UG.LocationMarkers.prototype =
                 //console.log( intersects );
                 intersects[ 0 ].object.material.color.set( PX.kLocationMouseOverColor );
                 return i;
-            }
-            else
-            {
-                this.meshes[ i ].material.color.copy( this.markers[ i ].color );
             }
         }
 
@@ -456,6 +481,15 @@ UG.LocationMarkers.prototype =
 
         var c0 = new THREE.Color( PX.kLocationColor );
         var c1 = new THREE.Color( PX.kLocationMouseOverColor );
+
+        for( var i=0; i<this.markersCount; ++i )
+        {
+            var loc = this.markers[ i ];
+
+		    this.geomColorArray[ i*3+0 ] = c0.r;
+            this.geomColorArray[ i*3+1 ] = c0.g;
+            this.geomColorArray[ i*3+2 ] = c0.b;
+        }
 
         // Intersection test per mesh
         var hr = Params.Level0MarkerRadius * 0.5;
@@ -477,13 +511,6 @@ UG.LocationMarkers.prototype =
                 this.geomColorArray[ i*3+2 ] = c1.b;
                 return loc.index;
             }
-            else
-            {
-		        //this.billboardGeometry.attribute.colors[ i ].setHex( PX.kLocationColor );
-		        this.geomColorArray[ i*3+0 ] = c0.r;
-                this.geomColorArray[ i*3+1 ] = c0.g;
-                this.geomColorArray[ i*3+2 ] = c0.b;
-            }
         }
 
         return -1;
@@ -493,7 +520,7 @@ UG.LocationMarkers.prototype =
     {
         var scope = this;
 
-        if( this.zoomLevel === 0 )
+        if( this.zoomLevel === 0 && PX.AppState == PX.AppStateLevel0 )
         {
             var index = this.IntersectsLevel0( mouse3d );
             if( index < 0 )
@@ -502,9 +529,12 @@ UG.LocationMarkers.prototype =
                 return;
             }
 
+            // Change app state
+            PX.AppState = PX.AppStateLevel0ToLevel1;
+
             scope.doAvoidance = true;
 
-            this.TweenLevel0( PX.EPSILON, Params.AnimTime * 0.2 * 1000.0, Params.AnimTime * 0.8 * 1000.0, function()
+            this.TweenLevel0( PX.EPSILON, Params.AnimTime * 0.2 * 1000.0, Params.AnimTime * 0.8 * 1000.0, null, function()
             {
                 //scope.doAvoidance = false;
             });
@@ -538,8 +568,11 @@ UG.LocationMarkers.prototype =
                 scope.doPopulation = true;
                 scope.doAvoidance = true;
 
-                scope.TweenLevel1( 1.0, Params.AnimTime * 1000.0, 0 * 1000.0, function()
+                scope.TweenLevel1( 1.0, Params.AnimTime * 1000.0, 0 * 1000.0, null, function()
                 {
+                    // Change app state
+                    PX.AppState = PX.AppStateLevel1;
+
                     //scope.doAvoidance = false;
                 });
             });
@@ -572,7 +605,7 @@ UG.LocationMarkers.prototype =
 
 
             // ROTATE EARTH
-            var positionw = { x: 0 };
+            /*var positionw = { x: 0 };
             var targetw = { x: 1 };
             var tweenw = new TWEEN.Tween( positionw ).to( targetw, Params.AnimTime * 1000.0 );
             tweenw.easing( TWEEN.Easing.Quadratic.InOut );
@@ -583,7 +616,7 @@ UG.LocationMarkers.prototype =
                 var end = new THREE.Quaternion().setFromAxisAngle( PX.YAxis, PX.ToRadians(45) );
                 THREE.Quaternion.slerp( start, end, earth.mesh.quaternion, positionw.x );
                 THREE.Quaternion.slerp( start, end, scope.locationsGroup.quaternion, positionw.x );
-            });
+            });*/
 
 
             // CAMERA POSITION

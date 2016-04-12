@@ -115,6 +115,10 @@ UG.Earth.prototype =
         tween.easing( TWEEN.Easing.Sinusoidal.InOut );
         tween.delay( 2000 );
         tween.start();
+        tween.onComplete( function()
+        {
+            PX.AppState = PX.AppStateEntry;
+        });
     }
 
     , Update: function( time, frameTime, camera )
@@ -132,6 +136,16 @@ UG.Earth.prototype =
         this.uniforms.Params2.value.set( Params.EarthRoughness, Params.HalfLambertPower, Params.RimAngle, Params.DiffuseRimIntensity );
         this.uniforms.ViewPosition.value = camera.position;
         this.uniforms.LightDirection.value.set( -Params.LightDirX, -Params.LightDirY, -Params.LightDirZ );
+
+
+        // While in Entry point, globe is slowly rotating
+        if( PX.AppState === PX.AppStateEntry )
+        {
+            var quaty = new THREE.Quaternion();
+            quaty.setFromAxisAngle( new THREE.Vector3( 0, 1, 0 ), PX.ToRadians( time * 12.0 ) );
+            this.mesh.quaternion.copy( quaty );
+            this.worldMatrix.makeRotationFromQuaternion( this.mesh.quaternion );
+        }
     }
 
     , UpdateRotation: function( angleX, angleY )
