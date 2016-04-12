@@ -844,9 +844,8 @@ function Update( time, frameTime )
         g_Raycaster.setFromCamera( mouseVector, camera );
 
         //
-/*        if( !earthOrbitControls && locationsIntroAnimDone )
+        if( !earthOrbitControls && locationsIntroAnimDone )
         {
-            console.log( "orbit" );
             earthOrbitControls = new THREE.OrbitControls( camera, renderer.domElement );
             earthOrbitControls.enableDamping = true;
             earthOrbitControls.dampingFactor = 0.1;
@@ -866,19 +865,22 @@ function Update( time, frameTime )
             var camPos = PX.Utils.FromLatLon( PX.StartLatLon.x, PX.StartLatLon.y, Params.CameraDistance, 0.0 );
             camera.position.set( camPos.x, camPos.y, camPos.z );
             camera.lookAt( PX.ZeroVector );
-        }*/
+        }
 
         // Step earth rotation
         //
-        /*if( earthOrbitControls 
+        if( earthOrbitControls 
             && ( PX.AppState === PX.AppStateLevel0 || PX.AppState === PX.AppStateLevel1 ) 
             )
         {
-            var rotSpeed = PX.Saturate( Params.CameraDistance / PX.kCameraMaxDistance );
-            earthOrbitControls.rotateSpeed = ( ( rotSpeed ) + 0.1 ) * 0.05;
+            if( earthOrbitControls.enabled )
+            {
+                var rotSpeed = PX.Saturate( Params.CameraDistance / PX.kCameraMaxDistance );
+                earthOrbitControls.rotateSpeed = ( ( rotSpeed ) + 0.1 ) * 0.05;
 
-            earthOrbitControls.update();
-        }*/
+                //earthOrbitControls.update();
+            }
+        }
 
 
         if( currentTime >= 5.0 )
@@ -900,7 +902,6 @@ function Update( time, frameTime )
                 });
             }
         }
-
 
 /**        if( isMouseDown )
         {
@@ -932,6 +933,7 @@ function Update( time, frameTime )
 
         // Avoidance
         locationMarkers.MarkerAvoidance( markerCluster, frameTime );
+
         //
         locationMarkers.Update( currentTime, frameTime, camera );
 
@@ -977,12 +979,6 @@ function Update( time, frameTime )
 
         // Update Tween
         TWEEN.update();
-
-
-        // Camera
-        //
-        //if( !earthOrbitControls )
-            //camera.position.z = Params.CameraDistance;
     }
 
 
@@ -1340,13 +1336,20 @@ function OnMouseMove(event)
     mouseX = event.clientX;
     mouseY = event.clientY;
 
-    if( ( PX.AppState === PX.AppStateLevel0 ) )
+    switch( PX.AppState )
     {
-        var markerIndex = locationMarkers.IntersectsLevel0( mouseVector3d );
-    }
-    else if( ( PX.AppState === PX.AppStateLevel1 ) )
-    {
-        var markerIndex = locationMarkers.IntersectsLevel1( g_Raycaster );
+        case PX.AppStateLevel0:
+        {
+            var markerIndex = locationMarkers.IntersectsLevel0( mouseVector3d );
+            break;
+        }
+        case PX.AppStateLevel1:
+        {
+            var markerIndex = locationMarkers.IntersectsLevel1( g_Raycaster );
+            break;
+        }
+        default:
+            break;
     }
 }
 

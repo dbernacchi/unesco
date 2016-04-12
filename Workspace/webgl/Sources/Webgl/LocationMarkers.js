@@ -612,7 +612,11 @@ UG.LocationMarkers.prototype =
                 return;
             }
 
-            if( earthOrbitControls ) earthOrbitControls.enabled = false;
+            if( earthOrbitControls ) 
+            {
+                earthOrbitControls.enabled = false;
+                //earthOrbitControls.update();
+            }
 
             // Change State
             PX.AppState = PX.AppStateLevel1ToLevel2;
@@ -657,7 +661,7 @@ UG.LocationMarkers.prototype =
                 //cameraLookAtPoint.copy( position2 );
                 /*if( earthOrbitControls )
                 {
-                    earthOrbitControls.target.copy( new THREE.Vector3( position2.x, position2.y, position2.z ) );
+                    earthOrbitControls.target.copy( cameraLookAtPoint );
                     earthOrbitControls.enabled = false;
                     earthOrbitControls.update();
                 }*/
@@ -690,33 +694,17 @@ UG.LocationMarkers.prototype =
         else if( this.zoomLevel === 1 && PX.AppState == PX.AppStateLevel2 )
         {
             var intersects = g_Raycaster.intersectObject( earth.mesh, false );
-            console.log( "PX.AppStateLevel2", intersects );
+            //console.log( "PX.AppStateLevel2", intersects );
             if( ! intersects.length )
             {
                 return;
             }
 
             var index = 0;
-/*
-            var index = this.IntersectsLevel1( g_Raycaster );
-            if( index < 0 )
-            {
-                return;
-            }*/
-
-            //if( earthOrbitControls ) earthOrbitControls.enabled = false;
 
             // Change State
-            console.log( "PX.AppStateLevel2ToLevel1" );
+            //console.log( "PX.AppStateLevel2ToLevel1" );
             PX.AppState = PX.AppStateLevel2ToLevel1;
-
-
-            // Compute right vector
-            var dir0 = this.meshes[ index ].position.clone().normalize();
-            var right = new THREE.Vector3();
-            right.crossVectors( PX.YAxis, dir0 );
-            right.normalize();
-            right.multiplyScalar( PX.kEarthScale * 1.1 );
 
 
             // CAMERA POSITION
@@ -724,14 +712,18 @@ UG.LocationMarkers.prototype =
             var tween = new TWEEN.Tween( camera.position ).to( target, Params.AnimTime * 1000.0 );
             tween.easing( TWEEN.Easing.Quadratic.InOut );
             tween.start();
-            tween.onComplete(function()
+            /*tween.onComplete(function()
             {
-                if( earthOrbitControls ) earthOrbitControls.enabled = true;
-            });
+                if( earthOrbitControls ) 
+                {
+                    earthOrbitControls.state = -1;
+                    earthOrbitControls.enabled = true;
+		            earthOrbitControls.dispatchEvent( changeEvent );
+                    earthOrbitControls.update();
+                }
+            });*/
 
             // CAMERA LOOKAT
-            var cameraTargetPoint2 = cameraLookAtPoint.clone().add( right );
-            //var position2 = { x : cameraLookAtPoint.x, y: cameraLookAtPoint.y, z: cameraLookAtPoint.z };
             var target2 = { x : 0, y: 0, z: 0 };
             tween = new TWEEN.Tween( cameraLookAtPoint ).to( target2, Params.AnimTime * 1000.0 );
             tween.easing( TWEEN.Easing.Quadratic.InOut );
@@ -740,14 +732,13 @@ UG.LocationMarkers.prototype =
             tween.onUpdate(function()
             {
                 camera.lookAt( cameraLookAtPoint );
-                //camera.lookAt( new THREE.Vector3( position2.x, position2.y, position2.z ) );
-                //cameraLookAtPoint.copy( position2 );
-                /*if( earthOrbitControls )
+                if( earthOrbitControls )
                 {
-                    earthOrbitControls.target.copy( new THREE.Vector3( position2.x, position2.y, position2.z ) );
-                    earthOrbitControls.enabled = false;
+                    earthOrbitControls.enabled = true;
+                    earthOrbitControls.target.copy( cameraLookAtPoint );
+                    earthOrbitControls.state = -1;
                     earthOrbitControls.update();
-                }*/
+                }
             });
 
             // ROTATE EARTH
