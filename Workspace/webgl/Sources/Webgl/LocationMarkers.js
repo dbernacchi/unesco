@@ -41,6 +41,8 @@ UG.LocationMarkers = function()
 
     this.billboardMaterial = null;
     this.billboardGeometry = null;
+    this.geomPositionArray = null;
+    this.geomColorArray = null;
     this.billboards = null;
     this.billboardsGroup = null;
 
@@ -119,19 +121,38 @@ UG.LocationMarkers.prototype =
         this.billboardMaterial.vertexColors = THREE.VertexColors;
         this.billboardMaterial.depthTest = false;
         this.billboardMaterial.depthWrite = false;
-        this.billboardGeometry = new THREE.Geometry();
+        this.billboardGeometry = new THREE.BufferGeometry();
+
+		var positions = new Float32Array( locations.length * 3 );
+		var colors = new Float32Array( locations.length * 3 );
+
+        var commonColor = new THREE.Color( 0x000055 );
         for( var i=0; i<locations.length; ++i )
         {
 		    var vertex = new THREE.Vector3();
             vertex.x = locations[i].position.x;
             vertex.y = locations[i].position.y;
             vertex.z = locations[i].position.z;
-		    this.billboardGeometry.vertices.push( vertex );
-		    this.billboardGeometry.colors.push( new THREE.Color( 0x000055 ) );
+
+            positions[ i*3+0] = vertex.x;
+            positions[ i*3+1] = vertex.y;
+            positions[ i*3+2] = vertex.z;
+            colors[ i*3+0] = commonColor.r;
+            colors[ i*3+1] = commonColor.g;
+            colors[ i*3+2] = commonColor.b;
+		    //this.billboardGeometry.vertices.push( vertex );
+		    //this.billboardGeometry.colors.push( new THREE.Color( 0x000055 ) );
 	    }
+		this.billboardGeometry.addAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );
+		//this.billboardGeometry.addAttribute( 'size', new THREE.BufferAttribute( sizes, 1 ) );
+		this.billboardGeometry.addAttribute( 'color', new THREE.BufferAttribute( colors, 3 ) );
+
+        this.billboardGeometry.dynamic = true;
+        this.geomPositionArray = this.billboardGeometry.attributes.position.array;
+        this.geomColorArray = this.billboardGeometry.attributes.color.array;
+
 	    this.billboards = new THREE.Points( this.billboardGeometry, this.billboardMaterial );
         this.billboards.frustumCulled = false;
-        //this.billboards.dynamic = true;
 
         this.billboardsGroup = new THREE.Object3D();
         this.billboardsGroup.scale.set( PX.EPSILON, PX.EPSILON, PX.EPSILON );
@@ -195,7 +216,9 @@ UG.LocationMarkers.prototype =
         {
             for( var i=0; i<this.markersCount; ++i )
             {
-		        this.billboardGeometry.vertices[i].set( 10000, 0, 0 );
+		        this.geomPositionArray[i*3+0] = 10000;
+		        this.geomPositionArray[i*3+1] = 0;
+		        this.geomPositionArray[i*3+2] = 0;
             }
 
             this.UpdateLevel0( time, frameTime, camera );
@@ -288,20 +311,28 @@ UG.LocationMarkers.prototype =
                 pp.z = 0.0;
                 //console.log( pp );
 
-		        this.billboardGeometry.vertices[i].set( pp.x, pp.y, 0.0 );
+		        //this.billboardGeometry.attribute.position[i].set( pp.x, pp.y, 0.0 );
+		        this.geomPositionArray[i*3+0] = pp.x;
+		        this.geomPositionArray[i*3+1] = pp.y;
+		        this.geomPositionArray[i*3+2] = 0;
 
                 this.textRenderer2.AppendText2D( loc.text, pp, 9, this.billboardsGroup.scale.x, true );
             }
             else
             {
                 // Move far far away from view. not visible
-		        this.billboardGeometry.vertices[i].set( 10000, 0, 0.0 );
+		        //this.billboardGeometry.attribute.position[i].set( 10000, 0, 0.0 );
+		        this.geomPositionArray[i*3+0] = 10000;
+		        this.geomPositionArray[i*3+1] = 0;
+		        this.geomPositionArray[i*3+2] = 0;
             }
 	    }
 
         //
-        this.billboards.geometry.verticesNeedUpdate = true;
-        this.billboards.geometry.colorsNeedUpdate = true;
+        this.billboardGeometry.attributes.position.needsUpdate = true;
+        this.billboardGeometry.attributes.color.needsUpdate = true;
+        //this.billboards.geometry.verticesNeedUpdate = true;
+        //this.billboards.geometry.colorsNeedUpdate = true;
         //this.billboards.material.needsUpdate = true;
 
         // Text End
@@ -406,23 +437,35 @@ UG.LocationMarkers.prototype =
         if( this.doPopulation )
             return;
 
+        var c0 = new THREE.Color( PX.kLocationColor );
+        var c1 = new THREE.Color( PX.kLocationMouseOverColor );
+
         // Intersection test per mesh
         var hr = Params.Level0MarkerRadius * 0.5;
+        var vert = new THREE.Vector3();
         for( var i=0; i<this.markersCount; ++i )
         {
             var loc = this.markers[ i ];
 
-		    var vert = this.billboardGeometry.vertices[ i ].clone();
+		    vert.set( this.geomPositionArray[ i*3+0 ], 
+                      this.geomPositionArray[ i*3+1 ], 
+                      this.geomPositionArray[ i*3+2 ] );
+            //console.log( vert );
             var len = vert.sub( mouse ).lengthSq();
             if( len < (hr * hr) )
             {
                 console.log( "level0 intersect: ", i );
-		        this.billboardGeometry.colors[ i ].setHex( PX.kLocationMouseOverColor );
+		        this.geomColorArray[ i*3+0 ] = c1.r;
+                this.geomColorArray[ i*3+1 ] = c1.g;
+                this.geomColorArray[ i*3+2 ] = c1.b;
                 return loc.index;
             }
             else
             {
-		        this.billboardGeometry.colors[ i ].setHex( PX.kLocationColor );
+		        //this.billboardGeometry.attribute.colors[ i ].setHex( PX.kLocationColor );
+		        this.geomColorArray[ i*3+0 ] = c0.r;
+                this.geomColorArray[ i*3+1 ] = c0.g;
+                this.geomColorArray[ i*3+2 ] = c0.b;
             }
         }
 
@@ -540,7 +583,10 @@ UG.LocationMarkers.prototype =
             {
                 for( var i=0; i<locations.length; ++i )
                 {
-		            this.billboardGeometry.vertices[i].set( 10000, 0, 0 );
+		            //this.billboardGeometry.attribute.positions[i].set( 10000, 0, 0 );
+		            this.geomPositionArray[i*3+0] = 10000;
+		            this.geomPositionArray[i*3+1] = 0;
+		            this.geomPositionArray[i*3+2] = 0;
                 }
 
                 for( var i=0; i<clusterCount; ++i )
@@ -579,7 +625,9 @@ UG.LocationMarkers.prototype =
                 }
 
                 //
-                this.billboardGeometry.verticesNeedUpdate = true;
+                //this.billboardGeometry.verticesNeedUpdate = true;
+                this.billboardGeometry.attributes.position.needsUpdate = true;
+                this.billboardGeometry.attributes.color.needsUpdate = true;
             }
             /*else
             {
