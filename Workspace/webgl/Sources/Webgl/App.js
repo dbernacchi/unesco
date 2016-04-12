@@ -576,7 +576,7 @@ function Setup()
 
     // Composer
     //
-/*    renderMainPass = new THREE.RenderPass( scene, camera );
+    renderMainPass = new THREE.RenderPass( scene, camera );
     effectBloomPass = new THREE.BloomPass( 1, 25, 5, 1024 );
     effectCopyPass = new THREE.ShaderPass( THREE.CopyShader );
     composer = new THREE.EffectComposer( renderer );
@@ -585,7 +585,7 @@ function Setup()
     composer.addPass( effectCopyPass );
 
     effectCopyPass.uniforms.opacity.value = 0.15;
-    effectCopyPass.renderToScreen = true;*/
+    effectCopyPass.renderToScreen = true;
 
 
     // Artefact Scene
@@ -708,7 +708,7 @@ function InitStats()
     // align top-left
     g_Stats.domElement.style.position = 'absolute';
     g_Stats.domElement.style.left = '0px';
-    g_Stats.domElement.style.top = '90%';
+    g_Stats.domElement.style.top = '30%';
     document.body.appendChild( g_Stats.domElement );
 }
 
@@ -862,10 +862,10 @@ function Update( time, frameTime )
         //
         if( earthOrbitControls )
         {
-            earthOrbitControls.update();
-
             var rotSpeed = PX.Saturate( Params.CameraDistance / PX.kCameraMaxDistance );
             earthOrbitControls.rotateSpeed = ( ( rotSpeed ) + 0.1 ) * 0.05;
+
+            earthOrbitControls.update();
         }
 
 

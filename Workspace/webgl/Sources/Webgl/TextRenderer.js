@@ -344,13 +344,13 @@ PX.TextRenderer.prototype =
     		    var letterxAdvance = letterDescriptor.xadvance * fontSizeFactor;
 		        var letteryOffset = -(letterDescriptor.yoffset);
 
-		        totalHeight += (letterDescriptor.height);
+		        totalHeight += (letterDescriptor.height) + letteryOffset;
 
                 totalWidth += letterxAdvance;
             }
 
 	        xOffset -= totalWidth * 0.5;
-            yyy = -(totalHeight / text.length) * fontSizeFactor * 0.5;
+            yyy = -(totalHeight / text.length) * fontSizeFactor; // * 0.5;
         }
 
 

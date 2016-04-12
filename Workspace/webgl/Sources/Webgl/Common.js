@@ -41,19 +41,21 @@ PX =
     , kLocationMarkerScale: 0.65
     , kLocationMarkerDetail: 16
     , kLocationMarkerZScale: 0.125
-    , kMaxGridSize: 5
+    , kAvoidanceSpeed: 0.031
+    //, kAvoidanceSpeed: 6.0
+    , kMaxGridSize: 4
     , kLocationTextSize: 120.0
     , kLocationColor: 0x000055
     , kLocationColors: [ 0x000055, 0x0000ff, 0xffffff ]
     , kLocationMouseOverColor: 0xff00ff
     , kLocationMouseClickedColor: 0xff7f00
 
-    , kCameraFovY: 35.0
+    , kCameraFovY: 36.0 //45.0
     , kCameraNearPlane: 1.0
-    , kCameraFarPlane: 1000.0
-    , kCameraMinDistance: 65 //60.0
+    , kCameraFarPlane: 200.0
+    , kCameraMinDistance: 50 //60.0
     , kCameraMaxDistance: 100.0
-    , kGlobalTimeScale: 1.0
+    //, kGlobalTimeScale: 1.0
 
     , kZoomMaxLevel: 3.0
 
@@ -170,7 +172,7 @@ var Params =
     , Art_CameraDistance: 100.0
     , AmbientIntensity: 0.00033
     , DiffuseIntensity: 2.0
-    , SpecularIntensity: 0.063
+    , SpecularIntensity: 0.07
     , NormalMapIntensity: 1.0
     , CloudsIntensity: 0.0 //0.1
     , CloudsShadowIntensity: 0.0 //0.3

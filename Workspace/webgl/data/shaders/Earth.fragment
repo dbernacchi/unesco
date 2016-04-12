@@ -369,8 +369,9 @@ void main()
 
     float4 diffuseTexel = texture( DiffuseMap, uvs );
     diffuseTexel.rgb = ToLinearApprox( diffuseTexel.rgb );
+    //float4 specularMaskTexel = float4( 1.0 );
     float4 specularMaskTexel = texture( SpecularMap, uvs );
-    float specularMask = Luminance( specularMaskTexel.rgb );
+    //specularMaskTexel.rgb = ToLinearApprox( specularMaskTexel.rgb ) + float3( Luminance( diffuseTexel.rgb ) );
     //specularMaskTexel.rgb = ToLinearApprox( specularMaskTexel.rgb );
     float4 cloudsTexel = texture( CloudsMap, texcoordClouds );
     //cloudsTexel.a = Luminance( cloudsTexel.rgb );
@@ -419,13 +420,13 @@ void main()
 
     float cloudsShadow = saturate( 1.0 - cloudsTexel2.a * CloudsShadowIntensity );
 
-    float shadow = NoLFace * cloudsShadow;
+    float shadow = NoL * cloudsShadow;
 
     float dayNightT = 1.0 - smoothstep( 0.0, NightDayMixFactor, saturate( NoLFace ) );
     //float dayNightT = 1.0 - smoothstep( 0.0, NightDayMixFactor, saturate( NoLFace ) );
 
     float3 diffuseAlbedo = diffuseTexel.rgb;
-    float3 specularAlbedo = float3( 0.8, 0.9, 1.0 );
+    const float3 specularAlbedo = float3( 1.0 );
 
     float3 ambientColor = GetIrradianceFromSH( N, SHCoeffs );
 
@@ -451,15 +452,15 @@ void main()
     // Ambient
 	//finalColor.rgb += saturate( ambientColor * AmbientIntensity ) * AO;
     // Diffuse
-    finalColor.rgb += ( diffuseColor * cloudsShadow * DiffuseIntensity ) * AO * shadow;
+    finalColor.rgb += ( diffuseColor * DiffuseIntensity ) * AO * shadow;
     // Wrap lighting
-    finalColor.rgb += float3( diffuseAlbedo * wrapDiffuse * DiffuseRimIntensity ); // * ( 1.0 - NoV);
+    //finalColor.rgb += float3( diffuseAlbedo * wrapDiffuse * DiffuseRimIntensity ); // * ( 1.0 - NoV);
     // Rim (Fresnel ) lighting
-    //finalColor.rgb += float3( float3(0.0,0.5,1.0) * fresnelTerm ) * 0.133;
+    finalColor.rgb += float3( float3(0.0,0.5,1.0) * fresnelTerm ) * 0.133;
     // Specular
     finalColor.rgb += ( specularMaskTexel.rgb * specularColor * specularOcclusion * SpecularIntensity * fresnel ) * AO * shadow;
     // Clouds
-    finalColor.rgb += ( lerp( finalColor.rgb, finalColor.rgb + ( cloudsTexel.rgb * cloudsTexel.a ), cloudsTexel.a ) * (NoLFace + (wrapDiffuse * DiffuseRimIntensity)) * CloudsIntensity );
+    //finalColor.rgb += ( lerp( finalColor.rgb, finalColor.rgb + ( cloudsTexel.rgb * cloudsTexel.a ), cloudsTexel.a ) * (NoLFace + (wrapDiffuse * DiffuseRimIntensity)) * CloudsIntensity );
     // Night Diffuse
     finalColor.rgb += nightLightsTexel.rgb * dayNightT; // * ( 1.0 - NoV);
     //finalColor.rgb = lerp( finalColor.rgb, nightLightsTexel.rgb * 1.05, dayNightT );
