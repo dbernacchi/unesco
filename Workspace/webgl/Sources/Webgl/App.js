@@ -52,16 +52,15 @@ var markerCluster;
 var zoomLevel = 0.0;
 var prevZoomLevel = 0.0;
 
-var prevClickedLocationIndex = -1;
+//var prevClickedLocationIndex = -1;
 
 var cameraLookAtPoint = null;
-
-var worldRotationOnLocClick = new THREE.Quaternion();
 
 var earthOrbitControls = null;
 
 var sunLight = null;
 var earth = null;
+var locationMarkers = null;
 
 // Raycaster
 var g_Raycaster = null;
@@ -70,7 +69,6 @@ var g_Projector = null;
 // Locations
 var locationsDB = [];
 var locationsIntroAnimDone = false;
-var locationMarkers = null;
 
 // Earth rotation
 var earthAccel = new THREE.Vector2();
@@ -84,9 +82,9 @@ var startTime = 0.0;
 var currentTime = 0.0;
 var previousTime = 0.0;
 var frameTime = 0.0;
-var frameRate = 0;
-var frameRateTimeCount = 0.0;
-var frameCount = 0;
+//var frameRate = 0;
+//var frameRateTimeCount = 0.0;
+//var frameCount = 0;
 var clock = new THREE.Clock();
 
 // Interaction
@@ -845,10 +843,10 @@ function Update( time, frameTime )
         mouseVector.y = 1.0 - 2.0 * ( mouseY / windowHeight );
         g_Raycaster.setFromCamera( mouseVector, camera );
 
-
         //
-        if( !earthOrbitControls && locationsIntroAnimDone && PX.AppState >= PX.AppStateLevel0 )
+/*        if( !earthOrbitControls && locationsIntroAnimDone )
         {
+            console.log( "orbit" );
             earthOrbitControls = new THREE.OrbitControls( camera, renderer.domElement );
             earthOrbitControls.enableDamping = true;
             earthOrbitControls.dampingFactor = 0.1;
@@ -868,16 +866,39 @@ function Update( time, frameTime )
             var camPos = PX.Utils.FromLatLon( PX.StartLatLon.x, PX.StartLatLon.y, Params.CameraDistance, 0.0 );
             camera.position.set( camPos.x, camPos.y, camPos.z );
             camera.lookAt( PX.ZeroVector );
-        }
+        }*/
 
         // Step earth rotation
         //
-        if( earthOrbitControls )
+        /*if( earthOrbitControls 
+            && ( PX.AppState === PX.AppStateLevel0 || PX.AppState === PX.AppStateLevel1 ) 
+            )
         {
             var rotSpeed = PX.Saturate( Params.CameraDistance / PX.kCameraMaxDistance );
             earthOrbitControls.rotateSpeed = ( ( rotSpeed ) + 0.1 ) * 0.05;
 
             earthOrbitControls.update();
+        }*/
+
+
+        if( currentTime >= 5.0 )
+        {
+            if( PX.AppState === PX.AppStateEntry )
+            {
+                PX.AppState = PX.AppStateIntroToLevel0;
+                earth.ResetTransform( function()
+                {
+                    locationMarkers.TweenLevel0( 1, 1.0 * 1000.0, 0.0
+                    //locationMarkers.TweenLevel0( 1, 1.0 * 1000.0, 3.5 * 1000.0
+                    , function()
+                    {
+                    }
+                    , function()
+                    {
+                        PX.AppState = PX.AppStateLevel0;
+                    });
+                });
+            }
         }
 
 

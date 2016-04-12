@@ -142,10 +142,12 @@ UG.Earth.prototype =
         if( PX.AppState === PX.AppStateEntry )
         {
             var quaty = new THREE.Quaternion();
-            quaty.setFromAxisAngle( new THREE.Vector3( 0, 1, 0 ), PX.ToRadians( time * 12.0 ) );
+            quaty.setFromAxisAngle( new THREE.Vector3( 0, 1, 0 ), PX.ToRadians( time * 6.0 ) );
             this.mesh.quaternion.copy( quaty );
-            this.worldMatrix.makeRotationFromQuaternion( this.mesh.quaternion );
         }
+
+        //
+        this.worldMatrix.makeRotationFromQuaternion( this.mesh.quaternion );
     }
 
     , UpdateRotation: function( angleX, angleY )
@@ -158,6 +160,22 @@ UG.Earth.prototype =
         this.mesh.quaternion.copy( quatx );
         //this.mesh.quaternion.multiply( quaty );
         this.worldMatrix.makeRotationFromQuaternion( this.mesh.quaternion );
+    }
+
+    , ResetTransform: function( onCompleteCB )
+    {
+        var scope = this;
+
+        var dest = new THREE.Quaternion();
+        dest.setFromAxisAngle( new THREE.Vector3( 0, 1, 0 ), PX.ToRadians( -0.0 ) );
+        var tween = new TWEEN.Tween( this.mesh.quaternion ).to( dest, 2000 );
+        tween.easing( TWEEN.Easing.Sinusoidal.InOut );
+        //tween.delay( 1000 );
+        tween.start();
+        tween.onComplete( function()
+        {
+            if( onCompleteCB ) onCompleteCB();
+        });
     }
 
 };

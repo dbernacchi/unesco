@@ -66,7 +66,7 @@ PX =
     , kMaxGridSize: 4
     , kLocationTextSize: 120.0
     , kLocationColor: 0x000015
-    , kLocationColors: [ 0x000055, 0x0000ff, 0xffffff ]
+    , kLocationColors: [ 0x000015, 0x0000ff, 0xffffff ]
     , kLocationMouseOverColor: 0xff00ff
     , kLocationMouseClickedColor: 0xff7f00
 
@@ -188,7 +188,7 @@ var Params =
     , ShowMaps: false
     , CameraDistance: PX.kCameraMaxDistance
     , Level0MarkerRadius: 30.0
-    , AnimTime: 2.0
+    , AnimTime: 1.0
     , Art_CameraDistance: 100.0
     , AmbientIntensity: 0.00033
     , DiffuseIntensity: 2.0

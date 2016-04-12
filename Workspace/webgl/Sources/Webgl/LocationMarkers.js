@@ -133,7 +133,8 @@ UG.LocationMarkers.prototype =
 		var positions = new Float32Array( locations.length * 3 );
 		var colors = new Float32Array( locations.length * 3 );
 
-        var commonColor = new THREE.Color( 0x000055 );
+        var commonColor = new THREE.Color( PX.kLocationColor );
+
         for( var i=0; i<locations.length; ++i )
         {
 		    var vertex = new THREE.Vector3();
@@ -586,10 +587,8 @@ UG.LocationMarkers.prototype =
                 camera.lookAt( cameraLookAtSourcePoint );
             });
         }
-        else
+        else if( this.zoomLevel === 1 && PX.AppState == PX.AppStateLevel1 )
         {
-
-
             var index = this.IntersectsLevel1( g_Raycaster );
             if( index < 0 )
             {
@@ -597,69 +596,73 @@ UG.LocationMarkers.prototype =
                 return;
             }
 
+            if( earthOrbitControls ) earthOrbitControls.enabled = false;
+
+
             // Compute right vector
             var dir0 = this.meshes[ index ].position.clone().normalize();
             var right = new THREE.Vector3();
             right.crossVectors( PX.YAxis, dir0 );
-            right.multiplyScalar( PX.kEarthScale * 1.5 );
-
-
-            // ROTATE EARTH
-            /*var positionw = { x: 0 };
-            var targetw = { x: 1 };
-            var tweenw = new TWEEN.Tween( positionw ).to( targetw, Params.AnimTime * 1000.0 );
-            tweenw.easing( TWEEN.Easing.Quadratic.InOut );
-            tweenw.start();
-            tweenw.onUpdate(function()
-            {
-                var start = new THREE.Quaternion().setFromAxisAngle( PX.YAxis, 0 );
-                var end = new THREE.Quaternion().setFromAxisAngle( PX.YAxis, PX.ToRadians(45) );
-                THREE.Quaternion.slerp( start, end, earth.mesh.quaternion, positionw.x );
-                THREE.Quaternion.slerp( start, end, scope.locationsGroup.quaternion, positionw.x );
-            });*/
+            right.normalize();
+            right.multiplyScalar( PX.kEarthScale * 1.1 );
 
 
             // CAMERA POSITION
-            var position = camera.position.clone();
-            var target = camera.position.clone().add( right );
-            //var target = camera.position.clone().normalize();
-            //target.y = 0.0;
-            //target.multiplyScalar( Params.CameraDistance );
-            var tween = new TWEEN.Tween( position ).to( target, Params.AnimTime * 1000.0 );
+            var target = this.meshes[ index ].position.clone().normalize().multiplyScalar( Params.CameraDistance );
+            /*var tween = new TWEEN.Tween( camera.position ).to( target, Params.AnimTime * 1000.0 );
             tween.easing( TWEEN.Easing.Quadratic.InOut );
             tween.start();
-            tween.onUpdate(function()
-            {
-                camera.position.x = position.x;
-                camera.position.y = position.y;
-                camera.position.z = position.z;
-            });
             tween.onComplete(function()
             {
-                earthOrbitControls.enabled = false;
-            });
+                if( earthOrbitControls ) earthOrbitControls.enabled = false;
+            });*/
 
+            var target2 = target.clone().add( right );
+            var tween2 = new TWEEN.Tween( camera.position ).to( target2, Params.AnimTime * 1000.0 );
+            tween2.easing( TWEEN.Easing.Quadratic.InOut );
+            tween2.start();
+            //tween.chain( tween2 );
 
             // CAMERA LOOKAT
             var cameraTargetPoint2 = cameraLookAtPoint.clone().add( right );
-            var position2 = { x : cameraLookAtPoint.x, y: cameraLookAtPoint.y, z: cameraLookAtPoint.z };
+            //var position2 = { x : cameraLookAtPoint.x, y: cameraLookAtPoint.y, z: cameraLookAtPoint.z };
             var target2 = { x : cameraTargetPoint2.x, y: cameraTargetPoint2.y, z: cameraTargetPoint2.z };
-            tween = new TWEEN.Tween( position2 ).to( target2, Params.AnimTime * 1000.0 );
+            tween = new TWEEN.Tween( cameraLookAtPoint ).to( target2, Params.AnimTime * 1000.0 );
             tween.easing( TWEEN.Easing.Quadratic.InOut );
-            //tween.delay( 50 );
+            //tween.delay( Params.AnimTime * 1000.0 );    // Delay until part 2 of the above tween
             tween.start();
             tween.onUpdate(function()
             {
-                camera.lookAt( new THREE.Vector3( position2.x, position2.y, position2.z ) );
-                cameraLookAtPoint.copy( position2 );
-                if( earthOrbitControls )
+                camera.lookAt( cameraLookAtPoint );
+                //camera.lookAt( new THREE.Vector3( position2.x, position2.y, position2.z ) );
+                //cameraLookAtPoint.copy( position2 );
+                /*if( earthOrbitControls )
                 {
                     earthOrbitControls.target.copy( new THREE.Vector3( position2.x, position2.y, position2.z ) );
                     earthOrbitControls.enabled = false;
-                    //earthOrbitControls.update();
-                }
+                    earthOrbitControls.update();
+                }*/
             });
 
+            // ROTATE EARTH
+            var v0 = camera.getWorldDirection().clone().normalize();
+            var v1 = right.clone().normalize();
+            v1 = v1.crossVectors( v1, v0 ).normalize();
+
+            var start = earth.mesh.quaternion.clone();
+            var end = new THREE.Quaternion().setFromAxisAngle( v1, PX.ToRadians(50) );
+
+            var positionw = { x: 0.0 };
+            var targetw = { x: 1.0 };
+            var tweenw = new TWEEN.Tween( positionw ).to( targetw, Params.AnimTime * 1000.0 );
+            tweenw.easing( TWEEN.Easing.Quadratic.InOut );
+            //tweenw.delay( Params.AnimTime * 1000.0 );    // Delay until part 2 of the above tween
+            tweenw.start();
+            tweenw.onUpdate(function()
+            {
+                THREE.Quaternion.slerp( start, end, earth.mesh.quaternion, positionw.x );
+                THREE.Quaternion.slerp( start, end, scope.locationsGroup.quaternion, positionw.x );
+            });
         }
     }
 
