@@ -279,6 +279,22 @@ UG.LocationMarkers.prototype =
                 this.UpdateLevel1( time, frameTime, camera );
                 break;
             }
+            case PX.AppStateLevel1ToLevel2:
+            {
+                this.UpdateLevel1( time, frameTime, camera );
+                break;
+            }
+            case PX.AppStateLevel2:
+            {
+                this.UpdateLevel1( time, frameTime, camera );
+                break;
+            }
+            case PX.AppStateLevel2ToLevel1:
+            {
+                this.UpdateLevel1( time, frameTime, camera );
+                break;
+            }
+
             default:
                 break;
         }
@@ -598,6 +614,9 @@ UG.LocationMarkers.prototype =
 
             if( earthOrbitControls ) earthOrbitControls.enabled = false;
 
+            // Change State
+            PX.AppState = PX.AppStateLevel1ToLevel2;
+
 
             // Compute right vector
             var dir0 = this.meshes[ index ].position.clone().normalize();
@@ -663,7 +682,95 @@ UG.LocationMarkers.prototype =
                 THREE.Quaternion.slerp( start, end, earth.mesh.quaternion, positionw.x );
                 THREE.Quaternion.slerp( start, end, scope.locationsGroup.quaternion, positionw.x );
             });
+            tweenw.onComplete( function()
+            {
+                PX.AppState = PX.AppStateLevel2;
+            });
         }
+        else if( this.zoomLevel === 1 && PX.AppState == PX.AppStateLevel2 )
+        {
+            var intersects = g_Raycaster.intersectObject( earth.mesh, false );
+            console.log( "PX.AppStateLevel2", intersects );
+            if( ! intersects.length )
+            {
+                return;
+            }
+
+            var index = 0;
+/*
+            var index = this.IntersectsLevel1( g_Raycaster );
+            if( index < 0 )
+            {
+                return;
+            }*/
+
+            //if( earthOrbitControls ) earthOrbitControls.enabled = false;
+
+            // Change State
+            console.log( "PX.AppStateLevel2ToLevel1" );
+            PX.AppState = PX.AppStateLevel2ToLevel1;
+
+
+            // Compute right vector
+            var dir0 = this.meshes[ index ].position.clone().normalize();
+            var right = new THREE.Vector3();
+            right.crossVectors( PX.YAxis, dir0 );
+            right.normalize();
+            right.multiplyScalar( PX.kEarthScale * 1.1 );
+
+
+            // CAMERA POSITION
+            var target = this.meshes[ index ].position.clone().normalize().multiplyScalar( Params.CameraDistance );
+            var tween = new TWEEN.Tween( camera.position ).to( target, Params.AnimTime * 1000.0 );
+            tween.easing( TWEEN.Easing.Quadratic.InOut );
+            tween.start();
+            tween.onComplete(function()
+            {
+                if( earthOrbitControls ) earthOrbitControls.enabled = true;
+            });
+
+            // CAMERA LOOKAT
+            var cameraTargetPoint2 = cameraLookAtPoint.clone().add( right );
+            //var position2 = { x : cameraLookAtPoint.x, y: cameraLookAtPoint.y, z: cameraLookAtPoint.z };
+            var target2 = { x : 0, y: 0, z: 0 };
+            tween = new TWEEN.Tween( cameraLookAtPoint ).to( target2, Params.AnimTime * 1000.0 );
+            tween.easing( TWEEN.Easing.Quadratic.InOut );
+            //tween.delay( Params.AnimTime * 1000.0 );    // Delay until part 2 of the above tween
+            tween.start();
+            tween.onUpdate(function()
+            {
+                camera.lookAt( cameraLookAtPoint );
+                //camera.lookAt( new THREE.Vector3( position2.x, position2.y, position2.z ) );
+                //cameraLookAtPoint.copy( position2 );
+                /*if( earthOrbitControls )
+                {
+                    earthOrbitControls.target.copy( new THREE.Vector3( position2.x, position2.y, position2.z ) );
+                    earthOrbitControls.enabled = false;
+                    earthOrbitControls.update();
+                }*/
+            });
+
+            // ROTATE EARTH
+            var start = earth.mesh.quaternion.clone();
+            var end = new THREE.Quaternion();
+
+            var positionw = { x: 0.0 };
+            var targetw = { x: 1.0 };
+            var tweenw = new TWEEN.Tween( positionw ).to( targetw, Params.AnimTime * 1000.0 );
+            tweenw.easing( TWEEN.Easing.Quadratic.InOut );
+            //tweenw.delay( Params.AnimTime * 1000.0 );    // Delay until part 2 of the above tween
+            tweenw.start();
+            tweenw.onUpdate(function()
+            {
+                THREE.Quaternion.slerp( start, end, earth.mesh.quaternion, positionw.x );
+                THREE.Quaternion.slerp( start, end, scope.locationsGroup.quaternion, positionw.x );
+            });
+            tweenw.onComplete( function()
+            {
+                PX.AppState = PX.AppStateLevel1;
+            });
+        }
+
     }
 
     , SetZoomLevel: function( level )
