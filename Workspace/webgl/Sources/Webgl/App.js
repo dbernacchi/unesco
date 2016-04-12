@@ -63,11 +63,6 @@ var earthOrbitControls = null;
 var sunLight = null;
 var earth = null;
 
-var billboardMaterial = null;
-var billboardGeometry = null;
-var billboardSprite = null;
-var billboards = null;
-
 // Raycaster
 var g_Raycaster = null;
 var g_Projector = null;
@@ -528,7 +523,7 @@ function Setup()
     // Setup google maps API
     InitMarkerCluster();
 
-    // Initialize GLTF Loader
+    //
     InitLoaders();
 
     //
@@ -656,43 +651,6 @@ function Setup()
     g_Raycaster = new THREE.Raycaster();
     g_Projector = new THREE.Projector();
 
-/**
-	// set factor which bitmap font tiles shall be scaled with
-    //
-	var fontSizeFactor = 1 / 64;
-
-	// set start position for first string
-    //
-	var xOffset = 40.0;
-	var yOffset = 0.0;
-    var zOffset = 30.0;
-
-    var vertexColor = 0xffffff;
-
-    billboardSprite = new THREE.TextureLoader().load( "data/textures/circle.png" );
-    billboardMaterial = new THREE.PointsMaterial( { size: 2.5, sizeAttenuation: true, map: billboardSprite, transparent: true } );
-    billboardMaterial.vertexColors = THREE.VertexColors;
-    //billboardMaterial.depthTest = false;
-    billboardMaterial.depthWrite = false;
-    billboardGeometry = new THREE.Geometry();
-
-    //var scaleOffset = 1.0 + 0.030;
-    var scaleOffset = 1.0 + 0.0025;
-    for( var i=0; i<locations.length; ++i )
-    {
-		var vertex = new THREE.Vector3();
-        vertex.x = locations[i].position.x * scaleOffset;
-        vertex.y = locations[i].position.y * scaleOffset;
-        vertex.z = locations[i].position.z * scaleOffset;
-		billboardGeometry.vertices.push( vertex );
-		billboardGeometry.colors.push( new THREE.Color( 0xffffff ) );
-	}
-
-	billboards = new THREE.Points( billboardGeometry, billboardMaterial );
-    billboards.frustumCulled = false;
-	scene.add( billboards );
-	//fgScene.add( billboards );
-**/
 
     // Events
     //
@@ -949,7 +907,7 @@ function Update( time, frameTime )
         // Check to see if any tree was hit
         //
 
-        //var markerIndex = locationMarkers.Intersects( g_Raycaster );
+        //var markerIndex = locationMarkers.IntersectsLevel1( g_Raycaster );
         //var markerIndex = locationMarkers.IntersectsLevel0( mouseVector3d );
         /*if( markerIndex >= 0 )
         {
@@ -1352,7 +1310,7 @@ function OnMouseMove(event)
     if( locationMarkers.zoomLevel === 0 )
         var markerIndex = locationMarkers.IntersectsLevel0( mouseVector3d );
     else
-        var markerIndex = locationMarkers.Intersects( g_Raycaster );
+        var markerIndex = locationMarkers.IntersectsLevel1( g_Raycaster );
 }
 
 function OnMouseWheel( event )

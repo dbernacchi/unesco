@@ -101,6 +101,7 @@ UG.LocationMarkers.prototype =
             lm.clicks = 0;
             lm.color = color;
             lm.index = i;
+            lm.type = rndIdx;
 	        this.markers.push( lm );
 
 	        this.locationsGroup.add( mesh );
@@ -171,6 +172,11 @@ UG.LocationMarkers.prototype =
 
         this.camera2d = new THREE.OrthographicCamera( 0, Params.WindowWidth, Params.WindowHeight, 0, -100, 100 );
         this.markerScene.add( this.camera2d );
+
+
+        // Init
+        this.locationsGroup.visible = false;
+
     }
 
 
@@ -266,7 +272,8 @@ UG.LocationMarkers.prototype =
             // Use distance to camera for constant size
             if( locationsIntroAnimDone ) 
             {
-                distToCamera.subVectors( camera.position, loc.position );
+                var locpos = loc.position; //.clone().applyQuaternion( earth.mesh.quaternion );
+                distToCamera.subVectors( camera.position, locpos );
                 var locationScale = distToCamera.length();
                 locationScale = ( locationScale / PX.kCameraMaxDistance );
                 loc.scale.set( locationScale, locationScale, locationScale );
@@ -364,7 +371,8 @@ UG.LocationMarkers.prototype =
             // Use distance to camera for constant size
             if( locationsIntroAnimDone ) 
             {
-                distToCamera.subVectors( camera.position, loc.position );
+                var locpos = loc.position; //.clone().applyQuaternion( earth.mesh.quaternion );
+                distToCamera.subVectors( camera.position, locpos );
                 var locationScale = distToCamera.length();
                 locationScale = ( locationScale / PX.kCameraMaxDistance );
                 loc.scale.set( locationScale, locationScale, locationScale );
@@ -407,7 +415,7 @@ UG.LocationMarkers.prototype =
     }
 
 
-    , Intersects: function( raycaster )
+    , IntersectsLevel1: function( raycaster )
     {
         if( this.doPopulation )
             return;
@@ -474,10 +482,10 @@ UG.LocationMarkers.prototype =
 
     , OnMouseUp: function( mouse3d, camera, object )
     {
+        var scope = this;
+
         if( this.zoomLevel === 0 )
         {
-            var scope = this;
-
             var index = this.IntersectsLevel0( mouse3d );
             if( index < 0 )
             {
@@ -538,14 +546,96 @@ UG.LocationMarkers.prototype =
         }
         else
         {
+
+
+            var index = this.IntersectsLevel1( g_Raycaster );
+            if( index < 0 )
+            {
+                //console.log( "no intersection", index );
+                return;
+            }
+
+            // Compute right vector
+            var dir0 = this.meshes[ index ].position.clone().normalize();
+            var right = new THREE.Vector3();
+            right.crossVectors( PX.YAxis, dir0 );
+            right.multiplyScalar( PX.kEarthScale * 1.5 );
+
+
+            // ROTATE EARTH
+            var positionw = { x: 0 };
+            var targetw = { x: 1 };
+            var tweenw = new TWEEN.Tween( positionw ).to( targetw, Params.AnimTime * 1000.0 );
+            tweenw.easing( TWEEN.Easing.Quadratic.InOut );
+            tweenw.start();
+            tweenw.onUpdate(function()
+            {
+                var start = new THREE.Quaternion().setFromAxisAngle( PX.YAxis, 0 );
+                var end = new THREE.Quaternion().setFromAxisAngle( PX.YAxis, PX.ToRadians(45) );
+                THREE.Quaternion.slerp( start, end, earth.mesh.quaternion, positionw.x );
+                THREE.Quaternion.slerp( start, end, scope.locationsGroup.quaternion, positionw.x );
+            });
+
+
+            // CAMERA POSITION
+            var position = camera.position.clone();
+            var target = camera.position.clone().add( right );
+            //var target = camera.position.clone().normalize();
+            //target.y = 0.0;
+            //target.multiplyScalar( Params.CameraDistance );
+            var tween = new TWEEN.Tween( position ).to( target, Params.AnimTime * 1000.0 );
+            tween.easing( TWEEN.Easing.Quadratic.InOut );
+            tween.start();
+            tween.onUpdate(function()
+            {
+                camera.position.x = position.x;
+                camera.position.y = position.y;
+                camera.position.z = position.z;
+            });
+            tween.onComplete(function()
+            {
+                earthOrbitControls.enabled = false;
+            });
+
+
+            // CAMERA LOOKAT
+            var cameraTargetPoint2 = cameraLookAtPoint.clone().add( right );
+            var position2 = { x : cameraLookAtPoint.x, y: cameraLookAtPoint.y, z: cameraLookAtPoint.z };
+            var target2 = { x : cameraTargetPoint2.x, y: cameraTargetPoint2.y, z: cameraTargetPoint2.z };
+            tween = new TWEEN.Tween( position2 ).to( target2, Params.AnimTime * 1000.0 );
+            tween.easing( TWEEN.Easing.Quadratic.InOut );
+            //tween.delay( 50 );
+            tween.start();
+            tween.onUpdate(function()
+            {
+                camera.lookAt( new THREE.Vector3( position2.x, position2.y, position2.z ) );
+                cameraLookAtPoint.copy( position2 );
+                if( earthOrbitControls )
+                {
+                    earthOrbitControls.target.copy( new THREE.Vector3( position2.x, position2.y, position2.z ) );
+                    earthOrbitControls.enabled = false;
+                    earthOrbitControls.update();
+                }
+            });
+
         }
     }
 
     , SetZoomLevel: function( level )
     {
         this.zoomLevel = level;
-        if( level === 1 )
+        if( level === 0 )
         {
+            // Hide level 0 stuff
+            this.billboards.visible = true;
+            this.locationsGroup.visible = false;
+        }
+        else if( level === 1 )
+        {
+            // Hide level 0 stuff
+            this.locationsGroup.visible = true;
+            this.billboards.visible = false;
+
             //console.log("zoomLevel: ", level );
             this.markerCluster.setGridSize( 0 );
             this.markerCluster.repaint();
@@ -579,78 +669,56 @@ UG.LocationMarkers.prototype =
 
             var distToCamera = new THREE.Vector3();
 
-            //if( zoomLevel < PX.kZoomMaxLevel )
+            //
+            for( var i=0; i<locations.length; ++i )
             {
-                for( var i=0; i<locations.length; ++i )
-                {
-		            //this.billboardGeometry.attribute.positions[i].set( 10000, 0, 0 );
-		            this.geomPositionArray[i*3+0] = 10000;
-		            this.geomPositionArray[i*3+1] = 0;
-		            this.geomPositionArray[i*3+2] = 0;
-                }
-
-                for( var i=0; i<clusterCount; ++i )
-                {
-                    var c = markerCluster.clusters_[i];
-                    var clusterCenter = c.getCenter();
-
-                    //console.log( i, clusterCenter.lat(), clusterCenter.lng() );
-
-                    this.markers[i].text = String( c.markers_.length );
-                    this.markers[i].latlon.set( clusterCenter.lat(), clusterCenter.lng() );
-                    this.markers[i].scale.set( PX.EPSILON, PX.EPSILON, PX.EPSILON );
-                    this.markers[i].position.copy( PX.Utils.FromLatLon( clusterCenter.lat(), clusterCenter.lng(), PX.kEarthScale, PX.kMarkerOffsetFromEarthSurface ) );
-                    this.markers[i].markerCount = c.markers_.length;
-                    this.markers[i].index = i;
-
-                    this.markersCount++;
-
-                    // Use distance to camera for constant size
-                    distToCamera.subVectors( camera.position, this.markers[i].position );
-                    var locationScale = distToCamera.length();
-                    locationScale = ( locationScale / PX.kCameraMaxDistance );
-
-                    var target = new THREE.Vector3( locationScale, locationScale, locationScale );
-                    this.markers[i].tween = new TWEEN.Tween( this.markers[i].scale ).to( target, 2000.0/clusterCount );
-                    this.markers[i].tween.easing( TWEEN.Easing.Sinusoidal.InOut );
-                    this.markers[i].tween.delay( 3000 + ((i * 2000)/clusterCount) );
-                    this.markers[i].tween.start();
-                    if( i === clusterCount-1 )
-                    {
-                        this.markers[i].tween.onComplete( function()
-                        {
-                            locationsIntroAnimDone = true;
-                        });
-                    }
-                }
-
-                //
-                //this.billboardGeometry.verticesNeedUpdate = true;
-                this.billboardGeometry.attributes.position.needsUpdate = true;
-                this.billboardGeometry.attributes.color.needsUpdate = true;
+		        //this.billboardGeometry.attribute.positions[i].set( 10000, 0, 0 );
+		        this.geomPositionArray[i*3+0] = 10000;
+		        this.geomPositionArray[i*3+1] = 0;
+		        this.geomPositionArray[i*3+2] = 0;
             }
-            /*else
+
+            //
+            for( var i=0; i<clusterCount; ++i )
             {
-                for( var i=0; i<clusterCount; ++i )
+                var c = markerCluster.clusters_[i];
+                var clusterCenter = c.getCenter();
+
+                //console.log( i, clusterCenter.lat(), clusterCenter.lng() );
+
+                this.markers[i].text = String( c.markers_.length );
+                this.markers[i].latlon.set( clusterCenter.lat(), clusterCenter.lng() );
+                this.markers[i].scale.set( PX.EPSILON, PX.EPSILON, PX.EPSILON );
+                this.markers[i].position.copy( PX.Utils.FromLatLon( clusterCenter.lat(), clusterCenter.lng(), PX.kEarthScale, PX.kMarkerOffsetFromEarthSurface ) );
+                this.markers[i].markerCount = c.markers_.length;
+                this.markers[i].index = i;
+
+                this.markersCount++;
+
+                // Use distance to camera for constant size
+                var locpos = this.markers[i].position; //.clone().applyQuaternion( earth.mesh.quaternion );
+                distToCamera.subVectors( camera.position, locpos );
+                var locationScale = distToCamera.length();
+                locationScale = ( locationScale / PX.kCameraMaxDistance );
+
+                var target = new THREE.Vector3( locationScale, locationScale, locationScale );
+                this.markers[i].tween = new TWEEN.Tween( this.markers[i].scale ).to( target, 2000.0/clusterCount );
+                this.markers[i].tween.easing( TWEEN.Easing.Sinusoidal.InOut );
+                this.markers[i].tween.delay( 3000 + ((i * 2000)/clusterCount) );
+                this.markers[i].tween.start();
+                if( i === clusterCount-1 )
                 {
-                    var c = markerCluster.clusters_[i];
-                    var clusterCenter = c.getCenter();
-
-                    for( var k=0; k<c.markers_.length; ++k )
+                    this.markers[i].tween.onComplete( function()
                     {
-                        var markerPos = c.markers_[k].getPosition();
-                        locationMarkers[ this.markersCount ].text = locations[ this.markersCount ].name;
-                        locationMarkers[ this.markersCount ].latlon.set( markerPos.lat(), markerPos.lng() );
-                        locationMarkers[ this.markersCount ].position.copy( PX.Utils.FromLatLon( markerPos.lat(), markerPos.lng(), PX.kEarthScale, PX.kMarkerOffsetFromEarthSurface ) );
-                        locationMarkers[i].markerCount = 1;
-                        this.markersCount++;
-
-                        //console.log( locationMarkers[idx].latlon, locationMarkers[idx].text );
-                    }
+                        locationsIntroAnimDone = true;
+                    });
                 }
-            }*/
+            }
 
-            //doLocationsGather = false;
+            //
+            //this.billboardGeometry.verticesNeedUpdate = true;
+            this.billboardGeometry.attributes.position.needsUpdate = true;
+            this.billboardGeometry.attributes.color.needsUpdate = true;
         }
     }
 
