@@ -1340,10 +1340,14 @@ function OnMouseMove(event)
     mouseX = event.clientX;
     mouseY = event.clientY;
 
-    if( locationMarkers.zoomLevel === 0 )
+    if( ( PX.AppState === PX.AppStateLevel0 ) )
+    {
         var markerIndex = locationMarkers.IntersectsLevel0( mouseVector3d );
-    else
+    }
+    else if( ( PX.AppState === PX.AppStateLevel1 ) )
+    {
         var markerIndex = locationMarkers.IntersectsLevel1( g_Raycaster );
+    }
 }
 
 function OnMouseWheel( event )

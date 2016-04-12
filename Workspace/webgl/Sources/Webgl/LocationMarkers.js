@@ -242,12 +242,12 @@ UG.LocationMarkers.prototype =
         {
             case PX.AppStateIntro:
             {
-                //this.UpdateLevel0( time, frameTime, camera );
+                //this.UpdateLocationCircleBillboards( time, frameTime, camera );
                 break;
             }
             case PX.AppStateIntroToLevel0:
             {
-                this.UpdateLevel0( time, frameTime, camera );
+                this.UpdateLocationCircleBillboards( time, frameTime, camera );
                 break;
             }
             case PX.AppStateLevel0:
@@ -259,13 +259,13 @@ UG.LocationMarkers.prototype =
 		            this.geomPositionArray[i*3+2] = 0;
                 }
 
-                this.UpdateLevel0( time, frameTime, camera );
+                this.UpdateLocationCircleBillboards( time, frameTime, camera );
                 break;
             }
             case PX.AppStateLevel0ToLevel1:
             {
-                this.UpdateLevel0( time, frameTime, camera );
-                this.UpdateLevel1( time, frameTime, camera );
+                this.UpdateLocationCircleBillboards( time, frameTime, camera );
+                this.UpdateLocationMeshes( time, frameTime, camera );
                 break;
             }
             case PX.AppStateLevel1:
@@ -276,22 +276,22 @@ UG.LocationMarkers.prototype =
                     this.meshes[i].position.set( 10000, 0, 0 );
 	   	        }
 
-                this.UpdateLevel1( time, frameTime, camera );
+                this.UpdateLocationMeshes( time, frameTime, camera );
                 break;
             }
             case PX.AppStateLevel1ToLevel2:
             {
-                this.UpdateLevel1( time, frameTime, camera );
+                this.UpdateLocationMeshes( time, frameTime, camera );
                 break;
             }
             case PX.AppStateLevel2:
             {
-                this.UpdateLevel1( time, frameTime, camera );
+                this.UpdateLocationMeshes( time, frameTime, camera );
                 break;
             }
             case PX.AppStateLevel2ToLevel1:
             {
-                this.UpdateLevel1( time, frameTime, camera );
+                this.UpdateLocationMeshes( time, frameTime, camera );
                 break;
             }
 
@@ -301,7 +301,7 @@ UG.LocationMarkers.prototype =
     }
 
 
-    , UpdateLevel0: function( time, frameTime, camera )
+    , UpdateLocationCircleBillboards: function( time, frameTime, camera )
     {
         if( this.doPopulation )
             return;
@@ -397,7 +397,7 @@ UG.LocationMarkers.prototype =
     }
 
 
-    , UpdateLevel1: function( time, frameTime, camera )
+    , UpdateLocationMeshes: function( time, frameTime, camera )
     {
         if( this.doPopulation )
             return;
