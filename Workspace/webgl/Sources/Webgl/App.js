@@ -23,6 +23,7 @@ var artefactSceneBSphere = null;
 var artefactOrbitControls = null;
 var tempIsLoaded = false;
 
+var camera2d = null;
 var camera = null;
 var scene = null;
 var renderer = null;
@@ -105,6 +106,7 @@ var isMouseDown = false;
 //var isMouseMoved = false;
 //var isMouseClick = false;
 var mouseVector = new THREE.Vector2();
+var mouseVector3d = new THREE.Vector3();
 
 
 $(window).unload(function(e) 
@@ -252,6 +254,7 @@ function LoadData()
         , LoadTexture( "EarthCloudsMap", "data/textures/earth_clouds.png" )
         //, LoadTexture( "EarthCloudsNormalMap", "data/textures/earth_clouds_normals.png" )
         , LoadTexture( "EarthNightLightsMap", "data/textures/earth_night_lights.jpg" )
+        , LoadTexture( "Circle", "data/textures/circle_full.png" )
         , LoadShaderData("EarthVertexShader", "data/shaders/Earth.vertex")
         , LoadShaderData("EarthPixelShader", "data/shaders/Earth.fragment")
         , LoadJsonData("LocationsJson", "data/latlon.json")
@@ -278,6 +281,8 @@ function PostLoadData()
     //
     windowWidth = container.width;
     windowHeight = container.height;
+    Params.WindowWidth = windowWidth;
+    Params.WindowHeight = windowHeight;
     deviceContentScale = renderer.devicePixelRatio;
 
     BeginApp();
@@ -533,7 +538,6 @@ function Setup()
     // Create main scene
     //
     scene = new THREE.Scene();
-    //scene.autoUpdate = false;
 
 
     var minDim = Math.min( windowWidth, windowHeight );
@@ -716,7 +720,7 @@ function Setup()
     tween2.delay( 3000 );
     tween2.start();*/
 
-    var target = { x : 1.0, y: 1.0, z: 1.0 };
+/*    var target = { x : 1.0, y: 1.0, z: 1.0 };
     locationMarkers.locationsGroup.scale.set( PX.EPSILON, PX.EPSILON, PX.EPSILON );
     var tween = new TWEEN.Tween( locationMarkers.locationsGroup.scale ).to( target, 2000.0 );
     tween.easing( TWEEN.Easing.Quintic.InOut );
@@ -725,7 +729,10 @@ function Setup()
     tween.onComplete( function()
     {
         //locationsIntroAnimDone = true;
-    });
+    });*/
+
+
+    locationMarkers.TweenLevel0( 1, 1.0 * 1000.0, 3.5 * 1000.0, null );
 
 
     //
@@ -739,7 +746,7 @@ function Setup()
 function InitStats()
 {
     g_Stats = new Stats();
-    g_Stats.setMode( 1 ); // 0: fps, 1: ms, 2: mb
+    g_Stats.setMode( 0 ); // 0: fps, 1: ms, 2: mb
     // align top-left
     g_Stats.domElement.style.position = 'absolute';
     g_Stats.domElement.style.left = '0px';
@@ -794,11 +801,12 @@ function InitGUI()
     g_GUI.add( Params, "CameraDistance" ).min( PX.kEarthScale*1.333 ).max( 300.0 );
     g_GUI.addFolder( "Interaction" );
     g_GUI.add( Params, "EarthRotationSpeed" ).min(1.0).max(20.0).step(1.0);
-    g_GUI.add( Params, "MapGridSize" ).min(0).max(100).onChange( function( newValue ) 
+    g_GUI.add( Params, "MapGridSize" ).min(0).max(20).step(1).onChange( function( newValue ) 
     {
         console.log( parseInt(newValue) );
         markerCluster.setGridSize( parseInt(newValue) );
         markerCluster.repaint();
+        locationMarkers.doPopulation = true;
     });
     g_GUI.add( Params, "Latitude" ).listen();
     g_GUI.add( Params, "Longitude" ).listen();
@@ -860,6 +868,8 @@ function Update( time, frameTime )
 
     if( Params.MainScene )
     {
+        mouseVector3d.set( mouseX, Params.WindowHeight-mouseY, 0.0 );
+
         // Update raycaster
         mouseVector.x = 2.0 * (mouseX / windowWidth) - 1.0;
         mouseVector.y = 1.0 - 2.0 * ( mouseY / windowHeight );
@@ -877,6 +887,7 @@ function Update( time, frameTime )
             earthOrbitControls.maxDistance = PX.kCameraMaxDistance; //Params.CameraDistance;
             earthOrbitControls.minPolarAngle = Math.PI * 0.1;
             earthOrbitControls.maxPolarAngle = Math.PI * 0.9;
+            earthOrbitControls.enableZoom = false;
             earthOrbitControls.enablePan = false;
             earthOrbitControls.enableKeys = false;
             earthOrbitControls.target.set( 0, 0, 0 );
@@ -891,13 +902,13 @@ function Update( time, frameTime )
 
         // Step earth rotation
         //
-        /*if( earthOrbitControls )
+        if( earthOrbitControls )
         {
             earthOrbitControls.update();
 
             var rotSpeed = PX.Saturate( Params.CameraDistance / PX.kCameraMaxDistance );
             earthOrbitControls.rotateSpeed = ( ( rotSpeed ) + 0.1 ) * 0.05;
-        }*/
+        }
 
 
 /**        if( isMouseDown )
@@ -938,7 +949,8 @@ function Update( time, frameTime )
         // Check to see if any tree was hit
         //
 
-        var markerIndex = locationMarkers.Intersects( g_Raycaster );
+        //var markerIndex = locationMarkers.Intersects( g_Raycaster );
+        //var markerIndex = locationMarkers.IntersectsLevel0( mouseVector3d );
         /*if( markerIndex >= 0 )
         {
             locationMarkers.meshes[ markerIndex ].material.color.set( PX.kLocationMouseOverColor );
@@ -1024,6 +1036,9 @@ function Render()
     {
         renderer.setViewport( 0, 0, windowWidth, windowHeight );
         renderer.render( scene, camera );
+
+        renderer.render( locationMarkers.markerScene, locationMarkers.camera2d );
+        //renderer.render( locationMarkers.markerScene, fgCamera );
 
         //composer.render();
     }
@@ -1120,19 +1135,11 @@ function OnMouseUp(event)
     mouseX = event.clientX;
     mouseY = event.clientY;
 
+    locationMarkers.OnMouseUp( mouseVector3d, camera );
+
+/***
     // Move map Center
     //
-/*    var distanceToCenter = ( camera.position.length() );
-    var distanceToCenterNorm = PX.Saturate( distanceToCenter / PX.kCameraMaxDistance );
-    var camLatLon = PX.Utils.ConvertPosToLatLon( camera.position.x, camera.position.y, camera.position.z, distanceToCenter );
-    camLatLon.x = ( 90.0 - camLatLon.x );
-    camLatLon.y = camLatLon.y - 90.0;
-    Params.Latitude = camLatLon.x;
-    Params.Longitude = camLatLon.y;
-    //
-    var mapCenter = new google.maps.LatLng( camLatLon.x, camLatLon.y );
-    map.setCenter( mapCenter );*/
-
     // Intersection test per mesh
     //
     var animTime = 1000.0;
@@ -1153,10 +1160,6 @@ function OnMouseUp(event)
             {
                 locationMarkers.markers[idx].clicks = 1;
             }
-            /*if( !sameLoc && locationMarkers.markers[idx].clicks > 0 )
-            {
-                locationMarkers.markers[idx].clicks = 0;
-            }*/
 
             //
             prevClickedLocationIndex = idx;
@@ -1252,6 +1255,7 @@ function OnMouseUp(event)
             var cameraTargetPoint = locationMarkers.meshes[idx].position.clone().normalize();
 
             Params.CameraDistance = PX.Lerp( PX.kCameraMinDistance, PX.kCameraMaxDistance, 0.0 );
+            locationMarkers.zoomLevel = 1;
             //Params.CameraDistance *= 1.0 - ( 1.0 / PX.kZoomMaxLevel );
             //Params.CameraDistance = PX.Clamp( Params.CameraDistance, PX.kCameraMinDistance, PX.kCameraMaxDistance );
 
@@ -1272,7 +1276,7 @@ function OnMouseUp(event)
             });
             tween.onComplete(function()
             {
-                earthOrbitControls.enabled = true;
+                if( earthOrbitControls ) earthOrbitControls.enabled = true;
 
                 if( zoomLevel < PX.kZoomMaxLevel )
                 {
@@ -1336,6 +1340,7 @@ function OnMouseUp(event)
             }
         }
     }
+***/
 }
 
 function OnMouseMove(event)
@@ -1343,6 +1348,11 @@ function OnMouseMove(event)
     //isMouseMoved = true;
     mouseX = event.clientX;
     mouseY = event.clientY;
+
+    if( locationMarkers.zoomLevel === 0 )
+        var markerIndex = locationMarkers.IntersectsLevel0( mouseVector3d );
+    else
+        var markerIndex = locationMarkers.Intersects( g_Raycaster );
 }
 
 function OnMouseWheel( event )

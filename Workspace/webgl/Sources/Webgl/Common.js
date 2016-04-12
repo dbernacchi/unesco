@@ -40,10 +40,11 @@ PX =
     , kMarkerOffsetFromEarthSurface: 0.0
     , kLocationMarkerScale: 0.65
     , kLocationMarkerDetail: 16
-    , kLocationMarkerZScale: 0.25
-    , kMaxGridSize: 1
+    , kLocationMarkerZScale: 0.125
+    , kMaxGridSize: 5
     , kLocationTextSize: 120.0
-    , kLocationColor: 0x00ffff
+    , kLocationColor: 0x000055
+    , kLocationColors: [ 0x000055, 0x0000ff, 0xffffff ]
     , kLocationMouseOverColor: 0xff00ff
     , kLocationMouseClickedColor: 0xff7f00
 
@@ -159,9 +160,13 @@ var Params =
 {
     Latitude: 38.7223
     , Longitude: 9.1393
+    , WindowWidth: 0
+    , WindowHeight: 0
     , MainScene: true
     , ShowMaps: false
     , CameraDistance: 100.0
+    , Level0MarkerRadius: 35.0
+    , AnimTime: 2.0
     , Art_CameraDistance: 100.0
     , AmbientIntensity: 0.00033
     , DiffuseIntensity: 2.0
