@@ -52,6 +52,7 @@
     <Content Include="index.html" />
     <Content Include="Sources\Webgl\App.js" />
     <Content Include="Sources\Webgl\AppStateHandler.js" />
+    <Content Include="Sources\Webgl\Camera.js" />
     <Content Include="Sources\Webgl\Common.js" />
     <Content Include="Sources\Webgl\Database.js" />
     <Content Include="Sources\Webgl\Detector.js" />

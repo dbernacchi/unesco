@@ -852,6 +852,7 @@ function Update( time, frameTime )
 
         //
         trackball.Update( camera, frameTime );
+        cameraLookAtPoint.copy( trackball.camLookAt );
     }
 
 

@@ -512,6 +512,10 @@ UG.LocationMarkers.prototype =
                 return;
             }
 
+            //console.log( "moooo" );
+            //trackball.Reset( camera );
+
+
             // Change app state
             appStateMan.ChangeState( PX.AppStates.AppStateLevel0ToLevel1 );
 
@@ -533,8 +537,6 @@ UG.LocationMarkers.prototype =
 
             //var cameraSourcePoint = camera.position.clone();
             var cameraTargetPoint = loc.position.clone().normalize().multiplyScalar( Params.CameraDistance );
-            var cameraLookAtSourcePoint = camera.getWorldDirection().clone();
-            var cameraLookAtTargetPoint = PX.ZeroVector.clone();
 
             // POSITION
             var tween = new TWEEN.Tween( camera.position ).to( cameraTargetPoint, Params.AnimTime * 1000.0 );
@@ -567,12 +569,13 @@ UG.LocationMarkers.prototype =
             });
 
             // LOOKAT
-            tween = new TWEEN.Tween( cameraLookAtSourcePoint ).to( cameraLookAtTargetPoint, Params.AnimTime * 1000.0 );
+            var cameraLookAtTargetPoint = PX.ZeroVector.clone();
+            tween = new TWEEN.Tween( cameraLookAtPoint ).to( cameraLookAtTargetPoint, Params.AnimTime * 1000.0 );
             tween.easing( TWEEN.Easing.Quadratic.InOut );
             tween.start();
             tween.onUpdate(function()
             {
-                camera.lookAt( cameraLookAtSourcePoint );
+                camera.lookAt( cameraLookAtPoint );
             });
         }
 
@@ -591,6 +594,8 @@ UG.LocationMarkers.prototype =
 
             // Save clicked marker index
             this.clickedMarkerIndex = index;
+
+            trackball.Reset( camera );
 
             //
             /*if( earthOrbitControls ) 
@@ -901,10 +906,11 @@ UG.LocationMarkers.prototype =
 
                 var p1 = new google.maps.LatLng( latloni.x, latloni.y );
                 var p2 = new google.maps.LatLng( latlonj.x, latlonj.y );
-                var latLonDir = new THREE.Vector2( p1.lat(), p1.lng() ).sub( new THREE.Vector2( p2.lat(), p2.lng() ) ).normalize();
+                //var latLonDir = new THREE.Vector2( p1.lat(), p1.lng() ).sub( new THREE.Vector2( p2.lat(), p2.lng() ) ).normalize();
 
-                var dist = locj.position.clone().sub( loci.position );
-                var dir = dist.clone().normalize();
+                var dir = locj.position.clone().sub( loci.position ).normalize();
+                //var dist = locj.position.clone().sub( loci.position );
+                //var dir = dist.clone().normalize();
 
                 var minDistance = MinDistancesPerLevel[ this.zoomLevel ];
                 //var minDistance = MinDistancesPerLevel[ PX.Clamp( this.zoomLevel, 0, PX.kZoomMaxLevel ) ];

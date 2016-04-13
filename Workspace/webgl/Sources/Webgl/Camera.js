@@ -20,6 +20,10 @@ PX.CameraTrackball = function()
     this.damping            = 0.15;
 
     this.rotateFactor       = 1.0;
+
+    // Convinience
+    this.camPosition        = new THREE.Vector3();
+    this.camLookAt          = new THREE.Vector3();
 };
 
 
@@ -93,6 +97,10 @@ PX.CameraTrackball.prototype =
         up.normalize();
 
         var lookAt = dir.clone().multiplyScalar( dist ).add( pos );
+
+        this.camPosition.copy( pos );
+        this.camLookAt.copy( lookAt );
+
         camera.position.copy( pos );
         camera.lookAt( lookAt );
     }
