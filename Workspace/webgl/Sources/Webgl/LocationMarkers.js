@@ -545,8 +545,12 @@ UG.LocationMarkers.prototype =
 
             scope.doAvoidance = true;
 
-            this.TweenLevel0( PX.EPSILON, Params.AnimTime * 0.2 * 1000.0, Params.AnimTime * 0.8 * 1000.0, null, function()
+            this.TweenLevel0( PX.EPSILON, Params.AnimTime * 0.2 * 1000.0, Params.AnimTime * 0.8 * 1000.0, 
+            null, 
+            function()
             {
+                trackball.Reset( camera );
+
                 //scope.doAvoidance = false;
             });
 
@@ -583,6 +587,8 @@ UG.LocationMarkers.prototype =
                 {
                     // Change app state
                     appStateMan.ChangeState( PX.AppStates.AppStateLevel1 );
+
+                    trackball.Reset( camera );
 
                     //scope.doAvoidance = false;
                 });
@@ -689,6 +695,9 @@ UG.LocationMarkers.prototype =
             tweenw.onComplete( function()
             {
                 appStateMan.ChangeState( PX.AppStates.AppStateLevel2 );
+
+                trackball.Reset( camera );
+
             });
         }
 
@@ -759,6 +768,8 @@ UG.LocationMarkers.prototype =
             tweenw.onComplete( function()
             {
                 appStateMan.ChangeState( PX.AppStates.AppStateLevel1 );
+
+                trackball.Reset( camera );
             });
         }
 

@@ -33,6 +33,7 @@ PX.CameraTrackball.prototype =
         this.target = camera.getWorldDirection();
         this.right = this.target.clone();
         this.right.crossVectors( this.right, PX.YAxis );
+        this.right.normalize();
     }
 
 
@@ -45,6 +46,15 @@ PX.CameraTrackball.prototype =
         {
             this.Rotate( deltaX, deltaY, frameTime );
         }
+    }
+
+    , Reset( camera )
+    {
+        //this.camera = camera;
+        this.target = camera.getWorldDirection();
+        this.right = this.target.clone();
+        this.right.crossVectors( this.right, PX.YAxis );
+        this.right.normalize();
     }
 
 
