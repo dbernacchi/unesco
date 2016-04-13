@@ -33,25 +33,6 @@ PX =
     AssetsDatabase: []
 
 
-    // App Params
-    //
-    //, AppStates:
-    //{
-    , AppStateUnknown:             -1
-    , AppStateEntry:                0
-    , AppStateEntryToIntro:         1
-    , AppStateIntro:                2
-    , AppStateIntroToLevel0:        3
-    , AppStateLevel0:               4
-    , AppStateLevel0ToLevel1:       5
-    , AppStateLevel1:               6
-    , AppStateLevel1ToLevel2:       7
-    , AppStateLevel2:               8
-    , AppStateLevel2ToLevel1:       9
-    //}
-
-    , AppState: PX.AppStateUnknown
-
     // Constants
     //
     , EPSILON: 0.001

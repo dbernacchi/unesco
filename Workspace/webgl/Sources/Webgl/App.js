@@ -533,10 +533,11 @@ function Setup()
     scene = new THREE.Scene();
 
 
-    var minDim = Math.min( windowWidth, windowHeight );
-    var maxDim = Math.max( windowWidth, windowHeight );
-    var aspectRatio = maxDim / minDim;
-    console.log( "aspectRatio:", aspectRatio );
+    //var minDim = Math.min( windowWidth, windowHeight );
+    //var maxDim = Math.max( windowWidth, windowHeight );
+    //var aspectRatio = maxDim / minDim;
+    var aspectRatio = windowWidth / windowHeight;
+    console.log( "+--+  Aspect Ratio:", aspectRatio );
 
     // Create camera
     //
@@ -687,20 +688,14 @@ function Setup()
         //locationsIntroAnimDone = true;
     });*/
 
-    //PX.AppState = PX.AppStateEntry;
-
-/*    locationMarkers.TweenLevel0( 1, 1.0 * 1000.0, 3.5 * 1000.0
-    , function()
+    // Add a callback that reports when a state change happens
+    appStateMan.AddStateChangeCallback( function( state )
     {
-        PX.AppState = PX.AppStateIntroToLevel0;
-    }
-    , function()
-    {
-        PX.AppState = PX.AppStateLevel0;
-    });*/
+        console.log( "+--+  Changing State:\t", PX.AppStatesString[state], state );
+    });
 
     // Set App state
-    PX.AppState = PX.AppStateEntry;
+    appStateMan.SetState( PX.AppStates.AppStateEntry );
 
 
     //
@@ -870,7 +865,8 @@ function Update( time, frameTime )
         // Step earth rotation
         //
         if( earthOrbitControls 
-            && ( PX.AppState === PX.AppStateLevel0 || PX.AppState === PX.AppStateLevel1 ) 
+            && ( appStateMan.IsState( PX.AppStates.AppStateLevel0 ) 
+              || appStateMan.IsState( PX.AppStates.AppStateLevel1 ) ) 
             )
         {
             if( earthOrbitControls.enabled )
@@ -885,9 +881,9 @@ function Update( time, frameTime )
 
         if( currentTime >= 5.0 )
         {
-            if( PX.AppState === PX.AppStateEntry )
+            if( appStateMan.IsState( PX.AppStates.AppStateEntry ) )
             {
-                PX.AppState = PX.AppStateIntroToLevel0;
+                appStateMan.ChangeState( PX.AppStates.AppStateIntroToLevel0 );
                 earth.ResetTransform( function()
                 {
                     locationMarkers.TweenLevel0( 1, 1.0 * 1000.0, 0.0
@@ -897,7 +893,7 @@ function Update( time, frameTime )
                     }
                     , function()
                     {
-                        PX.AppState = PX.AppStateLevel0;
+                        appStateMan.ChangeState( PX.AppStates.AppStateLevel0 );
                     });
                 });
             }
@@ -979,6 +975,9 @@ function Update( time, frameTime )
 
         // Update Tween
         TWEEN.update();
+
+        //
+        appStateMan.Update();
     }
 
 
@@ -1122,212 +1121,8 @@ function OnMouseUp(event)
     mouseX = event.clientX;
     mouseY = event.clientY;
 
+    //
     locationMarkers.OnMouseUp( mouseVector3d, camera );
-
-/***
-    // Move map Center
-    //
-    // Intersection test per mesh
-    //
-    var animTime = 1000.0;
-    for( var i=0; i<locationMarkers.markersCount; i++ )
-    {
-        var idx = locationMarkers.Intersects( g_Raycaster );
-        if( idx >= 0 )
-        {
-            locationMarkers.markers[ idx ].clicks++;
-
-            var sameLoc = ( prevClickedLocationIndex === idx ) ? true: false;
-
-            if( !sameLoc && prevClickedLocationIndex !== -1 )
-            {
-                locationMarkers.markers[prevClickedLocationIndex].clicks = 0;
-            }
-            if( sameLoc && locationMarkers.markers[idx].clicks > 2 )
-            {
-                locationMarkers.markers[idx].clicks = 1;
-            }
-
-            //
-            prevClickedLocationIndex = idx;
-
-            if( locationMarkers.markers[idx].clicks === 2 )
-            {
-                // Compute right vector
-                var dir0 = locationMarkers.meshes[idx].position.clone().normalize();
-                var right = new THREE.Vector3();
-                right.crossVectors( PX.YAxis, dir0 );
-                right.multiplyScalar( PX.kEarthScale * 1.5 );
-
-
-                var positionw = { x: 0 };
-                var targetw = { x: 1 };
-                var tweenw = new TWEEN.Tween( positionw ).to( targetw, animTime );
-                tweenw.easing( TWEEN.Easing.Quadratic.InOut );
-                tweenw.start();
-                tweenw.onUpdate(function()
-                {
-                    var start = new THREE.Quaternion().setFromAxisAngle( PX.YAxis, 0 );
-                    var end = new THREE.Quaternion().setFromAxisAngle( PX.YAxis, PX.ToRadians(45) );
-                    THREE.Quaternion.slerp( start, end, earth.mesh.quaternion, positionw.x );
-                    THREE.Quaternion.slerp( start, end, locationMarkers.locationsGroup.quaternion, positionw.x );
-                });
-
-
-                //Params.CameraDistance = PX.Lerp( PX.kCameraMinDistance, PX.kCameraMaxDistance, 0.0 );
-                //Params.CameraDistance *= 1.0 - ( 1.0 / PX.kZoomMaxLevel );
-                //Params.CameraDistance = PX.Clamp( Params.CameraDistance, PX.kCameraMinDistance, PX.kCameraMaxDistance );
-
-                var position = camera.position.clone();
-                var target = camera.position.clone().add( right );
-                var tween = new TWEEN.Tween( position ).to( target, animTime );
-                tween.easing( TWEEN.Easing.Quadratic.InOut );
-                //tween.delay( 50 );
-                tween.start();
-                tween.onStart(function()
-                {
-                });
-                tween.onUpdate(function()
-                {
-                    camera.position.x = position.x;
-                    camera.position.y = position.y;
-                    camera.position.z = position.z;
-                });
-                tween.onComplete(function()
-                {
-                    earthOrbitControls.enabled = false;
-                });
-
-                // LookAt
-                var cameraTargetPoint2 = cameraLookAtPoint.clone().add( right );
-                var position2 = { x : cameraLookAtPoint.x, y: cameraLookAtPoint.y, z: cameraLookAtPoint.z };
-                var target2 = { x : cameraTargetPoint2.x, y: cameraTargetPoint2.y, z: cameraTargetPoint2.z };
-                tween = new TWEEN.Tween( position2 ).to( target2, animTime );
-                tween.easing( TWEEN.Easing.Quadratic.InOut );
-                //tween.delay( 50 );
-                tween.start();
-                tween.onStart(function()
-                {
-                });
-                tween.onUpdate(function()
-                {
-                    camera.lookAt( new THREE.Vector3( position2.x, position2.y, position2.z ) );
-                    cameraLookAtPoint.copy( position2 );
-                    if( earthOrbitControls ) earthOrbitControls.target.copy( new THREE.Vector3( position2.x, position2.y, position2.z ) );
-                });
-                tween.onComplete(function()
-                {
-                });
-
-                break;
-            }
-
-
-            // Point camera in location's direction
-            //
-
-                var positionw = { x: 0, y: earth.mesh.rotation.y, z: 0 };
-                var targetw = { x: 0, y: 0, z: 0 };
-                var tweenw = new TWEEN.Tween( positionw ).to( targetw, animTime );
-                tweenw.easing( TWEEN.Easing.Quadratic.InOut );
-                tweenw.start();
-                tweenw.onUpdate(function()
-                {
-                    earth.mesh.rotation.y = positionw.y;
-                    locationMarkers.locationsGroup.rotation.y = positionw.y;
-                });
-
-
-            var cameraSourcePoint = camera.position.clone();
-            var cameraTargetPoint = locationMarkers.meshes[idx].position.clone().normalize();
-
-            Params.CameraDistance = PX.Lerp( PX.kCameraMinDistance, PX.kCameraMaxDistance, 0.0 );
-            locationMarkers.zoomLevel = 1;
-            //Params.CameraDistance *= 1.0 - ( 1.0 / PX.kZoomMaxLevel );
-            //Params.CameraDistance = PX.Clamp( Params.CameraDistance, PX.kCameraMinDistance, PX.kCameraMaxDistance );
-
-            var position = { x : cameraSourcePoint.x, y: cameraSourcePoint.y, z: cameraSourcePoint.z };
-            var target = { x : cameraTargetPoint.x*Params.CameraDistance, y: cameraTargetPoint.y*Params.CameraDistance, z: cameraTargetPoint.z*Params.CameraDistance };
-            var tween = new TWEEN.Tween( position ).to( target, animTime );
-            tween.easing( TWEEN.Easing.Quadratic.InOut );
-            //tween.delay( 50 );
-            tween.start();
-            tween.onStart(function()
-            {
-            });
-            tween.onUpdate(function()
-            {
-                camera.position.x = position.x;
-                camera.position.y = position.y;
-                camera.position.z = position.z;
-            });
-            tween.onComplete(function()
-            {
-                if( earthOrbitControls ) earthOrbitControls.enabled = true;
-
-                if( zoomLevel < PX.kZoomMaxLevel )
-                {
-                    //
-                    var distanceToCenter = ( camera.position.length() );
-                    var distanceToCenterNorm = PX.Saturate( distanceToCenter / PX.kCameraMaxDistance );
-                    var camLatLon = PX.Utils.ConvertPosToLatLon( camera.position.x, camera.position.y, camera.position.z, distanceToCenter );
-                    camLatLon.x = ( 90.0 - camLatLon.x );
-                    camLatLon.y = camLatLon.y - 90.0;
-                    Params.Latitude = camLatLon.x;
-                    Params.Longitude = camLatLon.y;
-                    //
-                    var mapCenter = new google.maps.LatLng( camLatLon.x, camLatLon.y );
-                    map.setCenter( mapCenter );
-
-                    //
-                    prevZoomLevel = zoomLevel;
-                    zoomLevel = ComputeZoomLevel( distanceToCenter );
-
-                    if( prevZoomLevel !== zoomLevel )
-                    {
-                        //
-                        Params.MapGridSize = ComputeMapGridSizeFromZoomLevel( zoomLevel );
-                        markerCluster.setGridSize( Params.MapGridSize );
-
-                        map.setZoom( zoomLevel );
-
-                        // Recompute the markers
-                        //locationMarkers.doPopulation = true;
-                    }
-                }
-
-                // Callback on cluster click
-                ClusterOnClickCallback( "GUID-25345634", locationMarkers.markers[ idx ] );
-            });
-
-            // LookAt
-            var position2 = cameraLookAtPoint.clone();
-            position2.add( camera.getWorldDirection() );
-            //console.log( position2 );
-            var target2 = { x : 0, y: 0, z: 0 };
-            var tween2 = new TWEEN.Tween( position2 ).to( target2, animTime );
-            tween2.easing( TWEEN.Easing.Quadratic.InOut );
-            //tween.delay( 50 );
-            tween2.start();
-            tween2.onUpdate(function()
-            {
-                camera.lookAt( position2 );
-                cameraLookAtPoint.copy( position2 );
-                if( earthOrbitControls ) earthOrbitControls.target.copy( new THREE.Vector3( position2.x, position2.y, position2.z ) );
-            });
-
-            break;
-        }
-        else
-        {
-            if( prevClickedLocationIndex !== -1 )
-            {
-                if( locationMarkers.markers[prevClickedLocationIndex].clicks < 2 )
-                    locationMarkers.markers[prevClickedLocationIndex].clicks = 0;
-            }
-        }
-    }
-***/
 }
 
 function OnMouseMove(event)
@@ -1336,14 +1131,14 @@ function OnMouseMove(event)
     mouseX = event.clientX;
     mouseY = event.clientY;
 
-    switch( PX.AppState )
+    switch( appStateMan.GetCurrentState() )
     {
-        case PX.AppStateLevel0:
+        case PX.AppStates.AppStateLevel0:
         {
             var markerIndex = locationMarkers.IntersectsLevel0( mouseVector3d );
             break;
         }
-        case PX.AppStateLevel1:
+        case PX.AppStates.AppStateLevel1:
         {
             var markerIndex = locationMarkers.IntersectsLevel1( g_Raycaster );
             break;
@@ -1355,25 +1150,6 @@ function OnMouseMove(event)
 
 function OnMouseWheel( event )
 {
-/*    var distanceToCenter = ( camera.position.length() );
-
-    //
-    prevZoomLevel = zoomLevel;
-    zoomLevel = ComputeZoomLevel( distanceToCenter );
-
-    if( prevZoomLevel !== zoomLevel )
-    {
-        //
-        Params.MapGridSize = ComputeMapGridSizeFromZoomLevel( zoomLevel );
-        markerCluster.setGridSize( Params.MapGridSize );
-
-        map.setZoom( zoomLevel );
-
-        locationMarkers.doPopulation = true;
-    }
-
-    Params.CameraDistance = PX.Clamp( distanceToCenter, PX.kCameraMinDistance, PX.kCameraMaxDistance );
-*/
 }
 
 function OnMouseOut()

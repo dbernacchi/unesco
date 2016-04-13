@@ -3,17 +3,15 @@
 
 UG.LocationMarker = function()
 { 
-    this.GUID = "";
-    this.text = "";
-    this.index = -1;
-    this.latlon = new THREE.Vector2();
-    this.position = new THREE.Vector3();
-    this.scale = new THREE.Vector3();
-    this.markerCount = 0;
-    this.clicks = 0; // Number of clicks on this marker. 1: align camera, 2: open right menu, 3: in menu
-
-    this.type = 0;
-    this.color = null;
+    this.GUID           = "";
+    this.text           = "";
+    this.index          = -1;
+    this.latlon         = new THREE.Vector2();
+    this.position       = new THREE.Vector3();
+    this.scale          = new THREE.Vector3();
+    this.markerCount    = 0;
+    this.type           = 0;
+    this.color          = null;
 };
 UG.LocationMarker.prototype =
 {
@@ -26,36 +24,32 @@ UG.LocationMarker.prototype =
 
 UG.LocationMarkers = function()
 { 
-	this.locationsGroup = null;
-	this.meshes = [];
-	this.markers = [];
-    //this.textRenderer = null;
-    this.textRenderer2 = null;
-	this.markersCount = 0;
+	this.locationsGroup         = null;
+	this.meshes                 = [];
+	this.markers                = [];
+    //this.textRenderer         = null;
+    this.textRenderer2          = null;
+	this.markersCount           = 0;
 
-	this.markerCluster = null;
-    this.doPopulation = true;
-    this.doAvoidance = false;
+	this.markerCluster          = null;
+    this.doPopulation           = true;
+    this.doAvoidance            = false;
 
-    this.zoomLevel = 0;
+    this.zoomLevel              = 0;
+    this.avoidanceCount         = 0;
 
     this.zoomLevel1IntroAnimDone = false;
 
-    this.billboardMaterial = null;
-    this.billboardGeometry = null;
-    this.geomPositionArray = null;
-    this.geomColorArray = null;
-    this.billboards = null;
-    this.billboardsGroup = null;
+    this.billboardMaterial      = null;
+    this.billboardGeometry      = null;
+    this.geomPositionArray      = null;
+    this.geomColorArray         = null;
+    this.billboards             = null;
+    this.billboardsGroup        = null;
 
-    this.markerScene = null;
-    this.camera2d = null;
+    this.markerScene            = null;
+    this.camera2d               = null;
 
-    //var tween = null;
-
-    this.avoidanceCount = 0;
-
-    this.state = 0;
 };
 
 UG.LocationMarkers.prototype =
@@ -104,7 +98,7 @@ UG.LocationMarkers.prototype =
 	        var lm = new UG.LocationMarker();
 	        lm.text = "";
 	        lm.position.copy( locations[i].position );
-            lm.clicks = 0;
+            //lm.clicks = 0;
             lm.color = color;
             lm.index = i;
             lm.type = rndIdx;
@@ -238,19 +232,19 @@ UG.LocationMarkers.prototype =
 
         //console.log( this.avoidanceCount );
 
-        switch( PX.AppState )
+        switch( appStateMan.GetCurrentState() )
         {
-            case PX.AppStateIntro:
+            case PX.AppStates.AppStateIntro:
             {
                 //this.UpdateLocationCircleBillboards( time, frameTime, camera );
                 break;
             }
-            case PX.AppStateIntroToLevel0:
+            case PX.AppStates.AppStateIntroToLevel0:
             {
                 this.UpdateLocationCircleBillboards( time, frameTime, camera );
                 break;
             }
-            case PX.AppStateLevel0:
+            case PX.AppStates.AppStateLevel0:
             {
                 for( var i=0; i<this.markersCount; ++i )
                 {
@@ -262,13 +256,13 @@ UG.LocationMarkers.prototype =
                 this.UpdateLocationCircleBillboards( time, frameTime, camera );
                 break;
             }
-            case PX.AppStateLevel0ToLevel1:
+            case PX.AppStates.AppStateLevel0ToLevel1:
             {
                 this.UpdateLocationCircleBillboards( time, frameTime, camera );
                 this.UpdateLocationMeshes( time, frameTime, camera );
                 break;
             }
-            case PX.AppStateLevel1:
+            case PX.AppStates.AppStateLevel1:
             {
                 for( var i=0; i<this.meshes.length; ++i )
                 {
@@ -279,17 +273,17 @@ UG.LocationMarkers.prototype =
                 this.UpdateLocationMeshes( time, frameTime, camera );
                 break;
             }
-            case PX.AppStateLevel1ToLevel2:
+            case PX.AppStates.AppStateLevel1ToLevel2:
             {
                 this.UpdateLocationMeshes( time, frameTime, camera );
                 break;
             }
-            case PX.AppStateLevel2:
+            case PX.AppStates.AppStateLevel2:
             {
                 this.UpdateLocationMeshes( time, frameTime, camera );
                 break;
             }
-            case PX.AppStateLevel2ToLevel1:
+            case PX.AppStates.AppStateLevel2ToLevel1:
             {
                 this.UpdateLocationMeshes( time, frameTime, camera );
                 break;
@@ -537,7 +531,7 @@ UG.LocationMarkers.prototype =
     {
         var scope = this;
 
-        if( this.zoomLevel === 0 && PX.AppState == PX.AppStateLevel0 )
+        if( appStateMan.GetCurrentState() === PX.AppStates.AppStateLevel0 )
         {
             var index = this.IntersectsLevel0( mouse3d );
             if( index < 0 )
@@ -547,7 +541,7 @@ UG.LocationMarkers.prototype =
             }
 
             // Change app state
-            PX.AppState = PX.AppStateLevel0ToLevel1;
+            appStateMan.ChangeState( PX.AppStates.AppStateLevel0ToLevel1 );
 
             scope.doAvoidance = true;
 
@@ -588,7 +582,7 @@ UG.LocationMarkers.prototype =
                 scope.TweenLevel1( 1.0, Params.AnimTime * 1000.0, 0 * 1000.0, null, function()
                 {
                     // Change app state
-                    PX.AppState = PX.AppStateLevel1;
+                    appStateMan.ChangeState( PX.AppStates.AppStateLevel1 );
 
                     //scope.doAvoidance = false;
                 });
@@ -603,7 +597,7 @@ UG.LocationMarkers.prototype =
                 camera.lookAt( cameraLookAtSourcePoint );
             });
         }
-        else if( this.zoomLevel === 1 && PX.AppState == PX.AppStateLevel1 )
+        else if( appStateMan.GetCurrentState() === PX.AppStates.AppStateLevel1 )
         {
             var index = this.IntersectsLevel1( g_Raycaster );
             if( index < 0 )
@@ -619,7 +613,7 @@ UG.LocationMarkers.prototype =
             }
 
             // Change State
-            PX.AppState = PX.AppStateLevel1ToLevel2;
+            appStateMan.ChangeState( PX.AppStates.AppStateLevel1ToLevel2 );
 
 
             // Compute right vector
@@ -688,13 +682,12 @@ UG.LocationMarkers.prototype =
             });
             tweenw.onComplete( function()
             {
-                PX.AppState = PX.AppStateLevel2;
+                appStateMan.ChangeState( PX.AppStates.AppStateLevel2 );
             });
         }
-        else if( this.zoomLevel === 1 && PX.AppState == PX.AppStateLevel2 )
+        else if( appStateMan.GetCurrentState() === PX.AppStates.AppStateLevel2 )
         {
             var intersects = g_Raycaster.intersectObject( earth.mesh, false );
-            //console.log( "PX.AppStateLevel2", intersects );
             if( ! intersects.length )
             {
                 return;
@@ -703,8 +696,7 @@ UG.LocationMarkers.prototype =
             var index = 0;
 
             // Change State
-            //console.log( "PX.AppStateLevel2ToLevel1" );
-            PX.AppState = PX.AppStateLevel2ToLevel1;
+            appStateMan.ChangeState( PX.AppStates.AppStateLevel2ToLevel1 );
 
 
             // CAMERA POSITION
@@ -758,7 +750,7 @@ UG.LocationMarkers.prototype =
             });
             tweenw.onComplete( function()
             {
-                PX.AppState = PX.AppStateLevel1;
+                appStateMan.ChangeState( PX.AppStates.AppStateLevel1 );
             });
         }
 
@@ -767,36 +759,44 @@ UG.LocationMarkers.prototype =
     , SetZoomLevel: function( level )
     {
         this.zoomLevel = level;
-        if( level === 0 )
+
+        switch( level )
         {
-            // Hide level 0 stuff
-            this.billboards.visible = true;
-            this.locationsGroup.visible = false;
-        }
-        else if( level === 1 )
-        {
-            // Hide level 0 stuff
-            this.locationsGroup.visible = true;
-            this.billboards.visible = false;
+            case 0:
+            {
+                // Hide level 0 stuff
+                this.billboards.visible = true;
+                this.locationsGroup.visible = false;
+                break;
+            }
+            case 1:
+            {
+                // Hide level 0 stuff
+                this.locationsGroup.visible = true;
+                this.billboards.visible = false;
 
-            this.zoomLevel1IntroAnimDone = false;
+                this.zoomLevel1IntroAnimDone = false;
 
-            //console.log("zoomLevel: ", level );
-            this.markerCluster.setGridSize( 0 );
-            this.markerCluster.repaint();
-            map.setZoom( zoomLevel );
+                //console.log("zoomLevel: ", level );
+                this.markerCluster.setGridSize( 0 );
+                this.markerCluster.repaint();
+                map.setZoom( zoomLevel );
 
-            //
-            var distanceToCenter = ( camera.position.length() );
-            var distanceToCenterNorm = PX.Saturate( distanceToCenter / PX.kCameraMaxDistance );
-            var camLatLon = PX.Utils.ConvertPosToLatLon( camera.position.x, camera.position.y, camera.position.z, distanceToCenter );
-            camLatLon.x = ( 90.0 - camLatLon.x );
-            camLatLon.y = camLatLon.y - 90.0;
-            Params.Latitude = camLatLon.x;
-            Params.Longitude = camLatLon.y;
+                //
+                var distanceToCenter = ( camera.position.length() );
+                var distanceToCenterNorm = PX.Saturate( distanceToCenter / PX.kCameraMaxDistance );
+                var camLatLon = PX.Utils.ConvertPosToLatLon( camera.position.x, camera.position.y, camera.position.z, distanceToCenter );
+                camLatLon.x = ( 90.0 - camLatLon.x );
+                camLatLon.y = camLatLon.y - 90.0;
+                Params.Latitude = camLatLon.x;
+                Params.Longitude = camLatLon.y;
 
-            var mapCenter = new google.maps.LatLng( camLatLon.x, camLatLon.y );
-            map.setCenter( mapCenter );
+                var mapCenter = new google.maps.LatLng( camLatLon.x, camLatLon.y );
+                map.setCenter( mapCenter );
+                break;
+            }
+            default:
+                break;
         }
     }
 
@@ -806,15 +806,14 @@ UG.LocationMarkers.prototype =
         this.markersCount = 0;
 
         var clusterCount = markerCluster.getTotalClusters();
-        console.log( "clusterCount:", clusterCount );
 
         var scope = this;
 
         if( clusterCount > 0 )
         {
-            this.doPopulation = false;
+            console.log( "+--+  Number of clusters: " + clusterCount + " at zoom level: " + this.zoomLevel );
 
-            var distToCamera = new THREE.Vector3();
+            this.doPopulation = false;
 
             //
             for( var i=0; i<locations.length; ++i )
@@ -826,6 +825,7 @@ UG.LocationMarkers.prototype =
             }
 
             //
+            var distToCamera = new THREE.Vector3();
             for( var i=0; i<clusterCount; ++i )
             {
                 var c = markerCluster.clusters_[i];
