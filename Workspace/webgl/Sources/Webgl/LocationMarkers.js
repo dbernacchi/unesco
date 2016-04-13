@@ -526,7 +526,7 @@ UG.LocationMarkers.prototype =
         return -1;
     }
 
-    , OnMouseClick: function( mouse3d, camera, onLocationClickCB )
+    , OnMouseClickEvent: function( mouse3d, camera, onLocationClickCB )
     {
         var scope = this;
 

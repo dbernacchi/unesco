@@ -664,6 +664,15 @@ function Setup()
     InitGUI();
 
 
+    // Init Trackball
+    //
+    if( !trackball.camera )
+    {
+        trackball.Init( camera );
+        trackball.rotateFactor = 0.5;
+        trackball.damping = 0.1;
+    }
+
 
     // Setup scene for intro
     //
@@ -828,6 +837,24 @@ function Update( time, frameTime )
     previousMouseY = mouseY;
 
 
+    //
+    if( appStateMan.IsState( PX.AppStates.AppStateLevel0 ) || appStateMan.IsState( PX.AppStates.AppStateLevel1 ) )
+    {
+        if( isMouseDown )
+        {
+            var rotSpeed = PX.Saturate( Params.CameraDistance / PX.kCameraMaxDistance );
+            trackball.rotateFactor = rotSpeed * 0.5;
+
+            trackball.HandleMouseEvents( 1, 1, mouseDeltaX, mouseDeltaY, frameTime );
+            //console.log( trackball.rotateVel );
+            //console.log( camera.position );
+        }
+
+        //
+        trackball.Update( camera, frameTime );
+    }
+
+
     if( Params.MainScene )
     {
         mouseVector3d.set( mouseX, Params.WindowHeight-mouseY, 0.0 );
@@ -838,7 +865,7 @@ function Update( time, frameTime )
         g_Raycaster.setFromCamera( mouseVector, camera );
 
         //
-        if( !earthOrbitControls && locationsIntroAnimDone )
+/*        if( !earthOrbitControls && locationsIntroAnimDone )
         {
             earthOrbitControls = new THREE.OrbitControls( camera, renderer.domElement );
             earthOrbitControls.enableDamping = true;
@@ -876,7 +903,7 @@ function Update( time, frameTime )
                 //earthOrbitControls.update();
             }
         }
-
+**/
 
         if( currentTime >= 5.0 )
         {
@@ -1121,7 +1148,7 @@ function OnMouseUp(event)
     //
     if( isMouseClick )
     {
-        locationMarkers.OnMouseClick( mouseVector3d, camera, 
+        locationMarkers.OnMouseClickEvent( mouseVector3d, camera, 
         function( object )  // Callback returning clicked marker
         {
             console.log( "+--+  Clicked Marker:\t", object.GUID, object );
@@ -1135,6 +1162,7 @@ function OnMouseMove(event)
     mouseX = event.clientX;
     mouseY = event.clientY;
 
+    //
     switch( appStateMan.GetCurrentState() )
     {
         case PX.AppStates.AppStateLevel0:
