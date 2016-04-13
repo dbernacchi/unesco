@@ -53,6 +53,7 @@ UG.LocationMarkers = function()
     this.camera2d               = null;
 
     this.clickedMarkerIndex     = -1;
+    this.clickedStartTime       = 0.0;
     this.level2GlobalScale      = new THREE.Vector3( 1.0, 1.0, 1.0 );
 };
 
@@ -383,16 +384,22 @@ UG.LocationMarkers.prototype =
                 distToCamera.subVectors( camera.position, loc.position );
                 var locationScale = distToCamera.length();
                 locationScale = ( locationScale * PX.kCameraOneOverMaxDistance ); /// PX.kCameraMaxDistance );
-                // apply a global scale (used in level 2 to scale all non selected markers)
-                if( i !== this.clickedMarkerIndex ) locationScale *= this.level2GlobalScale.x;
+                
+                // Apply a global scale (used in level 2 to scale all non selected markers)
+                if( i !== this.clickedMarkerIndex )
+                {
+                    locationScale *= this.level2GlobalScale.x;
+                }
+
                 loc.scale.set( locationScale, locationScale, locationScale );
 
                 // If there's a clicked marker, do pulse effect on it
                 // this is used in Level2 when a location has been selected
-                if( i === this.clickedMarkerIndex )
+                if( i === this.clickedMarkerIndex && appStateMan.IsState( PX.AppStates.AppStateLevel2 ) )
+                //if( i === this.clickedMarkerIndex )
                 {
-                    var per = i / (this.markersCount-1);
-                    var pulse = PX.CubicPulse( 0.0, 0.5, Math.sin(time*2.0+i) );
+                    //var per = i / (this.markersCount - 1);
+                    var pulse = PX.CubicPulse( 0.0, 0.5, Math.sin( (time-this.clickedStartTime) * 2.0 ) );
                     //var pulse = PX.Saturate( PX.Utils.Pulse( (2.0*Math.PI*per) + time, 0.5 ) );
                     loc.scale.x += pulse * 0.2;
                     loc.scale.y += pulse * 0.2;
@@ -665,6 +672,9 @@ UG.LocationMarkers.prototype =
 
                 trackball.Reset( camera );
 
+                // click start time. Used to reset pulse timer
+                scope.clickedStartTime = currentTime;
+
             });
 
             // Marker Global Scale
@@ -752,6 +762,7 @@ UG.LocationMarkers.prototype =
 
                 // Reset clicked marker index
                 scope.clickedMarkerIndex = -1;
+
             });
         }
 

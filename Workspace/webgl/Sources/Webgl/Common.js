@@ -57,10 +57,10 @@ PX =
     , kCameraFovY: 36.0
     , kCameraNearPlane: 1.0
     , kCameraFarPlane: 200.0
-    , kCameraMinDistance: 50
-    , kCameraMaxDistance: 120.0
-    , kCameraOneOverMinDistance: 1.0 / 50.0
-    , kCameraOneOverMaxDistance: 1.0 / 120.0
+    , kCameraMinDistance: 60
+    , kCameraMaxDistance: 160.0
+    , kCameraOneOverMinDistance: 1.0 / 60.0     // IMPORTANT!!
+    , kCameraOneOverMaxDistance: 1.0 / 160.0    // If the above limits change, also change these
     //, kGlobalTimeScale: 1.0
 
     , kZoomMaxLevel: 3.0
