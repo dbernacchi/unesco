@@ -685,7 +685,6 @@ function Setup()
         if( PX.AppStatesString[state] == 'AppStateLevel1ToLevel2' )
         {
             // do slider fade IN
-            console.log("SHOW");
             UNESCO.showBrowse();
         }
         
