@@ -682,17 +682,27 @@ function Setup()
     {
         console.log( "+--+  Changing State:\t", PX.AppStatesString[state], state );
 
-        if( PX.AppStatesString[state] == 'AppStateLevel1ToLevel2' )
-        {
-            // do slider fade IN
-            UNESCO.showBrowse();
-        }
-        
-        if( PX.AppStatesString[state] === 'AppStateLevel1' )
-        {
-            // do slider fade OUT
-            UNESCO.hideBrowse();
-        }
+		console.log('case: ' + PX.AppStatesString[state]);
+		
+		switch(PX.AppStatesString[state]){
+
+			case 'AppStateEntry':
+			
+				UNESCO.hideSplash();
+				break;
+							
+			case 'AppStateLevel1ToLevel2':
+				
+				UNESCO.showBrowse();
+				break;
+				
+			case 'AppStateLevel2ToLevel1':
+			
+				UNESCO.hideBrowse();
+				break;
+			
+		}
+
     });
 
     // Set App state
