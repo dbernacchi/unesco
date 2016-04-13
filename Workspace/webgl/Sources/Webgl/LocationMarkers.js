@@ -8,6 +8,7 @@ UG.LocationMarker = function()
     this.index          = -1;
     this.latlon         = new THREE.Vector2();
     this.position       = new THREE.Vector3();
+    this.positionSS     = new THREE.Vector3();
     this.scale          = new THREE.Vector3();
     this.markerCount    = 0;
     this.type           = 0;
@@ -129,12 +130,10 @@ UG.LocationMarkers.prototype =
 
         var commonColor = new THREE.Color( PX.kLocationColor );
 
+        var vertex = new THREE.Vector3();
         for( var i=0; i<locations.length; ++i )
         {
-		    var vertex = new THREE.Vector3();
-            vertex.x = locations[i].position.x;
-            vertex.y = locations[i].position.y;
-            vertex.z = locations[i].position.z;
+		    vertex.copy( locations[i].position );
 
             positions[ i*3+0] = vertex.x;
             positions[ i*3+1] = vertex.y;
@@ -344,29 +343,29 @@ UG.LocationMarkers.prototype =
             //matRes2.multiplyMatrices( matRes2, matScale2 );
             //matRes2.makeTranslation( loc.position.x, loc.position.y, loc.position.z );
 
+            // Update billboard's size
+            this.billboards.material.size = this.billboardsGroup.scale.x * Params.Level0MarkerRadius;
 
             // BILLBOARDS
-            //var pp = PX.Utils.ProjectPoint( this.markers[i].position.clone(), camera, 10, 10 );//Params.WindowWidth, Params.WindowHeight );
-            this.billboards.material.size = this.billboardsGroup.scale.x * Params.Level0MarkerRadius;
             if( dot >= 0.0 )
             {
-                var pp = loc.position.clone();
+                loc.positionSS.copy( loc.position );
                 //var pp = PX.ZeroVector.clone();
                 //pp = pp.applyMatrix4( matRes2 );
-                pp = pp.project( camera );
+                loc.positionSS.project( camera );
 
                 // 2d ortho
-                pp.x = ( (pp.x + 1.0 ) * 0.5 ) * Params.WindowWidth;
-                pp.y = ( ((pp.y + 1.0 ) * 0.5 )) * Params.WindowHeight;
-                pp.z = 0.0;
+                loc.positionSS.x = ( (loc.positionSS.x + 1.0 ) * 0.5 ) * Params.WindowWidth;
+                loc.positionSS.y = ( (loc.positionSS.y + 1.0 ) * 0.5 ) * Params.WindowHeight;
+                loc.positionSS.z = 0.0;
                 //console.log( pp );
 
 		        //this.billboardGeometry.attribute.position[i].set( pp.x, pp.y, 0.0 );
-		        this.geomPositionArray[i*3+0] = pp.x;
-		        this.geomPositionArray[i*3+1] = pp.y;
+		        this.geomPositionArray[i*3+0] = loc.positionSS.x;
+		        this.geomPositionArray[i*3+1] = loc.positionSS.y;
 		        this.geomPositionArray[i*3+2] = 0;
 
-                this.textRenderer2.AppendText2D( loc.text, pp, 8.5, this.billboardsGroup.scale.x, true );
+                this.textRenderer2.AppendText2D( loc.text, loc.positionSS, 8.5, this.billboardsGroup.scale.x, true );
             }
             else
             {
