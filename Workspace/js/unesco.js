@@ -54,7 +54,14 @@ var UNESCO = {};
 
 	}
 
+	this.hideSplash = function() {
+
+		$(".UNESCO#splash").hide();
+
+	}
+
 	this.showBrowse = function() {
+
 
 		$(".UNESCO#browse").show();
 
@@ -62,6 +69,7 @@ var UNESCO = {};
 	
 	this.hideBrowse = function() {
 
+		
 		$(".UNESCO#browse").hide();
 
 	}
