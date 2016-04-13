@@ -56,7 +56,7 @@ var prevZoomLevel = 0.0;
 
 var cameraLookAtPoint = null;
 
-var earthOrbitControls = null;
+//var earthOrbitControls = null;
 
 var sunLight = null;
 var earth = null;

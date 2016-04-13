@@ -555,24 +555,24 @@ UG.LocationMarkers.prototype =
 
             Params.CameraDistance = PX.Lerp( PX.kCameraMinDistance, PX.kCameraMaxDistance, 0.0 );
 
-            var cameraSourcePoint = camera.position.clone();
+            //var cameraSourcePoint = camera.position.clone();
             var cameraTargetPoint = loc.position.clone().normalize().multiplyScalar( Params.CameraDistance );
             var cameraLookAtSourcePoint = camera.getWorldDirection().clone();
             var cameraLookAtTargetPoint = PX.ZeroVector.clone();
 
             // POSITION
-            var tween = new TWEEN.Tween( cameraSourcePoint ).to( cameraTargetPoint, Params.AnimTime * 1000.0 );
+            var tween = new TWEEN.Tween( camera.position ).to( cameraTargetPoint, Params.AnimTime * 1000.0 );
             tween.easing( TWEEN.Easing.Quadratic.InOut );
             tween.start();
             tween.onStart(function()
             {
             });
-            tween.onUpdate(function()
+            /*tween.onUpdate(function()
             {
                 camera.position.x = cameraSourcePoint.x;
                 camera.position.y = cameraSourcePoint.y;
                 camera.position.z = cameraSourcePoint.z;
-            });
+            });*/
             tween.onComplete(function()
             {
                 scope.SetZoomLevel( 1 );
@@ -612,11 +612,11 @@ UG.LocationMarkers.prototype =
             if( onLocationClickCB ) onLocationClickCB( this.markers[ index ] );
 
             //
-            if( earthOrbitControls ) 
+            /*if( earthOrbitControls ) 
             {
                 earthOrbitControls.enabled = false;
                 //earthOrbitControls.update();
-            }
+            }*/
 
             // Change State
             appStateMan.ChangeState( PX.AppStates.AppStateLevel1ToLevel2 );
@@ -732,13 +732,13 @@ UG.LocationMarkers.prototype =
             tween.onUpdate(function()
             {
                 camera.lookAt( cameraLookAtPoint );
-                if( earthOrbitControls )
+                /*if( earthOrbitControls )
                 {
                     earthOrbitControls.enabled = true;
                     earthOrbitControls.target.copy( cameraLookAtPoint );
                     earthOrbitControls.state = -1;
                     earthOrbitControls.update();
-                }
+                }*/
             });
 
             // ROTATE EARTH
