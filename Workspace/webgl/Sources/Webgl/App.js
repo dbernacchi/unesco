@@ -681,6 +681,15 @@ function Setup()
     appStateMan.AddStateChangeCallback( function( state )
     {
         console.log( "+--+  Changing State:\t", PX.AppStatesString[state], state );
+
+        if( state === PX.AppStates.AppStateLevel1ToLeve2 )
+        {
+            // do slider fade IN
+        }
+        if( state === PX.AppStates.AppStateLevel2ToLeve1 )
+        {
+            // do slider fade OUT
+        }
     });
 
     // Set App state
