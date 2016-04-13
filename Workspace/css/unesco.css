@@ -1,0 +1,73 @@
+#glContainer 
+{
+    display: inline-block;
+    position: absolute;
+    overflow: hidden;
+}
+#map 
+{
+    overflow: hidden;
+    display: inline-block;
+    width: 200px;
+    height: 150px;
+    z-index: -1000;
+}
+.preloaderBG
+{
+    display: inline-block;
+    position: absolute;
+    width: 80%;
+    height: 20px;
+    top: 50%;
+    left: 10%;
+    background-color: grey;
+}
+.preloaderFG
+{
+    display: inline-block;
+    position: absolute;
+    width: 0%;
+    height: 20px;
+    top: 50%;
+    left: 10%;
+    background-color: white;
+}
+
+body {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin-right: 0px;
+    margin-left: 0px;
+    padding-top: 0px;
+    padding-right: 0px;
+    padding-bottom: 0px;
+    padding-left: 0px;
+}
+
+
+
+#browse{
+	position: absolute; top: 10%; right: 10%;
+	width: 300px;
+	height: 668px;
+}
+
+.browse-inner{position: relative; width: 100%; height: 100%}
+
+.browse-inner .arrows{position: absolute; top: 50%; left: 0;}
+
+.browse-inner .arrows .arrow{ display: block;}
+
+.browse-inner .arrows .arrow.up{top: 0; left: 0;}
+
+.browse-inner .arrows .arrow.down{top: 100; left: 0;}
+
+.browse-inner .items{position: absolute; width: 250px; height: 750px; overflow: hidden; top: 0; right: 0;}
+
+.browse-inner .items .items-inner-1{position: relative;}
+
+.browse-inner .items .items-inner-1 .items-inner-2{position: absolute; top: 0;}
+
+.browse-inner .items .items-inner-1 .items-inner-2 .item{height: 250px; line-height: 250px; position: relative;}
+
+.browse-inner .items .items-inner-1 .items-inner-2 .item img{display: block; margin: auto; top: 0;  bottom: 0; left: 0; right: 0; vertical-align: middle;}

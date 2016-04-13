@@ -237,23 +237,23 @@ function CreateRenderer()
 function LoadData()
 {
     $.when(
-        LoadTexture( "EarthDiffuseMap", "data/textures/earth_diffuse_blue.jpg" )
-        //LoadTexture( "EarthDiffuseMap", "data/textures/earth_diffuse.jpg" )
-        //LoadTexture( "EarthDiffuseMap", "data/textures/earth_diffuse_august.jpg" )
-        , LoadTexture( "EarthNormalMap", "data/textures/earth_normals.png" )
-        , LoadTexture( "EarthSpecularMap", "data/textures/earth_specular.jpg" )
-        //, LoadTexture( "EarthCloudsMap", "data/textures/Clouds.png" )
-        , LoadTexture( "EarthCloudsMap", "data/textures/earth_clouds.png" )
-        //, LoadTexture( "EarthCloudsNormalMap", "data/textures/earth_clouds_normals.png" )
-        , LoadTexture( "EarthNightLightsMap", "data/textures/earth_night_lights.jpg" )
-        , LoadTexture( "Circle", "data/textures/circle_full.png" )
-        , LoadShaderData("EarthVertexShader", "data/shaders/Earth.vertex")
-        , LoadShaderData("EarthPixelShader", "data/shaders/Earth.fragment")
-        , LoadJsonData("LocationsJson", "data/latlon.json")
-        //, LoadTexture( "TextAtlasTex", "data/fonts/lucida_0.png" )
-        //, LoadText( "TextAtlasXml", "data/fonts/lucida.xml" )
-        , LoadTexture( "TextAtlasTex", "data/fonts/arialLargeTransparent.png" )
-        , LoadText( "TextAtlasXml", "data/fonts/arialLarge.xml" )
+        LoadTexture( "EarthDiffuseMap", "webgl/data/textures/earth_diffuse_blue.jpg" )
+        //LoadTexture( "EarthDiffuseMap", "webgl/data/textures/earth_diffuse.jpg" )
+        //LoadTexture( "EarthDiffuseMap", "webgl/data/textures/earth_diffuse_august.jpg" )
+        , LoadTexture( "EarthNormalMap", "webgl/data/textures/earth_normals.png" )
+        , LoadTexture( "EarthSpecularMap", "webgl/data/textures/earth_specular.jpg" )
+        //, LoadTexture( "EarthCloudsMap", "webgl/data/textures/Clouds.png" )
+        , LoadTexture( "EarthCloudsMap", "webgl/data/textures/earth_clouds.png" )
+        //, LoadTexture( "EarthCloudsNormalMap", "webgl/data/textures/earth_clouds_normals.png" )
+        , LoadTexture( "EarthNightLightsMap", "webgl/data/textures/earth_night_lights.jpg" )
+        , LoadTexture( "Circle", "webgl/data/textures/circle_full.png" )
+        , LoadShaderData("EarthVertexShader", "webgl/data/shaders/Earth.vertex")
+        , LoadShaderData("EarthPixelShader", "webgl/data/shaders/Earth.fragment")
+        , LoadJsonData("LocationsJson", "webgl/data/latlon.json")
+        //, LoadTexture( "TextAtlasTex", "webgl/data/fonts/lucida_0.png" )
+        //, LoadText( "TextAtlasXml", "webgl/data/fonts/lucida.xml" )
+        , LoadTexture( "TextAtlasTex", "webgl/data/fonts/arialLargeTransparent.png" )
+        , LoadText( "TextAtlasXml", "webgl/data/fonts/arialLarge.xml" )
     ).done(function ()
     {
         PostLoadData();
@@ -609,10 +609,10 @@ function Setup()
         artefactScene.add( artAmbLight );
 
         //
-        //LoadBINScene( "data/models/06_Mihrab_of_the_Mosque_Al_Hasan/mesh.js", artefactScene );
-        //LoadScene( "data/models/duck/glTF/duck.gltf", artefactScene );
-        //LoadScene( "data/models/07_Sculpture_from_Hatra/sculpture.gltf", artefactScene );
-        //LoadScene( "data/models/06_Mihrab_of_the_Mosque_Al_Hasan/Mihrab of the mosque al Hasan.gltf", artefactScene );
+        //LoadBINScene( "webgl/data/models/06_Mihrab_of_the_Mosque_Al_Hasan/mesh.js", artefactScene );
+        //LoadScene( "webgl/data/models/duck/glTF/duck.gltf", artefactScene );
+        //LoadScene( "webgl/data/models/07_Sculpture_from_Hatra/sculpture.gltf", artefactScene );
+        //LoadScene( "webgl/data/models/06_Mihrab_of_the_Mosque_Al_Hasan/Mihrab of the mosque al Hasan.gltf", artefactScene );
 
 	    artefactOrbitControls = new THREE.OrbitControls( artefactCamera, renderer.domElement );
         artefactOrbitControls.enableDamping = true;
@@ -682,13 +682,17 @@ function Setup()
     {
         console.log( "+--+  Changing State:\t", PX.AppStatesString[state], state );
 
-        if( state === PX.AppStates.AppStateLevel1ToLeve2 )
+        if( PX.AppStatesString[state] == 'AppStateLevel1ToLevel2' )
         {
             // do slider fade IN
+            console.log("SHOW");
+            UNESCO.showBrowse();
         }
-        if( state === PX.AppStates.AppStateLevel2ToLeve1 )
+        
+        if( PX.AppStatesString[state] === 'AppStateLevel1' )
         {
             // do slider fade OUT
+            UNESCO.hideBrowse();
         }
     });
 
@@ -730,8 +734,8 @@ function InitGUI()
 
         if( !tempIsLoaded && !newValue )
         {
-            LoadBINScene( "data/models/06_Mihrab_of_the_Mosque_Al_Hasan/mesh.js", artefactScene );
-            //LoadScene( "data/models/06_Mihrab_of_the_Mosque_Al_Hasan/Mihrab of the mosque al Hasan.gltf", artefactScene );
+            LoadBINScene( "webgl/data/models/06_Mihrab_of_the_Mosque_Al_Hasan/mesh.js", artefactScene );
+            //LoadScene( "webgl/data/models/06_Mihrab_of_the_Mosque_Al_Hasan/Mihrab of the mosque al Hasan.gltf", artefactScene );
             tempIsLoaded = true;
         }
     });

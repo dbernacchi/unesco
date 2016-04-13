@@ -1,0 +1,167 @@
+﻿<!doctype html>
+<html>
+<head>
+
+	<script src="webgl/Sources/Webgl/Detector.js"></script>
+	<script src="webgl/Sources/3rdparty/threejs/three.js"></script>
+	<script src="webgl/Sources/3rdparty/threejs/Projector.js"></script>
+	<script src="webgl/Sources/3rdparty/threejs/controls/OrbitControls.js"></script>
+	<script src="webgl/Sources/3rdparty/threejs/loaders/gltf/glTF-parser.js"></script>
+	<script src="webgl/Sources/3rdparty/threejs/loaders/gltf/glTFLoader.js"></script>
+	<script src="webgl/Sources/3rdparty/threejs/loaders/gltf/glTFLoaderUtils.js"></script>
+	<script src="webgl/Sources/3rdparty/threejs/loaders/gltf/glTFAnimation.js"></script>
+	<script src="webgl/Sources/3rdparty/threejs/loaders/gltf/glTFShaders.js"></script>
+	<script src="webgl/Sources/3rdparty/threejs/loaders/BinaryLoader.js"></script>
+	<script src="webgl/Sources/3rdparty/threejs/postprocessing/BloomPass.js"></script>
+	<script src="webgl/Sources/3rdparty/threejs/postprocessing/EffectComposer.js"></script>
+	<script src="webgl/Sources/3rdparty/threejs/postprocessing/ShaderPass.js"></script>
+	<script src="webgl/Sources/3rdparty/threejs/postprocessing/RenderPass.js"></script>
+	<script src="webgl/Sources/3rdparty/threejs/shaders/CopyShader.js"></script>
+	<script src="webgl/Sources/3rdparty/threejs/shaders/ConvolutionShader.js"></script>
+	<script src="webgl/Sources/3rdparty/jquery/jquery-1.12.2.min.js"></script>
+	<script src="webgl/Sources/3rdparty/dat.gui.min.js"></script>
+	<script src="webgl/Sources/3rdparty/stats.min.js"></script>
+	<script src="webgl/Sources/3rdparty/suncalc.js"></script>
+	<script src="webgl/Sources/3rdparty/markerclusterer.js"></script>
+	<script src="webgl/Sources/3rdparty/Tween.js"></script>
+	<script src="webgl/Sources/3rdparty/dojo.js"></script>
+	<script src="webgl/Sources/3rdparty/sylvester.js"></script>
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB_BvzvNCArogTRPRnbUicqze38-91MNFA"></script>
+	
+	
+	<link rel="stylesheet" type="text/css" href="css/unesco.css">
+	<script src="js/unesco.js"></script>	
+	
+	
+	
+</head>
+<body bgcolor="#000000">
+<script>
+if(!Detector.webgl) 
+{
+    Detector.addGetWebGLMessage();
+}
+</script>
+<div id="map"></div>
+<div id="glContainer"></div>
+<div class="preloaderBG" id="preloaderBG"></div>
+<div class="preloaderFG" id="preloaderFG"></div>
+
+<div class="UNESCO" id="splash">
+
+    <div class="status-bar-top"></div>
+    <div class="status-bar-bottom"></div>    
+    <div class="explore-button"></div>
+    
+</div>
+    
+<div class="UNESCO" id="browse" style="display:none;">
+
+	<div class="browse-inner">
+	
+		<div class="arrows">
+			<a href="#" class="arrow up">
+				<img src="img/browse/arrow-up.png" />
+			</a>
+			
+			<a href="#" class="arrow down">
+				<img src="img/browse/arrow-down.png" />
+			</a>
+		</div>
+			
+		<div class="items">
+			<div class="items-inner-1">
+				<div class="items-inner-2">
+					<div class="item">
+						<a href="#"><img src="img/browse/static-browse-1.png" /></a>
+					</div>
+					<div class="item">
+						<a href="#"><img src="img/browse/static-browse-2.png" /></a>
+					</div>
+					<div class="item">
+						<a href="#"><img src="img/browse/static-browse-3.png" /></a>
+					</div>
+					<div class="item">
+						<a href="#"><img src="img/browse/static-browse-1.png" /></a>
+					</div>
+					<div class="item">
+						<a href="#"><img src="img/browse/static-browse-2.png" /></a>
+					</div>
+					<div class="item">
+						<a href="#"><img src="img/browse/static-browse-3.png" /></a>
+					</div>
+					<div class="item">
+						<a href="#"><img src="img/browse/static-browse-1.png" /></a>
+					</div>
+					<div class="item">
+						<a href="#"><img src="img/browse/static-browse-2.png" /></a>
+					</div>
+					<div class="item">
+						<a href="#"><img src="img/browse/static-browse-3.png" /></a>
+					</div>
+					<!--<div class="item">
+						<a href="#"><img src="img/browse/static-browse-1.png" /></a>
+					</div>
+					<div class="item">
+						<a href="#"><img src="img/browse/static-browse-2.png" /></a>
+					</div>
+					<div class="item">
+						<a href="#"><img src="img/browse/static-browse-3.png" /></a>
+					</div>
+					<div class="item">
+						<a href="#"><img src="img/browse/static-browse-1.png" /></a>
+					</div>
+					<div class="item">
+						<a href="#"><img src="img/browse/static-browse-2.png" /></a>
+					</div>
+					<div class="item">
+						<a href="#"><img src="img/browse/static-browse-3.png" /></a>
+					</div>
+					<div class="item">
+						<a href="#"><img src="img/browse/static-browse-1.png" /></a>
+					</div>
+					<div class="item">
+						<a href="#"><img src="img/browse/static-browse-2.png" /></a>
+					</div>
+					<div class="item">
+						<a href="#"><img src="img/browse/static-browse-3.png" /></a>
+					</div>
+					<div class="item">
+						<a href="#"><img src="img/browse/static-browse-1.png" /></a>
+					</div>
+					<div class="item">
+						<a href="#"><img src="img/browse/static-browse-2.png" /></a>
+					</div>
+					<div class="item">
+						<a href="#"><img src="img/browse/static-browse-3.png" /></a>
+					</div>
+					<div class="item">
+						<a href="#"><img src="img/browse/static-browse-1.png" /></a>
+					</div>
+					<div class="item">
+						<a href="#"><img src="img/browse/static-browse-2.png" /></a>
+					</div>
+					<div class="item">
+						<a href="#"><img src="img/browse/static-browse-3.png" /></a>
+					</div>-->
+				<div>
+			</div>		
+		</div>
+	</div>
+</div>
+
+
+<script src="webgl/Sources/Webgl/Common.js"></script>
+<script src="webgl/Sources/Webgl/Utils.js"></script>
+<script src="webgl/Sources/3rdparty/bmFont.js"></script>
+<script src="webgl/Sources/Webgl/TextRenderer.js"></script>
+<script src="webgl/Sources/Webgl/Database.js"></script>
+<script src="webgl/Sources/Webgl/Loaders.js"></script>
+<script src="webgl/Sources/Webgl/AppStateHandler.js"></script>
+<script src="webgl/Sources/Webgl/Camera.js"></script>
+<script src="webgl/Sources/Webgl/Earth.js"></script>
+<script src="webgl/Sources/Webgl/LocationMarkers.js"></script>
+<script src="webgl/Sources/Webgl/App.js"></script>
+<script src="webgl/Sources/Webgl/Main.js"></script>
+</body>
+</html>
