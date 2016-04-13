@@ -95,9 +95,8 @@ var previousMouseY = 0.0;
 var mouseDeltaX = 0.0;
 var mouseDeltaY = 0.0;
 var isMouseDown = false;
-//var isMouseUp = false;
-//var isMouseMoved = false;
-//var isMouseClick = false;
+var isMouseMoved = false;
+var isMouseClick = false;
 var mouseVector = new THREE.Vector2();
 var mouseVector3d = new THREE.Vector3();
 
@@ -1106,28 +1105,29 @@ function OnResize()
 function OnMouseDown(event)
 {
     isMouseDown = true;
-    //isMouseMoved = false;
-    //isMouseUp = false;
+    isMouseMoved = false;
     mouseX = event.clientX;
     mouseY = event.clientY;
 }
 
 function OnMouseUp(event)
 {
-    //isMouseUp = true;
     isMouseDown = false;
-    //if( isMouseMoved ) isMouseClick = false;
-    //else isMouseClick = true;
+    if( isMouseMoved ) isMouseClick = false;
+    else isMouseClick = true;
     mouseX = event.clientX;
     mouseY = event.clientY;
 
     //
-    locationMarkers.OnMouseUp( mouseVector3d, camera );
+    if( isMouseClick )
+    {
+        locationMarkers.OnMouseUp( mouseVector3d, camera );
+    }
 }
 
 function OnMouseMove(event)
 {
-    //isMouseMoved = true;
+    isMouseMoved = true;
     mouseX = event.clientX;
     mouseY = event.clientY;
 
