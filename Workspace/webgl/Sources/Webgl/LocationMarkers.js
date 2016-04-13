@@ -380,7 +380,6 @@ UG.LocationMarkers.prototype =
             // Use distance to camera for constant size
             if( this.zoomLevel1IntroAnimDone ) 
             {
-                console.log( "moooo" );
                 distToCamera.subVectors( camera.position, loc.position );
                 var locationScale = distToCamera.length();
                 locationScale = ( locationScale * PX.kCameraOneOverMaxDistance ); /// PX.kCameraMaxDistance );
