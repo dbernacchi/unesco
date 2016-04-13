@@ -613,14 +613,6 @@ UG.LocationMarkers.prototype =
 
             // CAMERA POSITION
             var target = this.meshes[ index ].position.clone().normalize().multiplyScalar( Params.CameraDistance );
-            /*var tween = new TWEEN.Tween( camera.position ).to( target, Params.AnimTime * 1000.0 );
-            tween.easing( TWEEN.Easing.Quadratic.InOut );
-            tween.start();
-            tween.onComplete(function()
-            {
-                if( earthOrbitControls ) earthOrbitControls.enabled = false;
-            });*/
-
             var target2 = target.clone().add( right );
             var tween2 = new TWEEN.Tween( camera.position ).to( target2, Params.AnimTime * 1000.0 );
             tween2.easing( TWEEN.Easing.Quadratic.InOut );
@@ -629,7 +621,6 @@ UG.LocationMarkers.prototype =
 
             // CAMERA LOOKAT
             var cameraTargetPoint2 = cameraLookAtPoint.clone().add( right );
-            //var position2 = { x : cameraLookAtPoint.x, y: cameraLookAtPoint.y, z: cameraLookAtPoint.z };
             var target2 = { x : cameraTargetPoint2.x, y: cameraTargetPoint2.y, z: cameraTargetPoint2.z };
             tween = new TWEEN.Tween( cameraLookAtPoint ).to( target2, Params.AnimTime * 1000.0 );
             tween.easing( TWEEN.Easing.Quadratic.InOut );
@@ -638,8 +629,6 @@ UG.LocationMarkers.prototype =
             tween.onUpdate(function()
             {
                 camera.lookAt( cameraLookAtPoint );
-                //camera.lookAt( new THREE.Vector3( position2.x, position2.y, position2.z ) );
-                //cameraLookAtPoint.copy( position2 );
                 /*if( earthOrbitControls )
                 {
                     earthOrbitControls.target.copy( cameraLookAtPoint );
@@ -876,6 +865,7 @@ UG.LocationMarkers.prototype =
     {
         if( this.doPopulation || this.doAvoidance === false )
         {
+            //console.log( "no avoidance" );
             return;
         }
 
@@ -916,11 +906,10 @@ UG.LocationMarkers.prototype =
                 var dist = locj.position.clone().sub( loci.position );
                 var dir = dist.clone().normalize();
 
-                var distInKm = markerCluster.distanceBetweenPoints_( p1, p2 );
-                //var minDistance = Params.Dummy;
-                //var minDistance = MinDistancesPerLevel[ 0 ];
                 var minDistance = MinDistancesPerLevel[ this.zoomLevel ];
                 //var minDistance = MinDistancesPerLevel[ PX.Clamp( this.zoomLevel, 0, PX.kZoomMaxLevel ) ];
+
+                var distInKm = markerCluster.distanceBetweenPoints_( p1, p2 );
                 if( distInKm <= minDistance )
                 {
                     this.avoidanceCount++;
@@ -959,84 +948,14 @@ UG.LocationMarkers.prototype =
                     locj.latlon.set( latlonj.x, latlonj.y );
                     //console.log( "after : ", loci.latlon, locj.latlon );
                 }
-/**
-                // Use distance to camera for constant size
-                distToCamera.subVectors( camera.position, loci.position );
-                var locationScalei = distToCamera.length();
-                locationScalei = ( locationScalei / PX.kCameraMaxDistance );
-
-                var dist = locj.position.clone().sub( loci.position );
-                var dir = dist.clone().normalize();
-                var len = dist.length();
-                console.log( locationScalei, len );
-                if( len <= ( PX.kLocationMarkerScale ) )
-                //if( len <= ( PX.kLocationMarkerScale * 0.5 ) / ( 1.0 - (locationScalei) ) )
-                {
-                    loci.position.x -= dir.x * (1.0 / 60.0) * 0.4;
-                    loci.position.y -= dir.y * (1.0 / 60.0) * 0.4;
-                    loci.position.z -= dir.z * (1.0 / 60.0) * 0.4;
-                    //
-                    locj.position.x += dir.x * (1.0 / 60.0) * 0.4;
-                    locj.position.y += dir.y * (1.0 / 60.0) * 0.4;
-                    locj.position.z += dir.z * (1.0 / 60.0) * 0.4;
-
-                    loci.position.normalize();
-                    loci.position.multiplyScalar( PX.kEarthScale );
-                    locj.position.normalize();
-                    locj.position.multiplyScalar( PX.kEarthScale );
-
-                    var latloni = PX.Utils.ConvertPosToLatLon( loci.position.x, loci.position.y, loci.position.z, PX.kEarthScale );
-                    var latlonj = PX.Utils.ConvertPosToLatLon( locj.position.x, locj.position.y, locj.position.z, PX.kEarthScale );
-
-                    //camLatLon.x = ( 90.0 - camLatLon.x );
-                    //camLatLon.y = camLatLon.y - 90.0;
-
-                    // @FIXME: Coords dont match googles
-                    // Convert
-                    latloni.x = 90 - latloni.x;
-                    latloni.y = latloni.y - 90.0;
-                    latlonj.x = 90.0 - latlonj.x;
-                    latlonj.y = latlonj.y - 90.0;
-
-                    //console.log( "before: ", loci.latlon, locj.latlon );
-                    loci.latlon.set( latloni.x, latloni.y );
-                    locj.latlon.set( latlonj.x, latlonj.y );
-                    //console.log( "after : ", loci.latlon, locj.latlon );
-                }
-***/
             }
         }
 
-        if( this.zoomLevel > 0 && this.avoidanceCount <= 0 ) // this.markersCount/2 )
+        //console.log( "this.avoidanceCount: ", this.avoidanceCount );
+        if( this.zoomLevel > 0 && this.avoidanceCount <= this.markersCount/4 )
         {
-            console.log( "Stop avoidance code" );
+            console.log( "+--+  Stop avoidance code" );
             this.doAvoidance = false;
-/*
-            var scope = this;
-
-            for( var i=0; i<this.markersCount; ++i )
-            {
-                var loc = this.markers[i];
-
-                var locpos = loc.position; //.clone().applyQuaternion( earth.mesh.quaternion );
-                distToCamera.subVectors( camera.position, locpos );
-                var locationScale = distToCamera.length();
-                locationScale = ( locationScale / PX.kCameraMaxDistance );
-
-                var target = new THREE.Vector3( locationScale, locationScale, locationScale );
-                this.markers[i].tween = new TWEEN.Tween( this.markers[i].scale ).to( target, (2000.0/this.markersCount) );
-                this.markers[i].tween.easing( TWEEN.Easing.Sinusoidal.InOut );
-                this.markers[i].tween.delay( ((i * 2000)/this.markersCount) );
-                this.markers[i].tween.start();
-                if( i === this.markersCount-1 )
-                {
-                    this.markers[i].tween.onComplete( function()
-                    {
-                        scope.zoomLevel1IntroAnimDone = true;
-                    });
-                }
-            }
-*/
         }
     }
 };

@@ -45,7 +45,7 @@ PX =
     , kLocationMarkerScale: 0.7
     , kLocationMarkerDetail: 16
     , kLocationMarkerZScale: 0.125
-    , kAvoidanceSpeed: 0.031
+    , kAvoidanceSpeed: 0.1
     //, kAvoidanceSpeed: 6.0
     , kMaxGridSize: 4
     , kLocationTextSize: 120.0
