@@ -28,6 +28,7 @@ UG.LocationMarkers = function()
 	this.locationsGroup         = null;
 	this.meshes                 = [];
 	this.markers                = [];
+	this.level0Scales           = [];
     //this.textRenderer         = null;
     this.textRenderer2          = null;
 	this.markersCount           = 0;
@@ -52,6 +53,7 @@ UG.LocationMarkers = function()
     this.camera2d               = null;
 
     this.clickedMarkerIndex     = -1;
+    this.level2GlobalScale      = new THREE.Vector3( 1.0, 1.0, 1.0 );
 };
 
 UG.LocationMarkers.prototype =
@@ -89,7 +91,7 @@ UG.LocationMarkers.prototype =
 	        var mesh = new THREE.Mesh( geom, material );
 
 	        mesh.position.copy( locations[i].position );
-	        mesh.scale.set( 0.001, 0.001, 0.001 );
+	        mesh.scale.set( PX.EPSILON, PX.EPSILON, PX.EPSILON);
 	        mesh.lookAt( new THREE.Vector3(0, 0, 0) );
 
 	        mesh.name = locations[i].name;
@@ -100,11 +102,14 @@ UG.LocationMarkers.prototype =
 	        var lm = new UG.LocationMarker();
 	        lm.text = "";
 	        lm.position.copy( locations[i].position );
+            lm.scale.set( PX.EPSILON, PX.EPSILON, PX.EPSILON );
             //lm.clicks = 0;
             lm.color = color;
             lm.index = i;
             lm.type = rndIdx;
 	        this.markers.push( lm );
+
+            this.level0Scales.push( new THREE.Vector3( PX.EPSILON, PX.EPSILON, PX.EPSILON ) );
 
 	        this.locationsGroup.add( mesh );
 	    }
@@ -115,7 +120,7 @@ UG.LocationMarkers.prototype =
         //this.locationsGroup.add( this.textRenderer.mesh );
 
         //
-        //this.locationsGroup.scale.set( PX.EPSILON, PX.EPSILON, PX.EPSILON );
+        this.locationsGroup.scale.set( PX.EPSILON, PX.EPSILON, PX.EPSILON );
 
 	    scene.add( this.locationsGroup );
 
@@ -202,7 +207,7 @@ UG.LocationMarkers.prototype =
     , TweenLevel1: function( targetValue, time, delay, onStartCB, onCompleteCB )
     {
         //this.locationsGroup.scale.set( 1, 1, 1 );
-        var target = { x : targetValue, y: targetValue, z: targetValue };
+        var target = new THREE.Vector3( targetValue, targetValue, targetValue );
         var tween = new TWEEN.Tween( this.locationsGroup.scale ).to( target, time );
         tween.easing( TWEEN.Easing.Quintic.InOut );
         tween.delay( (delay === undefined ) ? 0 : delay );
@@ -307,23 +312,14 @@ UG.LocationMarkers.prototype =
         {
             var loc = this.markers[i];
 
-            // Use distance to camera for constant size
-            if( locationsIntroAnimDone ) 
-            {
-                distToCamera.subVectors( camera.position, loc.position );
-                var locationScale = distToCamera.length();
-                locationScale = ( locationScale / PX.kCameraMaxDistance );
-                loc.scale.set( locationScale, locationScale, locationScale );
-            }
-
             // Text Info
             //
-            var ttt = (1.0) * PX.kLocationMarkerZScale;
+            //var ttt = (1.0) * PX.kLocationMarkerZScale;
             //var ttt = ( loc.markerCount > 0 ? loc.markerCount * PX.kLocationMarkerZScale : 1.0 );
 
-            var p0 = camera.position.clone().sub( loc.position ).normalize();
-            var p1 = loc.position.clone().normalize();
-            var dot = p0.dot( p1 );
+            var v0 = camera.position.clone().sub( loc.position ).normalize();
+            var v1 = loc.position.clone().normalize();
+            var dot = v0.dot( v1 );
 
             // Update billboard's size
             this.billboards.material.size = this.billboardsGroup.scale.x * Params.Level0MarkerRadius;
@@ -379,7 +375,6 @@ UG.LocationMarkers.prototype =
         var matRes = new THREE.Matrix4();
         var distToCamera = new THREE.Vector3();
 
-        var bindex = 0;
         for( var i=0; i<this.markersCount; ++i )
         {
             var loc = this.markers[i];
@@ -387,17 +382,25 @@ UG.LocationMarkers.prototype =
             // Use distance to camera for constant size
             if( this.zoomLevel1IntroAnimDone ) 
             {
+                console.log( "moooo" );
                 distToCamera.subVectors( camera.position, loc.position );
                 var locationScale = distToCamera.length();
-                locationScale = ( locationScale / PX.kCameraMaxDistance );
+                locationScale = ( locationScale * PX.kCameraOneOverMaxDistance ); /// PX.kCameraMaxDistance );
+                // apply a global scale (used in level 2 to scale all non selected markers)
+                if( i !== this.clickedMarkerIndex ) locationScale *= this.level2GlobalScale.x;
                 loc.scale.set( locationScale, locationScale, locationScale );
 
-                //var per = i / (this.markersCount-1);
-                //var pulse = PX.CubicPulse( 0.0, 0.8, Math.sin(time*2.0+i) );
-                //var pulse = PX.Saturate( PX.Utils.Pulse( (2.0*Math.PI*per) + time, 0.5 ) );
-                //loc.scale.x += pulse * 0.1;
-                //loc.scale.y += pulse * 0.1;
-                //loc.scale.z += pulse * 0.1;
+                // If there's a clicked marker, do pulse effect on it
+                // this is used in Level2 when a location has been selected
+                if( i === this.clickedMarkerIndex )
+                {
+                    var per = i / (this.markersCount-1);
+                    var pulse = PX.CubicPulse( 0.0, 0.5, Math.sin(time*2.0+i) );
+                    //var pulse = PX.Saturate( PX.Utils.Pulse( (2.0*Math.PI*per) + time, 0.5 ) );
+                    loc.scale.x += pulse * 0.2;
+                    loc.scale.y += pulse * 0.2;
+                    loc.scale.z += pulse * 0.2;
+                }
             }
 
             this.meshes[i].position.copy( loc.position );
@@ -563,8 +566,6 @@ UG.LocationMarkers.prototype =
                     appStateMan.ChangeState( PX.AppStates.AppStateLevel1 );
 
                     trackball.Reset( camera );
-
-                    //scope.doAvoidance = false;
                 });
             });
 
@@ -668,6 +669,12 @@ UG.LocationMarkers.prototype =
                 trackball.Reset( camera );
 
             });
+
+            // Marker Global Scale
+            var gsTarget = new THREE.Vector3( 0.2, 0.2, 0.2 );
+            var tweengs = new TWEEN.Tween( this.level2GlobalScale ).to( gsTarget, Params.AnimTime * 1000.0 );
+            tweengs.easing( TWEEN.Easing.Quadratic.InOut );
+            tweengs.start();
         }
 
         // Level 2
@@ -685,6 +692,11 @@ UG.LocationMarkers.prototype =
             // Change State
             appStateMan.ChangeState( PX.AppStates.AppStateLevel2ToLevel1 );
 
+            // Marker Global Scale
+            var gsTarget = new THREE.Vector3( 1, 1, 1 );
+            var tweengs = new TWEEN.Tween( this.level2GlobalScale ).to( gsTarget, Params.AnimTime * 1000.0 );
+            tweengs.easing( TWEEN.Easing.Quadratic.InOut );
+            tweengs.start();
 
             // CAMERA POSITION
             var target = this.meshes[ index ].position.clone().normalize().multiplyScalar( Params.CameraDistance );
@@ -722,7 +734,7 @@ UG.LocationMarkers.prototype =
 
             // ROTATE EARTH
             var start = earth.mesh.quaternion.clone();
-            var end = new THREE.Quaternion();
+            //var end = new THREE.Quaternion();
 
             var positionw = { x: 0.0 };
             var targetw = { x: 1.0 };
@@ -732,8 +744,8 @@ UG.LocationMarkers.prototype =
             tweenw.start();
             tweenw.onUpdate(function()
             {
-                THREE.Quaternion.slerp( start, end, earth.mesh.quaternion, positionw.x );
-                THREE.Quaternion.slerp( start, end, scope.locationsGroup.quaternion, positionw.x );
+                THREE.Quaternion.slerp( start, PX.IdentityQuat, earth.mesh.quaternion, positionw.x );
+                THREE.Quaternion.slerp( start, PX.IdentityQuat, scope.locationsGroup.quaternion, positionw.x );
             });
             tweenw.onComplete( function()
             {
@@ -742,7 +754,7 @@ UG.LocationMarkers.prototype =
                 trackball.Reset( camera );
 
                 // Reset clicked marker index
-                this.clickedMarkerIndex = -1;
+                scope.clickedMarkerIndex = -1;
             });
         }
 
@@ -834,19 +846,24 @@ UG.LocationMarkers.prototype =
 
                 this.markersCount++;
 
+                // Scale meshes down by default
+                this.meshes[i].scale.copy( this.markers[i].scale );
 
+                
                 // Use distance to camera for constant size
-                var locpos = this.markers[i].position; //.clone().applyQuaternion( earth.mesh.quaternion );
-                distToCamera.subVectors( camera.position, locpos );
+                distToCamera.subVectors( camera.position, this.markers[i].position );
                 var locationScale = distToCamera.length();
                 locationScale = ( locationScale / PX.kCameraMaxDistance );
 
                 //this.markers[i].scale.set( locationScale, locationScale, locationScale );
                 
                 var target = new THREE.Vector3( locationScale, locationScale, locationScale );
-                this.markers[i].tween = new TWEEN.Tween( this.markers[i].scale ).to( target, 100.0 ); ///clusterCount );
+                this.markers[i].tween = new TWEEN.Tween( this.markers[i].scale ).to( target, 250.0 ); ///clusterCount );
                 this.markers[i].tween.easing( TWEEN.Easing.Quintic.InOut );
-                this.markers[i].tween.delay( ((i * 200)/clusterCount) );
+
+                // Delay is the time that takes to tween Level1 group node
+                var delayTime = Params.AnimTime * 1000.0;
+                this.markers[i].tween.delay( delayTime + ((i * 500)/clusterCount) );
                 this.markers[i].tween.start();
                 if( i === clusterCount-1 )
                 {

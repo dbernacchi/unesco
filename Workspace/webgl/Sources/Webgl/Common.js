@@ -54,11 +54,13 @@ PX =
     , kLocationMouseOverColor: 0xff00ff
     , kLocationMouseClickedColor: 0xff7f00
 
-    , kCameraFovY: 36.0 //45.0
+    , kCameraFovY: 36.0
     , kCameraNearPlane: 1.0
     , kCameraFarPlane: 200.0
-    , kCameraMinDistance: 50 //60.0
+    , kCameraMinDistance: 50
     , kCameraMaxDistance: 120.0
+    , kCameraOneOverMinDistance: 1.0 / 50.0
+    , kCameraOneOverMaxDistance: 1.0 / 120.0
     //, kGlobalTimeScale: 1.0
 
     , kZoomMaxLevel: 3.0

@@ -23,6 +23,7 @@ var artefactSceneBSphere = null;
 var artefactOrbitControls = null;
 var tempIsLoaded = false;
 
+var aspectRatio = 1.0;
 var camera2d = null;
 var camera = null;
 var scene = null;
@@ -535,7 +536,7 @@ function Setup()
     //var minDim = Math.min( windowWidth, windowHeight );
     //var maxDim = Math.max( windowWidth, windowHeight );
     //var aspectRatio = maxDim / minDim;
-    var aspectRatio = windowWidth / windowHeight;
+    aspectRatio = windowWidth / windowHeight;
     console.log( "+--+  Aspect Ratio:", aspectRatio );
 
     // Create camera
@@ -845,7 +846,7 @@ function Update( time, frameTime )
             var rotSpeed = PX.Saturate( Params.CameraDistance / PX.kCameraMaxDistance );
             trackball.rotateFactor = rotSpeed * 0.5;
 
-            trackball.HandleMouseEvents( 1, 1, mouseDeltaX, mouseDeltaY, frameTime );
+            trackball.HandleMouseEvents( 1, 1, mouseDeltaX, mouseDeltaY, frameTime, aspectRatio );
             //console.log( trackball.rotateVel );
             //console.log( camera.position );
         }

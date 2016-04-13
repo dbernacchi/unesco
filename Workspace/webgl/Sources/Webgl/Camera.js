@@ -19,7 +19,13 @@ PX.CameraTrackball = function()
     this.rotateVel          = new THREE.Vector3();
     this.damping            = 0.15;
 
+    this.polarAngle         = 0.0;
+    this.minPolarAngle      = -10;
+    this.maxPolarAngle      =  10;
+
     this.rotateFactor       = 1.0;
+
+    this.tempQuat           = new THREE.Quaternion();
 
     // Convinience
     this.camPosition        = new THREE.Vector3();
@@ -43,12 +49,12 @@ PX.CameraTrackball.prototype =
 
     // eventType: 1: mousedown, 2: mousedrag, 3: mouserelease
     // mouseButton: 1: mouseButtonLeft, 2: mouseButtonMiddle, 3: mouseButtonRight
-    , HandleMouseEvents: function( eventType, mouseButton, deltaX, deltaY, frameTime )
+    , HandleMouseEvents: function( eventType, mouseButton, deltaX, deltaY, frameTime, aspectRatio )
     {
         // Rotate
         if( eventType == 1 && mouseButton == 1 )
         {
-            this.Rotate( deltaX, deltaY, frameTime );
+            this.Rotate( deltaX, deltaY, frameTime, aspectRatio );
         }
     }
 
@@ -67,25 +73,24 @@ PX.CameraTrackball.prototype =
         this.rotateVel.add( this.rotateAccel );
 		// Damping
         this.rotateVel.multiplyScalar( 1.0 - ( this.damping * frameTime * 60.0 ) );
-
 		// Cancel Acceleration
         this.rotateAccel.x = this.rotateAccel.y = this.rotateAccel.z = 0.0;
 
         var radians = PX.ToRadians( -this.rotateVel.y * this.rotateFactor );
-		var q = new THREE.Quaternion().setFromAxisAngle( this.right, radians );
+		this.tempQuat.setFromAxisAngle( this.right, radians );
 
-        var mat = this.Transform( this.target, q );
+        var mat = this.Transform( this.target, this.tempQuat );
 
         var pos = camera.position.clone().applyMatrix4( mat );
 
         var axis = new THREE.Vector3( 0, 1, 0 );
 
         radians = PX.ToRadians( -this.rotateVel.x * this.rotateFactor );
-		q = new THREE.Quaternion().setFromAxisAngle( axis, radians );
-        mat = this.Transform( this.target, q );
+		this.tempQuat.setFromAxisAngle( axis, radians );
+        mat = this.Transform( this.target, this.tempQuat );
         pos.applyMatrix4( mat );
 
-        this.right.applyQuaternion( q );
+        this.right.applyQuaternion( this.tempQuat );
 
         var dir = this.target.clone().sub( pos );
 
@@ -108,22 +113,22 @@ PX.CameraTrackball.prototype =
 
     , Transform( center, orientation )
     {
-        var m5, m6, m7;
+        var m0, m1, m2;
 
         var rc = center.clone();
-        m6 = new THREE.Matrix4().makeRotationFromQuaternion( orientation );
+        m1 = new THREE.Matrix4().makeRotationFromQuaternion( orientation );
 
-	   m5 = new THREE.Matrix4().makeTranslation( -rc.x, -rc.y, -rc.z );
-	   m7 = new THREE.Matrix4().makeTranslation(  rc.x,  rc.y,  rc.z );
+	    m0 = new THREE.Matrix4().makeTranslation( -rc.x, -rc.y, -rc.z );
+	    m2 = new THREE.Matrix4().makeTranslation(  rc.x,  rc.y,  rc.z );
 
-       var res = new THREE.Matrix4();
-       res.multiplyMatrices( m7, m6 );
-       res.multiplyMatrices( res, m5 );
-       return res;
+        var res = new THREE.Matrix4();
+        res.multiplyMatrices( m2, m1 );
+        res.multiplyMatrices( res, m0 );
+        return res;
     }
 
 
-    , Rotate( offsetX, offsetY, frameTime )
+    , Rotate( offsetX, offsetY, frameTime, aspectRatio )
     {
         // Cancel out the least value for the highest move
         if( Math.abs(offsetX) < Math.abs(offsetY) )
@@ -133,11 +138,24 @@ PX.CameraTrackball.prototype =
         
         // Limit the acceleration
         var speedX = 1.0;
-        var speedY = 1.0; // / this.camera.aspect;
+        var speedY = 1.0 / aspectRatio;
 
         this.rotateAccel.x = PX.Clamp( offsetX * frameTime, -speedX, speedX );
         this.rotateAccel.y = PX.Clamp( offsetY * frameTime, -speedY, speedY );
         this.rotateAccel.z = 0.0;
+
+        this.polarAngle += this.rotateAccel.y;
+        //console.log( this.polarAngle );
+        if( this.polarAngle >= this.maxPolarAngle )
+        {
+            this.polarAngle = this.maxPolarAngle;
+            this.rotateAccel.y = 0.0;
+        }
+        else if( this.polarAngle <= this.minPolarAngle )
+        {
+            this.polarAngle = this.minPolarAngle;
+            this.rotateAccel.y = 0.0;
+        }
     }
 };
 
