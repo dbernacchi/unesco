@@ -1121,7 +1121,11 @@ function OnMouseUp(event)
     //
     if( isMouseClick )
     {
-        locationMarkers.OnMouseUp( mouseVector3d, camera );
+        locationMarkers.OnMouseClick( mouseVector3d, camera, 
+        function( object )  // Callback returning clicked marker
+        {
+            console.log( "+--+  Clicked Marker:\t", object.GUID, object );
+        } );
     }
 }
 

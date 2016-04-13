@@ -180,7 +180,6 @@ UG.LocationMarkers.prototype =
 
     }
 
-
     , TweenLevel0: function( targetValue, time, delay, onStartCB, onCompleteCB )
     {
         var target = { x : targetValue, y: targetValue, z: targetValue };
@@ -527,10 +526,11 @@ UG.LocationMarkers.prototype =
         return -1;
     }
 
-    , OnMouseUp: function( mouse3d, camera, object )
+    , OnMouseClick: function( mouse3d, camera, onLocationClickCB )
     {
         var scope = this;
 
+        // Level 0
         if( appStateMan.GetCurrentState() === PX.AppStates.AppStateLevel0 )
         {
             var index = this.IntersectsLevel0( mouse3d );
@@ -597,6 +597,8 @@ UG.LocationMarkers.prototype =
                 camera.lookAt( cameraLookAtSourcePoint );
             });
         }
+
+        // Level 1
         else if( appStateMan.GetCurrentState() === PX.AppStates.AppStateLevel1 )
         {
             var index = this.IntersectsLevel1( g_Raycaster );
@@ -606,6 +608,10 @@ UG.LocationMarkers.prototype =
                 return;
             }
 
+            // Callback returning clicked marker object
+            if( onLocationClickCB ) onLocationClickCB( this.markers[ index ] );
+
+            //
             if( earthOrbitControls ) 
             {
                 earthOrbitControls.enabled = false;
@@ -685,6 +691,8 @@ UG.LocationMarkers.prototype =
                 appStateMan.ChangeState( PX.AppStates.AppStateLevel2 );
             });
         }
+
+        // Level 2
         else if( appStateMan.GetCurrentState() === PX.AppStates.AppStateLevel2 )
         {
             var intersects = g_Raycaster.intersectObject( earth.mesh, false );
