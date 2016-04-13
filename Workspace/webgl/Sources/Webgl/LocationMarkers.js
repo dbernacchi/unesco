@@ -51,6 +51,7 @@ UG.LocationMarkers = function()
     this.markerScene            = null;
     this.camera2d               = null;
 
+    this.clickedMarkerIndex     = -1;
 };
 
 UG.LocationMarkers.prototype =
@@ -300,11 +301,6 @@ UG.LocationMarkers.prototype =
 
         this.textRenderer2.Begin();
 
-
-        //var matRot = new THREE.Matrix4();
-        //var matTrans2 = new THREE.Matrix4();
-        //var matScale2 = new THREE.Matrix4();
-        //var matRes2 = new THREE.Matrix4();
         var distToCamera = new THREE.Vector3();
 
         for( var i=0; i<this.markersCount; ++i )
@@ -314,8 +310,7 @@ UG.LocationMarkers.prototype =
             // Use distance to camera for constant size
             if( locationsIntroAnimDone ) 
             {
-                var locpos = loc.position; //.clone().applyQuaternion( earth.mesh.quaternion );
-                distToCamera.subVectors( camera.position, locpos );
+                distToCamera.subVectors( camera.position, loc.position );
                 var locationScale = distToCamera.length();
                 locationScale = ( locationScale / PX.kCameraMaxDistance );
                 loc.scale.set( locationScale, locationScale, locationScale );
@@ -329,19 +324,6 @@ UG.LocationMarkers.prototype =
             var p0 = camera.position.clone().sub( loc.position ).normalize();
             var p1 = loc.position.clone().normalize();
             var dot = p0.dot( p1 );
-            //var dotMax = Math.max( 0.0, dot );
-
-            //var smallOffset = 0.001;
-            //var p = PX.Utils.FromLatLon( loc.latlon.x, loc.latlon.y, PX.kEarthScale, smallOffset + (ttt * loc.scale.z * PX.kLocationMarkerScale) );
-
-            //var p2 = PX.Utils.FromLatLon( loc.latlon.x, loc.latlon.y, PX.kEarthScale, smallOffset + (ttt * loc.scale.z * PX.kLocationMarkerScale) );
-            //matRot.makeRotationFromQuaternion( this.meshes[i].quaternion );
-            //matTrans2.makeTranslation( loc.position.x, loc.position.y, loc.position.z );
-            //matScale2.makeScale( loc.scale.x, loc.scale.y, loc.scale.z );
-            //matRes2.multiplyMatrices( matTrans2, matScale2 );
-            //matRes2.multiplyMatrices( matTrans2, matRot );
-            //matRes2.multiplyMatrices( matRes2, matScale2 );
-            //matRes2.makeTranslation( loc.position.x, loc.position.y, loc.position.z );
 
             // Update billboard's size
             this.billboards.material.size = this.billboardsGroup.scale.x * Params.Level0MarkerRadius;
@@ -350,17 +332,13 @@ UG.LocationMarkers.prototype =
             if( dot >= 0.0 )
             {
                 loc.positionSS.copy( loc.position );
-                //var pp = PX.ZeroVector.clone();
-                //pp = pp.applyMatrix4( matRes2 );
                 loc.positionSS.project( camera );
 
                 // 2d ortho
                 loc.positionSS.x = ( (loc.positionSS.x + 1.0 ) * 0.5 ) * Params.WindowWidth;
                 loc.positionSS.y = ( (loc.positionSS.y + 1.0 ) * 0.5 ) * Params.WindowHeight;
                 loc.positionSS.z = 0.0;
-                //console.log( pp );
 
-		        //this.billboardGeometry.attribute.position[i].set( pp.x, pp.y, 0.0 );
 		        this.geomPositionArray[i*3+0] = loc.positionSS.x;
 		        this.geomPositionArray[i*3+1] = loc.positionSS.y;
 		        this.geomPositionArray[i*3+2] = 0;
@@ -370,7 +348,6 @@ UG.LocationMarkers.prototype =
             else
             {
                 // Move far far away from view. not visible
-		        //this.billboardGeometry.attribute.position[i].set( 10000, 0, 0.0 );
 		        this.geomPositionArray[i*3+0] = 10000;
 		        this.geomPositionArray[i*3+1] = 0;
 		        this.geomPositionArray[i*3+2] = 0;
@@ -380,9 +357,6 @@ UG.LocationMarkers.prototype =
         //
         this.billboardGeometry.attributes.position.needsUpdate = true;
         this.billboardGeometry.attributes.color.needsUpdate = true;
-        //this.billboards.geometry.verticesNeedUpdate = true;
-        //this.billboards.geometry.colorsNeedUpdate = true;
-        //this.billboards.material.needsUpdate = true;
 
         // Text End
         this.textRenderer2.End();
@@ -413,8 +387,7 @@ UG.LocationMarkers.prototype =
             // Use distance to camera for constant size
             if( this.zoomLevel1IntroAnimDone ) 
             {
-                var locpos = loc.position; //.clone().applyQuaternion( earth.mesh.quaternion );
-                distToCamera.subVectors( camera.position, locpos );
+                distToCamera.subVectors( camera.position, loc.position );
                 var locationScale = distToCamera.length();
                 locationScale = ( locationScale / PX.kCameraMaxDistance );
                 loc.scale.set( locationScale, locationScale, locationScale );
@@ -616,6 +589,9 @@ UG.LocationMarkers.prototype =
             // Callback returning clicked marker object
             if( onLocationClickCB ) onLocationClickCB( this.markers[ index ] );
 
+            // Save clicked marker index
+            this.clickedMarkerIndex = index;
+
             //
             /*if( earthOrbitControls ) 
             {
@@ -703,13 +679,14 @@ UG.LocationMarkers.prototype =
         // Level 2
         else if( appStateMan.GetCurrentState() === PX.AppStates.AppStateLevel2 )
         {
+            // If clicking on the globe, go back to Level 1
             var intersects = g_Raycaster.intersectObject( earth.mesh, false );
             if( ! intersects.length )
             {
                 return;
             }
 
-            var index = 0;
+            var index = this.clickedMarkerIndex;
 
             // Change State
             appStateMan.ChangeState( PX.AppStates.AppStateLevel2ToLevel1 );
@@ -769,6 +746,9 @@ UG.LocationMarkers.prototype =
                 appStateMan.ChangeState( PX.AppStates.AppStateLevel1 );
 
                 trackball.Reset( camera );
+
+                // Reset clicked marker index
+                this.clickedMarkerIndex = -1;
             });
         }
 
