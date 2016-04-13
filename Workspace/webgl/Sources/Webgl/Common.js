@@ -172,6 +172,7 @@ var Params =
     , WindowHeight: 0
     , MainScene: true
     , ShowMaps: false
+    , EnableSunLight: false
     , CameraDistance: PX.kCameraMaxDistance
     , Level0MarkerRadius: 30.0
     , AnimTime: 1.0

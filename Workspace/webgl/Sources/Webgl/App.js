@@ -69,7 +69,6 @@ var g_Projector = null;
 
 // Locations
 var locationsDB = [];
-var locationsIntroAnimDone = false;
 
 // Earth rotation
 var earthAccel = new THREE.Vector2();
@@ -678,25 +677,6 @@ function Setup()
     // Setup scene for intro
     //
 
-    /*var camDest = PX.Utils.FromLatLon( PX.StartLatLon.x, PX.StartLatLon.y, Params.CameraDistance, 0.0 );
-    camera.position.add( new THREE.Vector3(30, 0, 0) );
-    //camera.position.set( 0, 0, Params.CameraDistance );
-    var tween2 = new TWEEN.Tween( camera.position ).to( camDest, 2000.0 );
-    tween2.easing( TWEEN.Easing.Quintic.InOut );
-    tween2.delay( 3000 );
-    tween2.start();*/
-
-/*    var target = { x : 1.0, y: 1.0, z: 1.0 };
-    locationMarkers.locationsGroup.scale.set( PX.EPSILON, PX.EPSILON, PX.EPSILON );
-    var tween = new TWEEN.Tween( locationMarkers.locationsGroup.scale ).to( target, 2000.0 );
-    tween.easing( TWEEN.Easing.Quintic.InOut );
-    tween.delay( 3000 );
-    tween.start();
-    tween.onComplete( function()
-    {
-        //locationsIntroAnimDone = true;
-    });*/
-
     // Add a callback that reports when a state change happens
     appStateMan.AddStateChangeCallback( function( state )
     {
@@ -751,6 +731,7 @@ function InitGUI()
         var maps = $("#map");
         maps.css( "z-index", newValue?1000:-1000 );
     });
+    g_GUI.add( Params, 'EnableSunLight' );
     g_GUI.addFolder( "Earth Shading" );
     g_GUI.add( Params, "AmbientIntensity" ).min(0.0);
     g_GUI.add( Params, "DiffuseIntensity" ).min(0.0);
@@ -866,47 +847,8 @@ function Update( time, frameTime )
         mouseVector.y = 1.0 - 2.0 * ( mouseY / windowHeight );
         g_Raycaster.setFromCamera( mouseVector, camera );
 
-        //
-/*        if( !earthOrbitControls && locationsIntroAnimDone )
-        {
-            earthOrbitControls = new THREE.OrbitControls( camera, renderer.domElement );
-            earthOrbitControls.enableDamping = true;
-            earthOrbitControls.dampingFactor = 0.1;
-            earthOrbitControls.rotateSpeed = 0.05;
-            earthOrbitControls.minDistance = PX.kCameraMinDistance;
-            earthOrbitControls.maxDistance = PX.kCameraMaxDistance; //Params.CameraDistance;
-            earthOrbitControls.minPolarAngle = Math.PI * 0.1;
-            earthOrbitControls.maxPolarAngle = Math.PI * 0.9;
-            earthOrbitControls.enableZoom = false;
-            earthOrbitControls.enablePan = false;
-            earthOrbitControls.enableKeys = false;
-            earthOrbitControls.target.set( 0, 0, 0 );
-            earthOrbitControls.position0.set( Params.CameraDistance*Math.cos(PX.ToRadians(90)), 0, Params.CameraDistance*Math.sin(PX.ToRadians(90)) );
-            earthOrbitControls.reset();
-            earthOrbitControls.update();
 
-            var camPos = PX.Utils.FromLatLon( PX.StartLatLon.x, PX.StartLatLon.y, Params.CameraDistance, 0.0 );
-            camera.position.set( camPos.x, camPos.y, camPos.z );
-            camera.lookAt( PX.ZeroVector );
-        }
-
-        // Step earth rotation
-        //
-        if( earthOrbitControls 
-            && ( appStateMan.IsState( PX.AppStates.AppStateLevel0 ) 
-              || appStateMan.IsState( PX.AppStates.AppStateLevel1 ) ) 
-            )
-        {
-            if( earthOrbitControls.enabled )
-            {
-                var rotSpeed = PX.Saturate( Params.CameraDistance / PX.kCameraMaxDistance );
-                earthOrbitControls.rotateSpeed = ( ( rotSpeed ) + 0.1 ) * 0.05;
-
-                //earthOrbitControls.update();
-            }
-        }
-**/
-
+        // @TEMP: Do a bit of intro and change to level0
         if( currentTime >= 5.0 )
         {
             if( appStateMan.IsState( PX.AppStates.AppStateEntry ) )
@@ -927,29 +869,14 @@ function Update( time, frameTime )
             }
         }
 
-/**        if( isMouseDown )
-        {
-            var maxSpeed = 100.0 * 360.0;
-            earthAccel.x = PX.Clamp( mouseDeltaX * 60.0, -maxSpeed, maxSpeed ) * Params.EarthRotationSpeed;
-            earthAccel.y = PX.Clamp( mouseDeltaY * 30.0, -maxSpeed, maxSpeed ) * Params.EarthRotationSpeed;
-        }
-        earthVel.x += earthAccel.x * frameTime;
-        earthVel.y += earthAccel.y * frameTime;
-        earthAngle.x += earthVel.x * frameTime;
-        earthAngle.y += earthVel.y * frameTime;
-        earthVel.x *= earthVelDamp;
-        earthVel.y *= earthVelDamp;
-        earthAccel.set( 0.0, 0.0 );
-*/
         // Update Earth
         //
-        if( earth )
+        //if( earth )
         {
             earth.Update( currentTime, frameTime, camera );
-            //earth.UpdateRotation( earthAngle.x * frameTime, earthAngle.y * frameTime );
         }
 
-
+        // Do marker population
         if( locationMarkers.doPopulation )
         {
             locationMarkers.PopulateMarkers( markerCluster, locationsDB, camera );
@@ -960,46 +887,6 @@ function Update( time, frameTime )
 
         //
         locationMarkers.Update( currentTime, frameTime, camera );
-
-
-        // Do picking on click
-        // Check to see if any tree was hit
-        //
-
-        //var markerIndex = locationMarkers.IntersectsLevel1( g_Raycaster );
-        //var markerIndex = locationMarkers.IntersectsLevel0( mouseVector3d );
-        /*if( markerIndex >= 0 )
-        {
-            locationMarkers.meshes[ markerIndex ].material.color.set( PX.kLocationMouseOverColor );
-        }*/
-
-/*
-
-
-        // Intersection test per mesh
-        for( var i=0; i<locationMarkerCount; i++ )
-        {
-            var intersects = g_Raycaster.intersectObject( locationMeshes[i], false );
-            if( intersects.length > 0 )
-            {
-                intersects[ 0 ].object.material.color.set( PX.kLocationMouseOverColor );
-                break;
-            }
-        }
-*/
-
-        // Make sure camera is always looking at origin
-        //camera.lookAt( PX.ZeroVector );
-
-
-        // Change latitude min/max
-        /*if( earthOrbitControls )
-        {
-            var t = PX.Pow4( distanceToCenterNorm );
-            earthOrbitControls.minPolarAngle = PX.Lerp( Math.PI * 0.3, Math.PI * 0.5, t );
-            earthOrbitControls.maxPolarAngle = PX.Lerp( Math.PI * 0.7, Math.PI * 0.5, t );
-        }*/
-
 
         // Update Tween
         TWEEN.update();
@@ -1023,16 +910,21 @@ function Update( time, frameTime )
 
     // Get Sun position and map it to our light
     //
-    //var nowDate = new Date();
-    //var sunLatLon = SunCalc.getPositionLatLon( nowDate, 0, 0 );
-    //var ppp = PX.Utils.FromLatLon( PX.ToDegrees(sunLatLon.lat), PX.ToDegrees(sunLatLon.lon), PX.kEarthScale, 0.0 );
-    var ppp = new THREE.Vector3( Params.LightDirX, Params.LightDirY, Params.LightDirZ );
-    /*var ppp = new THREE.Vector3( 0.5, 1.0, -0.2 );
-    ppp = ppp.normalize();
-    Params.LightDirX = ppp.x;
-    Params.LightDirY = ppp.y;
-    Params.LightDirZ = ppp.z;*/
-    if( sunLight ) sunLight.position.set( ppp.x, ppp.y, ppp.z );
+    if( Params.EnableSunLight )
+    {
+        var nowDate = new Date();
+        var sunLatLon = SunCalc.getPositionLatLon( nowDate, 0, 0 );
+        var ppp = PX.Utils.FromLatLon( PX.ToDegrees(sunLatLon.lat), PX.ToDegrees(sunLatLon.lon), PX.kEarthScale, 0.0 );
+        if( sunLight ) sunLight.position.set( ppp.x, ppp.y, ppp.z );
+        Params.LightDirX = ppp.x;
+        Params.LightDirY = ppp.y;
+        Params.LightDirZ = ppp.z;
+    }
+    else
+    {
+        var ppp = new THREE.Vector3( Params.LightDirX, Params.LightDirY, Params.LightDirZ );
+        if( sunLight ) sunLight.position.set( ppp.x, ppp.y, ppp.z );
+    }
 
 
     // Fade in

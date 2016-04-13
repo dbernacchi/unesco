@@ -77,8 +77,8 @@ UG.LocationMarkers.prototype =
             var rndIdx = Math.round( Math.random() * 3 ) % 3;
             var color = new THREE.Color( PX.kLocationColors[rndIdx] );
 
-	        var material = new THREE.MeshLambertMaterial( { color: color, emissive: 0x003333 } );
-	        //var material = new THREE.MeshBasicMaterial( { color: color } );
+	        //var material = new THREE.MeshLambertMaterial( { color: color, emissive: 0x003333 } );
+	        var material = new THREE.MeshBasicMaterial( { color: color } );
 	        material.depthWrite = false;
 	        var geom = new THREE.CylinderGeometry( PX.kLocationMarkerScale, PX.kLocationMarkerScale, PX.kLocationMarkerScale, PX.kLocationMarkerDetail, 1 );
 	        //var geom = new THREE.CylinderGeometry( PX.kLocationMarkerScale, PX.kLocationMarkerScale, PX.kLocationMarkerScale*0.33, 16, 1 );
@@ -198,8 +198,6 @@ UG.LocationMarkers.prototype =
         });
         tween.onComplete( function()
         {
-            locationsIntroAnimDone = true;
-
             if( onCompleteCB ) onCompleteCB();
         });
     }
@@ -870,7 +868,6 @@ UG.LocationMarkers.prototype =
                     this.markers[i].tween.onComplete( function()
                     {
                         scope.zoomLevel1IntroAnimDone = true;
-                        //locationsIntroAnimDone = true;
                     });
                 }
             }

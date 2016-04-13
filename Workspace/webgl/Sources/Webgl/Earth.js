@@ -150,17 +150,6 @@ UG.Earth.prototype =
         this.worldMatrix.makeRotationFromQuaternion( this.mesh.quaternion );
     }
 
-    , UpdateRotation: function( angleX, angleY )
-    {
-        var quatx = new THREE.Quaternion();
-        var quaty = new THREE.Quaternion();
-        quatx.setFromAxisAngle( new THREE.Vector3( 0, 1, 0 ), PX.ToRadians( angleX ) );
-        quaty.setFromAxisAngle( new THREE.Vector3( 1, 0, 0 ), PX.ToRadians( angleY ) );
-
-        this.mesh.quaternion.copy( quatx );
-        //this.mesh.quaternion.multiply( quaty );
-        this.worldMatrix.makeRotationFromQuaternion( this.mesh.quaternion );
-    }
 
     , ResetTransform: function( onCompleteCB )
     {
