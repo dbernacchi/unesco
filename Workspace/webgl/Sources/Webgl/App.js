@@ -780,8 +780,11 @@ function InitGUI()
         var maps = $("#map");
         maps.css( "z-index", newValue?1000:-1000 );
     });
-    g_GUI.add( Params, 'EnableSunLight' );
-    g_GUI.addFolder( "Earth Shading" );
+    g_GUI.add( Params, "EnableSunLight" );
+    g_GUI.addFolder( "BLOOM" );
+    g_GUI.add( Params, "EnableBloom" );
+    g_GUI.add( Params, "BloomOpacity" ).min(0.0).max(1.0).step(0.001);
+    g_GUI.addFolder( "EARTH SHADING" );
     g_GUI.add( Params, "AmbientIntensity" ).min(0.0);
     g_GUI.add( Params, "DiffuseIntensity" ).min(0.0);
     g_GUI.add( Params, "SpecularIntensity" ).min(0.0);
@@ -791,18 +794,18 @@ function InitGUI()
     g_GUI.add( Params, "RimAngle" ).min(0.0);
     g_GUI.add( Params, "DiffuseRimIntensity" ).min(0.0);
     g_GUI.add( Params, "NightDayMixFactor" ).min(0.0).max(1.0).step(0.001);
-    g_GUI.addFolder( "Clouds Shading" );
+    g_GUI.addFolder( "CLOUDS SHADING" );
     g_GUI.add( Params, "CloudsIntensity" ).min(0.0).max(1.0).step(0.01);
     g_GUI.add( Params, "CloudsShadowIntensity" ).min(0.0).max(1.0).step(0.01);
     g_GUI.add( Params, "CloudsShadowOffset" ).min(0.0).max(20.0).step(0.01);
-    g_GUI.addFolder( "Light Direction" );
+    g_GUI.addFolder( "LIGHT DIRECTION" );
     g_GUI.add( Params, "LightDirX" ).min(-1.0).max(1.0).step(0.001);
     g_GUI.add( Params, "LightDirY" ).min(-1.0).max(1.0).step(0.001);
     g_GUI.add( Params, "LightDirZ" ).min(-1.0).max(1.0).step(0.001);
-    g_GUI.addFolder( "Camera" );
+    g_GUI.addFolder( "CAMERA" );
     g_GUI.add( Params, "CameraDistance" ).min( PX.kEarthScale*1.333 ).max( 300.0 );
-    g_GUI.addFolder( "Interaction" );
-    g_GUI.add( Params, "EarthRotationSpeed" ).min(1.0).max(20.0).step(1.0);
+    g_GUI.addFolder( "INTERACTION" );
+    g_GUI.add( Params, "EarthRotationSpeed" ).min(0.0).max(1.0).step(0.001);
     g_GUI.add( Params, "MapGridSize" ).min(0).max(20).step(1).onChange( function( newValue ) 
     {
         console.log( parseInt(newValue) );
@@ -874,7 +877,7 @@ function Update( time, frameTime )
         if( isMouseDown )
         {
             var rotSpeed = PX.Saturate( Params.CameraDistance / PX.kCameraMaxDistance );
-            trackball.rotateFactor = rotSpeed * 0.5;
+            trackball.rotateFactor = rotSpeed * Params.EarthRotationSpeed;
 
             trackball.HandleMouseEvents( 1, 1, mouseDeltaX, mouseDeltaY, frameTime, aspectRatio );
             //console.log( trackball.rotateVel );
@@ -998,15 +1001,18 @@ function Render()
         renderer.setViewport( 0, 0, windowWidth, windowHeight );
         renderer.render( scene, camera );
 
-/*        //
-        composer.render();
+        if( Params.EnableBloom )
+        {
+            //
+            composer.render();
 
-        //
-        postFXQuad.material.opacity = 0.33;
-        postFXQuad.material.map = composer.renderTarget2;
-        renderer.setViewport( 0, 0, windowWidth, windowHeight );
-        renderer.render( postFXScene, fgCamera );
-        */
+            //
+            postFXQuad.material.opacity = Params.BloomOpacity;
+            postFXQuad.material.map = composer.renderTarget2;
+            renderer.setViewport( 0, 0, windowWidth, windowHeight );
+            renderer.render( postFXScene, fgCamera );
+        }
+
         //
         renderer.render( locationMarkers.markerScene, locationMarkers.camera2d );
         //renderer.render( locationMarkers.markerScene, fgCamera );

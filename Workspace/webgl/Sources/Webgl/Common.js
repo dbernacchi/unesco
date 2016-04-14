@@ -180,6 +180,8 @@ var Params =
     , MainScene: true
     , ShowMaps: false
     , EnableSunLight: false
+    , EnableBloom: true
+    , BloomOpacity: 0.2
     , CameraDistance: PX.kCameraMaxDistance
     , Level0MarkerRadius: 30.0
     , AnimTime: 1.0
@@ -193,7 +195,7 @@ var Params =
     , CloudsShadowOffset: 0.0 //5.0
     , NightDayMixFactor: 0.5 // 0.25
     , EarthRoughness: 0.8
-    , EarthRotationSpeed: 10.0
+    , EarthRotationSpeed: 0.5
     , HalfLambertPower: 2.0
     , RimAngle: 0.4
     , DiffuseRimIntensity: 0.25

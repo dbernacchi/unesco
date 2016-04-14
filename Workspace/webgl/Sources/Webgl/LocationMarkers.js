@@ -553,7 +553,6 @@ UG.LocationMarkers.prototype =
                 var loc = this.markers[i];
                 //console.log( intersects );
                 //intersects[ 0 ].object.material.color.set( PX.kLocationMouseOverColor );
-                //this.SetLocationTargetColor( filterSwitches, loc );
                 loc.targetColor.copy( PX.kLocationColors2[3] );
                 loc.colorChangeSpeed = 10.0;
                 this.titleTargetOpacity = 2.0;
@@ -834,6 +833,12 @@ UG.LocationMarkers.prototype =
             }
 
             var index = this.clickedMarkerIndex;
+
+            // Restore default color
+            this.SetLocationTargetColor( WebpageStates.FilterSwitches, this.markers[ index ] );
+            //this.markers[ index ].targetColor.copy( PX.kLocationColor );
+            //this.markers[ index ].colorChangeSpeed = 10.0;
+
 
             // Change State
             appStateMan.ChangeState( PX.AppStates.AppStateLevel2ToLevel1 );

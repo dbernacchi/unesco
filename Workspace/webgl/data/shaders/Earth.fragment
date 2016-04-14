@@ -462,7 +462,7 @@ void main()
     // Diffuse
     finalColor.rgb += ( diffuseColor * DiffuseIntensity ) * AO * shadow;
     // Wrap lighting
-    //finalColor.rgb += float3( diffuseAlbedo * wrapDiffuse * DiffuseRimIntensity ); // * ( 1.0 - NoV);
+    finalColor.rgb += float3( diffuseAlbedo * wrapDiffuse * DiffuseRimIntensity ); // * ( 1.0 - NoV);
     // Rim (Fresnel ) lighting
     //finalColor.rgb += float3( float3(0.0,0.5,1.0) * fresnelTerm ) * 0.133;
     // Specular
