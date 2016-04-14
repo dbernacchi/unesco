@@ -167,7 +167,7 @@ var UNESCO = {};
 	this.showExploreButton = function() {
 
 		$(".UNESCO .explore-button").css('display', 'block');
-		this.bottomStatusBar(100);
+		//this.bottomStatusBar(100);
 
 	}
 
