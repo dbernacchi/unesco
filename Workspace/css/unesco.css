@@ -4,6 +4,12 @@
     position: absolute;
     overflow: hidden;
 }
+#glModelContainer 
+{
+    display: inline-block;
+    position: absolute;
+    overflow: hidden;
+}
 #map 
 {
     overflow: hidden;

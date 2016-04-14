@@ -14,14 +14,12 @@ var g_GUI = null;
 var windowWidth, windowHeight;
 var deviceContentScale = 1.0;
 
-var gltfLoader = null;
-var binLoader = null;
-
-var artefactCamera = null;
+var modelRenderer = null;
+/*var artefactCamera = null;
 var artefactScene = null;
 var artefactSceneBSphere = null;
 var artefactOrbitControls = null;
-var tempIsLoaded = false;
+var tempIsLoaded = false;*/
 
 var aspectRatio = 1.0;
 var camera2d = null;
@@ -37,6 +35,8 @@ var bgScene = null;
 var bgQuad = null;
 var fgCamera = null;
 var fgScene = null;
+
+var trackball = null;
 
 var postFXScene = null;
 var postFXQuad = null;
@@ -202,10 +202,7 @@ function Shutdown()
 
 function CreateRenderer()
 {
-    //var precision = "mediump";
-    var precision = "highp";
-
-    renderer = new THREE.WebGLRenderer( { antialias: true, precision: precision, stencil: false, alpha: false } );
+    renderer = new THREE.WebGLRenderer( { antialias: true, precision: PX.ShaderPrecision, stencil: false, alpha: false } );
     renderer.setClearColor( 0x000000, 1 );
     //renderer.gammaInput = true;
     //renderer.gammaOutput = true;
@@ -301,154 +298,6 @@ function PostLoadData()
 }
 
 
-function InitLoaders()
-{
-	gltfLoader = new THREE.glTFLoader();
-	binLoader = new THREE.BinaryLoader();
-}
-
-function LoadScene( url, scene )
-{
-    console.log( "+--  Load Scene:\t", url );
-
-	var loadStartTime = Date.now();
-	gltfLoader.load( url, function(data) 
-    {
-	    var root = data.scene;
-     
-	    scene.add( root );
-
-        ComputeSceneBounds( scene );
-
-        artefactSceneBSphere = ComputeWholeSceneBoundingSphere( scene );
-
-    	var loadEndTime = Date.now();
-	    var loadTime = (loadEndTime - loadStartTime) / 1000;
-        console.log( "+--  Loaded Scene:\t  loadtime: ", loadTime );
-
-    } );
-}
-
-
-function LoadBINScene( url, scene )
-{
-    console.log( "+--  Load BIN Scene:\t", url );
-
-	var loadStartTime = Date.now();
-	binLoader.load( url
-    , function( geometry, materials ) 
-    {
-	    //console.log( geometry );
-	    //console.log( materials );
-        //for( var i=0; i<geometries.length; ++i )
-        //{
-            var material = materials[0];
-            material.side = THREE.DoubleSide;
-            var mesh = new THREE.Mesh( geometry, material ); 
-
-            scene.add( mesh );
-        //}
-
-        ComputeSceneBounds( scene );
-
-        artefactSceneBSphere = ComputeWholeSceneBoundingSphere( scene );
-    	var loadEndTime = Date.now();
-	    var loadTime = (loadEndTime - loadStartTime) / 1000;
-        console.log( "+--  Loaded BIN Scene:\t  loadtime: ", loadTime );
-
-    } 
-    , function(result) 
-    {
-        var str = parseInt( ( result.loaded / result.total ) * 100 ) + " %";
-        progressBarElement.text( "Loading: " + result.loaded + " / " + result.total );
-        //console.log( "BIN on progress", result.loaded, result.total );
-    }
-    );
-}
-
-
-function ComputeSceneBounds( scene )
-{
-    scene.traverse( function (object) 
-    {
-        if( object instanceof THREE.Mesh )
-        {
-            //console.log( "compute bsphere 0", object );
-            //object.geometry.computeBoundingSphere();
-            object.needsUpdate = true;
-            object.geometry.computeBoundingBox();
-        }
-        if( object instanceof THREE.Scene )
-        {
-            //console.log( "scene" );
-            object.traverse( function (object2) 
-            {
-                if( object2 instanceof THREE.Mesh )
-                {
-                    //console.log( "compute bsphere 1", object );
-                    //object2.geometry.computeBoundingSphere();
-                    object2.geometry.computeBoundingBox();
-                }
-            });
-        }
-    } );
-}
-
-
-function ComputeWholeSceneBoundingSphere( scene )
-{
-    var sceneMin = new THREE.Vector3( 99999, 99999, 99999 );
-    var sceneMax = new THREE.Vector3( -99999, -99999, -99999 );
-    var sceneCenter = new THREE.Vector3();
-    var radius = 0.0;
-
-    scene.traverse( function (object) 
-    {
-        if( object instanceof THREE.Mesh )
-        {
-            var minOS = object.geometry.boundingBox.min.clone();
-            var maxOS = object.geometry.boundingBox.max.clone();
-            minOS = minOS.applyMatrix4( object.matrixWorld );
-            maxOS = maxOS.applyMatrix4( object.matrixWorld );
-
-            if( minOS.x < sceneMin.x ) sceneMin.x = minOS.x;
-            if( minOS.y < sceneMin.y ) sceneMin.y = minOS.y;
-            if( minOS.z < sceneMin.z ) sceneMin.z = minOS.z;
-            if( maxOS.x > sceneMax.x ) sceneMax.x = maxOS.x;
-            if( maxOS.y > sceneMax.y ) sceneMax.y = maxOS.y;
-            if( maxOS.z > sceneMax.z ) sceneMax.z = maxOS.z;
-        }
-    });
-
-    sceneCenter = sceneCenter.addVectors( sceneMin, sceneMax );
-    radius = sceneCenter.length();
-    sceneCenter = sceneCenter.divideScalar( 2.0 );
-    //console.log( sceneCenter, sceneMin, sceneMax, radius );
-
-    //var len = Math.max( sceneMin.x, sceneMax.x );
-    var minLength = sceneMin.length();
-    var maxLength = sceneMax.length();
-    var len = Math.max( minLength, maxLength );
-
-    // Reposition camera based on scene bounds
-    //
-    var distForCam = ( len * 1.0 ) / ( Math.tan( PX.ToRadians( PX.kCameraFovY ) * 0.5 ) );
-    //console.log( "+--+  DistForCam", distForCam );
-
-    artefactCamera.position.x = sceneCenter.x;
-    artefactCamera.position.y = sceneCenter.y;
-    artefactCamera.position.z = distForCam;
-
-    //
-    artefactOrbitControls.minDistance = distForCam * 0.2;
-    artefactOrbitControls.maxDistance = distForCam * 2.0;
-    artefactOrbitControls.target.set( sceneCenter.x, sceneCenter.y, sceneCenter.z );
-    artefactOrbitControls.update();
-
-    return new THREE.Vector4( sceneCenter.x, sceneCenter.y, sceneCenter.z, radius );
-}
-
-
 function BeginApp()
 {
     //console.log( "DoIt" );
@@ -467,20 +316,6 @@ function BeginApp()
     OnResize();
 }
 
-
-function ParseLocationData( locationsJson )
-{
-    // Parse Location Json
-    for( var i=0; i<locationsJson.length; ++i )
-    {
-        var location = new Location();
-
-        location.name = locationsJson[i]["marker_title"];
-        location.latlon = new THREE.Vector2( locationsJson[i]["lat"], locationsJson[i]["lng"] );
-        location.position = PX.Utils.FromLatLon( location.latlon.x, location.latlon.y, PX.kEarthScale, PX.kLocationMarkerScale * PX.kLocationMarkerZScale * 0.5 );
-        locationsDB.push( location );
-    }
-}
 
 function InitMarkerCluster()
 {
@@ -529,7 +364,7 @@ function Setup()
     InitMarkerCluster();
 
     //
-    InitLoaders();
+    //InitLoaders();
 
     //
     ParseBitmapFont( PX.AssetsDatabase["TextAtlasXml"] );
@@ -598,7 +433,7 @@ function Setup()
     //effectCopyPass.uniforms.opacity.value = 1.0;
     //effectCopyPass.renderToScreen = true;
 
-
+/***
     // Artefact Scene
     //
     {
@@ -636,7 +471,7 @@ function Setup()
         artefactOrbitControls.target.set( 0, 0, 0 );
         artefactOrbitControls.update();
     }
-
+**/
 
     // PostFX Layer
     postFXScene = new THREE.Scene();
@@ -686,7 +521,7 @@ function Setup()
     renderer.domElement.addEventListener('mousedown', OnMouseDown, false);
     renderer.domElement.addEventListener('mouseup', OnMouseUp, false);
     renderer.domElement.addEventListener('mousewheel', OnMouseWheel, false);
-    window.addEventListener('keydown', OnKeyDown, false);
+    //window.addEventListener('keydown', OnKeyDown, false);
 
     //
     InitStats();
@@ -695,7 +530,8 @@ function Setup()
 
     // Init Trackball
     //
-    if( !trackball.camera )
+    trackball = new PX.CameraTrackball();
+    //if( !trackball.camera )
     {
         trackball.Init( camera );
         trackball.rotateFactor = 0.5;
@@ -783,17 +619,37 @@ function InitGUI()
             progressBarElement.text( "" );
         }
 
-        if( !tempIsLoaded && !newValue )
+        if( modelRenderer )
         {
-            LoadBINScene( "webgl/data/models/06_Mihrab_of_the_Mosque_Al_Hasan/mesh.js", artefactScene );
-            //LoadScene( "webgl/data/models/06_Mihrab_of_the_Mosque_Al_Hasan/Mihrab of the mosque al Hasan.gltf", artefactScene );
-            tempIsLoaded = true;
+            modelRenderer.Clear();
+        }
+
+        if( !modelRenderer )
+        {
+            var modelContainer = document.getElementById( "glModelContainer" );
+            modelContainer.style.top = "0px";
+            modelContainer.style.left = "0px";
+            modelContainer.style.right = "0px";
+            modelContainer.style.bottom = "0px";
+
+            modelRenderer = new PX.ModelRenderer();
+            modelRenderer.Init( modelContainer, windowWidth, windowHeight );
+        }
+
+        if( !newValue )
+        {
+            modelRenderer.Load( "webgl/data/models/06_Mihrab_of_the_Mosque_Al_Hasan/mesh.js",
+            //modelRenderer.Load( "webgl/data/models/01_Nimrud_Relief/mesh.js", 
+            function( per )
+            {
+                console.log( "+---+  Loading: ", per );
+            });
         }
     });
     g_GUI.add( Params, 'ShowMaps' ).onChange( function( newValue ) 
     {
         var maps = $("#map");
-        maps.css( "z-index", newValue?1000:-1000 );
+        maps.css( "z-index", newValue ? 1000 : -1000 );
     });
     g_GUI.add( Params, "EnableSunLight" );
     g_GUI.addFolder( "BLOOM" );
@@ -871,14 +727,6 @@ function InitGUI()
 
 function Update( time, frameTime )
 {
-    // Use timestep
-    clockTime = timeNow() - startTime;
-    var timeDiff = clockTime - previousTime;
-    var delta = Math.min( 1.0 / 60.0, timeDiff );
-    previousTime = currentTime;
-    currentTime += delta;
-    frameTime = delta;
-
     //
     mouseDeltaX = mouseX - previousMouseX;
     mouseDeltaY = mouseY - previousMouseY;
@@ -1007,48 +855,28 @@ function Render()
 {
     renderer.clear();
 
-    if( Params.MainScene )
+    renderer.setViewport( 0, 0, windowWidth, windowHeight );
+    renderer.render( bgScene, bgCamera );
+
+    //
+    renderer.setViewport( 0, 0, windowWidth, windowHeight );
+    renderer.render( scene, camera );
+
+    if( Params.EnableBloom )
     {
-        renderer.setViewport( 0, 0, windowWidth, windowHeight );
-        renderer.render( bgScene, bgCamera );
+        //
+        composer.render();
 
         //
+        postFXQuad.material.opacity = Params.BloomOpacity;
+        postFXQuad.material.map = composer.renderTarget2;
         renderer.setViewport( 0, 0, windowWidth, windowHeight );
-        renderer.render( scene, camera );
-
-        if( Params.EnableBloom )
-        {
-            //
-            composer.render();
-
-            //
-            postFXQuad.material.opacity = Params.BloomOpacity;
-            postFXQuad.material.map = composer.renderTarget2;
-            renderer.setViewport( 0, 0, windowWidth, windowHeight );
-            renderer.render( postFXScene, fgCamera );
-        }
-
-        //
-        renderer.render( locationMarkers.markerScene, locationMarkers.camera2d );
-        //renderer.render( locationMarkers.markerScene, fgCamera );
+        renderer.render( postFXScene, fgCamera );
     }
-    else
-    {
-        /*artefactScene.traverse(function (object)
-        {
-            if( object instanceof THREE.Mesh )
-            {
-                object.material = new THREE.MeshLambertMaterial( { color: 0xff0000 } );
-                object.material.side = THREE.DoubleSide;
-                //console.log( object.name );
-            }
-        });*/
 
-	    //THREE.glTFShaders.update( artefactScene, artefactCamera );
-
-        renderer.setViewport( 0, 0, windowWidth, windowHeight );
-        renderer.render( artefactScene, artefactCamera );
-    }
+    //
+    renderer.render( locationMarkers.markerScene, locationMarkers.camera2d );
+    //renderer.render( locationMarkers.markerScene, fgCamera );
 
     renderer.setViewport( 0, 0, windowWidth, windowHeight );
     renderer.render( fgScene, fgCamera );
@@ -1059,9 +887,27 @@ function MainLoop()
 {
     requestAnimationFrame(MainLoop);
 
+    // Use timestep
+    clockTime = timeNow() - startTime;
+    var timeDiff = clockTime - previousTime;
+    var delta = Math.min( 1.0 / 60.0, timeDiff );
+    previousTime = currentTime;
+    currentTime += delta;
+    frameTime = delta;
+
+
     g_Stats.begin();
-    Update(currentTime, frameTime);
-    Render();
+
+    if( Params.MainScene )
+    {
+        Update( currentTime, frameTime );
+        Render();
+    }
+    else
+    {
+        modelRenderer.Update( currentTime, frameTime );
+        modelRenderer.Render();
+    }
     g_Stats.end();
 }
 

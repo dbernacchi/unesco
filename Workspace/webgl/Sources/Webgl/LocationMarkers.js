@@ -900,7 +900,7 @@ UG.LocationMarkers.prototype =
             {
                 appStateMan.ChangeState( PX.AppStates.AppStateLevel1 );
 
-                trackball.Reset( camera );
+                trackball.Reset( camera, cameraLookAtPoint );
 
                 // Reset clicked marker index
                 scope.clickedMarkerIndex = -1;
