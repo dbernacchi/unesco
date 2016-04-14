@@ -129,7 +129,10 @@ THREE.DefaultLoadingManager.onProgress = function( item, loaded, total )
     //var str = parseInt( percentage ) + " %";
     //progressBarElement.text( "Loading: " + loaded + " / " + total + ". Item: " + item );
     //console.log( percentage );
-    preloaderFG.css( "width", (percentage) + '%' );
+    //preloaderFG.css( "width", (percentage) + '%' );
+    
+    UNESCO.bottomStatusBar(percentage);
+    
 };
 
 //// KEEP PHONE AWAKE: IOS Safari

@@ -7,7 +7,7 @@ var UNESCO = {};
 
 		var ns = this;
 		
-		//ns.spinner();
+		ns.topStatusBar();
 		
 		var slider = $(".UNESCO .items-inner-2");
 		
@@ -103,30 +103,50 @@ var UNESCO = {};
 		
 	}
 
-	this.spinner = function() {
+	this.topStatusBar = function() {
 
 		var ns = this;
 		
 		var elm = $(".UNESCO .status-bar-top");
 		
-		var status_bar_top_max_width = 162;
+		var status_bar_top_max_height = 44;
 		
 		elm.animate({
-			width : "+=" + status_bar_top_max_width,
+			height : "+=" + status_bar_top_max_height,
 		}, 1000, function() {
 			
-			elm.css('width', '0px');
 			
-			ns.spinner();
-
+			if($(".UNESCO#splash .explore-button").css('display') != 'block'){
+				elm.css('height', '0px');
+			
+				ns.topStatusBar();
+			} else {
+				elm.css('height', status_bar_top_max_height +'px');
+				
+			}
 
 		});
 
 	}
 	
+	this.bottomStatusBar = function(percentage) {
+
+		var ns = this;
+		
+		var elm = $(".UNESCO .status-bar-bottom");
+		
+		var status_bar_bottom_max_height = 111;
+		
+		var new_height = (percentage * .01) * status_bar_bottom_max_height;
+		
+		elm.css('height', new_height + 'px');
+		
+	}	
+	
 	this.showExploreButton = function() {
 
 		$(".UNESCO .explore-button").css('display', 'block');
+		this.bottomStatusBar(100);
 
 	}
 
