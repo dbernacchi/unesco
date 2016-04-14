@@ -8,18 +8,58 @@ var UNESCO = {};
 		var ns = this;
 		
 		//ns.topStatusBar();
-		
-		var slider = $(".UNESCO .items-inner-2");
-		
-		var item_height = 250;
+		//var slider = $(".UNESCO .items-inner-2");
+		//var item_height = 250;
 		
 		var max_width = 1920;
 		
-		var window_width = window.innerWidth();
+		var window_width = window.innerWidth;
 		
-		var img_width = 
+		if(window_width >= max_width){
+			var percentage = 100;
+		} else {
+			var percentage = (window_width * 100) / max_width;
+		}
 		
-		$("img.resize").css('width', );
+		$("span.resize img").css('width', percentage + "%");
+		
+		$("a.resize").each(function(){
+			
+			var width = $(this).width();
+			var height = $(this).height();
+			
+			width = width * .01 * percentage;
+			
+			height = height * .01 * percentage; 
+			
+			$(this).css('width', width + 'px');
+			$(this).css('height', height + 'px');
+			
+		});
+		
+		$("a.resize-margin-top").each(function(){
+			
+			var marginTop = $(this).css('marginTop');
+			
+			marginTop = parseInt(marginTop, 10) * .01 * percentage;
+			
+			$(this).css('marginTop', marginTop + 'px');
+			
+		});
+		
+		var img = document.getElementById('splash-text'); 
+		
+		var splash_text_height = img.clientHeight;
+		
+		var window_height = window.innerHeight;
+		
+		var offset = splash_text_height / 2;
+		
+		var middle = window_height / 2;
+		
+		var top = middle - offset;
+
+		$(".UNESCO#splash").css('top', top + 'px');
 		
 		$(".UNESCO .arrow.up").click(function(e) {
 			e.preventDefault();

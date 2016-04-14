@@ -42,16 +42,24 @@ if(!Detector.webgl)
     Detector.addGetWebGLMessage();
 }
 </script>
-<div  id="map"></div>
-<div  id="glContainer"></div>
+<div style="top: -100px;" id="map"></div>
+<div style="display: none;" id="glContainer"></div>
 <div style="display: none;" class="preloaderBG" id="preloaderBG"></div>
 <div style="display: none;" class="preloaderFG" id="preloaderFG"></div>
 
 <div class="UNESCO" id="splash">
 
-    <div class="status-bar-top"></div>
-    <div class="status-bar-bottom"></div>    
-    <a href="#" class="explore-button"></a>
+    <!--div class="status-bar-top"></div>
+    <div class="status-bar-bottom"></div-->  
+    
+    
+    <a href="#" class="resize explore-button"></a>
+    
+    <span class="resize">
+        <img id="splash-text" src="img/splash/splash-text.png"/>
+    </span>
+      
+    
     
 </div>
 

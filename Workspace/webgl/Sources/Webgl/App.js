@@ -552,7 +552,7 @@ function Setup()
 		switch(PX.AppStatesString[state]){
 
 			case 'AppStateEntry':
-				//$("#glContainer").show();
+				$("#glContainer").show();
 				UNESCO.showExploreButton();
 				break;
 							

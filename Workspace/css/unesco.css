@@ -68,19 +68,28 @@ ul.clr{list-style-type: none; clear: both; padding: 0; margin: 0;}
 ul.clr:after { content:"."; display:block; clear:both; visibility:hidden; line-height:0; height:0;}
 ul.clr li{float: left; margin: 0;}
 
+span.resize{display: inline-block;}
 
+a.resize{background-size: contain;}
 
 #splash { 
-  background: url(../img/splash/splash-text.png) no-repeat center center fixed; 
   
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 1;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  
 
 }
 
-#splash .explore-button{display: none; width: 184px; height: 59px; background: url(../img/splash/explore-button.png) no-repeat; position: absolute; bottom: 30%; right: 0; left: 0; margin: 0 auto;}
+#splash .explore-button{display: none; width: 184px; height: 59px; background-image: url(../img/splash/explore-button.png); 
+/*position: absolute; bottom: 30%; right: 0; left: 0; */
+
+margin: 0 auto;
+/*margin-top: -274px;*/
+}
 
 /*
 #splash .status-bar-top{width: 526px; height: 44px; position: absolute; top: 18%; right: 0; left: 0; margin: 0 auto; overflow:hidden; background: url(../img/splash/status-bar-top.png) no-repeat;}
