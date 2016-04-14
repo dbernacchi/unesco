@@ -117,7 +117,7 @@ UG.Earth.prototype =
         tween.start();
         tween.onComplete( function()
         {
-            appStateMan.ChangeState( PX.AppStates.AppStateEntry );
+            appStateMan.SetState( PX.AppStates.AppStateEntry );
         });
     }
 
@@ -139,7 +139,7 @@ UG.Earth.prototype =
 
 
         // While in Entry point, globe is slowly rotating
-        if( appStateMan.GetCurrentState() === PX.AppStates.AppStateEntry )
+        if( appStateMan.IsState( PX.AppStates.AppStateEntry ) )
         {
             var quaty = new THREE.Quaternion();
             quaty.setFromAxisAngle( new THREE.Vector3( 0, 1, 0 ), PX.ToRadians( time * 6.0 ) );

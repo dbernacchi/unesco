@@ -554,32 +554,35 @@ function Setup()
     appStateMan.AddStateChangeCallback( function( state )
     {
         console.log( "+--+  Changing State:\t", PX.AppStatesString[state], state );
-
-		console.log('case: ' + PX.AppStatesString[state]);
 		
-		switch(PX.AppStatesString[state]){
+		switch(state){
 
-			case 'AppStateEntry':
-				$("#glContainer").show();
+			case PX.AppStates.AppStateEntry:
+
+                startTime = timeNow();
+                currentTime = 0.0;
+				//$("#glContainer").show();
 				UNESCO.showExploreButton();
 				break;
 							
-			case 'AppStateLevel1ToLevel2':
+			case PX.AppStates.AppStateLevel1ToLevel2:
 				
 				UNESCO.showBrowse();
 				break;
 				
-			case 'AppStateLevel2ToLevel1':
+			case PX.AppStates.AppStateLevel2ToLevel1:
 			
 				UNESCO.hideBrowse();
 				break;
-			
+
+            default:
+                break;
 		}
 
     });
 
     // Set App state
-    appStateMan.SetState( PX.AppStates.AppStateEntry );
+    //appStateMan.SetState( PX.AppStates.AppStateEntry );
 
 
     // Click callbacks on HTML filter buttons
@@ -733,6 +736,23 @@ function InitGUI()
 }
 
 
+function OnExploreClick()
+{
+    appStateMan.ChangeState( PX.AppStates.AppStateIntroToLevel0 );
+    earth.ResetTransform( function()
+    {
+        locationMarkers.TweenLevel0( 1, 1.0 * 1000.0, 0.0
+        //locationMarkers.TweenLevel0( 1, 1.0 * 1000.0, 3.5 * 1000.0
+        , function()
+        {
+        }
+        , function()
+        {
+            appStateMan.ChangeState( PX.AppStates.AppStateLevel0 );
+        });
+    });
+}
+
 function Update( time, frameTime )
 {
     //
@@ -768,27 +788,6 @@ function Update( time, frameTime )
     mouseVector.y = 1.0 - 2.0 * ( mouseY / windowHeight );
     g_Raycaster.setFromCamera( mouseVector, camera );
 
-
-    // @TEMP: Do a bit of intro and change to level0
-    if( currentTime >= 5.0 )
-    {
-        if( appStateMan.IsState( PX.AppStates.AppStateEntry ) )
-        {
-            appStateMan.ChangeState( PX.AppStates.AppStateIntroToLevel0 );
-            earth.ResetTransform( function()
-            {
-                locationMarkers.TweenLevel0( 1, 1.0 * 1000.0, 0.0
-                //locationMarkers.TweenLevel0( 1, 1.0 * 1000.0, 3.5 * 1000.0
-                , function()
-                {
-                }
-                , function()
-                {
-                    appStateMan.ChangeState( PX.AppStates.AppStateLevel0 );
-                });
-            });
-        }
-    }
 
     // Update Earth
     //
@@ -874,8 +873,8 @@ function Render()
     renderer.render( locationMarkers.markerScene, locationMarkers.camera2d );
     //renderer.render( locationMarkers.markerScene, fgCamera );
 
-    renderer.setViewport( 0, 0, windowWidth, windowHeight );
-    renderer.render( fgScene, fgCamera );
+    //renderer.setViewport( 0, 0, windowWidth, windowHeight );
+    //renderer.render( fgScene, fgCamera );
 }
 
 
@@ -884,13 +883,15 @@ function MainLoop()
     requestAnimationFrame(MainLoop);
 
     // Use timestep
-    clockTime = timeNow() - startTime;
-    var timeDiff = clockTime - previousTime;
-    var delta = Math.min( 1.0 / 60.0, timeDiff );
-    previousTime = currentTime;
-    currentTime += delta;
-    frameTime = delta;
-
+    if( appStateMan.GetCurrentState() >= PX.AppStates.AppStateEntry )
+    {
+        clockTime = timeNow() - startTime;
+        var timeDiff = clockTime - previousTime;
+        var delta = Math.min( 1.0 / 60.0, timeDiff );
+        previousTime = currentTime;
+        currentTime += delta;
+        frameTime = delta;
+    }
 
     g_Stats.begin();
 
@@ -901,9 +902,9 @@ function MainLoop()
     }
     else
     {
-        modelRenderer.Update( currentTime, frameTime );
-        modelRenderer.Render();
+        modelRenderer.OnFrame( currentTime, frameTime );
     }
+
     g_Stats.end();
 }
 

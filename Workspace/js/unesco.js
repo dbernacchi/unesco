@@ -110,6 +110,8 @@ var UNESCO = {};
 			
 			ns.hideSplash();
 			
+            // Change app state to Level 0
+            OnExploreClick();
 		});	
 		
 		
@@ -157,11 +159,11 @@ var UNESCO = {};
 			$(".UNESCO#slide-9").show();
 
 			var modelContainer = $(".UNESCO#slide-9 #glModelContainer");
-            console.log( modelContainer );
+            console.log( modelContainer[0], modelContainer[0].width, modelContainer[0].height );
             if( !modelRenderer )
             {
                 modelRenderer = new PX.ModelRenderer();
-                modelRenderer.Init( modelContainer, modelContainer.width, modelContainer.height );
+                modelRenderer.Init( modelContainer[0], windowWidth, windowHeight );
             }
 
             modelRenderer.Load( "webgl/data/models/06_Mihrab_of_the_Mosque_Al_Hasan/mesh.js",
