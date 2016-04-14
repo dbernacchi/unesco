@@ -181,7 +181,7 @@ var Params =
     , ShowMaps: false
     , EnableSunLight: false
     , EnableBloom: true
-    , BloomOpacity: 0.2
+    , BloomOpacity: 0.15
     , CameraDistance: PX.kCameraMaxDistance
     , Level0MarkerRadius: 30.0
     , AnimTime: 1.0

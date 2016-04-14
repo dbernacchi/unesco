@@ -662,7 +662,7 @@ function Setup()
     fgScene = new THREE.Scene();
     fgCamera = new THREE.Camera();
     fgScene.add( fgCamera );
-    fgMaterial = new THREE.MeshBasicMaterial({ color: 0x000000, opacity: 1.0, transparent: true, vertexColors: THREE.VertexColors });
+    fgMaterial = new THREE.MeshBasicMaterial({ color: 0x000000, opacity: 1.0, transparent: true });//, vertexColors: THREE.VertexColors });
     fgMaterial.depthTest = false;
     fgMaterial.depthWrite = false;
     //fgMaterial.map = PX.AssetsDatabase["TextAtlasTex"];
@@ -733,6 +733,19 @@ function Setup()
 
     // Set App state
     appStateMan.SetState( PX.AppStates.AppStateEntry );
+
+
+    // Click callbacks on HTML filter buttons
+    var filterLinks = $("#legend > .clr > li > a" );
+    filterLinks.on( 'click', function()
+    {
+        if( appStateMan.IsState( PX.AppStates.AppStateLevel1 ) )
+        {
+            var index = $(this).parent().index();
+            UpdateFilterSwitches( index );
+            locationMarkers.FilterLocationMeshColors( WebpageStates.FilterSwitches );
+        }
+    });
 
 
     //
@@ -1050,6 +1063,30 @@ function MainLoop()
 }
 
 
+function UpdateFilterSwitches( id )
+{
+    switch( id )
+    {
+        case 0:
+            WebpageStates.FilterSwitches[0] = 1 - WebpageStates.FilterSwitches[0];
+            WebpageStates.FilterSwitches[1] = 0;
+            WebpageStates.FilterSwitches[2] = 0;
+            break;
+        case 1:
+            WebpageStates.FilterSwitches[0] = 0;
+            WebpageStates.FilterSwitches[1] = 1 - WebpageStates.FilterSwitches[1];
+            WebpageStates.FilterSwitches[2] = 0;
+            break;
+        case 2:
+            WebpageStates.FilterSwitches[0] = 0;
+            WebpageStates.FilterSwitches[1] = 0;
+            WebpageStates.FilterSwitches[2] = 1 - WebpageStates.FilterSwitches[2];
+            break;
+        default:
+            break;
+    }
+}
+
 function ComputeZoomLevel( distanceToCenter )
 {
     var level = PX.Saturate( (distanceToCenter - PX.kCameraMinDistance) / ( PX.kCameraMaxDistance - PX.kCameraMinDistance ) );
@@ -1143,9 +1180,11 @@ function OnMouseMove(event)
     }
 }
 
+
 function OnMouseWheel( event )
 {
 }
+
 
 function OnKeyDown( event )
 {
@@ -1155,26 +1194,22 @@ function OnKeyDown( event )
 
     console.log( WebpageStates.FilterSwitches );
 
+    var id = -1;
     switch( event.which )
     {
         case 49:
-            WebpageStates.FilterSwitches[0] = 1 - WebpageStates.FilterSwitches[0];
-            WebpageStates.FilterSwitches[1] = 0;
-            WebpageStates.FilterSwitches[2] = 0;
+            id = 0;
             break;
         case 50:
-            WebpageStates.FilterSwitches[0] = 0;
-            WebpageStates.FilterSwitches[1] = 1 - WebpageStates.FilterSwitches[1];
-            WebpageStates.FilterSwitches[2] = 0;
+            id = 1;
             break;
         case 51:
-            WebpageStates.FilterSwitches[0] = 0;
-            WebpageStates.FilterSwitches[1] = 0;
-            WebpageStates.FilterSwitches[2] = 1 - WebpageStates.FilterSwitches[2];
+            id = 2;
             break;
         default:
             break;
     }
+    UpdateFilterSwitches( id );
     locationMarkers.FilterLocationMeshColors( WebpageStates.FilterSwitches );
 }
 
