@@ -22,17 +22,6 @@
 	"mapDiffuse" : "tex_0.jpg",
 	"opacity" : 1.0,
 	"specularCoef" : 0.0
-	},
-
-	{
-	"DbgColor" : 15597568,
-	"DbgIndex" : 1,
-	"DbgName" : "Untextured",
-	"colorDiffuse" : [0.501961, 0.501961, 0.501961],
-	"colorSpecular" : [0.0, 0.0, 0.0],
-	"illumination" : 1,
-	"opacity" : 1.0,
-	"specularCoef" : 0.0
 	}],
 
     "buffers": "mesh.bin"
