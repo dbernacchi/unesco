@@ -733,6 +733,23 @@ function InitGUI()
 }
 
 
+function OnExploreClick()
+{
+    appStateMan.ChangeState( PX.AppStates.AppStateIntroToLevel0 );
+    earth.ResetTransform( function()
+    {
+        locationMarkers.TweenLevel0( 1, 1.0 * 1000.0, 0.0
+        //locationMarkers.TweenLevel0( 1, 1.0 * 1000.0, 3.5 * 1000.0
+        , function()
+        {
+        }
+        , function()
+        {
+            appStateMan.ChangeState( PX.AppStates.AppStateLevel0 );
+        });
+    });
+}
+
 function Update( time, frameTime )
 {
     //
@@ -768,27 +785,6 @@ function Update( time, frameTime )
     mouseVector.y = 1.0 - 2.0 * ( mouseY / windowHeight );
     g_Raycaster.setFromCamera( mouseVector, camera );
 
-
-    // @TEMP: Do a bit of intro and change to level0
-    if( currentTime >= 5.0 )
-    {
-        if( appStateMan.IsState( PX.AppStates.AppStateEntry ) )
-        {
-            appStateMan.ChangeState( PX.AppStates.AppStateIntroToLevel0 );
-            earth.ResetTransform( function()
-            {
-                locationMarkers.TweenLevel0( 1, 1.0 * 1000.0, 0.0
-                //locationMarkers.TweenLevel0( 1, 1.0 * 1000.0, 3.5 * 1000.0
-                , function()
-                {
-                }
-                , function()
-                {
-                    appStateMan.ChangeState( PX.AppStates.AppStateLevel0 );
-                });
-            });
-        }
-    }
 
     // Update Earth
     //
@@ -901,8 +897,7 @@ function MainLoop()
     }
     else
     {
-        modelRenderer.Update( currentTime, frameTime );
-        modelRenderer.Render();
+        modelRenderer.OnFrame( currentTime, frameTime );
     }
     g_Stats.end();
 }

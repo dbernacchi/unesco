@@ -45,7 +45,7 @@ PX.ModelRenderer.prototype =
         //renderer.gammaOutput = true;
         element = this.renderer.domElement;
         
-        container[ 0 ].appendChild( element );
+        container.appendChild( element );
 
         this.renderer.autoClear = false;
         this.renderer.autoClearStencil = false;
@@ -148,9 +148,6 @@ PX.ModelRenderer.prototype =
 
     , Update( time, frameTime )
     {
-        if( ! this.enabled )
-            return;
-
         //
         mouseDeltaX = mouseX - previousMouseX;
         mouseDeltaY = mouseY - previousMouseY;
@@ -177,15 +174,20 @@ PX.ModelRenderer.prototype =
 
     , Render()
     {
-        if( ! this.enabled )
-            return;
-
         this.renderer.clear();
 
         this.renderer.setViewport( 0, 0, this.width, this.height );
         this.renderer.render( this.artefactScene, this.artefactCamera );
     }
 
+    , OnFrame( time, frameTime )
+    {
+        if( ! this.enabled )
+            return;
+
+        this.Update( time, frameTime );
+        this.Render();
+    }
 
     , Reset()
     {
@@ -209,8 +211,8 @@ PX.ModelRenderer.prototype =
         if( this.artefactOrbitControls )
         {
             this.artefactOrbitControls.dispose();
+            this.artefactOrbitControls = null;
         }
-        this.artefactOrbitControls = null;
 
         //
         if( this.artefactScene.children.length > 0 )
