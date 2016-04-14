@@ -2,38 +2,38 @@
 <html>
 <head>
 
-	<script src="webgl/Sources/Webgl/Detector.js"></script>
-	<script src="webgl/Sources/3rdparty/threejs/three.js"></script>
-	<script src="webgl/Sources/3rdparty/threejs/Projector.js"></script>
-	<script src="webgl/Sources/3rdparty/threejs/controls/OrbitControls.js"></script>
-	<script src="webgl/Sources/3rdparty/threejs/loaders/gltf/glTF-parser.js"></script>
-	<script src="webgl/Sources/3rdparty/threejs/loaders/gltf/glTFLoader.js"></script>
-	<script src="webgl/Sources/3rdparty/threejs/loaders/gltf/glTFLoaderUtils.js"></script>
-	<script src="webgl/Sources/3rdparty/threejs/loaders/gltf/glTFAnimation.js"></script>
-	<script src="webgl/Sources/3rdparty/threejs/loaders/gltf/glTFShaders.js"></script>
-	<script src="webgl/Sources/3rdparty/threejs/loaders/BinaryLoader.js"></script>
-	<script src="webgl/Sources/3rdparty/threejs/postprocessing/BloomPass.js"></script>
-	<script src="webgl/Sources/3rdparty/threejs/postprocessing/EffectComposer.js"></script>
-	<script src="webgl/Sources/3rdparty/threejs/postprocessing/ShaderPass.js"></script>
-	<script src="webgl/Sources/3rdparty/threejs/postprocessing/RenderPass.js"></script>
-	<script src="webgl/Sources/3rdparty/threejs/shaders/CopyShader.js"></script>
-	<script src="webgl/Sources/3rdparty/threejs/shaders/ConvolutionShader.js"></script>
-	<script src="webgl/Sources/3rdparty/jquery/jquery-1.12.2.min.js"></script>
-	<script src="webgl/Sources/3rdparty/dat.gui.min.js"></script>
-	<script src="webgl/Sources/3rdparty/stats.min.js"></script>
-	<script src="webgl/Sources/3rdparty/suncalc.js"></script>
-	<script src="webgl/Sources/3rdparty/markerclusterer.js"></script>
-	<script src="webgl/Sources/3rdparty/Tween.js"></script>
-	<script src="webgl/Sources/3rdparty/dojo.js"></script>
-	<script src="webgl/Sources/3rdparty/sylvester.js"></script>
-	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB_BvzvNCArogTRPRnbUicqze38-91MNFA"></script>
-	
-	<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Nunito" />
-	<link rel="stylesheet" type="text/css" href="css/unesco.css">
-	<script src="js/unesco.js"></script>	
-	
-	
-	
+    <script src="webgl/Sources/Webgl/Detector.js"></script>
+    <script src="webgl/Sources/3rdparty/threejs/three.js"></script>
+    <script src="webgl/Sources/3rdparty/threejs/Projector.js"></script>
+    <script src="webgl/Sources/3rdparty/threejs/controls/OrbitControls.js"></script>
+    <script src="webgl/Sources/3rdparty/threejs/loaders/gltf/glTF-parser.js"></script>
+    <script src="webgl/Sources/3rdparty/threejs/loaders/gltf/glTFLoader.js"></script>
+    <script src="webgl/Sources/3rdparty/threejs/loaders/gltf/glTFLoaderUtils.js"></script>
+    <script src="webgl/Sources/3rdparty/threejs/loaders/gltf/glTFAnimation.js"></script>
+    <script src="webgl/Sources/3rdparty/threejs/loaders/gltf/glTFShaders.js"></script>
+    <script src="webgl/Sources/3rdparty/threejs/loaders/BinaryLoader.js"></script>
+    <script src="webgl/Sources/3rdparty/threejs/postprocessing/BloomPass.js"></script>
+    <script src="webgl/Sources/3rdparty/threejs/postprocessing/EffectComposer.js"></script>
+    <script src="webgl/Sources/3rdparty/threejs/postprocessing/ShaderPass.js"></script>
+    <script src="webgl/Sources/3rdparty/threejs/postprocessing/RenderPass.js"></script>
+    <script src="webgl/Sources/3rdparty/threejs/shaders/CopyShader.js"></script>
+    <script src="webgl/Sources/3rdparty/threejs/shaders/ConvolutionShader.js"></script>
+    <script src="webgl/Sources/3rdparty/jquery/jquery-1.12.2.min.js"></script>
+    <script src="webgl/Sources/3rdparty/dat.gui.min.js"></script>
+    <script src="webgl/Sources/3rdparty/stats.min.js"></script>
+    <script src="webgl/Sources/3rdparty/suncalc.js"></script>
+    <script src="webgl/Sources/3rdparty/markerclusterer.js"></script>
+    <script src="webgl/Sources/3rdparty/Tween.js"></script>
+    <script src="webgl/Sources/3rdparty/dojo.js"></script>
+    <script src="webgl/Sources/3rdparty/sylvester.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB_BvzvNCArogTRPRnbUicqze38-91MNFA"></script>
+    
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Nunito" />
+    <link rel="stylesheet" type="text/css" href="css/unesco.css">
+    <script src="js/unesco.js"></script>    
+    
+    
+    
 </head>
 <body bgcolor="#000000">
 <script>
@@ -45,14 +45,23 @@ if(!Detector.webgl)
 <div style="top: -100px;" id="map"></div>
 <div style="display: none;" id="glContainer"></div>
 <div id="glModelContainerTEST"></div>
+
 <div style="display: none;" class="preloaderBG" id="preloaderBG"></div>
 <div style="display: none;" class="preloaderFG" id="preloaderFG"></div>
 
 <div class="UNESCO" id="splash">
 
-    <div class="status-bar-top"></div>
-    <div class="status-bar-bottom"></div>    
-    <a href="#" class="explore-button"></a>
+    <!--div class="status-bar-top"></div>
+    <div class="status-bar-bottom"></div-->  
+    
+    
+    <a href="#" class="resize explore-button"></a>
+    
+    <span class="resize">
+        <img id="splash-text" src="img/splash/splash-text.png"/>
+    </span>
+      
+    
     
 </div>
 
@@ -97,34 +106,34 @@ if(!Detector.webgl)
             </li>
         </ul>    
     </div>
-	<!--div class="browse-inner">
-	
-		<div class="arrows">
-			<a href="#" class="arrow up">
-				<img src="img/browse/arrow-up.png" />
-			</a>
-			
-			<a href="#" class="arrow down">
-				<img src="img/browse/arrow-down.png" />
-			</a>
-		</div>
-			
-		<div class="items">
-			<div class="items-inner-1">
-				<div class="items-inner-2">
-					<div class="item"-->
-					    <!--a href="#"><img src="img/browse/static-browse-2.png" /></a-->
+    <!--div class="browse-inner">
+    
+        <div class="arrows">
+            <a href="#" class="arrow up">
+                <img src="img/browse/arrow-up.png" />
+            </a>
+            
+            <a href="#" class="arrow down">
+                <img src="img/browse/arrow-down.png" />
+            </a>
+        </div>
+            
+        <div class="items">
+            <div class="items-inner-1">
+                <div class="items-inner-2">
+                    <div class="item"-->
+                        <!--a href="#"><img src="img/browse/static-browse-2.png" /></a-->
                     <!--/div>
-					<div class="item">
-						<a href="#"><img src="img/browse/static-browse-2.png" /></a>
-					</div>
-					<div class="item">
-						<a href="#"><img src="img/browse/static-browse-3.png" /></a>
-					</div>
-				<div>
-			</div>		
-		</div>
-	</div-->
+                    <div class="item">
+                        <a href="#"><img src="img/browse/static-browse-2.png" /></a>
+                    </div>
+                    <div class="item">
+                        <a href="#"><img src="img/browse/static-browse-3.png" /></a>
+                    </div>
+                <div>
+            </div>      
+        </div>
+    </div-->
 </div>
 
 <div class="UNESCO" id="slide-5" style="display: none;">
