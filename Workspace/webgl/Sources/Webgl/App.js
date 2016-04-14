@@ -131,7 +131,7 @@ THREE.DefaultLoadingManager.onProgress = function( item, loaded, total )
     //console.log( percentage );
     //preloaderFG.css( "width", (percentage) + '%' );
     
-    UNESCO.bottomStatusBar(percentage);
+    //UNESCO.bottomStatusBar(percentage);
     
 };
 

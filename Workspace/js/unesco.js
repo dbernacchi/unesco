@@ -7,7 +7,7 @@ var UNESCO = {};
 
 		var ns = this;
 		
-		ns.topStatusBar();
+		//ns.topStatusBar();
 		
 		var slider = $(".UNESCO .items-inner-2");
 		
@@ -103,6 +103,7 @@ var UNESCO = {};
 		
 	}
 
+/*
 	this.topStatusBar = function() {
 
 		var ns = this;
@@ -143,6 +144,8 @@ var UNESCO = {};
 		
 	}	
 	
+*/
+
 	this.showExploreButton = function() {
 
 		$(".UNESCO .explore-button").css('display', 'block');
