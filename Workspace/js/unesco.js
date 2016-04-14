@@ -7,6 +7,9 @@ var UNESCO = {};
 
 		var ns = this;
 		
+		this.hideSplash();
+		this.showBrowse();
+		
 		//ns.topStatusBar();
 		//var slider = $(".UNESCO .items-inner-2");
 		//var item_height = 250;
@@ -233,6 +236,7 @@ var UNESCO = {};
 
 		var elm = $(".UNESCO#browse");
 		
+		/*
 		//get elm height
 		var height = elm.height();
 		
@@ -250,6 +254,7 @@ var UNESCO = {};
 		
 		//set top
 		elm.css('top', top + 'px');
+		*/
 		elm.show();
 
 	}
