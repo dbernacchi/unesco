@@ -99,6 +99,24 @@ var UNESCO = {};
 			$(".UNESCO#slide-5").hide();
 			$(".UNESCO#slide-9").show();
 
+            var modelContainer = document.getElementById( "glModelContainer" );
+            modelContainer.style.top = "0px";
+            modelContainer.style.left = "0px";
+            modelContainer.style.right = "0px";
+            modelContainer.style.bottom = "0px";
+            if( !modelRenderer )
+            {
+                modelRenderer = new PX.ModelRenderer();
+                modelRenderer.Init( modelContainer, windowWidth, windowHeight );
+            }
+
+            modelRenderer.Load( "webgl/data/models/06_Mihrab_of_the_Mosque_Al_Hasan/mesh.js",
+            //modelRenderer.Load( "webgl/data/models/01_Nimrud_Relief/mesh.js", 
+            function( per )
+            {
+                console.log( "+---+  Loading: ", per );
+            });
+
 		});					
 		
 	}

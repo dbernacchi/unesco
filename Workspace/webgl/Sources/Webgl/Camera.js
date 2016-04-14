@@ -36,8 +36,8 @@ PX.CameraTrackball.prototype =
     , Init( camera )
     {
         //this.camera = camera;
-        this.target = camera.getWorldDirection();
-        this.right = this.target.clone();
+        this.target.copy( camera.getWorldDirection() );
+        this.right.copy( this.target );
         this.right.crossVectors( this.right, PX.YAxis );
         this.right.normalize();
     }

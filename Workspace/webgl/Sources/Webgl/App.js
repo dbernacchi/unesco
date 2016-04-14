@@ -753,74 +753,59 @@ function Update( time, frameTime )
     }
 
 
-    if( Params.MainScene )
+    mouseVector3d.set( mouseX, Params.WindowHeight-mouseY, 0.0 );
+
+    // Update raycaster
+    mouseVector.x = 2.0 * (mouseX / windowWidth) - 1.0;
+    mouseVector.y = 1.0 - 2.0 * ( mouseY / windowHeight );
+    g_Raycaster.setFromCamera( mouseVector, camera );
+
+
+    // @TEMP: Do a bit of intro and change to level0
+    if( currentTime >= 5.0 )
     {
-        mouseVector3d.set( mouseX, Params.WindowHeight-mouseY, 0.0 );
-
-        // Update raycaster
-        mouseVector.x = 2.0 * (mouseX / windowWidth) - 1.0;
-        mouseVector.y = 1.0 - 2.0 * ( mouseY / windowHeight );
-        g_Raycaster.setFromCamera( mouseVector, camera );
-
-
-        // @TEMP: Do a bit of intro and change to level0
-        if( currentTime >= 5.0 )
+        if( appStateMan.IsState( PX.AppStates.AppStateEntry ) )
         {
-            if( appStateMan.IsState( PX.AppStates.AppStateEntry ) )
+            appStateMan.ChangeState( PX.AppStates.AppStateIntroToLevel0 );
+            earth.ResetTransform( function()
             {
-                appStateMan.ChangeState( PX.AppStates.AppStateIntroToLevel0 );
-                earth.ResetTransform( function()
+                locationMarkers.TweenLevel0( 1, 1.0 * 1000.0, 0.0
+                //locationMarkers.TweenLevel0( 1, 1.0 * 1000.0, 3.5 * 1000.0
+                , function()
                 {
-                    locationMarkers.TweenLevel0( 1, 1.0 * 1000.0, 0.0
-                    //locationMarkers.TweenLevel0( 1, 1.0 * 1000.0, 3.5 * 1000.0
-                    , function()
-                    {
-                    }
-                    , function()
-                    {
-                        appStateMan.ChangeState( PX.AppStates.AppStateLevel0 );
-                    });
+                }
+                , function()
+                {
+                    appStateMan.ChangeState( PX.AppStates.AppStateLevel0 );
                 });
-            }
+            });
         }
-
-        // Update Earth
-        //
-        //if( earth )
-        {
-            earth.Update( currentTime, frameTime, camera );
-        }
-
-        // Do marker population
-        if( locationMarkers.doPopulation )
-        {
-            locationMarkers.PopulateMarkers( markerCluster, locationsDB, camera );
-        }
-
-        // Avoidance
-        locationMarkers.MarkerAvoidance( markerCluster, frameTime );
-
-        //
-        locationMarkers.Update( currentTime, frameTime, camera );
-
-        // Update Tween
-        TWEEN.update();
-
-        //
-        appStateMan.Update();
     }
 
+    // Update Earth
+    //
+    //if( earth )
+    {
+        earth.Update( currentTime, frameTime, camera );
+    }
+
+    // Do marker population
+    if( locationMarkers.doPopulation )
+    {
+        locationMarkers.PopulateMarkers( markerCluster, locationsDB, camera );
+    }
+
+    // Avoidance
+    locationMarkers.MarkerAvoidance( markerCluster, frameTime );
 
     //
-    /*if( ! Params.MainScene )
-    {
-        if( artefactSceneBSphere )
-        {
-            //console.log( artefactSceneBSphere );
-            artefactOrbitControls.target.set( artefactSceneBSphere.x, artefactSceneBSphere.y, artefactSceneBSphere.z );
-            artefactOrbitControls.update();
-        }
-    }*/
+    locationMarkers.Update( currentTime, frameTime, camera );
+
+    // Update Tween
+    TWEEN.update();
+
+    //
+    appStateMan.Update();
 
 
     // Get Sun position and map it to our light
@@ -994,6 +979,7 @@ function OnMouseUp(event)
     mouseY = event.clientY;
 
     //
+    console.log( isMouseClick );
     if( isMouseClick )
     {
         locationMarkers.OnMouseClickEvent( mouseVector3d, camera, 
@@ -1041,7 +1027,7 @@ function OnKeyDown( event )
     if( ! appStateMan.IsState( PX.AppStates.AppStateLevel1 ) )
         return;
 
-    console.log( WebpageStates.FilterSwitches );
+    //console.log( WebpageStates.FilterSwitches );
 
     var id = -1;
     switch( event.which )

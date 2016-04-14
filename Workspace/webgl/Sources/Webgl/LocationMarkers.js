@@ -658,7 +658,7 @@ UG.LocationMarkers.prototype =
             }
 
             //console.log( "moooo" );
-            //trackball.Reset( camera );
+            //trackball.Reset( camera, cameraLookAtPoint );
 
 
             // Change app state
@@ -670,7 +670,7 @@ UG.LocationMarkers.prototype =
             null, 
             function()
             {
-                trackball.Reset( camera );
+                trackball.Reset( camera, cameraLookAtPoint );
 
                 //scope.doAvoidance = false;
             });
@@ -707,7 +707,7 @@ UG.LocationMarkers.prototype =
                     // Change app state
                     appStateMan.ChangeState( PX.AppStates.AppStateLevel1 );
 
-                    trackball.Reset( camera );
+                    trackball.Reset( camera, cameraLookAtPoint );
                 });
             });
 
@@ -738,7 +738,7 @@ UG.LocationMarkers.prototype =
             // Save clicked marker index
             this.clickedMarkerIndex = index;
 
-            trackball.Reset( camera );
+            trackball.Reset( camera, cameraLookAtPoint );
 
             //
             /*if( earthOrbitControls ) 
@@ -808,7 +808,7 @@ UG.LocationMarkers.prototype =
             {
                 appStateMan.ChangeState( PX.AppStates.AppStateLevel2 );
 
-                trackball.Reset( camera );
+                trackball.Reset( camera, cameraLookAtPoint );
 
                 // click start time. Used to reset pulse timer
                 scope.clickedStartTime = currentTime;
