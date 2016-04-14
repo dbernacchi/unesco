@@ -37,6 +37,8 @@ PX.ModelRenderer.prototype =
         this.width = width;
         this.height = height;
 
+        console.log( width, height );
+
         this.renderer = new THREE.WebGLRenderer( { antialias: true, precision: PX.ShaderPrecision, stencil: false, alpha: true } );
         this.renderer.setClearColor( 0x000000, 0.0 );
         //renderer.gammaInput = true;
@@ -186,7 +188,7 @@ PX.ModelRenderer.prototype =
 
         this.renderer.clear();
 
-        this.renderer.setViewport( 0, 0, windowWidth, windowHeight );
+        this.renderer.setViewport( 0, 0, this.width, this.height );
         this.renderer.render( this.artefactScene, this.artefactCamera );
     }
 
