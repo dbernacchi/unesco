@@ -25,10 +25,10 @@ PX.TextRenderer.prototype =
         this.bmFontDescriptor = bmFontDescriptor;
 
         //this.material = new THREE.MeshBasicMaterial( { map: texture, color: 0xff0000 } );
-        this.material = new THREE.MeshBasicMaterial( { map: texture, color: color, opacity: 1.2, transparent: true } );
+        this.material = new THREE.MeshBasicMaterial( { map: texture, color: color, opacity: 2.0, transparent: true } );
         this.material.side = THREE.DoubleSide;
-        //this.material.depthWrite = false;
-        //textRenderMaterial.depthTest = false;
+        this.material.blending = THREE.AdditiveBlending;
+        this.material.depthWrite = false;
         this.geometry = new THREE.BufferGeometry();
         this.geometry.dynamic = true;
 
@@ -317,7 +317,7 @@ PX.TextRenderer.prototype =
         this.textRenderTextVertexOffset += text.length;
     }
 
-    , AppendText2D: function( text, pos, textSize, scaleFactor, isCenter )
+    , AppendText2D: function( text, pos, textSize, scaleFactor, isCenterX, isCenterY )
     {
 	    // set factor which bitmap font tiles shall be scaled with
         //
@@ -331,26 +331,30 @@ PX.TextRenderer.prototype =
 
         var letterDescriptor;
 
-        var yyy = 0; //-textSize * (1.0 / textSize ) * 0.5;
+        var xxx = 0.0;
+        var yyy = 0.0;
 
         //
-        if( isCenter )
+        if( isCenterX || isCenterY )
         {
             var totalWidth = 0.0;
             var totalHeight = 0.0;
+            var temp = 0.0;
             for( var ci=0; ci<text.length; ++ci )
             {
 		        letterDescriptor = this.bmFontDescriptor.getLetter( text[ci] );
+
+		        var letterxOffset = letterDescriptor.xoffset * fontSizeFactor;
+		        var letteryOffset = -(letterDescriptor.yoffset) * fontSizeFactor;
     		    var letterxAdvance = letterDescriptor.xadvance * fontSizeFactor;
-		        var letteryOffset = -(letterDescriptor.yoffset);
 
-		        totalHeight += (letterDescriptor.height) + letteryOffset;
-
-                totalWidth += letterxAdvance;
+		        totalHeight += ( -(letterDescriptor.height * fontSizeFactor) );
+                temp += letteryOffset;
+                totalWidth += letterxAdvance + letterxOffset;
             }
 
-	        xOffset -= totalWidth * 0.5;
-            yyy = -(totalHeight / text.length) * fontSizeFactor; // * 0.5;
+            if( isCenterX ) xxx = -totalWidth * 0.5;
+            if( isCenterY ) yyy = -( ( totalHeight / text.length ) * 0.5 + ( temp / text.length ) );
         }
 
 
@@ -375,12 +379,15 @@ PX.TextRenderer.prototype =
 		    vertex.y = -(letterDescriptor.height * fontSizeFactor) + letteryOffset; 
 		    vertex.z = 0.0;
             //
+            vertex.x += xxx;
+            vertex.y += yyy;
+            //
             vertex.x *= scaleFactor;
             vertex.y *= scaleFactor;
             vertex.z *= scaleFactor;
             //
             vertex.x += xOffset;
-            vertex.y += yOffset - ( isCenter ? yyy : 0.0 );
+            vertex.y += yOffset;
             vertex.z += zOffset;
             //
 		    uv.x = textureCoords[0];
@@ -397,12 +404,15 @@ PX.TextRenderer.prototype =
 		    vertex.y = -(letterDescriptor.height * fontSizeFactor) + letteryOffset;
 		    vertex.z = 0.0;
             //
+            vertex.x += xxx;
+            vertex.y += yyy;
+            //
             vertex.x *= scaleFactor;
             vertex.y *= scaleFactor;
             vertex.z *= scaleFactor;
             //
             vertex.x += xOffset;
-            vertex.y += yOffset - ( isCenter ? yyy : 0.0 );
+            vertex.y += yOffset;
             vertex.z += zOffset;
             //
 		    uv.x = textureCoords[2];
@@ -419,12 +429,15 @@ PX.TextRenderer.prototype =
 		    vertex.y = 0 + letteryOffset;
 		    vertex.z = 0.0;
             //
+            vertex.x += xxx;
+            vertex.y += yyy;
+            //
             vertex.x *= scaleFactor;
             vertex.y *= scaleFactor;
             vertex.z *= scaleFactor;
             //
             vertex.x += xOffset;
-            vertex.y += yOffset - ( isCenter ? yyy : 0.0 );
+            vertex.y += yOffset;
             vertex.z += zOffset;
             //
 		    uv.x = textureCoords[4];
@@ -441,12 +454,15 @@ PX.TextRenderer.prototype =
 		    vertex.y = 0 + letteryOffset;
 		    vertex.z = 0.0;
             //
+            vertex.x += xxx;
+            vertex.y += yyy;
+            //
             vertex.x *= scaleFactor;
             vertex.y *= scaleFactor;
             vertex.z *= scaleFactor;
             //
             vertex.x += xOffset;
-            vertex.y += yOffset - ( isCenter ? yyy : 0.0 );
+            vertex.y += yOffset;
             vertex.z += zOffset;
             //
 		    uv.x = textureCoords[6];

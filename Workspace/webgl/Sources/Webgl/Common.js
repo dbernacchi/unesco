@@ -42,25 +42,26 @@ PX =
     , kEarthScale: 30.0
     , kEarthDetail: 50
     , kMarkerOffsetFromEarthSurface: 0.0
-    , kLocationMarkerScale: 0.7
+    , kLocationMarkerScale: 0.8
     , kLocationMarkerDetail: 16
     , kLocationMarkerZScale: 0.125
-    , kAvoidanceSpeed: 0.1
+    , kAvoidanceSpeed: 0.031
     //, kAvoidanceSpeed: 6.0
     , kMaxGridSize: 4
     , kLocationTextSize: 120.0
-    , kLocationColor: 0x000015
-    , kLocationColors: [ 0x000015, 0x0000ff, 0xffffff ]
-    , kLocationMouseOverColor: 0xff00ff
-    , kLocationMouseClickedColor: 0xff7f00
+    , kLocationColor: new THREE.Color( 0x171c5e )
+    , kLocationColors: [ 0x171c5e, 0x2f4598, 0x6e89c4 ]
+    , kLocationMouseOverColor: 0xf0fbff
+    , kLocationMouseClickedColor: 0xf0fbff
+    , kLocationColors2: [ new THREE.Color( 0x2f4598 ), new THREE.Color( 0x6e89c4 ), new THREE.Color( 0xc0e3fe ), new THREE.Color( 0xf0fbff ) ]
 
     , kCameraFovY: 36.0
     , kCameraNearPlane: 1.0
     , kCameraFarPlane: 200.0
-    , kCameraMinDistance: 50
-    , kCameraMaxDistance: 120.0
-    , kCameraOneOverMinDistance: 1.0 / 50.0
-    , kCameraOneOverMaxDistance: 1.0 / 120.0
+    , kCameraMinDistance: 60
+    , kCameraMaxDistance: 160.0
+    , kCameraOneOverMinDistance: 1.0 / 60.0     // IMPORTANT!!
+    , kCameraOneOverMaxDistance: 1.0 / 160.0    // If the above limits change, also change these
     //, kGlobalTimeScale: 1.0
 
     , kZoomMaxLevel: 3.0
@@ -161,6 +162,12 @@ PX =
         return ( x2 * x2 );
     }
 
+};
+
+
+var WebpageStates =
+{
+    FilterSwitches: []
 };
 
 

@@ -34,8 +34,12 @@ var canvas = null;
 var context = null;
 var bgCamera = null;
 var bgScene = null;
+var bgQuad = null;
 var fgCamera = null;
 var fgScene = null;
+
+var postFXScene = null;
+var postFXQuad = null;
 
 var composer = null;
 var renderMainPass = null;
@@ -195,13 +199,13 @@ function Shutdown()
 
 function CreateRenderer()
 {
-    var precision = "mediump";
-    //var precision = "highp";
+    //var precision = "mediump";
+    var precision = "highp";
 
     renderer = new THREE.WebGLRenderer( { antialias: true, precision: precision, stencil: false, alpha: false } );
     renderer.setClearColor( 0x000000, 1 );
-    renderer.gammaInput = true;
-    renderer.gammaOutput = true;
+    //renderer.gammaInput = true;
+    //renderer.gammaOutput = true;
     element = renderer.domElement;
     container = document.getElementById( "glContainer" );
     container.style.top = "0px";
@@ -246,6 +250,7 @@ function LoadData()
         , LoadTexture( "EarthCloudsMap", "webgl/data/textures/earth_clouds.png" )
         //, LoadTexture( "EarthCloudsNormalMap", "webgl/data/textures/earth_clouds_normals.png" )
         , LoadTexture( "EarthNightLightsMap", "webgl/data/textures/earth_night_lights.jpg" )
+        , LoadTexture( "Background", "webgl/data/textures/background.png" )
         , LoadTexture( "Circle", "webgl/data/textures/circle_full.png" )
         , LoadShaderData("EarthVertexShader", "webgl/data/shaders/Earth.vertex")
         , LoadShaderData("EarthPixelShader", "webgl/data/shaders/Earth.fragment")
@@ -527,6 +532,10 @@ function Setup()
     ParseBitmapFont( PX.AssetsDatabase["TextAtlasXml"] );
 
 
+    // Webpage states
+    WebpageStates.FilterSwitches = [ 0, 0, 0 ];
+
+
     // Create main scene
     //
     scene = new THREE.Scene();
@@ -575,15 +584,16 @@ function Setup()
     // Composer
     //
     renderMainPass = new THREE.RenderPass( scene, camera );
-    effectBloomPass = new THREE.BloomPass( 1, 25, 5, 1024 );
-    effectCopyPass = new THREE.ShaderPass( THREE.CopyShader );
+    effectBloomPass = new THREE.BloomPass( 1.5, 25, 4, 512 );
+    //effectBloomPass.clear = true;
+    //effectCopyPass = new THREE.ShaderPass( THREE.CopyShader );
     composer = new THREE.EffectComposer( renderer );
     composer.addPass( renderMainPass );
     composer.addPass( effectBloomPass );
-    composer.addPass( effectCopyPass );
+    //composer.addPass( effectCopyPass );
 
-    effectCopyPass.uniforms.opacity.value = 0.15;
-    effectCopyPass.renderToScreen = true;
+    //effectCopyPass.uniforms.opacity.value = 1.0;
+    //effectCopyPass.renderToScreen = true;
 
 
     // Artefact Scene
@@ -624,20 +634,36 @@ function Setup()
         artefactOrbitControls.update();
     }
 
-/**
+
+    // PostFX Layer
+    postFXScene = new THREE.Scene();
+    var postFXMat = new THREE.MeshBasicMaterial({ color: 0xffffff, opacity: 1.0, transparent: true, vertexColors: THREE.VertexColors });
+    postFXMat.blending = THREE.AdditiveBlending;
+    postFXMat.depthTest = false;
+    postFXMat.depthWrite = false;
+    postFXQuad = new THREE.Mesh( new THREE.PlaneGeometry(2, 2, 0), postFXMat );
+    postFXScene.add( postFXQuad );
+
+
     // Background scene
     //
     bgScene = new THREE.Scene();
     bgCamera = new THREE.Camera();
     bgScene.add( bgCamera );
-**/
+    var bgMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, opacity: 1.0, transparent: true, vertexColors: THREE.VertexColors, map: PX.AssetsDatabase["Background"] });
+    bgMaterial.depthTest = false;
+    bgMaterial.depthWrite = false;
+    bgQuad = new THREE.Mesh( new THREE.PlaneGeometry(2, 2, 0), bgMaterial );
+    bgScene.add( bgQuad );
+
 
     // Foreground scene
     //
     fgScene = new THREE.Scene();
     fgCamera = new THREE.Camera();
     fgScene.add( fgCamera );
-    fgMaterial = new THREE.MeshBasicMaterial({ color: 0x000000, opacity: 1.0, transparent: true, vertexColors: THREE.VertexColors, map: PX.AssetsDatabase["EarthDiffuseMap"] });
+    fgMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, opacity: 1.0, transparent: true, vertexColors: THREE.VertexColors });
+    //fgMaterial = new THREE.MeshBasicMaterial({ color: 0x000000, opacity: 1.0, transparent: true, vertexColors: THREE.VertexColors });
     fgMaterial.depthTest = false;
     fgMaterial.depthWrite = false;
     //fgMaterial.map = PX.AssetsDatabase["TextAtlasTex"];
@@ -658,6 +684,7 @@ function Setup()
     renderer.domElement.addEventListener('mousedown', OnMouseDown, false);
     renderer.domElement.addEventListener('mouseup', OnMouseUp, false);
     renderer.domElement.addEventListener('mousewheel', OnMouseWheel, false);
+    window.addEventListener('keydown', OnKeyDown, false);
 
     //
     InitStats();
@@ -951,6 +978,8 @@ function Update( time, frameTime )
 
     // Fade in
     //
+    //fgMaterial.map = composer.renderTarget1;
+    //fgMaterial.opacity = 1.0;
     if( currentTime < 4.0 )
         fgMaterial.opacity = 1.0 - PX.Saturate( currentTime * 0.5 );
 }
@@ -963,12 +992,24 @@ function Render()
     if( Params.MainScene )
     {
         renderer.setViewport( 0, 0, windowWidth, windowHeight );
+        renderer.render( bgScene, bgCamera );
+
+        //
+        renderer.setViewport( 0, 0, windowWidth, windowHeight );
         renderer.render( scene, camera );
 
+/*        //
+        composer.render();
+
+        //
+        postFXQuad.material.opacity = 0.33;
+        postFXQuad.material.map = composer.renderTarget2;
+        renderer.setViewport( 0, 0, windowWidth, windowHeight );
+        renderer.render( postFXScene, fgCamera );
+        */
+        //
         renderer.render( locationMarkers.markerScene, locationMarkers.camera2d );
         //renderer.render( locationMarkers.markerScene, fgCamera );
-
-        //composer.render();
     }
     else
     {
@@ -1088,7 +1129,8 @@ function OnMouseMove(event)
         }
         case PX.AppStates.AppStateLevel1:
         {
-            var markerIndex = locationMarkers.IntersectsLevel1( g_Raycaster );
+            //var markerIndex = locationMarkers.IntersectsLevel1( g_Raycaster );
+            locationMarkers.OnMouseOverEvent();
             break;
         }
         default:
@@ -1099,6 +1141,38 @@ function OnMouseMove(event)
 function OnMouseWheel( event )
 {
 }
+
+function OnKeyDown( event )
+{
+    //console.log( event );
+    if( ! appStateMan.IsState( PX.AppStates.AppStateLevel1 ) )
+        return;
+
+    console.log( WebpageStates.FilterSwitches );
+
+    switch( event.which )
+    {
+        case 49:
+            WebpageStates.FilterSwitches[0] = 1 - WebpageStates.FilterSwitches[0];
+            WebpageStates.FilterSwitches[1] = 0;
+            WebpageStates.FilterSwitches[2] = 0;
+            break;
+        case 50:
+            WebpageStates.FilterSwitches[0] = 0;
+            WebpageStates.FilterSwitches[1] = 1 - WebpageStates.FilterSwitches[1];
+            WebpageStates.FilterSwitches[2] = 0;
+            break;
+        case 51:
+            WebpageStates.FilterSwitches[0] = 0;
+            WebpageStates.FilterSwitches[1] = 0;
+            WebpageStates.FilterSwitches[2] = 1 - WebpageStates.FilterSwitches[2];
+            break;
+        default:
+            break;
+    }
+    locationMarkers.FilterLocationMeshColors( WebpageStates.FilterSwitches );
+}
+
 
 function OnMouseOut()
 {
