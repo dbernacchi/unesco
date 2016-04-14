@@ -42,10 +42,10 @@ PX =
     , kEarthScale: 30.0
     , kEarthDetail: 50
     , kMarkerOffsetFromEarthSurface: 0.0
-    , kLocationMarkerScale: 0.7
+    , kLocationMarkerScale: 0.8
     , kLocationMarkerDetail: 16
     , kLocationMarkerZScale: 0.125
-    , kAvoidanceSpeed: 0.1
+    , kAvoidanceSpeed: 0.031
     //, kAvoidanceSpeed: 6.0
     , kMaxGridSize: 4
     , kLocationTextSize: 120.0

@@ -34,6 +34,7 @@ var canvas = null;
 var context = null;
 var bgCamera = null;
 var bgScene = null;
+var bgQuad = null;
 var fgCamera = null;
 var fgScene = null;
 
@@ -249,6 +250,7 @@ function LoadData()
         , LoadTexture( "EarthCloudsMap", "webgl/data/textures/earth_clouds.png" )
         //, LoadTexture( "EarthCloudsNormalMap", "webgl/data/textures/earth_clouds_normals.png" )
         , LoadTexture( "EarthNightLightsMap", "webgl/data/textures/earth_night_lights.jpg" )
+        , LoadTexture( "Background", "webgl/data/textures/background.png" )
         , LoadTexture( "Circle", "webgl/data/textures/circle_full.png" )
         , LoadShaderData("EarthVertexShader", "webgl/data/shaders/Earth.vertex")
         , LoadShaderData("EarthPixelShader", "webgl/data/shaders/Earth.fragment")
@@ -638,13 +640,18 @@ function Setup()
     postFXQuad = new THREE.Mesh( new THREE.PlaneGeometry(2, 2, 0), postFXMat );
     postFXScene.add( postFXQuad );
 
-/**
+
     // Background scene
     //
     bgScene = new THREE.Scene();
     bgCamera = new THREE.Camera();
     bgScene.add( bgCamera );
-**/
+    var bgMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, opacity: 1.0, transparent: true, vertexColors: THREE.VertexColors, map: PX.AssetsDatabase["Background"] });
+    bgMaterial.depthTest = false;
+    bgMaterial.depthWrite = false;
+    bgQuad = new THREE.Mesh( new THREE.PlaneGeometry(2, 2, 0), bgMaterial );
+    bgScene.add( bgQuad );
+
 
     // Foreground scene
     //
@@ -979,11 +986,14 @@ function Render()
 
     if( Params.MainScene )
     {
+        renderer.setViewport( 0, 0, windowWidth, windowHeight );
+        renderer.render( bgScene, bgCamera );
+
         //
         renderer.setViewport( 0, 0, windowWidth, windowHeight );
         renderer.render( scene, camera );
 
-        //
+/*        //
         composer.render();
 
         //
@@ -991,7 +1001,7 @@ function Render()
         postFXQuad.material.map = composer.renderTarget2;
         renderer.setViewport( 0, 0, windowWidth, windowHeight );
         renderer.render( postFXScene, fgCamera );
-
+        */
         //
         renderer.render( locationMarkers.markerScene, locationMarkers.camera2d );
         //renderer.render( locationMarkers.markerScene, fgCamera );
@@ -1114,7 +1124,8 @@ function OnMouseMove(event)
         }
         case PX.AppStates.AppStateLevel1:
         {
-            var markerIndex = locationMarkers.IntersectsLevel1( g_Raycaster );
+            //var markerIndex = locationMarkers.IntersectsLevel1( g_Raycaster );
+            locationMarkers.OnMouseOverEvent( mouseX, mouseY );
             break;
         }
         default:

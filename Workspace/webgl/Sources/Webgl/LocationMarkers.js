@@ -4,6 +4,7 @@
 UG.LocationMarker = function()
 { 
     this.GUID           = "";
+    this.title          = "";
     this.text           = "";
     this.index          = -1;
     this.latlon         = new THREE.Vector2();
@@ -29,7 +30,7 @@ UG.LocationMarkers = function()
 	this.meshes                 = [];
 	this.markers                = [];
 	this.level0Scales           = [];
-    //this.textRenderer         = null;
+    this.textRenderer           = null;
     this.textRenderer2          = null;
 	this.markersCount           = 0;
 
@@ -53,8 +54,12 @@ UG.LocationMarkers = function()
     this.camera2d               = null;
 
     this.clickedMarkerIndex     = -1;
+    this.currentMouseOverMarkerIndex = -1;
+
     this.clickedStartTime       = 0.0;
     this.level2GlobalScale      = new THREE.Vector3( 1.0, 1.0, 1.0 );
+
+    this.locationsGroupAnim     = false;
 };
 
 UG.LocationMarkers.prototype =
@@ -101,6 +106,7 @@ UG.LocationMarkers.prototype =
 	        this.meshes.push( mesh );
 
 	        var lm = new UG.LocationMarker();
+	        lm.title = locations[i].name.toUpperCase();
 	        lm.text = "";
 	        lm.position.copy( locations[i].position );
             lm.scale.set( PX.EPSILON, PX.EPSILON, PX.EPSILON );
@@ -116,12 +122,14 @@ UG.LocationMarkers.prototype =
 	    }
 
         //
-        //this.textRenderer = new PX.TextRenderer();
-        //this.textRenderer.Init( bmFontDescriptor, 2048, 0x000000, PX.AssetsDatabase["TextAtlasTex"], scene );
+        this.textRenderer = new PX.TextRenderer();
+        this.textRenderer.Init( bmFontDescriptor, 256, 0xffffff, PX.AssetsDatabase["TextAtlasTex"], this.markerScene );
+        this.textRenderer.material.depthWrite = false;
         //this.locationsGroup.add( this.textRenderer.mesh );
+        //this.markerScene.add( this.textRenderer.mesh );
 
         //
-        this.locationsGroup.scale.set( PX.EPSILON, PX.EPSILON, PX.EPSILON );
+        if( this.locationsGroupAnim ) this.locationsGroup.scale.set( PX.EPSILON, PX.EPSILON, PX.EPSILON );
 
 	    scene.add( this.locationsGroup );
 
@@ -175,14 +183,14 @@ UG.LocationMarkers.prototype =
 
         //this.billboardsGroup.add( this.textRenderer2.mesh );
         //this.markerScene.add( this.billboardsGroup );
-        this.markerScene.add( this.textRenderer2.mesh );
+        //this.markerScene.add( this.textRenderer2.mesh );
 
         this.camera2d = new THREE.OrthographicCamera( 0, Params.WindowWidth, Params.WindowHeight, 0, -100, 100 );
         this.markerScene.add( this.camera2d );
 
 
         // Init
-        this.locationsGroup.visible = false;
+        //this.locationsGroup.visible = false;
 
     }
 
@@ -205,20 +213,27 @@ UG.LocationMarkers.prototype =
 
     , TweenLevel1: function( targetValue, time, delay, onStartCB, onCompleteCB )
     {
-        //this.locationsGroup.scale.set( 1, 1, 1 );
-        var target = new THREE.Vector3( targetValue, targetValue, targetValue );
-        var tween = new TWEEN.Tween( this.locationsGroup.scale ).to( target, time );
-        tween.easing( TWEEN.Easing.Quintic.InOut );
-        tween.delay( (delay === undefined ) ? 0 : delay );
-        tween.start();
-        tween.onStart( function()
+        if( this.locationsGroupAnim )
         {
-            if( onStartCB ) onStartCB();
-        });
-        tween.onComplete( function()
+            var target = new THREE.Vector3( targetValue, targetValue, targetValue );
+            var tween = new TWEEN.Tween( this.locationsGroup.scale ).to( target, time );
+            tween.easing( TWEEN.Easing.Quintic.InOut );
+            tween.delay( (delay === undefined ) ? 0 : delay );
+            tween.start();
+            tween.onStart( function()
+            {
+                if( onStartCB ) onStartCB();
+            });
+            tween.onComplete( function()
+            {
+                if( onCompleteCB ) onCompleteCB();
+            });
+        }
+        else
         {
+            this.locationsGroup.scale.set( 1, 1, 1 );
             if( onCompleteCB ) onCompleteCB();
-        });
+        }
     }
 
 
@@ -232,6 +247,23 @@ UG.LocationMarkers.prototype =
     {
         if( this.doPopulation )
             return;
+
+/*
+        this.textRenderer.Begin();
+        //if( this.currentMouseOverMarkerIndex >= 0 )
+        {
+            var pp = new THREE.Vector3( mouseX, Params.WindowHeight - mouseY, 0.0 );
+
+            var fontSize = 1.0 + Math.abs( Math.sin( time * 0.2 ) ) * 7.0;
+
+            //pp.x += fontSize * 2.0;
+            //pp.y += fontSize * 0.5;
+
+            this.textRenderer.AppendText2D( "MW", pp, fontSize, 1.0, false, true );
+
+        }
+        this.textRenderer.End();
+*/
 
         //console.log( this.avoidanceCount );
 
@@ -338,7 +370,7 @@ UG.LocationMarkers.prototype =
 		        this.geomPositionArray[i*3+1] = loc.positionSS.y;
 		        this.geomPositionArray[i*3+2] = 0;
 
-                this.textRenderer2.AppendText2D( loc.text, loc.positionSS, 8.5, this.billboardsGroup.scale.x, true );
+                this.textRenderer2.AppendText2D( loc.text, loc.positionSS, 8.5, this.billboardsGroup.scale.x, true, true );
             }
             else
             {
@@ -434,13 +466,40 @@ UG.LocationMarkers.prototype =
 
         // Text End
         //this.textRenderer.End();
+
+        this.textRenderer.Begin();
+        if( this.currentMouseOverMarkerIndex >= 0 )
+        {
+            var loc = this.markers[ this.currentMouseOverMarkerIndex ];
+
+            loc.positionSS.copy( loc.position.clone().applyQuaternion(earth.mesh.quaternion) );
+            loc.positionSS.project( camera );
+
+            // 2d ortho
+            if( appStateMan.IsState( PX.AppStates.AppStateLevel1 ) )
+                loc.positionSS.x = mouseX;
+            else
+                loc.positionSS.x = ( (loc.positionSS.x + 1.0 ) * 0.5 ) * Params.WindowWidth;
+            loc.positionSS.y = ( (loc.positionSS.y + 1.0 ) * 0.5 ) * Params.WindowHeight;
+            //loc.positionSS.y = Params.WindowHeight - mouseY;
+            loc.positionSS.z = 0.0;
+
+            var fontSize = 6.0;
+
+            loc.positionSS.x += fontSize * 2.0;
+            //loc.positionSS.y += fontSize * 0.5;
+
+            //this.textRenderer.AppendText2D( "MW", loc.positionSS, fontSize, 1.0, false, true );
+            this.textRenderer.AppendText2D( loc.title, loc.positionSS, fontSize, 1.0, false, true );
+        }
+        this.textRenderer.End();
     }
 
 
     , IntersectsLevel1: function( raycaster )
     {
         if( this.doPopulation )
-            return;
+            return -1;
 
         for( var i=0; i<this.markersCount; ++i )
         {
@@ -466,7 +525,7 @@ UG.LocationMarkers.prototype =
     , IntersectsLevel0: function( mouse )
     {
         if( this.doPopulation )
-            return;
+            return -1;
 
         var c0 = new THREE.Color( PX.kLocationColor );
         var c1 = new THREE.Color( PX.kLocationMouseOverColor );
@@ -505,12 +564,36 @@ UG.LocationMarkers.prototype =
         return -1;
     }
 
+
+    , OnMouseOverEvent: function( mouse3d, camera, onLocationClickCB )
+    {
+        var scope = this;
+
+        // Level 1
+        if( appStateMan.IsState( PX.AppStates.AppStateLevel1 ) )
+        {
+            var index = this.IntersectsLevel1( g_Raycaster );
+            if( index < 0 )
+            {
+                this.currentMouseOverMarkerIndex = -1;
+                //console.log( "no intersection", index );
+                return;
+            }
+
+            //if( this.currentMouseOverMarkerIndex !== index )
+            //{
+                this.currentMouseOverMarkerIndex = index;
+            //}
+        }
+    }
+
+
     , OnMouseClickEvent: function( mouse3d, camera, onLocationClickCB )
     {
         var scope = this;
 
         // Level 0
-        if( appStateMan.GetCurrentState() === PX.AppStates.AppStateLevel0 )
+        if( appStateMan.IsState( PX.AppStates.AppStateLevel0 ) )
         {
             var index = this.IntersectsLevel0( mouse3d );
             if( index < 0 )
@@ -585,7 +668,7 @@ UG.LocationMarkers.prototype =
         }
 
         // Level 1
-        else if( appStateMan.GetCurrentState() === PX.AppStates.AppStateLevel1 )
+        else if( appStateMan.IsState( PX.AppStates.AppStateLevel1 ) )
         {
             var index = this.IntersectsLevel1( g_Raycaster );
             if( index < 0 )
@@ -685,7 +768,7 @@ UG.LocationMarkers.prototype =
         }
 
         // Level 2
-        else if( appStateMan.GetCurrentState() === PX.AppStates.AppStateLevel2 )
+        else if( appStateMan.IsState( PX.AppStates.AppStateLevel2 ) )
         {
             // If clicking on the globe, go back to Level 1
             var intersects = g_Raycaster.intersectObject( earth.mesh, false );
@@ -763,6 +846,7 @@ UG.LocationMarkers.prototype =
                 // Reset clicked marker index
                 scope.clickedMarkerIndex = -1;
 
+                scope.currentMouseOverMarkerIndex = -1;
             });
         }
 
@@ -845,6 +929,7 @@ UG.LocationMarkers.prototype =
 
                 //console.log( i, clusterCenter.lat(), clusterCenter.lng() );
 
+	            this.markers[i].title = locations[i].name.toUpperCase();
                 this.markers[i].text = String( c.markers_.length );
                 this.markers[i].latlon.set( clusterCenter.lat(), clusterCenter.lng() );
                 this.markers[i].scale.set( PX.EPSILON, PX.EPSILON, PX.EPSILON );
@@ -854,31 +939,38 @@ UG.LocationMarkers.prototype =
 
                 this.markersCount++;
 
-                // Scale meshes down by default
-                this.meshes[i].scale.copy( this.markers[i].scale );
-
-                
-                // Use distance to camera for constant size
-                distToCamera.subVectors( camera.position, this.markers[i].position );
-                var locationScale = distToCamera.length();
-                locationScale = ( locationScale / PX.kCameraMaxDistance );
-
-                //this.markers[i].scale.set( locationScale, locationScale, locationScale );
-                
-                var target = new THREE.Vector3( locationScale, locationScale, locationScale );
-                this.markers[i].tween = new TWEEN.Tween( this.markers[i].scale ).to( target, 250.0 ); ///clusterCount );
-                this.markers[i].tween.easing( TWEEN.Easing.Quintic.InOut );
-
-                // Delay is the time that takes to tween Level1 group node
-                var delayTime = Params.AnimTime * 1000.0;
-                this.markers[i].tween.delay( delayTime + ((i * 500)/clusterCount) );
-                this.markers[i].tween.start();
-                if( i === clusterCount-1 )
+                if( this.zoomLevel > 0 )
                 {
-                    this.markers[i].tween.onComplete( function()
+                    // Scale meshes down by default
+                    this.meshes[i].scale.copy( this.markers[i].scale );
+                
+                    // Use distance to camera for constant size
+                    distToCamera.subVectors( camera.position, this.markers[i].position );
+                    var locationScale = distToCamera.length();
+                    locationScale = ( locationScale / PX.kCameraMaxDistance );
+
+                    // Tween location markers
+                    var target = new THREE.Vector3( locationScale, locationScale, locationScale );
+                    this.markers[i].tween = new TWEEN.Tween( this.markers[i].scale ).to( target, 150.0 );//1000.0/clusterCount );
+                    this.markers[i].tween.easing( TWEEN.Easing.Quintic.InOut );
+                    // Delay is the time that takes to tween Level1 group node
+                    if( this.locationsGroupAnim )
                     {
-                        scope.zoomLevel1IntroAnimDone = true;
-                    });
+                        var delayTime = Params.AnimTime * 1000.0;
+                        this.markers[i].tween.delay( delayTime + ((i * 250)/clusterCount) );
+                    }
+                    else
+                    {
+                        this.markers[i].tween.delay( ((i * 250)/clusterCount) );
+                    }
+                    this.markers[i].tween.start();
+                    if( i === clusterCount-1 )
+                    {
+                        this.markers[i].tween.onComplete( function()
+                        {
+                            scope.zoomLevel1IntroAnimDone = true;
+                        });
+                    }
                 }
             }
 
