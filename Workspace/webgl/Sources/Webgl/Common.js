@@ -37,6 +37,9 @@ PX =
     //
     , EPSILON: 0.001
 
+    , ShaderPrecision: "mediump"
+    //, ShaderPrecision: "highp"
+
     , StartLatLon: { x: 6.3377571, y: 43.139408 }
 
     , kEarthScale: 30.0
@@ -187,9 +190,9 @@ var Params =
     , AnimTime: 1.0
     , Art_CameraDistance: 100.0
     , AmbientIntensity: 0.00033
-    , DiffuseIntensity: 2.0
+    , DiffuseIntensity: 1.125
     , SpecularIntensity: 0.07
-    , NormalMapIntensity: 1.0
+    , NormalMapIntensity: 0.6
     , CloudsIntensity: 0.0 //0.1
     , CloudsShadowIntensity: 0.0 //0.3
     , CloudsShadowOffset: 0.0 //5.0

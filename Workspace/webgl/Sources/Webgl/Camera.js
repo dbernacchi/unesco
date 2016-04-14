@@ -1,16 +1,8 @@
 ﻿
 
-//
-/*PX.Camera = function()
-{
-    this.orientation        = new THREE.Quaternion();
-    this.position           = new THREE.Vector3();
-    this.aspect             = 1.0;
-};*/
-
 PX.CameraTrackball = function()
 {
-    //this.camera             = new THREE.Camera();
+    //this.camera             = null;
 
     this.target             = new THREE.Vector3();
     this.right              = new THREE.Vector3();
@@ -25,11 +17,15 @@ PX.CameraTrackball = function()
 
     this.rotateFactor       = 1.0;
 
+    this.lockUpVector       = true;
+
     this.tempQuat           = new THREE.Quaternion();
 
     // Convinience
     this.camPosition        = new THREE.Vector3();
     this.camLookAt          = new THREE.Vector3();
+    this.camDir             = new THREE.Vector3( 0, 0, 1 );
+    this.camUp              = new THREE.Vector3();
 };
 
 
@@ -58,11 +54,11 @@ PX.CameraTrackball.prototype =
         }
     }
 
-    , Reset( camera )
+    , Reset( camera, center )
     {
         //this.camera = camera;
-        this.target = camera.getWorldDirection();
-        this.right = this.target.clone();
+        this.target.copy( center );
+        this.right = camera.getWorldDirection().clone();
         this.right.crossVectors( this.right, PX.YAxis );
         this.right.normalize();
     }
@@ -83,7 +79,12 @@ PX.CameraTrackball.prototype =
 
         var pos = camera.position.clone().applyMatrix4( mat );
 
-        var axis = new THREE.Vector3( 0, 1, 0 );
+        var axis = new THREE.Vector3( 0, this.camUp.y > 0.0 ? 1 : -1, 0 );
+        if( ! this.lockUpVector )
+        {
+            axis.crossVectors( this.right, this.camDir );
+            axis.normalize();
+        }
 
         radians = PX.ToRadians( -this.rotateVel.x * this.rotateFactor );
 		this.tempQuat.setFromAxisAngle( axis, radians );
@@ -105,9 +106,13 @@ PX.CameraTrackball.prototype =
 
         this.camPosition.copy( pos );
         this.camLookAt.copy( lookAt );
+        this.camDir.copy( dir );
+        this.camUp.copy( up );
 
         camera.position.copy( pos );
         camera.lookAt( lookAt );
+
+        this.target = camera.getWorldDirection();
     }
 
 
@@ -159,5 +164,3 @@ PX.CameraTrackball.prototype =
         }*/
     }
 };
-
-var trackball = new PX.CameraTrackball();
