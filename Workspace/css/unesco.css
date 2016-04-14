@@ -9,6 +9,7 @@
     display: inline-block;
     position: absolute;
     overflow: hidden;
+    //z-index: 1000;
 }
 #map 
 {

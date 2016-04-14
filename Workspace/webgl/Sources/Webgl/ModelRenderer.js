@@ -47,11 +47,16 @@ PX.ModelRenderer.prototype =
         
         container.appendChild( element );
 
-        this.renderer.autoClear = false;
-        this.renderer.autoClearStencil = false;
+        container.width = width;
+        container.height = height;
+        container.style.width = width;
+        container.style.height = height;
 
         this.renderer.setPixelRatio( window.devicePixelRatio );
         this.renderer.setSize( width, height );
+
+        this.renderer.autoClear = false;
+        this.renderer.autoClearStencil = false;
 
         // Artefact Scene
         //

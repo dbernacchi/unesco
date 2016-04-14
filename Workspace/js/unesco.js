@@ -122,6 +122,7 @@ var UNESCO = {};
 			$(".UNESCO#slide-9").hide();
 
             // On close, clean up the model Renderer			
+            Params.MainScene = true;
             if( modelRenderer )
             {
                 modelRenderer.Clear();
@@ -157,6 +158,8 @@ var UNESCO = {};
 			
 			$(".UNESCO#slide-5").hide();
 			$(".UNESCO#slide-9").show();
+
+            Params.MainScene = false;
 
 			var modelContainer = $(".UNESCO#slide-9 #glModelContainer");
             console.log( modelContainer[0], modelContainer[0].width, modelContainer[0].height );

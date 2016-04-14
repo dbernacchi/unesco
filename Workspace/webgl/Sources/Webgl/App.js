@@ -771,7 +771,7 @@ function Update( time, frameTime )
             trackball.rotateFactor = rotSpeed * Params.EarthRotationSpeed;
 
             trackball.HandleMouseEvents( 1, 1, mouseDeltaX, mouseDeltaY, frameTime, aspectRatio );
-            //console.log( trackball.rotateVel );
+            console.log( mouseDeltaX, mouseDeltaY );
             //console.log( camera.position );
         }
 
