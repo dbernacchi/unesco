@@ -7,10 +7,12 @@ var UNESCO = {};
 
 		var ns = this;
 		
+		//ns.spinner();
+		
+		ns.hideSplash();
 		ns.showBrowse();
 		
-		//ns.spinner();
-
+		
 		var slider = $(".UNESCO .items-inner-2");
 		
 		var item_height = 250;
@@ -64,32 +66,44 @@ var UNESCO = {};
 		});	
 		
 		
-		/************
-		 * VICTOR, here are the events for filtering
-		 ***********/
-		$(".UNESCO .legend .destroyed").click(function(e) {
+		$(".UNESCO#slide-9 .close-button").click(function(e) {
 			e.preventDefault();
 			
-			//filter for destroyed
-			
-		});		
-
-		$(".UNESCO .legend .under").click(function(e) {
-			e.preventDefault();
-			
-			//filter for under reconstruction
+			$(".UNESCO#slide-5").show();
+			$(".UNESCO#slide-9").hide();
 			
 		});	
 		
-		$(".UNESCO .legend .reconstructed").click(function(e) {
+		$(".UNESCO#slide-5 .close-button").click(function(e) {
 			e.preventDefault();
 			
-			//filter for reconstructed
+			$(".UNESCO#slide-5").hide();
+			
+			$(".UNESCO#menu-button").show();
+			$(".UNESCO#browse").show();
 			
 		});			
-		/************
-		 * VICTOR, here the events for filtering end
-		 ***********/
+		
+		$(".UNESCO#browse .item a").click(function(e) {
+			e.preventDefault();
+			
+			$(".UNESCO#browse").hide();
+			
+			$(".UNESCO#menu-button").hide();
+			$(".UNESCO#close-button").show();
+			
+			$(".UNESCO#slide-5").show();
+
+		});	
+		
+		$(".UNESCO#slide-5 #launch-slide-9").click(function(e) {
+			e.preventDefault();
+			
+			
+			$(".UNESCO#slide-5").hide();
+			$(".UNESCO#slide-9").show();
+
+		});					
 		
 	}
 
@@ -129,8 +143,26 @@ var UNESCO = {};
 
 	this.showBrowse = function() {
 
-
-		$(".UNESCO#browse").show();
+		var elm = $(".UNESCO#browse");
+		
+		//get elm height
+		var height = elm.height();
+		
+		//divide by two
+		var offset = height / 2;
+		
+		//get window height
+		var win_height = window.innerHeight;
+		
+		//divide by two
+		var middle = win_height / 2;
+		
+		//subtract a from b
+		var top = middle - offset;
+		
+		//set top
+		elm.css('top', top + 'px');
+		elm.show();
 
 	}
 	

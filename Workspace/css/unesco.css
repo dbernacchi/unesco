@@ -93,10 +93,10 @@ ul.clr li{float: left; margin: 0;}
 	font-variant: normal;
 	font-weight: 400;
 	line-height: 20px;
-	background-color: #0a214b;
+	color: #B9CBD5;
 }
 
-#legend a{display: block; height: 12px; padding: 0px 80px 5px 35px; color: #fff; text-decoration: none; background-position: 0px 3px;}
+#legend a{display: block; height: 12px; padding: 0px 80px 5px 35px; color: #fff; text-decoration: none; }
 
 #legend a.destroyed{background: url(../img/legend/dot-destroyed.png) 0 3px no-repeat;}
 
@@ -110,7 +110,69 @@ ul.clr li{float: left; margin: 0;}
 
 #legend a.reconstructed.disabled{background: url(../img/legend/dot-disabled.png) 0 3px no-repeat;}
 
-#browse{position: absolute; right: 0; top: 0; bottom: 0;}
+#browse{position: absolute; right: 0; width: 690px; height: 406px; color: #B9CBD5;}
+
+#browse li{postion: relative;}
+
+#browse li .inner{position: absolute; top: 50%; padding-left: 10px;}
+	
+#browse li .inner .title{
+	
+	font-family: Nunito;
+	font-size: 28px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 400;
+	line-height: 28px;	
+	width: 345px; 
+	margin: 0 auto;
+	padding-left: 40px;
+	padding-bottom: 40px;
+}
+
+#browse li .inner .status{
+	
+	font-family: Nunito;
+	font-size: 14px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 400;
+	line-height: 20px;	
+}
+
+
+
+#slide-5, #slide-9 { 
+  background-color: #000;
+  opacity: 0.5;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+	font-family: Nunito;
+	font-size: 14px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 400;
+	line-height: 20px;
+	color: #B9CBD5;
+}
+
+#slide-5 div, #slide-9 div{ 
+	position: absolute; 
+	top: 50%;
+	left: 50%
+}
+#slide-5 .close-button, #slide-9 .close-button{display: block; position: absolute; right: 2%; top: 2%; width: 34px; height: 30px; background: url(../img/close-button.png);}
+
+/*
+#browse{position: absolute; right: 0; width: 582px; height: 449px;}
 
 .browse-inner{position: relative; width: 100%; height: 100%}
 
@@ -157,7 +219,7 @@ ul.clr li{float: left; margin: 0;}
 
 .browse-inner .items .items-inner-1 .items-inner-2 .item img{display: block; margin: auto; top: 0;  bottom: 0; left: 0; right: 0; vertical-align: middle;}
 
-
+*/
 
 
 
