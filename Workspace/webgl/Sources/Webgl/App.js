@@ -202,8 +202,16 @@ function Shutdown()
 
 function CreateRenderer()
 {
-    renderer = new THREE.WebGLRenderer( { antialias: true, precision: PX.ShaderPrecision, stencil: false, alpha: false } );
-    renderer.setClearColor( 0x000000, 1 );
+    if( PX.kTransparentCanvas )
+    {
+        renderer = new THREE.WebGLRenderer( { antialias: true, precision: PX.ShaderPrecision, stencil: false, alpha: true } );
+        renderer.setClearColor( 0x000000, 0 );
+    }
+    else
+    {
+        renderer = new THREE.WebGLRenderer( { antialias: true, precision: PX.ShaderPrecision, stencil: false, alpha: false } );
+        renderer.setClearColor( 0x000000, 1 );
+    }
     //renderer.gammaInput = true;
     //renderer.gammaOutput = true;
     element = renderer.domElement;
@@ -626,7 +634,7 @@ function InitGUI()
 
         if( !modelRenderer )
         {
-            var modelContainer = document.getElementById( "glModelContainer" );
+            var modelContainer = document.getElementById( "glModelContainerTEST" );
             modelContainer.style.top = "0px";
             modelContainer.style.left = "0px";
             modelContainer.style.right = "0px";
@@ -840,8 +848,11 @@ function Render()
 {
     renderer.clear();
 
-    renderer.setViewport( 0, 0, windowWidth, windowHeight );
-    renderer.render( bgScene, bgCamera );
+    if( !PX.kTransparentCanvas )
+    {
+        renderer.setViewport( 0, 0, windowWidth, windowHeight );
+        renderer.render( bgScene, bgCamera );
+    }
 
     //
     renderer.setViewport( 0, 0, windowWidth, windowHeight );
@@ -979,7 +990,6 @@ function OnMouseUp(event)
     mouseY = event.clientY;
 
     //
-    console.log( isMouseClick );
     if( isMouseClick )
     {
         locationMarkers.OnMouseClickEvent( mouseVector3d, camera, 

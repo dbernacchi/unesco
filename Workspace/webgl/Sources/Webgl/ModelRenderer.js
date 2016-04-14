@@ -53,7 +53,6 @@ PX.ModelRenderer.prototype =
         this.renderer.setPixelRatio( window.devicePixelRatio );
         this.renderer.setSize( width, height );
 
-
         // Artefact Scene
         //
         this.artefactScene = new THREE.Scene();
@@ -77,7 +76,6 @@ PX.ModelRenderer.prototype =
         var artAmbLight = new THREE.HemisphereLight( 0x7f7faa, 0x040410, 1 );
         this.artefactScene.add( artAmbLight );
 
-
         // Init Trackball
         //
         /*this.trackball = new PX.CameraTrackball();
@@ -85,7 +83,6 @@ PX.ModelRenderer.prototype =
         this.trackball.rotateFactor = 0.5;
         this.trackball.damping = 0.1;
         this.trackball.lockUpVector = false;*/
-
 
         // Events
         //
@@ -96,8 +93,6 @@ PX.ModelRenderer.prototype =
         this.renderer.domElement.addEventListener('mouseup', OnMouseUp, false);
         this.renderer.domElement.addEventListener('mousewheel', OnMouseWheel, false);*/
 
-
-
         //
         this.Reset();
     }
@@ -107,8 +102,6 @@ PX.ModelRenderer.prototype =
     {
         var scope = this;
 
-        progressBarElement.text( "" );
-
         LoadBINScene( url, this.artefactScene, 
         function( per )
         {
@@ -117,10 +110,10 @@ PX.ModelRenderer.prototype =
         },
         function()
         {
-            console.log( "Reset" );
+            //console.log( "Reset" );
             scope.Reset();
 
-            console.log( "compute Scene Bounds" );
+            //console.log( "compute Scene Bounds" );
             var res = ComputeSceneBoundingSphere( scope.artefactScene );
             scope.sceneCenter.x = res.x;
             scope.sceneCenter.y = res.y;
@@ -128,14 +121,14 @@ PX.ModelRenderer.prototype =
             scope.distToCamera = res.w;
             console.log( scope.sceneCenter, scope.distToCamera );
 
-            console.log( "Set camera" );
+            //console.log( "Set camera" );
             scope.artefactCamera.position.x = scope.sceneCenter.x;
             scope.artefactCamera.position.y = scope.sceneCenter.y;
             scope.artefactCamera.position.z = scope.distToCamera;
-            console.log( "scope.artefactCamera.position: ", scope.artefactCamera.position );
+            //console.log( "scope.artefactCamera.position: ", scope.artefactCamera.position );
 
             //
-            console.log( "set orbit controls" );
+            //console.log( "set orbit controls" );
             if( scope.artefactOrbitControls )
             {
                 scope.artefactOrbitControls.minDistance = scope.distToCamera * 0.2;
@@ -147,7 +140,7 @@ PX.ModelRenderer.prototype =
             if( this.trackball ) this.trackball.Reset( scope.artefactCamera, scope.sceneCenter );
 
             // Need to call this after Reset
-            console.log( "enable it" );
+            console.log( "+--+  ModelRenderer enabled" );
             scope.enabled = true;
         }
         );
@@ -227,7 +220,7 @@ PX.ModelRenderer.prototype =
                 obj = this.artefactScene.children[ i ];
                 if( obj instanceof THREE.Mesh )
                 {
-                    console.log( "+--+  Removed obj" );
+                    //console.log( "+--+  Removed obj" );
                     this.artefactScene.remove( obj );
                     obj = null;
                 }

@@ -75,7 +75,13 @@ var UNESCO = {};
 			
 			$(".UNESCO#slide-5").show();
 			$(".UNESCO#slide-9").hide();
-			
+
+            // On close, clean up the model Renderer			
+            if( modelRenderer )
+            {
+                modelRenderer.Clear();
+            }
+
 		});	
 		
 		$(".UNESCO#slide-5 .close-button").click(function(e) {
