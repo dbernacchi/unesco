@@ -160,7 +160,7 @@ var UNESCO = {};
             if( !modelRenderer )
             {
                 modelRenderer = new PX.ModelRenderer();
-                modelRenderer.Init( modelContainer[0], modelContainer[0].width, modelContainer[0].height );
+                modelRenderer.Init( modelContainer[0], windowWidth, windowHeight );
             }
 
             modelRenderer.Load( "webgl/data/models/06_Mihrab_of_the_Mosque_Al_Hasan/mesh.js",
