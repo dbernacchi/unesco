@@ -37,6 +37,9 @@ var bgScene = null;
 var fgCamera = null;
 var fgScene = null;
 
+var postFXScene = null;
+var postFXQuad = null;
+
 var composer = null;
 var renderMainPass = null;
 var effectBloomPass = null;
@@ -575,15 +578,16 @@ function Setup()
     // Composer
     //
     renderMainPass = new THREE.RenderPass( scene, camera );
-    effectBloomPass = new THREE.BloomPass( 1, 25, 5, 1024 );
-    effectCopyPass = new THREE.ShaderPass( THREE.CopyShader );
+    effectBloomPass = new THREE.BloomPass( 1.5, 25, 4, 512 );
+    //effectBloomPass.clear = true;
+    //effectCopyPass = new THREE.ShaderPass( THREE.CopyShader );
     composer = new THREE.EffectComposer( renderer );
     composer.addPass( renderMainPass );
     composer.addPass( effectBloomPass );
-    composer.addPass( effectCopyPass );
+    //composer.addPass( effectCopyPass );
 
-    effectCopyPass.uniforms.opacity.value = 0.15;
-    effectCopyPass.renderToScreen = true;
+    //effectCopyPass.uniforms.opacity.value = 1.0;
+    //effectCopyPass.renderToScreen = true;
 
 
     // Artefact Scene
@@ -624,6 +628,16 @@ function Setup()
         artefactOrbitControls.update();
     }
 
+
+    // PostFX Layer
+    postFXScene = new THREE.Scene();
+    var postFXMat = new THREE.MeshBasicMaterial({ color: 0xffffff, opacity: 1.0, transparent: true, vertexColors: THREE.VertexColors });
+    postFXMat.blending = THREE.AdditiveBlending;
+    postFXMat.depthTest = false;
+    postFXMat.depthWrite = false;
+    postFXQuad = new THREE.Mesh( new THREE.PlaneGeometry(2, 2, 0), postFXMat );
+    postFXScene.add( postFXQuad );
+
 /**
     // Background scene
     //
@@ -637,7 +651,8 @@ function Setup()
     fgScene = new THREE.Scene();
     fgCamera = new THREE.Camera();
     fgScene.add( fgCamera );
-    fgMaterial = new THREE.MeshBasicMaterial({ color: 0x000000, opacity: 1.0, transparent: true, vertexColors: THREE.VertexColors, map: PX.AssetsDatabase["EarthDiffuseMap"] });
+    fgMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, opacity: 1.0, transparent: true, vertexColors: THREE.VertexColors });
+    //fgMaterial = new THREE.MeshBasicMaterial({ color: 0x000000, opacity: 1.0, transparent: true, vertexColors: THREE.VertexColors });
     fgMaterial.depthTest = false;
     fgMaterial.depthWrite = false;
     //fgMaterial.map = PX.AssetsDatabase["TextAtlasTex"];
@@ -951,6 +966,8 @@ function Update( time, frameTime )
 
     // Fade in
     //
+    //fgMaterial.map = composer.renderTarget1;
+    //fgMaterial.opacity = 1.0;
     if( currentTime < 4.0 )
         fgMaterial.opacity = 1.0 - PX.Saturate( currentTime * 0.5 );
 }
@@ -962,13 +979,22 @@ function Render()
 
     if( Params.MainScene )
     {
+        //
         renderer.setViewport( 0, 0, windowWidth, windowHeight );
         renderer.render( scene, camera );
 
+        //
+        composer.render();
+
+        //
+        postFXQuad.material.opacity = 0.33;
+        postFXQuad.material.map = composer.renderTarget2;
+        renderer.setViewport( 0, 0, windowWidth, windowHeight );
+        renderer.render( postFXScene, fgCamera );
+
+        //
         renderer.render( locationMarkers.markerScene, locationMarkers.camera2d );
         //renderer.render( locationMarkers.markerScene, fgCamera );
-
-        //composer.render();
     }
     else
     {

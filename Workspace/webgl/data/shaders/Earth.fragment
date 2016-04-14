@@ -359,11 +359,11 @@ void main()
 
 	float3 P = positionWS.xyz;
     float3 V = normalize( ViewPosition - P.xyz );
-    float3 L = normalize( -LightDirection );
+    float3 L0 = normalize( -LightDirection );
 
 
     float2 cloudsTexelSize = float2( 1.0/2048.0, 1.0/1024.0 );
-    float2 cloudsShadowOffsetDir = -L.xy * CloudsShadowOffset;
+    float2 cloudsShadowOffsetDir = -L0.xy * CloudsShadowOffset;
     
     float2 texcoordClouds = uvs;
 
@@ -381,6 +381,7 @@ void main()
     float4 nightLightsTexel = texture( NightLightsMap, uvs );
     nightLightsTexel.rgb = ToLinearApprox( nightLightsTexel.rgb );
 
+    float cloudsShadow = saturate( 1.0 - cloudsTexel2.a * CloudsShadowIntensity );
 
 
 #if 1 //ENABLE_NORMAL_MAPPING
@@ -398,6 +399,17 @@ void main()
     float3 N = normalize( normalWS );
     //float3 N = normalize( cross( dFdx(P), dFdy(P) ) );
 #endif
+
+    //float3 LightDirs[2];
+    //LightDirs[0] = -LightDirection;
+    //LightDirs[1] = float3( -0.8, -1.0, 0.8 );
+
+    float3 finalColor = float3( 0.0 );
+
+    //for( int i=0; i<2; ++i )
+    {
+    float3 L = L0;
+    //float3 L = normalize( LightDirs[i] );
 
     float3 H = normalize( L + V );
 
@@ -417,8 +429,6 @@ void main()
     float outline = pow( NoV, 4.0 );
 
     float AO = 1.0;
-
-    float cloudsShadow = saturate( 1.0 - cloudsTexel2.a * CloudsShadowIntensity );
 
     float shadow = NoL * cloudsShadow;
 
@@ -447,8 +457,6 @@ void main()
 
     float specularOcclusion = ComputeSpecularOcclusion( NoV, AO, roughness );
 
-    float3 finalColor = float3( 0.0 );
-
     // Ambient
 	//finalColor.rgb += saturate( ambientColor * AmbientIntensity ) * AO;
     // Diffuse
@@ -456,7 +464,7 @@ void main()
     // Wrap lighting
     //finalColor.rgb += float3( diffuseAlbedo * wrapDiffuse * DiffuseRimIntensity ); // * ( 1.0 - NoV);
     // Rim (Fresnel ) lighting
-    finalColor.rgb += float3( float3(0.0,0.5,1.0) * fresnelTerm ) * 0.133;
+    //finalColor.rgb += float3( float3(0.0,0.5,1.0) * fresnelTerm ) * 0.133;
     // Specular
     finalColor.rgb += ( specularMaskTexel.rgb * specularColor * specularOcclusion * SpecularIntensity * fresnel ) * AO * shadow;
     // Clouds
@@ -464,6 +472,8 @@ void main()
     // Night Diffuse
     finalColor.rgb += nightLightsTexel.rgb * dayNightT; // * ( 1.0 - NoV);
     //finalColor.rgb = lerp( finalColor.rgb, nightLightsTexel.rgb * 1.05, dayNightT );
+
+    }
 
     // DEBUG:
 //    float tt = smoothstep( 0.0, 0.3, saturate( (NoLFace) + 0.0 ) );
