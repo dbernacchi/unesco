@@ -49,10 +49,11 @@ PX =
     //, kAvoidanceSpeed: 6.0
     , kMaxGridSize: 4
     , kLocationTextSize: 120.0
-    , kLocationColor: 0x000015
-    , kLocationColors: [ 0x000015, 0x0000ff, 0xffffff ]
-    , kLocationMouseOverColor: 0xff00ff
-    , kLocationMouseClickedColor: 0xff7f00
+    , kLocationColor: 0x171c5e
+    , kLocationColors: [ 0x171c5e, 0x2f4598, 0x6e89c4 ]
+    , kLocationMouseOverColor: 0xf0fbff
+    , kLocationMouseClickedColor: 0xf0fbff
+    , kLocationColors2: [ new THREE.Color( 0x171c5e ), new THREE.Color( 0x2f4598 ), new THREE.Color( 0x6e89c4 ), new THREE.Color( 0xc0e3fe ), new THREE.Color( 0xf0fbff ) ]
 
     , kCameraFovY: 36.0
     , kCameraNearPlane: 1.0

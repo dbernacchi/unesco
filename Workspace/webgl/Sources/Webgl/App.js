@@ -38,6 +38,8 @@ var bgQuad = null;
 var fgCamera = null;
 var fgScene = null;
 
+var filterSwitches = [ 0, 0, 0 ];
+
 var postFXScene = null;
 var postFXQuad = null;
 
@@ -199,13 +201,13 @@ function Shutdown()
 
 function CreateRenderer()
 {
-    var precision = "mediump";
-    //var precision = "highp";
+    //var precision = "mediump";
+    var precision = "highp";
 
     renderer = new THREE.WebGLRenderer( { antialias: true, precision: precision, stencil: false, alpha: false } );
     renderer.setClearColor( 0x000000, 1 );
-    renderer.gammaInput = true;
-    renderer.gammaOutput = true;
+    //renderer.gammaInput = true;
+    //renderer.gammaOutput = true;
     element = renderer.domElement;
     container = document.getElementById( "glContainer" );
     container.style.top = "0px";
@@ -680,6 +682,7 @@ function Setup()
     renderer.domElement.addEventListener('mousedown', OnMouseDown, false);
     renderer.domElement.addEventListener('mouseup', OnMouseUp, false);
     renderer.domElement.addEventListener('mousewheel', OnMouseWheel, false);
+    window.addEventListener('keydown', OnKeyDown, false);
 
     //
     InitStats();
@@ -1136,6 +1139,38 @@ function OnMouseMove(event)
 function OnMouseWheel( event )
 {
 }
+
+function OnKeyDown( event )
+{
+    //console.log( event );
+    if( ! appStateMan.IsState( PX.AppStates.AppStateLevel1 ) )
+        return;
+
+
+    switch( event.which )
+    {
+        case 49:
+            filterSwitches[0] = 1 - filterSwitches[0];
+            filterSwitches[1] = 0;
+            filterSwitches[2] = 0;
+            break;
+        case 50:
+            filterSwitches[0] = 0;
+            filterSwitches[1] = 1 - filterSwitches[1];
+            filterSwitches[2] = 0;
+            break;
+        case 51:
+            filterSwitches[0] = 0;
+            filterSwitches[1] = 0;
+            filterSwitches[2] = 1 - filterSwitches[2];
+            break;
+        default:
+            break;
+    }
+    console.log( filterSwitches );
+    locationMarkers.FilterLocationMeshColors( filterSwitches );
+}
+
 
 function OnMouseOut()
 {

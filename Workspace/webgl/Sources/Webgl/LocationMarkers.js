@@ -14,6 +14,8 @@ UG.LocationMarker = function()
     this.markerCount    = 0;
     this.type           = 0;
     this.color          = null;
+    this.targetColor    = null;
+    this.colorChangeSpeed = 1.0;
 };
 UG.LocationMarker.prototype =
 {
@@ -33,6 +35,8 @@ UG.LocationMarkers = function()
     this.textRenderer           = null;
     this.textRenderer2          = null;
 	this.markersCount           = 0;
+
+    this.titleTargetOpacity     = 0.0;
 
 	this.markerCluster          = null;
     this.doPopulation           = true;
@@ -81,7 +85,8 @@ UG.LocationMarkers.prototype =
 	    {
 	        // Get color
             var rndIdx = Math.round( Math.random() * 3 ) % 3;
-            var color = new THREE.Color( PX.kLocationColors[rndIdx] );
+            //var color = new THREE.Color( PX.kLocationColors[rndIdx] );
+            var color = PX.kLocationColors2[0].clone(); //
 
 	        //var material = new THREE.MeshLambertMaterial( { color: color, emissive: 0x003333 } );
 	        var material = new THREE.MeshBasicMaterial( { color: color } );
@@ -112,6 +117,7 @@ UG.LocationMarkers.prototype =
             lm.scale.set( PX.EPSILON, PX.EPSILON, PX.EPSILON );
             //lm.clicks = 0;
             lm.color = color;
+            lm.targetColor = color.clone();
             lm.index = i;
             lm.type = rndIdx;
 	        this.markers.push( lm );
@@ -125,6 +131,7 @@ UG.LocationMarkers.prototype =
         this.textRenderer = new PX.TextRenderer();
         this.textRenderer.Init( bmFontDescriptor, 256, 0xffffff, PX.AssetsDatabase["TextAtlasTex"], this.markerScene );
         this.textRenderer.material.depthWrite = false;
+        this.textRenderer.material.opacity = 0.0;
         //this.locationsGroup.add( this.textRenderer.mesh );
         //this.markerScene.add( this.textRenderer.mesh );
 
@@ -247,23 +254,6 @@ UG.LocationMarkers.prototype =
     {
         if( this.doPopulation )
             return;
-
-/*
-        this.textRenderer.Begin();
-        //if( this.currentMouseOverMarkerIndex >= 0 )
-        {
-            var pp = new THREE.Vector3( mouseX, Params.WindowHeight - mouseY, 0.0 );
-
-            var fontSize = 1.0 + Math.abs( Math.sin( time * 0.2 ) ) * 7.0;
-
-            //pp.x += fontSize * 2.0;
-            //pp.y += fontSize * 0.5;
-
-            this.textRenderer.AppendText2D( "MW", pp, fontSize, 1.0, false, true );
-
-        }
-        this.textRenderer.End();
-*/
 
         //console.log( this.avoidanceCount );
 
@@ -443,6 +433,10 @@ UG.LocationMarkers.prototype =
             this.meshes[i].scale.set( loc.scale.x, loc.scale.y, loc.scale.z * PX.kLocationMarkerZScale );
             //this.meshes[i].scale.set( loc.scale.x, loc.scale.y, loc.scale.z * ( loc.markerCount > 0 ? loc.markerCount * PX.kLocationMarkerZScale : 1.0 ) );
             this.meshes[i].lookAt( PX.ZeroVector );
+            loc.color.r += (loc.targetColor.r - loc.color.r ) * frameTime * loc.colorChangeSpeed;
+            loc.color.g += (loc.targetColor.g - loc.color.g ) * frameTime * loc.colorChangeSpeed;
+            loc.color.b += (loc.targetColor.b - loc.color.b ) * frameTime * loc.colorChangeSpeed;
+            this.meshes[i].material.color.copy( loc.color );
 
 
             // Text Info
@@ -468,6 +462,9 @@ UG.LocationMarkers.prototype =
         //this.textRenderer.End();
 
         this.textRenderer.Begin();
+
+        this.textRenderer.material.opacity += ( this.titleTargetOpacity - this.textRenderer.material.opacity ) * frameTime * 10.0;
+
         if( this.currentMouseOverMarkerIndex >= 0 )
         {
             var loc = this.markers[ this.currentMouseOverMarkerIndex ];
@@ -484,7 +481,7 @@ UG.LocationMarkers.prototype =
             //loc.positionSS.y = Params.WindowHeight - mouseY;
             loc.positionSS.z = 0.0;
 
-            var fontSize = 6.0;
+            var fontSize = 8.0;
 
             loc.positionSS.x += fontSize * 2.0;
             //loc.positionSS.y += fontSize * 0.5;
@@ -496,15 +493,56 @@ UG.LocationMarkers.prototype =
     }
 
 
-    , IntersectsLevel1: function( raycaster )
+    , FilterLocationMeshColors: function( filters )
+    {
+        if( this.doPopulation )
+            return;
+
+        for( var i=0; i<this.markersCount; ++i )
+        {
+            var loc = this.markers[i];
+
+            // Use distance to camera for constant size
+            if( this.zoomLevel1IntroAnimDone ) 
+            {
+                if( filters[ loc.type ] )
+                {
+                    //console.log( "filter: ", loc.type, i );
+                    var idx = loc.type + 1;
+                    loc.targetColor.copy( PX.kLocationColors2[ idx ] );
+                    loc.colorChangeSpeed = 1.0;
+                }
+                else
+                {
+                    loc.targetColor.copy( PX.kLocationColors2[ 0 ] );   // Default dark blue
+                    loc.colorChangeSpeed = 10.0;
+                }
+            }
+        }
+    }
+
+    , ResetLevel1: function( raycaster )
     {
         if( this.doPopulation )
             return -1;
 
         for( var i=0; i<this.markersCount; ++i )
         {
-            this.meshes[ i ].material.color.copy( this.markers[ i ].color );
+            var loc = this.markers[i];
+            loc.color.copy( PX.kLocationColors2[0] );
         }
+    }
+
+
+    , IntersectsLevel1: function( raycaster )
+    {
+        if( this.doPopulation )
+            return -1;
+
+        /*for( var i=0; i<this.markersCount; ++i )
+        {
+            this.meshes[ i ].material.color.copy( this.markers[ i ].color );
+        }*/
 
         // Intersection test per mesh
         for( var i=0; i<this.markersCount; ++i )
@@ -513,10 +551,15 @@ UG.LocationMarkers.prototype =
             if( intersects.length > 0 )
             {
                 //console.log( intersects );
-                intersects[ 0 ].object.material.color.set( PX.kLocationMouseOverColor );
+                //intersects[ 0 ].object.material.color.set( PX.kLocationMouseOverColor );
+                //this.markers[i].targetColor.copy( PX.kLocationColors2[3] );
+                //this.markers[i].colorChangeSpeed = 20.0;
+                this.titleTargetOpacity = 2.0;
                 return i;
             }
         }
+
+        this.titleTargetOpacity = 0.0;
 
         return -1;
     }
@@ -528,7 +571,8 @@ UG.LocationMarkers.prototype =
             return -1;
 
         var c0 = new THREE.Color( PX.kLocationColor );
-        var c1 = new THREE.Color( PX.kLocationMouseOverColor );
+        //var c1 = new THREE.Color( PX.kLocationMouseOverColor );
+        var c1 = PX.kLocationColors2[2];
 
         for( var i=0; i<this.markersCount; ++i )
         {
@@ -929,6 +973,7 @@ UG.LocationMarkers.prototype =
 
                 //console.log( i, clusterCenter.lat(), clusterCenter.lng() );
 
+                this.markers[i].color.copy( PX.kLocationColors2[0] );
 	            this.markers[i].title = locations[i].name.toUpperCase();
                 this.markers[i].text = String( c.markers_.length );
                 this.markers[i].latlon.set( clusterCenter.lat(), clusterCenter.lng() );
