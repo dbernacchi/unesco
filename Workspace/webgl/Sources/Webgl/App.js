@@ -38,8 +38,6 @@ var bgQuad = null;
 var fgCamera = null;
 var fgScene = null;
 
-var filterSwitches = [ 0, 0, 0 ];
-
 var postFXScene = null;
 var postFXQuad = null;
 
@@ -532,6 +530,10 @@ function Setup()
 
     //
     ParseBitmapFont( PX.AssetsDatabase["TextAtlasXml"] );
+
+
+    // Webpage states
+    WebpageStates.FilterSwitches = [ 0, 0, 0 ];
 
 
     // Create main scene
@@ -1128,7 +1130,7 @@ function OnMouseMove(event)
         case PX.AppStates.AppStateLevel1:
         {
             //var markerIndex = locationMarkers.IntersectsLevel1( g_Raycaster );
-            locationMarkers.OnMouseOverEvent( mouseX, mouseY );
+            locationMarkers.OnMouseOverEvent();
             break;
         }
         default:
@@ -1146,29 +1148,29 @@ function OnKeyDown( event )
     if( ! appStateMan.IsState( PX.AppStates.AppStateLevel1 ) )
         return;
 
+    console.log( WebpageStates.FilterSwitches );
 
     switch( event.which )
     {
         case 49:
-            filterSwitches[0] = 1 - filterSwitches[0];
-            filterSwitches[1] = 0;
-            filterSwitches[2] = 0;
+            WebpageStates.FilterSwitches[0] = 1 - WebpageStates.FilterSwitches[0];
+            WebpageStates.FilterSwitches[1] = 0;
+            WebpageStates.FilterSwitches[2] = 0;
             break;
         case 50:
-            filterSwitches[0] = 0;
-            filterSwitches[1] = 1 - filterSwitches[1];
-            filterSwitches[2] = 0;
+            WebpageStates.FilterSwitches[0] = 0;
+            WebpageStates.FilterSwitches[1] = 1 - WebpageStates.FilterSwitches[1];
+            WebpageStates.FilterSwitches[2] = 0;
             break;
         case 51:
-            filterSwitches[0] = 0;
-            filterSwitches[1] = 0;
-            filterSwitches[2] = 1 - filterSwitches[2];
+            WebpageStates.FilterSwitches[0] = 0;
+            WebpageStates.FilterSwitches[1] = 0;
+            WebpageStates.FilterSwitches[2] = 1 - WebpageStates.FilterSwitches[2];
             break;
         default:
             break;
     }
-    console.log( filterSwitches );
-    locationMarkers.FilterLocationMeshColors( filterSwitches );
+    locationMarkers.FilterLocationMeshColors( WebpageStates.FilterSwitches );
 }
 
 

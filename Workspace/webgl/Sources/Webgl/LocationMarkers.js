@@ -493,9 +493,24 @@ UG.LocationMarkers.prototype =
     }
 
 
+    , SetLocationTargetColor( filters, loc )
+    {
+        if( filters[ loc.type ] )
+        {
+            var idx = loc.type + 1; // 0 is default base color, so we offset by 1
+            loc.targetColor.copy( PX.kLocationColors2[ idx ] );
+            loc.colorChangeSpeed = 1.0;
+            return;
+        }
+
+        loc.targetColor.copy( PX.kLocationColors2[ 0 ] );
+        loc.colorChangeSpeed = 10.0;
+    }
+
+
     , FilterLocationMeshColors: function( filters )
     {
-        if( this.doPopulation )
+        if( this.doPopulation || !this.zoomLevel1IntroAnimDone )
             return;
 
         for( var i=0; i<this.markersCount; ++i )
@@ -503,21 +518,7 @@ UG.LocationMarkers.prototype =
             var loc = this.markers[i];
 
             // Use distance to camera for constant size
-            if( this.zoomLevel1IntroAnimDone ) 
-            {
-                if( filters[ loc.type ] )
-                {
-                    //console.log( "filter: ", loc.type, i );
-                    var idx = loc.type + 1;
-                    loc.targetColor.copy( PX.kLocationColors2[ idx ] );
-                    loc.colorChangeSpeed = 1.0;
-                }
-                else
-                {
-                    loc.targetColor.copy( PX.kLocationColors2[ 0 ] );   // Default dark blue
-                    loc.colorChangeSpeed = 10.0;
-                }
-            }
+            this.SetLocationTargetColor( filters, loc );
         }
     }
 
@@ -550,10 +551,12 @@ UG.LocationMarkers.prototype =
             var intersects = raycaster.intersectObject( this.meshes[ i ], false );
             if( intersects.length > 0 )
             {
+                var loc = this.markers[i];
                 //console.log( intersects );
                 //intersects[ 0 ].object.material.color.set( PX.kLocationMouseOverColor );
-                //this.markers[i].targetColor.copy( PX.kLocationColors2[3] );
-                //this.markers[i].colorChangeSpeed = 20.0;
+                //this.SetLocationTargetColor( filterSwitches, loc );
+                loc.targetColor.copy( PX.kLocationColors2[3] );
+                loc.colorChangeSpeed = 10.0;
                 this.titleTargetOpacity = 2.0;
                 return i;
             }
@@ -609,7 +612,7 @@ UG.LocationMarkers.prototype =
     }
 
 
-    , OnMouseOverEvent: function( mouse3d, camera, onLocationClickCB )
+    , OnMouseOverEvent: function()
     {
         var scope = this;
 
@@ -619,15 +622,18 @@ UG.LocationMarkers.prototype =
             var index = this.IntersectsLevel1( g_Raycaster );
             if( index < 0 )
             {
+                if( this.currentMouseOverMarkerIndex >= 0 )
+                {
+                    var loc = this.markers[ this.currentMouseOverMarkerIndex ];
+                    this.SetLocationTargetColor( WebpageStates.FilterSwitches, loc );
+                }
+
                 this.currentMouseOverMarkerIndex = -1;
                 //console.log( "no intersection", index );
                 return;
             }
 
-            //if( this.currentMouseOverMarkerIndex !== index )
-            //{
-                this.currentMouseOverMarkerIndex = index;
-            //}
+            this.currentMouseOverMarkerIndex = index;
         }
     }
 

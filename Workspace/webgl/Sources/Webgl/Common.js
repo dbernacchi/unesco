@@ -165,6 +165,12 @@ PX =
 };
 
 
+var WebpageStates =
+{
+    FilterSwitches: []
+};
+
+
 var Params =
 {
     Latitude: 38.7223
