@@ -28,7 +28,7 @@
 	<script src="webgl/Sources/3rdparty/sylvester.js"></script>
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB_BvzvNCArogTRPRnbUicqze38-91MNFA"></script>
 	
-	
+	<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Nunito" />
 	<link rel="stylesheet" type="text/css" href="css/unesco.css">
 	<script src="js/unesco.js"></script>	
 	
@@ -49,15 +49,37 @@ if(!Detector.webgl)
 
 <div class="UNESCO" id="splash">
 
-    <div class="status-bar-top"></div>
-    <div class="status-bar-bottom"></div>    
-    <div class="explore-button"></div>
+    <div class="status-bar-top"><img src="img/splash/status-bar-top.png" /></div>
+    <div class="status-bar-bottom"><img src="img/splash/status-bar-bottom.png" /></div>    
+    <a href="#" class="explore-button"></a>
+    
+</div>
+
+<a href="#" class="UNESCO furniture" id="share-button" style="display: none;"></a>
+<div class="UNESCO furniture" id="logo" style="display: none;"></div>
+<a href="#" class="UNESCO furniture" id="menu-button" style="display: none;"></a>
+<a href="#" class="UNESCO furniture" id="logo-bottom" style="display: none;"></a>
+
+<div class="UNESCO furniture" id="legend" style="display: none;">
+
+    <ul class="clr">
+        <li>
+            <a href="#" class="destroyed">DESTROYED</a>
+        </li>
+        <li>
+            <a href="#" class="under">UNDER RECONSTRUCTION</a>
+        </li>
+        <li>
+            <a href="#" class="reconstructed">RECONSTRUCTED</a>
+        </li> 
+         
+    </ul>
     
 </div>
     
 <div class="UNESCO" id="browse" style="display:none;">
 
-	<div class="browse-inner">
+	<!--div class="browse-inner">
 	
 		<div class="arrows">
 			<a href="#" class="arrow up">
@@ -72,82 +94,19 @@ if(!Detector.webgl)
 		<div class="items">
 			<div class="items-inner-1">
 				<div class="items-inner-2">
-					<div class="item">
-						<a href="#"><img src="img/browse/static-browse-1.png" /></a>
-					</div>
-					<div class="item">
-						<a href="#"><img src="img/browse/static-browse-2.png" /></a>
-					</div>
-					<div class="item">
-						<a href="#"><img src="img/browse/static-browse-3.png" /></a>
-					</div>
-					<div class="item">
-						<a href="#"><img src="img/browse/static-browse-1.png" /></a>
-					</div>
+					<div class="item"-->
+					    <a href="#"><img src="img/browse/static-browse-2.png" /></a>
+                    <<!--/div>
 					<div class="item">
 						<a href="#"><img src="img/browse/static-browse-2.png" /></a>
 					</div>
 					<div class="item">
 						<a href="#"><img src="img/browse/static-browse-3.png" /></a>
 					</div>
-					<div class="item">
-						<a href="#"><img src="img/browse/static-browse-1.png" /></a>
-					</div>
-					<div class="item">
-						<a href="#"><img src="img/browse/static-browse-2.png" /></a>
-					</div>
-					<div class="item">
-						<a href="#"><img src="img/browse/static-browse-3.png" /></a>
-					</div>
-					<!--<div class="item">
-						<a href="#"><img src="img/browse/static-browse-1.png" /></a>
-					</div>
-					<div class="item">
-						<a href="#"><img src="img/browse/static-browse-2.png" /></a>
-					</div>
-					<div class="item">
-						<a href="#"><img src="img/browse/static-browse-3.png" /></a>
-					</div>
-					<div class="item">
-						<a href="#"><img src="img/browse/static-browse-1.png" /></a>
-					</div>
-					<div class="item">
-						<a href="#"><img src="img/browse/static-browse-2.png" /></a>
-					</div>
-					<div class="item">
-						<a href="#"><img src="img/browse/static-browse-3.png" /></a>
-					</div>
-					<div class="item">
-						<a href="#"><img src="img/browse/static-browse-1.png" /></a>
-					</div>
-					<div class="item">
-						<a href="#"><img src="img/browse/static-browse-2.png" /></a>
-					</div>
-					<div class="item">
-						<a href="#"><img src="img/browse/static-browse-3.png" /></a>
-					</div>
-					<div class="item">
-						<a href="#"><img src="img/browse/static-browse-1.png" /></a>
-					</div>
-					<div class="item">
-						<a href="#"><img src="img/browse/static-browse-2.png" /></a>
-					</div>
-					<div class="item">
-						<a href="#"><img src="img/browse/static-browse-3.png" /></a>
-					</div>
-					<div class="item">
-						<a href="#"><img src="img/browse/static-browse-1.png" /></a>
-					</div>
-					<div class="item">
-						<a href="#"><img src="img/browse/static-browse-2.png" /></a>
-					</div>
-					<div class="item">
-						<a href="#"><img src="img/browse/static-browse-3.png" /></a>
-					</div>-->
 				<div>
 			</div>		
 		</div>
-	</div>
+	</div-->
 </div>
 
 

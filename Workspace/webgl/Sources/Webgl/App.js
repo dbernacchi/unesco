@@ -688,7 +688,7 @@ function Setup()
 
 			case 'AppStateEntry':
 			
-				UNESCO.hideSplash();
+				UNESCO.showExploreButton();
 				break;
 							
 			case 'AppStateLevel1ToLevel2':
