@@ -662,8 +662,7 @@ function Setup()
     fgScene = new THREE.Scene();
     fgCamera = new THREE.Camera();
     fgScene.add( fgCamera );
-    fgMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, opacity: 1.0, transparent: true, vertexColors: THREE.VertexColors });
-    //fgMaterial = new THREE.MeshBasicMaterial({ color: 0x000000, opacity: 1.0, transparent: true, vertexColors: THREE.VertexColors });
+    fgMaterial = new THREE.MeshBasicMaterial({ color: 0x000000, opacity: 1.0, transparent: true, vertexColors: THREE.VertexColors });
     fgMaterial.depthTest = false;
     fgMaterial.depthWrite = false;
     //fgMaterial.map = PX.AssetsDatabase["TextAtlasTex"];

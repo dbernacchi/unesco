@@ -144,6 +144,7 @@ PX.CameraTrackball.prototype =
         this.rotateAccel.y = PX.Clamp( offsetY * frameTime, -speedY, speedY );
         this.rotateAccel.z = 0.0;
 
+/*
         this.polarAngle += this.rotateAccel.y;
         //console.log( this.polarAngle );
         if( this.polarAngle >= this.maxPolarAngle )
@@ -155,7 +156,7 @@ PX.CameraTrackball.prototype =
         {
             this.polarAngle = this.minPolarAngle;
             this.rotateAccel.y = 0.0;
-        }
+        }*/
     }
 };
 

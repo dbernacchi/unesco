@@ -836,8 +836,6 @@ UG.LocationMarkers.prototype =
 
             // Restore default color
             this.SetLocationTargetColor( WebpageStates.FilterSwitches, this.markers[ index ] );
-            //this.markers[ index ].targetColor.copy( PX.kLocationColor );
-            //this.markers[ index ].colorChangeSpeed = 10.0;
 
 
             // Change State
