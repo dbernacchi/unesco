@@ -9,10 +9,6 @@ var UNESCO = {};
 		
 		//ns.spinner();
 		
-		ns.hideSplash();
-		ns.showBrowse();
-		
-		
 		var slider = $(".UNESCO .items-inner-2");
 		
 		var item_height = 250;
@@ -96,7 +92,7 @@ var UNESCO = {};
 
 		});	
 		
-		$(".UNESCO#slide-5 #launch-slide-9").click(function(e) {
+		$(".UNESCO#slide-5 .magnify").click(function(e) {
 			e.preventDefault();
 			
 			
