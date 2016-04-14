@@ -44,7 +44,8 @@ PX.ModelRenderer.prototype =
         //renderer.gammaInput = true;
         //renderer.gammaOutput = true;
         element = this.renderer.domElement;
-        container.appendChild( element );
+        
+        container[ 0 ].appendChild( element );
 
         this.renderer.autoClear = false;
         this.renderer.autoClearStencil = false;

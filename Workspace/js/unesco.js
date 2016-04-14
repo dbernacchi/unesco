@@ -13,6 +13,14 @@ var UNESCO = {};
 		
 		var item_height = 250;
 		
+		var max_width = 1920;
+		
+		var window_width = window.innerWidth();
+		
+		var img_width = 
+		
+		$("img.resize").css('width', );
+		
 		$(".UNESCO .arrow.up").click(function(e) {
 			e.preventDefault();
 			
