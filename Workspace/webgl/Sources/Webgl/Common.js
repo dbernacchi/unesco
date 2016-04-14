@@ -42,6 +42,8 @@ PX =
 
     , StartLatLon: { x: 6.3377571, y: 43.139408 }
 
+    , kTransparentCanvas: true
+
     , kEarthScale: 30.0
     , kEarthDetail: 50
     , kMarkerOffsetFromEarthSurface: 0.0

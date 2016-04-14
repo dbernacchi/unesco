@@ -14,7 +14,7 @@
 {
     overflow: hidden;
     display: inline-block;
-    width: 200px;
+    width: 300px;
     height: 150px;
     z-index: -1000;
 }
