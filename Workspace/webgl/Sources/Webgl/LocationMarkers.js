@@ -15,7 +15,7 @@ UG.LocationMarker = function()
     this.type           = 0;
     this.color          = null;
     this.targetColor    = null;
-    this.colorChangeSpeed = 1.0;
+    this.colorChangeSpeed = 2.0;
 };
 UG.LocationMarker.prototype =
 {
@@ -85,8 +85,7 @@ UG.LocationMarkers.prototype =
 	    {
 	        // Get color
             var rndIdx = Math.round( Math.random() * 3 ) % 3;
-            //var color = new THREE.Color( PX.kLocationColors[rndIdx] );
-            var color = PX.kLocationColors2[0].clone(); //
+            var color = PX.kLocationColor.clone();
 
 	        //var material = new THREE.MeshLambertMaterial( { color: color, emissive: 0x003333 } );
 	        var material = new THREE.MeshBasicMaterial( { color: color } );
@@ -150,7 +149,7 @@ UG.LocationMarkers.prototype =
 		var positions = new Float32Array( locations.length * 3 );
 		var colors = new Float32Array( locations.length * 3 );
 
-        var commonColor = new THREE.Color( PX.kLocationColor );
+        var commonColor = PX.kLocationColor;
 
         var vertex = new THREE.Vector3();
         for( var i=0; i<locations.length; ++i )
@@ -483,7 +482,7 @@ UG.LocationMarkers.prototype =
 
             var fontSize = 9;
 
-            loc.positionSS.x += fontSize * 0.5;
+            loc.positionSS.x += fontSize * 1.0;
             loc.positionSS.y += fontSize * 0.5;
 
             //this.textRenderer.AppendText2D( "MW", loc.positionSS, fontSize, 1.0, false, true );
@@ -497,13 +496,13 @@ UG.LocationMarkers.prototype =
     {
         if( filters[ loc.type ] )
         {
-            var idx = loc.type + 1; // 0 is default base color, so we offset by 1
+            var idx = loc.type;
             loc.targetColor.copy( PX.kLocationColors2[ idx ] );
-            loc.colorChangeSpeed = 1.0;
+            loc.colorChangeSpeed = 2.0;
             return;
         }
 
-        loc.targetColor.copy( PX.kLocationColors2[ 0 ] );
+        loc.targetColor.copy( PX.kLocationColor );
         loc.colorChangeSpeed = 10.0;
     }
 
@@ -530,7 +529,7 @@ UG.LocationMarkers.prototype =
         for( var i=0; i<this.markersCount; ++i )
         {
             var loc = this.markers[i];
-            loc.color.copy( PX.kLocationColors2[0] );
+            loc.color.copy( PX.kLocationColor );
         }
     }
 
@@ -573,8 +572,7 @@ UG.LocationMarkers.prototype =
         if( this.doPopulation )
             return -1;
 
-        var c0 = new THREE.Color( PX.kLocationColor );
-        //var c1 = new THREE.Color( PX.kLocationMouseOverColor );
+        var c0 = PX.kLocationColor;
         var c1 = PX.kLocationColors2[2];
 
         for( var i=0; i<this.markersCount; ++i )
@@ -631,6 +629,14 @@ UG.LocationMarkers.prototype =
                 this.currentMouseOverMarkerIndex = -1;
                 //console.log( "no intersection", index );
                 return;
+            }
+
+            // Restore previous loc color (just in case )
+            // This fixes an issue where a mouse pos would change too fast that in one time would be over a loc and the next would be on top of another
+            if( this.currentMouseOverMarkerIndex >= 0 && this.currentMouseOverMarkerIndex !== index )
+            {
+                var loc = this.markers[ this.currentMouseOverMarkerIndex ];
+                this.SetLocationTargetColor( WebpageStates.FilterSwitches, loc );
             }
 
             this.currentMouseOverMarkerIndex = index;
@@ -979,7 +985,7 @@ UG.LocationMarkers.prototype =
 
                 //console.log( i, clusterCenter.lat(), clusterCenter.lng() );
 
-                this.markers[i].color.copy( PX.kLocationColors2[0] );
+                this.markers[i].color.copy( PX.kLocationColor );
 	            this.markers[i].title = locations[i].name.toUpperCase();
                 this.markers[i].text = String( c.markers_.length );
                 this.markers[i].latlon.set( clusterCenter.lat(), clusterCenter.lng() );
