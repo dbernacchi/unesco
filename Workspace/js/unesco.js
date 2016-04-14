@@ -7,8 +7,8 @@ var UNESCO = {};
 
 		var ns = this;
 		
-		this.hideSplash();
-		this.showBrowse();
+		//this.hideSplash();
+		//this.showBrowse();
 		
 		//ns.topStatusBar();
 		//var slider = $(".UNESCO .items-inner-2");
