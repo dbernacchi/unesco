@@ -360,7 +360,7 @@ UG.LocationMarkers.prototype =
 		        this.geomPositionArray[i*3+1] = loc.positionSS.y;
 		        this.geomPositionArray[i*3+2] = 0;
 
-                this.textRenderer2.AppendText2D( loc.text, loc.positionSS, 8.5, this.billboardsGroup.scale.x, true, true );
+                this.textRenderer2.AppendText2D( loc.text, loc.positionSS, 9, this.billboardsGroup.scale.x, true, true );
             }
             else
             {
@@ -481,7 +481,7 @@ UG.LocationMarkers.prototype =
             //loc.positionSS.y = Params.WindowHeight - mouseY;
             loc.positionSS.z = 0.0;
 
-            var fontSize = 8.5;
+            var fontSize = 9;
 
             loc.positionSS.x += fontSize * 0.5;
             loc.positionSS.y += fontSize * 0.5;
