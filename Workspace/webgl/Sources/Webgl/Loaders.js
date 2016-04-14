@@ -142,7 +142,7 @@ function LoadBINScene( url, scene, onProgressCB, onCompleteCB )
     , function( geometry, materials ) 
     {
 	    //console.log( geometry );
-	    //console.log( materials );
+	    console.log( materials );
         //for( var i=0; i<geometries.length; ++i )
         //{
             var material = materials[0];

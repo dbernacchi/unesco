@@ -47,6 +47,11 @@ PX.ModelRenderer.prototype =
         
         container.appendChild( element );
 
+        container.style.top = "0px";
+        container.style.left = "0px";
+        container.style.right = "0px";
+        container.style.bottom = "0px";
+
         container.width = width;
         container.height = height;
         container.style.width = width;
