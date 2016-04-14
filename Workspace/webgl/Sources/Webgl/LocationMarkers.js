@@ -481,10 +481,10 @@ UG.LocationMarkers.prototype =
             //loc.positionSS.y = Params.WindowHeight - mouseY;
             loc.positionSS.z = 0.0;
 
-            var fontSize = 8.0;
+            var fontSize = 8.5;
 
-            loc.positionSS.x += fontSize * 2.0;
-            //loc.positionSS.y += fontSize * 0.5;
+            loc.positionSS.x += fontSize * 0.5;
+            loc.positionSS.y += fontSize * 0.5;
 
             //this.textRenderer.AppendText2D( "MW", loc.positionSS, fontSize, 1.0, false, true );
             this.textRenderer.AppendText2D( loc.title, loc.positionSS, fontSize, 1.0, false, true );
