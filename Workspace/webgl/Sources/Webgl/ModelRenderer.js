@@ -127,8 +127,8 @@ PX.ModelRenderer.prototype =
 
             // Since we do a margin on the FG bar we need to compute the offset to remove from the bar in %
             // sub that from the total width % and we get the proper fitting size
-            var offset = ( ( 2.0 * 2.0 ) / windowWidth) * 100.0;
-            //console.log( offset, preloaderFG.css('margin-top') );
+            var offset = ( ( parseInt(preloaderFG.css('margin-left')) * 2.0 ) / windowWidth) * 100.0;
+            console.log( offset, parseInt(preloaderFG.css('margin-left')) );
             var percentage = Math.round( per * 80.0 );
             preloaderFG.css( "width", (percentage - offset) + '%' );
         },
