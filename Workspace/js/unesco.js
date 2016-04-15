@@ -168,10 +168,7 @@ var UNESCO = {};
                 modelRenderer.Init( modelContainer[0], windowWidth, windowHeight );
             }
 
-            //modelRenderer.Load( "webgl/data/models/01_Nimrud_Relief/mesh.obj", 
-            //modelRenderer.Load( "webgl/data/models/06_Mihrab_of_the_Mosque_Al_Hasan/mesh.obj",
-            modelRenderer.Load( "webgl/data/models/06_Mihrab_of_the_Mosque_Al_Hasan/mesh.js",
-            //modelRenderer.Load( "webgl/data/models/01_Nimrud_Relief/mesh.js", 
+            modelRenderer.Load( "webgl/data/models/06_Mihrab_of_the_Mosque_Al_Hasan/", "mesh.js",
             function( per )
             {
                 console.log( "+---+  Loading: ", per );

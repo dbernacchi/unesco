@@ -111,7 +111,7 @@ PX.ModelRenderer.prototype =
     }
 
 
-    , Load( url, onProgressCB )
+    , Load( path, filename, onProgressCB )
     {
         var scope = this;
 
@@ -119,7 +119,7 @@ PX.ModelRenderer.prototype =
         preloaderFG.show();
 
         //LoadOBJScene( url, this.artefactScene, 
-        LoadBINScene( url, this.artefactScene, 
+        LoadBINScene( path, filename, this.artefactScene, 
         function( per )
         {
             //console.log( "+--+  Load: Percentage: ", per );

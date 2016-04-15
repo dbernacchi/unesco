@@ -131,11 +131,14 @@ function LoadScene( url, scene )
 }
 ***/
 
-function LoadBINScene( url, scene, onProgressCB, onCompleteCB )
+function LoadBINScene( path, filename, scene, onProgressCB, onCompleteCB )
 {
+    var url = path + filename;
     console.log( "+--+  Load BIN Scene:\t", url );
 
     var binLoader = new THREE.BinaryLoader();
+    binLoader.texturePath = path;
+    binLoader.binaryPath = path;
 
 	var loadStartTime = Date.now();
 	binLoader.load( url
