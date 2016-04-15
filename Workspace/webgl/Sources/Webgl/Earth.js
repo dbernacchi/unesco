@@ -71,10 +71,11 @@ UG.Earth.prototype =
         //this.material.side = THREE.DoubleSide;
         this.material.extensions.derivatives = true;
         //this.material.transparent = true;
+        //this.material.wireframe = true;
 
-        this.mesh = new THREE.Mesh( new THREE.SphereGeometry( PX.kEarthScale, PX.kEarthDetail, PX.kEarthDetail), this.material );
+        //this.mesh = new THREE.Mesh( new THREE.SphereGeometry( PX.kEarthScale, 32*4, 22*4 ), this.material );
+        this.mesh = new THREE.Mesh( new THREE.SphereGeometry( PX.kEarthScale, PX.kEarthDetailX, PX.kEarthDetailY ), this.material );
         this.mesh.position.set( 0, 0, 0 );
-        //this.mesh.scale = new THREE.Vector3( 1.0, 1.0, 1.0 );
 
         scene.add( this.mesh );
 
