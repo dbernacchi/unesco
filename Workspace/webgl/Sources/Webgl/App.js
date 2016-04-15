@@ -2,9 +2,9 @@
 
 var PX = PX || {}; 
 
-var progressBarElement = $("#loaderBox");
-var preloaderBG = $(".preloaderBG");
-var preloaderFG = $(".preloaderFG");
+//var progressBarElement = $("#loaderBox");
+//var preloaderBG = $(".preloaderBG");
+//var preloaderFG = $(".preloaderFG");
 //var progressBarTextElement = $("#progressBarText");
 //var startButtonElement = $("#startButton");
 
@@ -132,8 +132,8 @@ THREE.DefaultLoadingManager.onProgress = function( item, loaded, total )
     //preloaderFG.css( "width", (percentage) + '%' );
     
     //UNESCO.bottomStatusBar(percentage);
-    
 };
+
 
 //// KEEP PHONE AWAKE: IOS Safari
 //iosSleepPreventInterval = setInterval(function () 
@@ -145,10 +145,11 @@ THREE.DefaultLoadingManager.onProgress = function( item, loaded, total )
 //        }, 0 );        
 //}, 20000 );
 
-function ParseBitmapFont( url )
+
+function ParseBitmapFont( data )
 {
 	bmFontDescriptor = new BitmapFontDescriptor();
-    bmFontDescriptor.Parse( url );
+    bmFontDescriptor.Parse( data );
 	//bmFontDescriptor.instantiate( url );
 } 
 
@@ -262,11 +263,11 @@ function LoadData()
         , LoadTexture( "Circle", "webgl/data/textures/circle_full.png" )
         , LoadShaderData("EarthVertexShader", "webgl/data/shaders/Earth.vertex")
         , LoadShaderData("EarthPixelShader", "webgl/data/shaders/Earth.fragment")
-        , LoadJsonData("LocationsJson", "webgl/data/latlon.json")
         //, LoadTexture( "TextAtlasTex", "webgl/data/fonts/lucida_0.png" )
         //, LoadText( "TextAtlasXml", "webgl/data/fonts/lucida.xml" )
-        , LoadTexture( "TextAtlasTex", "webgl/data/fonts/arialLargeTransparent.png" )
         , LoadText( "TextAtlasXml", "webgl/data/fonts/arialLarge.xml" )
+        , LoadTexture( "TextAtlasTex", "webgl/data/fonts/arialLargeTransparent.png" )
+        , LoadJsonData("LocationsJson", "webgl/data/latlon.json")
     ).done(function ()
     {
         PostLoadData();
@@ -291,8 +292,8 @@ function PostLoadData()
     deviceContentScale = renderer.devicePixelRatio;
 
     BeginApp();
-    preloaderBG.hide();
-    preloaderFG.hide();
+    //preloaderBG.hide();
+    //preloaderFG.hide();
 /*    preloaderBG.delay(100).fadeTo(1500, 0).delay(100);
     preloaderFG.delay(100).fadeTo(1500, 0).delay(100, function()
     {
@@ -613,7 +614,8 @@ function InitStats()
     // align top-left
     g_Stats.domElement.style.position = 'absolute';
     g_Stats.domElement.style.left = '0px';
-    g_Stats.domElement.style.top = '30%';
+    g_Stats.domElement.style.top = '50%';
+    g_Stats.domElement.style.visibility = 'hidden';
     document.body.appendChild( g_Stats.domElement );
 }
 
@@ -623,7 +625,7 @@ function InitGUI()
     g_GUI = new dat.gui.GUI( { width: 300 } );
     g_GUI.close();
 
-    g_GUI.add( Params, 'MainScene' ).onChange( function( newValue ) 
+/*    g_GUI.add( Params, 'MainScene' ).onChange( function( newValue ) 
     {
         if( newValue )
         {
@@ -656,12 +658,17 @@ function InitGUI()
                 console.log( "+---+  Loading: ", per );
             });
         }
-    });
+    });*/
     g_GUI.add( Params, 'ShowMaps' ).onChange( function( newValue ) 
     {
         var maps = $("#map");
         maps.css( "z-index", newValue ? 1000 : -1000 );
     });
+    g_GUI.add( Params, 'ShowStats' ).onChange( function( newValue ) 
+    {
+        g_Stats.domElement.style.visibility = newValue ? 'visible' : 'hidden';
+    });
+
     g_GUI.add( Params, "EnableSunLight" );
     g_GUI.addFolder( "BLOOM" );
     g_GUI.add( Params, "EnableBloom" );
@@ -771,8 +778,6 @@ function Update( time, frameTime )
             trackball.rotateFactor = rotSpeed * Params.EarthRotationSpeed;
 
             trackball.HandleMouseEvents( 1, 1, mouseDeltaX, mouseDeltaY, frameTime, aspectRatio );
-            console.log( mouseDeltaX, mouseDeltaY );
-            //console.log( camera.position );
         }
 
         //
@@ -906,6 +911,7 @@ function MainLoop()
     }
 
     g_Stats.end();
+    g_Stats.update();
 }
 
 
@@ -996,7 +1002,8 @@ function OnMouseUp(event)
         locationMarkers.OnMouseClickEvent( mouseVector3d, camera, 
         function( object )  // Callback returning clicked marker
         {
-            console.log( "+--+  Clicked Marker:\t", object.GUID, object );
+            console.log( "+--+  Clicked Marker ID:\t", object.id );
+            //console.log( "+--+  Clicked Marker:\t", object.GUID, object );
         } );
     }
 }

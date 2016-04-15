@@ -3,6 +3,7 @@
 
 UG.LocationMarker = function()
 { 
+    this.id             = -1;
     this.GUID           = "";
     this.title          = "";
     this.text           = "";
@@ -83,6 +84,8 @@ UG.LocationMarkers.prototype =
         //
 	    for( var i=0; i<locations.length; ++i )
 	    {
+            var loc = locations[i];
+
 	        // Get color
             var rndIdx = Math.round( Math.random() * 3 ) % 3;
             var color = PX.kLocationColor.clone();
@@ -100,19 +103,20 @@ UG.LocationMarkers.prototype =
 	        geom.applyMatrix( objMat );
 	        var mesh = new THREE.Mesh( geom, material );
 
-	        mesh.position.copy( locations[i].position );
+	        mesh.position.copy( loc.position );
 	        mesh.scale.set( PX.EPSILON, PX.EPSILON, PX.EPSILON);
 	        mesh.lookAt( new THREE.Vector3(0, 0, 0) );
 
-	        mesh.name = locations[i].name;
+	        mesh.name = loc.name;
 
 	        //
 	        this.meshes.push( mesh );
 
 	        var lm = new UG.LocationMarker();
-	        lm.title = locations[i].name.toUpperCase();
+            lm.id = loc.id;
+	        lm.title = loc.name.toUpperCase();
 	        lm.text = "";
-	        lm.position.copy( locations[i].position );
+	        lm.position.copy( loc.position );
             lm.scale.set( PX.EPSILON, PX.EPSILON, PX.EPSILON );
             //lm.clicks = 0;
             lm.color = color;

@@ -1,5 +1,8 @@
 
 
+var preloaderBG = $(".preloaderBG");
+var preloaderFG = $(".preloaderFG");
+
 
 /////////////////////////////////////////////////////////////////////////////////////
 // Representation of a location in memory (read from json)
@@ -112,14 +115,28 @@ PX.ModelRenderer.prototype =
     {
         var scope = this;
 
+        preloaderBG.show();
+        preloaderFG.show();
+
+        //LoadOBJScene( url, this.artefactScene, 
         LoadBINScene( url, this.artefactScene, 
         function( per )
         {
             //console.log( "+--+  Load: Percentage: ", per );
             onProgressCB( per );
+
+            // Since we do a margin on the FG bar we need to compute the offset to remove from the bar in %
+            // sub that from the total width % and we get the proper fitting size
+            var offset = ( ( 2.0 * 2.0 ) / windowWidth) * 100.0;
+            //console.log( offset, preloaderFG.css('margin-top') );
+            var percentage = Math.round( per * 80.0 );
+            preloaderFG.css( "width", (percentage - offset) + '%' );
         },
         function()
         {
+            preloaderBG.hide();
+            preloaderFG.hide();
+
             //console.log( "Reset" );
             scope.Reset();
 
@@ -129,7 +146,7 @@ PX.ModelRenderer.prototype =
             scope.sceneCenter.y = res.y;
             scope.sceneCenter.z = res.z;
             scope.distToCamera = res.w;
-            console.log( scope.sceneCenter, scope.distToCamera );
+            //console.log( scope.sceneCenter, scope.distToCamera );
 
             //console.log( "Set camera" );
             scope.artefactCamera.position.x = scope.sceneCenter.x;
@@ -218,6 +235,9 @@ PX.ModelRenderer.prototype =
 
     , Clear()
     {
+        preloaderBG.hide();
+        preloaderFG.hide();
+
         if( this.artefactOrbitControls )
         {
             this.artefactOrbitControls.dispose();
@@ -232,8 +252,12 @@ PX.ModelRenderer.prototype =
                 obj = this.artefactScene.children[ i ];
                 if( obj instanceof THREE.Mesh )
                 {
-                    //console.log( "+--+  Removed obj" );
+                    console.log( "+--+  Removed 3d model" );
                     this.artefactScene.remove( obj );
+                    if( obj.material.map ) obj.material.map.dispose();
+                    obj.material.dispose();
+                    obj.geometry.dispose();
+                    //obj.dispose();
                     obj = null;
                 }
             }

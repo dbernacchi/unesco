@@ -29,6 +29,8 @@ PX.TextRenderer.prototype =
         this.material.side = THREE.DoubleSide;
         this.material.blending = THREE.AdditiveBlending;
         this.material.depthWrite = false;
+        this.material.premultipliedAlpha = true;
+
         this.geometry = new THREE.BufferGeometry();
         this.geometry.dynamic = true;
 

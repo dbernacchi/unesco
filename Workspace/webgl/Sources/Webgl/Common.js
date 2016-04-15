@@ -184,6 +184,7 @@ var Params =
     , WindowHeight: 0
     , MainScene: true
     , ShowMaps: false
+    , ShowStats: false
     , EnableSunLight: false
     , EnableBloom: true
     , BloomOpacity: 0.15

@@ -141,16 +141,19 @@ function LoadBINScene( url, scene, onProgressCB, onCompleteCB )
 	binLoader.load( url
     , function( geometry, materials ) 
     {
-	    //console.log( geometry );
-	    console.log( materials );
-        //for( var i=0; i<geometries.length; ++i )
-        //{
-            var material = materials[0];
-            material.side = THREE.DoubleSide;
-            var mesh = new THREE.Mesh( geometry, material ); 
 
-            scene.add( mesh );
-        //}
+        var material = materials[0];
+	    console.log( material );
+	    console.log( material.map );
+
+        material.color.setHex( 0xffffff );
+        material.emissive.setHex( 0x000000 );
+        material.transparent = false;
+        material.opacity = 1.0;
+        material.side = THREE.DoubleSide;
+
+        var objMesh = new THREE.Mesh( geometry, material ); 
+        scene.add( objMesh );
 
         ComputeSceneBounds( scene );
 
@@ -165,10 +168,40 @@ function LoadBINScene( url, scene, onProgressCB, onCompleteCB )
     , function(result) 
     {
         var percentage = ( result.loaded / result.total );
-        //var str = parseInt( percentage * 100 ) + " %";
-        //progressBarElement.text( "Loading: " + result.loaded + " / " + result.total );
+        if( result.total <= 0.0 ) percentage = 0.0;
         if( onProgressCB ) onProgressCB( percentage );
-        //console.log( "BIN on progress", result.loaded, result.total );
+    }
+    );
+}
+
+
+function LoadOBJScene( url, scene, onProgressCB, onCompleteCB )
+{
+    console.log( "+--+  Load OBJ Scene:\t", url );
+
+    var binLoader = new THREE.OBJLoader();
+
+	var loadStartTime = Date.now();
+	binLoader.load( url
+    , function( object ) 
+    {
+        scene.add( object );
+
+        ComputeSceneBounds( scene );
+
+        //ComputeSceneBoundingSphere( scene, sceneCenter, distToCamera );
+
+    	var loadEndTime = Date.now();
+	    var loadTime = (loadEndTime - loadStartTime) / 1000;
+        console.log( "+--+  Loaded OBJ Scene:\t  Load time: ", loadTime );
+
+        if( onCompleteCB ) onCompleteCB();
+    } 
+    , function(result) 
+    {
+        var percentage = ( result.loaded / result.total );
+        if( result.total <= 0.0 ) percentage = 0.0;
+        if( onProgressCB ) onProgressCB( percentage );
     }
     );
 }

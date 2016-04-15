@@ -162,13 +162,14 @@ var UNESCO = {};
             Params.MainScene = false;
 
 			var modelContainer = $(".UNESCO#slide-9 #glModelContainer");
-            console.log( modelContainer[0], modelContainer[0].width, modelContainer[0].height );
             if( !modelRenderer )
             {
                 modelRenderer = new PX.ModelRenderer();
                 modelRenderer.Init( modelContainer[0], windowWidth, windowHeight );
             }
 
+            //modelRenderer.Load( "webgl/data/models/01_Nimrud_Relief/mesh.obj", 
+            //modelRenderer.Load( "webgl/data/models/06_Mihrab_of_the_Mosque_Al_Hasan/mesh.obj",
             modelRenderer.Load( "webgl/data/models/06_Mihrab_of_the_Mosque_Al_Hasan/mesh.js",
             //modelRenderer.Load( "webgl/data/models/01_Nimrud_Relief/mesh.js", 
             function( per )
