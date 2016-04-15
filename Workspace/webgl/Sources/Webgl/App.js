@@ -955,7 +955,16 @@ function OnResize()
     windowHeight = window.innerHeight;
     camera.aspect = windowWidth / windowHeight;
     camera.updateProjectionMatrix();
-    renderer.setSize( window.innerWidth, window.innerHeight );
+    renderer.setSize( windowWidth, windowHeight );
+    if( modelRenderer )
+    {
+        if( modelRenderer.enabled )
+        {
+            modelRenderer.artefactCamera.aspect = windowWidth / windowHeight;
+            modelRenderer.artefactCamera.updateProjectionMatrix();
+            modelRenderer.renderer.setSize( windowWidth, windowHeight );
+        }
+    }
 }
 
 function OnMouseDown(event)
@@ -1032,11 +1041,11 @@ function OnMouseWheel( event )
             tween.start();
 
             // Scale down all Level 1 markers
+            var target = new THREE.Vector3( PX.EPSILON, PX.EPSILON, PX.EPSILON );
             for( var i=0; i<locationMarkers.markersCount; ++i )
             {
                 var m = locationMarkers.markers[i];
 
-                var target = new THREE.Vector3( PX.EPSILON, PX.EPSILON, PX.EPSILON );
                 m.tween = new TWEEN.Tween( m.scale ).to( target, 1000.0 );
                 m.tween.easing( TWEEN.Easing.Quintic.InOut );
                 m.tween.start();

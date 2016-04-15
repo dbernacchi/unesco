@@ -99,7 +99,7 @@ PX.ModelRenderer.prototype =
 
         // Events
         //
-        /*this.renderer.domElement.addEventListener('resize', OnResize, false);
+        /*
         this.renderer.domElement.addEventListener('mousemove', OnMouseMove, false);
         this.renderer.domElement.addEventListener('mouseout', OnMouseOut, false);
         this.renderer.domElement.addEventListener('mousedown', OnMouseDown, false);
