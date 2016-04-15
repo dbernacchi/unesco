@@ -524,7 +524,7 @@ function Setup()
 
     // Events
     //
-    renderer.domElement.addEventListener('resize', OnResize, false);
+    window.addEventListener('resize', OnResize, false);
     renderer.domElement.addEventListener('mousemove', OnMouseMove, false);
     renderer.domElement.addEventListener('mouseout', OnMouseOut, false);
     renderer.domElement.addEventListener('mousedown', OnMouseDown, false);
@@ -950,6 +950,7 @@ function ComputeMapGridSizeFromZoomLevel( zoomLevel )
 
 function OnResize()
 {
+    //console.log( "OnResize" );
     windowWidth = window.innerWidth;
     windowHeight = window.innerHeight;
     camera.aspect = windowWidth / windowHeight;
