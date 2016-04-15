@@ -686,7 +686,7 @@ function InitGUI()
     g_GUI.add( Params, "Longitude" ).listen();
     g_GUI.add( Params, "ZoomLevel" ).listen();
     g_GUI.add( Params, "Intersects" ).listen();
-    g_GUI.add( Params, "Dummy" ).min(0).max(10).onChange( function( newValue ) 
+    /*g_GUI.add( Params, "Dummy" ).min(0).max(10).onChange( function( newValue ) 
     {
         tval = { x: 0.0 };
         var tweenw = new TWEEN.Tween( tval ).to( {x: 1.0}, 3000 );
@@ -696,9 +696,6 @@ function InitGUI()
         {
             var ttt = tval.x;
             var start = earth.mesh.quaternion.clone();
-            //var end = new THREE.Quaternion().setFromAxisAngle( PX.YAxis, PX.ToRadians(90) );
-            //THREE.Quaternion.slerp( start, end, earth.mesh.quaternion, ttt );
-            //THREE.Quaternion.slerp( start, end, locationMarkers.locationsGroup.quaternion, ttt );
 
             var v1 = camera.getWorldDirection().clone().multiplyScalar(-1);
             var v2 = locationMarkers.markers[parseInt(Params.Dummy)].position.clone().normalize();
@@ -713,7 +710,7 @@ function InitGUI()
             THREE.Quaternion.slerp( start, end, earth.mesh.quaternion, ttt );
             THREE.Quaternion.slerp( start, end, locationMarkers.locationsGroup.quaternion, ttt );
         });
-    });
+    });*/
     /*g_GUI.add( Params, 'Art_CameraDistance' ).onChange( function( newValue ) 
     {
         artefactCamera.position.z = newValue;
