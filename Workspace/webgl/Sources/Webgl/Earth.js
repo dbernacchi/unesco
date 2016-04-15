@@ -118,7 +118,7 @@ UG.Earth.prototype =
             case PX.AppStates.AppStateEntry:
                 this.rotationSpeed += frameTime * 0.2;
                 this.rotationSpeed = PX.Saturate( this.rotationSpeed );
-                this.currentAngle.x = time * 6.0 * this.rotationSpeed;
+                this.currentAngle.x = time * 3.0 * this.rotationSpeed;
                 this.mesh.quaternion.setFromAxisAngle( PX.YAxis, PX.ToRadians( this.currentAngle.x ) );
                 break;
         

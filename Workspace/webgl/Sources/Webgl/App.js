@@ -530,61 +530,42 @@ function Setup()
     renderer.domElement.addEventListener('mousedown', OnMouseDown, false);
     renderer.domElement.addEventListener('mouseup', OnMouseUp, false);
     renderer.domElement.addEventListener('mousewheel', OnMouseWheel, false);
-    //window.addEventListener('keydown', OnKeyDown, false);
 
     //
     InitStats();
     InitGUI();
 
-
     // Init Trackball
     //
     trackball = new PX.CameraTrackball();
-    //if( !trackball.camera )
-    {
-        trackball.Init( camera );
-        trackball.rotateFactor = 0.5;
-        trackball.damping = 0.1;
-    }
-
-
-    // Setup scene for intro
-    //
+    trackball.Init( camera );
+    trackball.rotateFactor = 0.5;
+    trackball.damping = 0.1;
 
     // Add a callback that reports when a state change happens
+    //
     appStateMan.AddStateChangeCallback( function( state )
     {
-        console.log( "+--+  Changing State:\t", PX.AppStatesString[state], state );
-		
-		switch(state){
-
+        console.log( "+--+  Changing State:\t", PX.AppStatesString[ state ] );
+		switch(state)
+        {
 			case PX.AppStates.AppStateEntry:
-
+                // Reset time and show explore button
                 startTime = timeNow();
                 currentTime = 0.0;
-				//$("#glContainer").show();
 				UNESCO.showExploreButton();
 				break;
-							
 			case PX.AppStates.AppStateLevel1ToLevel2:
-				
 				UNESCO.showBrowse();
 				break;
-				
 			case PX.AppStates.AppStateLevel2ToLevel1:
-			
 				UNESCO.hideBrowse();
 				break;
-
             default:
                 break;
 		}
 
     });
-
-    // Set App state
-    //appStateMan.SetState( PX.AppStates.AppStateEntry );
-
 
     // Click callbacks on HTML filter buttons
     var filterLinks = $("#legend > .clr > li > a" );
@@ -598,11 +579,10 @@ function Setup()
         }
     });
 
-
     //
     startTime = timeNow();
 
-    // Now move on to mainloop
+    // Move to mainloop
     MainLoop();
 }
 
@@ -1036,43 +1016,38 @@ function OnMouseMove(event)
 
 function OnMouseWheel( event )
 {
-    if( appStateMan.GetCurrentState() !== PX.AppStates.AppStateLevel1 )
-        return;
-
-    //console.log( event.wheelDelta );
-
     if( appStateMan.IsState( PX.AppStates.AppStateLevel1 ) )
     {
         if( event.wheelDelta < 0.0 )
         {
+            // Change state
             appStateMan.SetState( PX.AppStates.AppStateLevel1ToLevel0 );
 
-            Params.CameraDistance = PX.Lerp( PX.kCameraMinDistance, PX.kCameraMaxDistance, 1.0 );
-
-            var cameraTargetPoint = camera.position.clone().normalize().multiplyScalar( Params.CameraDistance );
-
+            // Disable auto scale in main loop
             locationMarkers.zoomLevel1IntroAnimDone = false;
 
-            // Move camera position back
+            // Move camera far far away
+            Params.CameraDistance = PX.Lerp( PX.kCameraMinDistance, PX.kCameraMaxDistance, 1.0 );
+            var cameraTargetPoint = camera.position.clone().normalize().multiplyScalar( Params.CameraDistance );
             var tween = new TWEEN.Tween( camera.position ).to( cameraTargetPoint, 2000 ); //Params.AnimTime * 1000.0 );
             tween.easing( TWEEN.Easing.Quadratic.InOut );
             tween.start();
-            tween.onComplete( function()
-            {
-            });
 
+            // Scale down all Level 1 markers
             for( var i=0; i<locationMarkers.markersCount; ++i )
             {
                 var m = locationMarkers.markers[i];
-                // Tween location markers
+
                 var target = new THREE.Vector3( PX.EPSILON, PX.EPSILON, PX.EPSILON );
                 m.tween = new TWEEN.Tween( m.scale ).to( target, 1000.0 );
                 m.tween.easing( TWEEN.Easing.Quintic.InOut );
                 m.tween.start();
+                // Next calls only happen once, when last marker scale down is done
                 if( i === locationMarkers.markersCount-1 )
                 {
                     m.tween.onComplete( function()
                     {
+                        // When all scale down is done, recompute Level 0 markers and do animation in
                         locationMarkers.SetZoomLevel( 0 );
                         locationMarkers.doPopulation = true;
                         locationMarkers.doAvoidance = true;
@@ -1088,34 +1063,6 @@ function OnMouseWheel( event )
             }
         }
     }
-}
-
-
-function OnKeyDown( event )
-{
-    //console.log( event );
-    if( ! appStateMan.IsState( PX.AppStates.AppStateLevel1 ) )
-        return;
-
-    //console.log( WebpageStates.FilterSwitches );
-
-    var id = -1;
-    switch( event.which )
-    {
-        case 49:
-            id = 0;
-            break;
-        case 50:
-            id = 1;
-            break;
-        case 51:
-            id = 2;
-            break;
-        default:
-            break;
-    }
-    UpdateFilterSwitches( id );
-    locationMarkers.FilterLocationMeshColors( WebpageStates.FilterSwitches );
 }
 
 
