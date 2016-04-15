@@ -225,7 +225,11 @@ var UNESCO = {};
 
 	this.showExploreButton = function() {
 
-		$(".UNESCO .explore-button").css('display', 'block');
+        var exploreButton = $(".UNESCO .explore-button");
+		exploreButton.css('display', 'block');
+        exploreButton.css('opacity', 0.0 );
+		exploreButton.fadeTo(1000, 1);
+
 		//this.bottomStatusBar(100);
 
 	}
