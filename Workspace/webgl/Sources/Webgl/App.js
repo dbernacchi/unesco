@@ -1036,6 +1036,58 @@ function OnMouseMove(event)
 
 function OnMouseWheel( event )
 {
+    if( appStateMan.GetCurrentState() !== PX.AppStates.AppStateLevel1 )
+        return;
+
+    //console.log( event.wheelDelta );
+
+    if( appStateMan.IsState( PX.AppStates.AppStateLevel1 ) )
+    {
+        if( event.wheelDelta < 0.0 )
+        {
+            appStateMan.SetState( PX.AppStates.AppStateLevel1ToLevel0 );
+
+            Params.CameraDistance = PX.Lerp( PX.kCameraMinDistance, PX.kCameraMaxDistance, 1.0 );
+
+            var cameraTargetPoint = camera.position.clone().normalize().multiplyScalar( Params.CameraDistance );
+
+            locationMarkers.zoomLevel1IntroAnimDone = false;
+
+            // Move camera position back
+            var tween = new TWEEN.Tween( camera.position ).to( cameraTargetPoint, 2000 ); //Params.AnimTime * 1000.0 );
+            tween.easing( TWEEN.Easing.Quadratic.InOut );
+            tween.start();
+            tween.onComplete( function()
+            {
+            });
+
+            for( var i=0; i<locationMarkers.markersCount; ++i )
+            {
+                var m = locationMarkers.markers[i];
+                // Tween location markers
+                var target = new THREE.Vector3( PX.EPSILON, PX.EPSILON, PX.EPSILON );
+                m.tween = new TWEEN.Tween( m.scale ).to( target, 1000.0 );
+                m.tween.easing( TWEEN.Easing.Quintic.InOut );
+                m.tween.start();
+                if( i === locationMarkers.markersCount-1 )
+                {
+                    m.tween.onComplete( function()
+                    {
+                        locationMarkers.SetZoomLevel( 0 );
+                        locationMarkers.doPopulation = true;
+                        locationMarkers.doAvoidance = true;
+
+                        locationMarkers.TweenLevel0( 1.0, 1.0 * 1000.0, 0.0 * 1000.0, 
+                        null, 
+                        function()
+                        {
+                            appStateMan.SetState( PX.AppStates.AppStateLevel0 );
+                        } );
+                    });
+                }
+            }
+        }
+    }
 }
 
 

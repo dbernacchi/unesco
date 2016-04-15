@@ -17,6 +17,8 @@ UG.LocationMarker = function()
     this.color          = null;
     this.targetColor    = null;
     this.colorChangeSpeed = 2.0;
+
+    this.tween          = null;
 };
 UG.LocationMarker.prototype =
 {
@@ -241,7 +243,7 @@ UG.LocationMarkers.prototype =
         }
         else
         {
-            this.locationsGroup.scale.set( 1, 1, 1 );
+            this.locationsGroup.scale.set( targetValue, targetValue, targetValue );
             if( onCompleteCB ) onCompleteCB();
         }
     }
@@ -282,6 +284,12 @@ UG.LocationMarkers.prototype =
                 }
 
                 this.UpdateLocationCircleBillboards( time, frameTime, camera );
+                break;
+            }
+            case PX.AppStates.AppStateLevel1ToLevel0:
+            {
+                this.UpdateLocationCircleBillboards( time, frameTime, camera );
+                this.UpdateLocationMeshes( time, frameTime, camera );
                 break;
             }
             case PX.AppStates.AppStateLevel0ToLevel1:
@@ -709,7 +717,7 @@ UG.LocationMarkers.prototype =
                 scope.TweenLevel1( 1.0, Params.AnimTime * 1000.0, 0 * 1000.0, null, function()
                 {
                     // Change app state
-                    appStateMan.ChangeState( PX.AppStates.AppStateLevel1 );
+                    //appStateMan.ChangeState( PX.AppStates.AppStateLevel1 );
 
                     trackball.Reset( camera, cameraLookAtPoint );
                 });
@@ -926,6 +934,24 @@ UG.LocationMarkers.prototype =
                 // Hide level 0 stuff
                 this.billboards.visible = true;
                 this.locationsGroup.visible = false;
+
+                //console.log("zoomLevel: ", level );
+                this.markerCluster.setGridSize( Params.MapGridSize );
+                this.markerCluster.repaint();
+                map.setZoom( zoomLevel );
+
+                //
+                var distanceToCenter = ( camera.position.length() );
+                var distanceToCenterNorm = PX.Saturate( distanceToCenter / PX.kCameraMaxDistance );
+                var camLatLon = PX.Utils.ConvertPosToLatLon( camera.position.x, camera.position.y, camera.position.z, distanceToCenter );
+                camLatLon.x = ( 90.0 - camLatLon.x );
+                camLatLon.y = camLatLon.y - 90.0;
+                Params.Latitude = camLatLon.x;
+                Params.Longitude = camLatLon.y;
+
+                var mapCenter = new google.maps.LatLng( camLatLon.x, camLatLon.y );
+                map.setCenter( mapCenter );
+
                 break;
             }
             case 1:
@@ -1033,6 +1059,9 @@ UG.LocationMarkers.prototype =
                         this.markers[i].tween.onComplete( function()
                         {
                             scope.zoomLevel1IntroAnimDone = true;
+
+                            // Only when markers anim is done we switch state
+                            appStateMan.ChangeState( PX.AppStates.AppStateLevel1 );
                         });
                     }
                 }
