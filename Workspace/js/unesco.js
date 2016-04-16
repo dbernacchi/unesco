@@ -132,15 +132,13 @@ var UNESCO = {};
             Params.MainScene = false;
 
 			var modelContainer = $(".UNESCO#slide-9 #glModelContainer");
-            console.log( modelContainer[0], modelContainer[0].width, modelContainer[0].height );
             if( !modelRenderer )
             {
                 modelRenderer = new PX.ModelRenderer();
                 modelRenderer.Init( modelContainer[0], windowWidth, windowHeight );
             }
 
-            modelRenderer.Load( "webgl/data/models/06_Mihrab_of_the_Mosque_Al_Hasan/mesh.js",
-            //modelRenderer.Load( "webgl/data/models/01_Nimrud_Relief/mesh.js", 
+            modelRenderer.Load( "webgl/data/models/06_Mihrab_of_the_Mosque_Al_Hasan/", "mesh.js",
             function( per )
             {
                 console.log( "+---+  Loading: ", per );
@@ -242,7 +240,11 @@ var UNESCO = {};
 
 	this.showExploreButton = function() {
 
-		$(".UNESCO .explore-button").css('display', 'block');
+        var exploreButton = $(".UNESCO .explore-button");
+		exploreButton.css('display', 'block');
+        exploreButton.css('opacity', 0.0 );
+		exploreButton.fadeTo(1000, 1);
+
 		//this.bottomStatusBar(100);
 
 	}

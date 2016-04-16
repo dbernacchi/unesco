@@ -3,6 +3,7 @@
 
 UG.LocationMarker = function()
 { 
+    this.id             = -1;
     this.GUID           = "";
     this.title          = "";
     this.text           = "";
@@ -16,6 +17,8 @@ UG.LocationMarker = function()
     this.color          = null;
     this.targetColor    = null;
     this.colorChangeSpeed = 2.0;
+
+    this.tween          = null;
 };
 UG.LocationMarker.prototype =
 {
@@ -83,6 +86,8 @@ UG.LocationMarkers.prototype =
         //
 	    for( var i=0; i<locations.length; ++i )
 	    {
+            var loc = locations[i];
+
 	        // Get color
             var rndIdx = Math.round( Math.random() * 3 ) % 3;
             var color = PX.kLocationColor.clone();
@@ -100,19 +105,20 @@ UG.LocationMarkers.prototype =
 	        geom.applyMatrix( objMat );
 	        var mesh = new THREE.Mesh( geom, material );
 
-	        mesh.position.copy( locations[i].position );
+	        mesh.position.copy( loc.position );
 	        mesh.scale.set( PX.EPSILON, PX.EPSILON, PX.EPSILON);
 	        mesh.lookAt( new THREE.Vector3(0, 0, 0) );
 
-	        mesh.name = locations[i].name;
+	        mesh.name = loc.name;
 
 	        //
 	        this.meshes.push( mesh );
 
 	        var lm = new UG.LocationMarker();
-	        lm.title = locations[i].name.toUpperCase();
+            lm.id = loc.id;
+	        lm.title = loc.name.toUpperCase();
 	        lm.text = "";
-	        lm.position.copy( locations[i].position );
+	        lm.position.copy( loc.position );
             lm.scale.set( PX.EPSILON, PX.EPSILON, PX.EPSILON );
             //lm.clicks = 0;
             lm.color = color;
@@ -237,7 +243,7 @@ UG.LocationMarkers.prototype =
         }
         else
         {
-            this.locationsGroup.scale.set( 1, 1, 1 );
+            this.locationsGroup.scale.set( targetValue, targetValue, targetValue );
             if( onCompleteCB ) onCompleteCB();
         }
     }
@@ -278,6 +284,12 @@ UG.LocationMarkers.prototype =
                 }
 
                 this.UpdateLocationCircleBillboards( time, frameTime, camera );
+                break;
+            }
+            case PX.AppStates.AppStateLevel1ToLevel0:
+            {
+                this.UpdateLocationCircleBillboards( time, frameTime, camera );
+                this.UpdateLocationMeshes( time, frameTime, camera );
                 break;
             }
             case PX.AppStates.AppStateLevel0ToLevel1:
@@ -705,7 +717,7 @@ UG.LocationMarkers.prototype =
                 scope.TweenLevel1( 1.0, Params.AnimTime * 1000.0, 0 * 1000.0, null, function()
                 {
                     // Change app state
-                    appStateMan.ChangeState( PX.AppStates.AppStateLevel1 );
+                    //appStateMan.ChangeState( PX.AppStates.AppStateLevel1 );
 
                     trackball.Reset( camera, cameraLookAtPoint );
                 });
@@ -922,6 +934,24 @@ UG.LocationMarkers.prototype =
                 // Hide level 0 stuff
                 this.billboards.visible = true;
                 this.locationsGroup.visible = false;
+
+                //console.log("zoomLevel: ", level );
+                this.markerCluster.setGridSize( Params.MapGridSize );
+                this.markerCluster.repaint();
+                map.setZoom( zoomLevel );
+
+                //
+                var distanceToCenter = ( camera.position.length() );
+                var distanceToCenterNorm = PX.Saturate( distanceToCenter / PX.kCameraMaxDistance );
+                var camLatLon = PX.Utils.ConvertPosToLatLon( camera.position.x, camera.position.y, camera.position.z, distanceToCenter );
+                camLatLon.x = ( 90.0 - camLatLon.x );
+                camLatLon.y = camLatLon.y - 90.0;
+                Params.Latitude = camLatLon.x;
+                Params.Longitude = camLatLon.y;
+
+                var mapCenter = new google.maps.LatLng( camLatLon.x, camLatLon.y );
+                map.setCenter( mapCenter );
+
                 break;
             }
             case 1:
@@ -1029,6 +1059,9 @@ UG.LocationMarkers.prototype =
                         this.markers[i].tween.onComplete( function()
                         {
                             scope.zoomLevel1IntroAnimDone = true;
+
+                            // Only when markers anim is done we switch state
+                            appStateMan.ChangeState( PX.AppStates.AppStateLevel1 );
                         });
                     }
                 }

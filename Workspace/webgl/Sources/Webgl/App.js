@@ -2,9 +2,9 @@
 
 var PX = PX || {}; 
 
-var progressBarElement = $("#loaderBox");
-var preloaderBG = $(".preloaderBG");
-var preloaderFG = $(".preloaderFG");
+//var progressBarElement = $("#loaderBox");
+//var preloaderBG = $(".preloaderBG");
+//var preloaderFG = $(".preloaderFG");
 //var progressBarTextElement = $("#progressBarText");
 //var startButtonElement = $("#startButton");
 
@@ -132,8 +132,8 @@ THREE.DefaultLoadingManager.onProgress = function( item, loaded, total )
     //preloaderFG.css( "width", (percentage) + '%' );
     
     //UNESCO.bottomStatusBar(percentage);
-    
 };
+
 
 //// KEEP PHONE AWAKE: IOS Safari
 //iosSleepPreventInterval = setInterval(function () 
@@ -145,10 +145,11 @@ THREE.DefaultLoadingManager.onProgress = function( item, loaded, total )
 //        }, 0 );        
 //}, 20000 );
 
-function ParseBitmapFont( url )
+
+function ParseBitmapFont( data )
 {
 	bmFontDescriptor = new BitmapFontDescriptor();
-    bmFontDescriptor.Parse( url );
+    bmFontDescriptor.Parse( data );
 	//bmFontDescriptor.instantiate( url );
 } 
 
@@ -262,11 +263,11 @@ function LoadData()
         , LoadTexture( "Circle", "webgl/data/textures/circle_full.png" )
         , LoadShaderData("EarthVertexShader", "webgl/data/shaders/Earth.vertex")
         , LoadShaderData("EarthPixelShader", "webgl/data/shaders/Earth.fragment")
-        , LoadJsonData("LocationsJson", "webgl/data/latlon.json")
         //, LoadTexture( "TextAtlasTex", "webgl/data/fonts/lucida_0.png" )
         //, LoadText( "TextAtlasXml", "webgl/data/fonts/lucida.xml" )
-        , LoadTexture( "TextAtlasTex", "webgl/data/fonts/arialLargeTransparent.png" )
         , LoadText( "TextAtlasXml", "webgl/data/fonts/arialLarge.xml" )
+        , LoadTexture( "TextAtlasTex", "webgl/data/fonts/arialLargeTransparent.png" )
+        , LoadJsonData("LocationsJson", "webgl/data/latlon.json")
     ).done(function ()
     {
         PostLoadData();
@@ -291,8 +292,8 @@ function PostLoadData()
     deviceContentScale = renderer.devicePixelRatio;
 
     BeginApp();
-    preloaderBG.hide();
-    preloaderFG.hide();
+    //preloaderBG.hide();
+    //preloaderFG.hide();
 /*    preloaderBG.delay(100).fadeTo(1500, 0).delay(100);
     preloaderFG.delay(100).fadeTo(1500, 0).delay(100, function()
     {
@@ -523,67 +524,48 @@ function Setup()
 
     // Events
     //
-    renderer.domElement.addEventListener('resize', OnResize, false);
+    window.addEventListener('resize', OnResize, false);
     renderer.domElement.addEventListener('mousemove', OnMouseMove, false);
     renderer.domElement.addEventListener('mouseout', OnMouseOut, false);
     renderer.domElement.addEventListener('mousedown', OnMouseDown, false);
     renderer.domElement.addEventListener('mouseup', OnMouseUp, false);
     renderer.domElement.addEventListener('mousewheel', OnMouseWheel, false);
-    //window.addEventListener('keydown', OnKeyDown, false);
 
     //
     InitStats();
     InitGUI();
 
-
     // Init Trackball
     //
     trackball = new PX.CameraTrackball();
-    //if( !trackball.camera )
-    {
-        trackball.Init( camera );
-        trackball.rotateFactor = 0.5;
-        trackball.damping = 0.1;
-    }
-
-
-    // Setup scene for intro
-    //
+    trackball.Init( camera );
+    trackball.rotateFactor = 0.5;
+    trackball.damping = 0.1;
 
     // Add a callback that reports when a state change happens
+    //
     appStateMan.AddStateChangeCallback( function( state )
     {
-        console.log( "+--+  Changing State:\t", PX.AppStatesString[state], state );
-		
-		switch(state){
-
+        console.log( "+--+  Changing State:\t", PX.AppStatesString[ state ] );
+		switch(state)
+        {
 			case PX.AppStates.AppStateEntry:
-
+                // Reset time and show explore button
                 startTime = timeNow();
                 currentTime = 0.0;
-				//$("#glContainer").show();
 				UNESCO.showExploreButton();
 				break;
-							
 			case PX.AppStates.AppStateLevel1ToLevel2:
-				
 				UNESCO.showBrowse();
 				break;
-				
 			case PX.AppStates.AppStateLevel2ToLevel1:
-			
 				UNESCO.hideBrowse();
 				break;
-
             default:
                 break;
 		}
 
     });
-
-    // Set App state
-    //appStateMan.SetState( PX.AppStates.AppStateEntry );
-
 
     // Click callbacks on HTML filter buttons
     var filterLinks = $("#legend > .clr > li > a" );
@@ -597,11 +579,10 @@ function Setup()
         }
     });
 
-
     //
     startTime = timeNow();
 
-    // Now move on to mainloop
+    // Move to mainloop
     MainLoop();
 }
 
@@ -613,7 +594,8 @@ function InitStats()
     // align top-left
     g_Stats.domElement.style.position = 'absolute';
     g_Stats.domElement.style.left = '0px';
-    g_Stats.domElement.style.top = '30%';
+    g_Stats.domElement.style.top = '50%';
+    g_Stats.domElement.style.visibility = 'hidden';
     document.body.appendChild( g_Stats.domElement );
 }
 
@@ -623,7 +605,7 @@ function InitGUI()
     g_GUI = new dat.gui.GUI( { width: 300 } );
     g_GUI.close();
 
-    g_GUI.add( Params, 'MainScene' ).onChange( function( newValue ) 
+/*    g_GUI.add( Params, 'MainScene' ).onChange( function( newValue ) 
     {
         if( newValue )
         {
@@ -656,12 +638,17 @@ function InitGUI()
                 console.log( "+---+  Loading: ", per );
             });
         }
-    });
+    });*/
     g_GUI.add( Params, 'ShowMaps' ).onChange( function( newValue ) 
     {
         var maps = $("#map");
         maps.css( "z-index", newValue ? 1000 : -1000 );
     });
+    g_GUI.add( Params, 'ShowStats' ).onChange( function( newValue ) 
+    {
+        g_Stats.domElement.style.visibility = newValue ? 'visible' : 'hidden';
+    });
+
     g_GUI.add( Params, "EnableSunLight" );
     g_GUI.addFolder( "BLOOM" );
     g_GUI.add( Params, "EnableBloom" );
@@ -699,7 +686,7 @@ function InitGUI()
     g_GUI.add( Params, "Longitude" ).listen();
     g_GUI.add( Params, "ZoomLevel" ).listen();
     g_GUI.add( Params, "Intersects" ).listen();
-    g_GUI.add( Params, "Dummy" ).min(0).max(10).onChange( function( newValue ) 
+    /*g_GUI.add( Params, "Dummy" ).min(0).max(10).onChange( function( newValue ) 
     {
         tval = { x: 0.0 };
         var tweenw = new TWEEN.Tween( tval ).to( {x: 1.0}, 3000 );
@@ -709,9 +696,6 @@ function InitGUI()
         {
             var ttt = tval.x;
             var start = earth.mesh.quaternion.clone();
-            //var end = new THREE.Quaternion().setFromAxisAngle( PX.YAxis, PX.ToRadians(90) );
-            //THREE.Quaternion.slerp( start, end, earth.mesh.quaternion, ttt );
-            //THREE.Quaternion.slerp( start, end, locationMarkers.locationsGroup.quaternion, ttt );
 
             var v1 = camera.getWorldDirection().clone().multiplyScalar(-1);
             var v2 = locationMarkers.markers[parseInt(Params.Dummy)].position.clone().normalize();
@@ -726,7 +710,7 @@ function InitGUI()
             THREE.Quaternion.slerp( start, end, earth.mesh.quaternion, ttt );
             THREE.Quaternion.slerp( start, end, locationMarkers.locationsGroup.quaternion, ttt );
         });
-    });
+    });*/
     /*g_GUI.add( Params, 'Art_CameraDistance' ).onChange( function( newValue ) 
     {
         artefactCamera.position.z = newValue;
@@ -771,8 +755,6 @@ function Update( time, frameTime )
             trackball.rotateFactor = rotSpeed * Params.EarthRotationSpeed;
 
             trackball.HandleMouseEvents( 1, 1, mouseDeltaX, mouseDeltaY, frameTime, aspectRatio );
-            console.log( mouseDeltaX, mouseDeltaY );
-            //console.log( camera.position );
         }
 
         //
@@ -906,6 +888,7 @@ function MainLoop()
     }
 
     g_Stats.end();
+    g_Stats.update();
 }
 
 
@@ -967,11 +950,21 @@ function ComputeMapGridSizeFromZoomLevel( zoomLevel )
 
 function OnResize()
 {
+    //console.log( "OnResize" );
     windowWidth = window.innerWidth;
     windowHeight = window.innerHeight;
     camera.aspect = windowWidth / windowHeight;
     camera.updateProjectionMatrix();
-    renderer.setSize( window.innerWidth, window.innerHeight );
+    renderer.setSize( windowWidth, windowHeight );
+    if( modelRenderer )
+    {
+        if( modelRenderer.enabled )
+        {
+            modelRenderer.artefactCamera.aspect = windowWidth / windowHeight;
+            modelRenderer.artefactCamera.updateProjectionMatrix();
+            modelRenderer.renderer.setSize( windowWidth, windowHeight );
+        }
+    }
 }
 
 function OnMouseDown(event)
@@ -996,7 +989,8 @@ function OnMouseUp(event)
         locationMarkers.OnMouseClickEvent( mouseVector3d, camera, 
         function( object )  // Callback returning clicked marker
         {
-            console.log( "+--+  Clicked Marker:\t", object.GUID, object );
+            console.log( "+--+  Clicked Marker ID:\t", object.id );
+            //console.log( "+--+  Clicked Marker:\t", object.GUID, object );
         } );
     }
 }
@@ -1029,34 +1023,53 @@ function OnMouseMove(event)
 
 function OnMouseWheel( event )
 {
-}
-
-
-function OnKeyDown( event )
-{
-    //console.log( event );
-    if( ! appStateMan.IsState( PX.AppStates.AppStateLevel1 ) )
-        return;
-
-    //console.log( WebpageStates.FilterSwitches );
-
-    var id = -1;
-    switch( event.which )
+    if( appStateMan.IsState( PX.AppStates.AppStateLevel1 ) )
     {
-        case 49:
-            id = 0;
-            break;
-        case 50:
-            id = 1;
-            break;
-        case 51:
-            id = 2;
-            break;
-        default:
-            break;
+        if( event.wheelDelta < 0.0 )
+        {
+            // Change state
+            appStateMan.SetState( PX.AppStates.AppStateLevel1ToLevel0 );
+
+            // Disable auto scale in main loop
+            locationMarkers.zoomLevel1IntroAnimDone = false;
+
+            // Move camera far far away
+            Params.CameraDistance = PX.Lerp( PX.kCameraMinDistance, PX.kCameraMaxDistance, 1.0 );
+            var cameraTargetPoint = camera.position.clone().normalize().multiplyScalar( Params.CameraDistance );
+            var tween = new TWEEN.Tween( camera.position ).to( cameraTargetPoint, 2000 ); //Params.AnimTime * 1000.0 );
+            tween.easing( TWEEN.Easing.Quadratic.InOut );
+            tween.start();
+
+            // Scale down all Level 1 markers
+            var target = new THREE.Vector3( PX.EPSILON, PX.EPSILON, PX.EPSILON );
+            for( var i=0; i<locationMarkers.markersCount; ++i )
+            {
+                var m = locationMarkers.markers[i];
+
+                m.tween = new TWEEN.Tween( m.scale ).to( target, 1000.0 );
+                m.tween.easing( TWEEN.Easing.Quintic.InOut );
+                m.tween.start();
+                // Next calls only happen once, when last marker scale down is done
+                if( i === locationMarkers.markersCount-1 )
+                {
+                    m.tween.onComplete( function()
+                    {
+                        // When all scale down is done, recompute Level 0 markers and do animation in
+                        locationMarkers.SetZoomLevel( 0 );
+                        locationMarkers.doPopulation = true;
+                        locationMarkers.doAvoidance = true;
+
+                        locationMarkers.TweenLevel0( 1.0, 1.0 * 1000.0, 0.0 * 1000.0, 
+                        null, 
+                        function()
+                        {
+                            appStateMan.SetState( PX.AppStates.AppStateLevel0 );
+                        } );
+                    });
+                }
+            }
+        }
     }
-    UpdateFilterSwitches( id );
-    locationMarkers.FilterLocationMeshColors( WebpageStates.FilterSwitches );
 }
 
 

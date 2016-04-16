@@ -45,7 +45,8 @@ PX =
     , kTransparentCanvas: true
 
     , kEarthScale: 30.0
-    , kEarthDetail: 50
+    , kEarthDetailX: 32*4
+    , kEarthDetailY: 22*4
     , kMarkerOffsetFromEarthSurface: 0.0
     , kLocationMarkerScale: 0.8
     , kLocationMarkerDetail: 16
@@ -184,6 +185,7 @@ var Params =
     , WindowHeight: 0
     , MainScene: true
     , ShowMaps: false
+    , ShowStats: false
     , EnableSunLight: false
     , EnableBloom: true
     , BloomOpacity: 0.15

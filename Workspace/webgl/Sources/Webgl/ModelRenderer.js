@@ -1,5 +1,8 @@
 
 
+var preloaderBG = $(".preloaderBG");
+var preloaderFG = $(".preloaderFG");
+
 
 /////////////////////////////////////////////////////////////////////////////////////
 // Representation of a location in memory (read from json)
@@ -96,7 +99,7 @@ PX.ModelRenderer.prototype =
 
         // Events
         //
-        /*this.renderer.domElement.addEventListener('resize', OnResize, false);
+        /*
         this.renderer.domElement.addEventListener('mousemove', OnMouseMove, false);
         this.renderer.domElement.addEventListener('mouseout', OnMouseOut, false);
         this.renderer.domElement.addEventListener('mousedown', OnMouseDown, false);
@@ -108,18 +111,32 @@ PX.ModelRenderer.prototype =
     }
 
 
-    , Load( url, onProgressCB )
+    , Load( path, filename, onProgressCB )
     {
         var scope = this;
 
-        LoadBINScene( url, this.artefactScene, 
+        preloaderBG.show();
+        preloaderFG.show();
+
+        //LoadOBJScene( url, this.artefactScene, 
+        LoadBINScene( path, filename, this.artefactScene, 
         function( per )
         {
             //console.log( "+--+  Load: Percentage: ", per );
             onProgressCB( per );
+
+            // Since we do a margin on the FG bar we need to compute the offset to remove from the bar in %
+            // sub that from the total width % and we get the proper fitting size
+            var offset = ( ( parseInt(preloaderFG.css('margin-left')) * 2.0 ) / windowWidth) * 100.0;
+            console.log( offset, parseInt(preloaderFG.css('margin-left')) );
+            var percentage = Math.round( per * 80.0 );
+            preloaderFG.css( "width", (percentage - offset) + '%' );
         },
         function()
         {
+            preloaderBG.hide();
+            preloaderFG.hide();
+
             //console.log( "Reset" );
             scope.Reset();
 
@@ -129,7 +146,7 @@ PX.ModelRenderer.prototype =
             scope.sceneCenter.y = res.y;
             scope.sceneCenter.z = res.z;
             scope.distToCamera = res.w;
-            console.log( scope.sceneCenter, scope.distToCamera );
+            //console.log( scope.sceneCenter, scope.distToCamera );
 
             //console.log( "Set camera" );
             scope.artefactCamera.position.x = scope.sceneCenter.x;
@@ -218,6 +235,9 @@ PX.ModelRenderer.prototype =
 
     , Clear()
     {
+        preloaderBG.hide();
+        preloaderFG.hide();
+
         if( this.artefactOrbitControls )
         {
             this.artefactOrbitControls.dispose();
@@ -232,8 +252,12 @@ PX.ModelRenderer.prototype =
                 obj = this.artefactScene.children[ i ];
                 if( obj instanceof THREE.Mesh )
                 {
-                    //console.log( "+--+  Removed obj" );
+                    console.log( "+--+  Removed 3d model" );
                     this.artefactScene.remove( obj );
+                    if( obj.material.map ) obj.material.map.dispose();
+                    obj.material.dispose();
+                    obj.geometry.dispose();
+                    //obj.dispose();
                     obj = null;
                 }
             }

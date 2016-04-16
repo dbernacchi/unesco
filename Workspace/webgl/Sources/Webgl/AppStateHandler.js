@@ -10,9 +10,10 @@ PX.AppStates =
     , AppStateLevel0:               5
     , AppStateLevel0ToLevel1:       6
     , AppStateLevel1:               7
-    , AppStateLevel1ToLevel2:       8
-    , AppStateLevel2:               9
-    , AppStateLevel2ToLevel1:       10
+    , AppStateLevel1ToLevel0:       8
+    , AppStateLevel1ToLevel2:       9
+    , AppStateLevel2:               10
+    , AppStateLevel2ToLevel1:       11
 };
 
 PX.AppStatesString = 

@@ -1,36 +1,4 @@
 
-
-
-//
-var Location = function()
-{ 
-    this.GUID = "";
-    this.name = null;       // Location name
-    this.latlon = null;     // Lat/long
-    this.position = null;   // 3D position in sphere
-};
-Location.prototype =
-{
-    constructor: Location
-}
-
-
-//
-UG.LocationMarker = function()
-{ 
-    this.GUID = "";
-    this.text = "";
-    this.latlon = new THREE.Vector2();
-    this.position = new THREE.Vector3();
-    this.markerCount = 0;
-};
-UG.LocationMarker.prototype =
-{
-    constructor: UG.LocationMarker
-}
-
-
-
 //
 UG.Earth = function ()
 {
@@ -44,6 +12,9 @@ UG.Earth = function ()
 
     this.doIntroAnimation = true;
     this.introScale = { x: 0.001 };
+
+    this.currentAngle = { x: 0.0 };
+    this.rotationSpeed = 0.0;
 };
 
 
@@ -100,12 +71,16 @@ UG.Earth.prototype =
         //this.material.side = THREE.DoubleSide;
         this.material.extensions.derivatives = true;
         //this.material.transparent = true;
+        //this.material.wireframe = true;
 
-        this.mesh = new THREE.Mesh( new THREE.SphereGeometry( PX.kEarthScale, PX.kEarthDetail, PX.kEarthDetail), this.material );
+        //this.mesh = new THREE.Mesh( new THREE.SphereGeometry( PX.kEarthScale, 32*4, 22*4 ), this.material );
+        this.mesh = new THREE.Mesh( new THREE.SphereGeometry( PX.kEarthScale, PX.kEarthDetailX, PX.kEarthDetailY ), this.material );
         this.mesh.position.set( 0, 0, 0 );
-        //this.mesh.scale = new THREE.Vector3( 1.0, 1.0, 1.0 );
 
         scene.add( this.mesh );
+
+
+        this.tempQuat = PX.IdentityQuat.clone();;
 
 
         // Add intro tween
@@ -139,11 +114,20 @@ UG.Earth.prototype =
 
 
         // While in Entry point, globe is slowly rotating
-        if( appStateMan.IsState( PX.AppStates.AppStateEntry ) )
+        switch( appStateMan.GetCurrentState() )
         {
-            var quaty = new THREE.Quaternion();
-            quaty.setFromAxisAngle( new THREE.Vector3( 0, 1, 0 ), PX.ToRadians( time * 6.0 ) );
-            this.mesh.quaternion.copy( quaty );
+            case PX.AppStates.AppStateEntry:
+                this.rotationSpeed += frameTime * 0.2;
+                this.rotationSpeed = PX.Saturate( this.rotationSpeed );
+                this.currentAngle.x = time * 3.0 * this.rotationSpeed;
+                this.mesh.quaternion.setFromAxisAngle( PX.YAxis, PX.ToRadians( this.currentAngle.x ) );
+                break;
+        
+            case PX.AppStates.AppStateIntroToLevel0:
+                this.mesh.quaternion.setFromAxisAngle( PX.YAxis, PX.ToRadians( this.currentAngle.x ) );
+                break;
+            default:
+                break;
         }
 
         //
@@ -153,11 +137,7 @@ UG.Earth.prototype =
 
     , ResetTransform: function( onCompleteCB )
     {
-        var scope = this;
-
-        var dest = new THREE.Quaternion();
-        dest.setFromAxisAngle( new THREE.Vector3( 0, 1, 0 ), PX.ToRadians( -0.0 ) );
-        var tween = new TWEEN.Tween( this.mesh.quaternion ).to( dest, 2000 );
+        var tween = new TWEEN.Tween( this.currentAngle ).to( { x: 0.0 }, 2000 );
         tween.easing( TWEEN.Easing.Sinusoidal.InOut );
         //tween.delay( 1000 );
         tween.start();
