@@ -7,49 +7,18 @@ var UNESCO = {};
 
 		var ns = this;
 		
-		//this.hideSplash();
-		//this.showBrowse();
+		var max_width = 1920;
+		
+		this.resize();
+		
+		this.hideSplash();
+		this.showBrowse();
 		
 		//ns.topStatusBar();
 		//var slider = $(".UNESCO .items-inner-2");
 		//var item_height = 250;
 		
-		var max_width = 1920;
-		
-		var window_width = window.innerWidth;
-		
-		if(window_width >= max_width){
-			var percentage = 100;
-		} else {
-			var percentage = (window_width * 100) / max_width;
-		}
-		
-		$("span.resize img").css('width', percentage + "%");
-		
-		$("a.resize").each(function(){
-			
-			var width = $(this).width();
-			var height = $(this).height();
-			
-			width = width * .01 * percentage;
-			
-			height = height * .01 * percentage; 
-			
-			$(this).css('width', width + 'px');
-			$(this).css('height', height + 'px');
-			
-		});
-		
-		$("a.resize-margin-top").each(function(){
-			
-			var marginTop = $(this).css('marginTop');
-			
-			marginTop = parseInt(marginTop, 10) * .01 * percentage;
-			
-			$(this).css('marginTop', marginTop + 'px');
-			
-		});
-		
+				
 		var img = document.getElementById('splash-text'); 
 		
 		var splash_text_height = img.clientHeight;
@@ -112,6 +81,7 @@ var UNESCO = {};
 			
             // Change app state to Level 0
             OnExploreClick();
+            
 		});	
 		
 		
@@ -180,6 +150,53 @@ var UNESCO = {};
 		
 	}
 
+
+	this.resize = function(){
+		
+		var ns = this;
+		
+		max_width = ns.max_width;
+		
+		var window_width = window.innerWidth;
+		
+		if(window_width >= max_width){
+			var percentage = 100;
+		} else {
+			var percentage = (window_width * 100) / max_width;
+		}
+		
+		function apply(elm, target){
+			
+			if(elm.hasClass()){
+							
+				var attr = elm.css(target);
+				
+				attr = parseInt(attr, 10) * .01 * percentage;
+				
+				elm.css(target, attr + 'px');
+											
+			}
+			
+		}
+
+		$(".resize").each(function(){
+			
+			apply($(this), 'width');
+			apply($(this), 'height');
+			apply($(this), 'top');
+			apply($(this), 'fontSize');
+			apply($(this), 'marginTop');
+			apply($(this), 'marginBottom');
+			
+		});	
+		
+		$("span.resize > img").load(function() {
+			
+		  $(this).css('width', percentage + "%");
+		  
+		});		
+		
+	}
 /*
 	this.topStatusBar = function() {
 
@@ -276,7 +293,7 @@ var UNESCO = {};
 
 
 
-$(document).ready(function(){
+$(document).ready( function(){
 
 	UNESCO.init();
 	
