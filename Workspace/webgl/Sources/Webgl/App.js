@@ -644,11 +644,14 @@ function InitGUI()
         var maps = $("#map");
         maps.css( "z-index", newValue ? 1000 : -1000 );
     });
+    
+    /*
     g_GUI.add( Params, 'ShowStats' ).onChange( function( newValue ) 
     {
         g_Stats.domElement.style.visibility = newValue ? 'visible' : 'hidden';
     });
-
+	*/
+	
     g_GUI.add( Params, "EnableSunLight" );
     g_GUI.addFolder( "BLOOM" );
     g_GUI.add( Params, "EnableBloom" );
