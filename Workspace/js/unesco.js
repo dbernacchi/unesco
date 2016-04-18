@@ -22,6 +22,7 @@ var UNESCO = {};
 		//var slider = $(".UNESCO .items-inner-2");
 		//var item_height = 250;
 
+		/*
 		$(".UNESCO .arrow.up").click(function(e) {
 			e.preventDefault();
 
@@ -60,7 +61,8 @@ var UNESCO = {};
 				});
 			}
 		});
-
+		*/
+		
 		$(".UNESCO .explore-button").click(function(e) {
 			e.preventDefault();
 
