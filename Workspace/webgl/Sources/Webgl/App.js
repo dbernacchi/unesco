@@ -1047,7 +1047,7 @@ function OnMouseWheel( event )
             var target = new THREE.Vector3( PX.EPSILON, PX.EPSILON, PX.EPSILON );
             for( var i=0; i<locationMarkers.markersCount; ++i )
             {
-                var m = locationMarkers.markers[i];
+                var m = locationMarkers.markers[ i ];
 
                 m.tween = new TWEEN.Tween( m.scale ).to( target, 1000.0 );
                 m.tween.easing( TWEEN.Easing.Quintic.InOut );
@@ -1057,11 +1057,23 @@ function OnMouseWheel( event )
                 {
                     m.tween.onComplete( function()
                     {
+                        // Cancel any markerd marker 
+                        locationMarkers.currentMouseOverMarkerIndex = -1;
+
+                        // Restore original cluster colors
+                        for( var i=0; i<locationMarkers.markersCount; ++i )
+                        {
+		                    locationMarkers.geomColorArray[ i*3+0 ] = PX.kLocationColor.r;
+                            locationMarkers.geomColorArray[ i*3+1 ] = PX.kLocationColor.g;
+                            locationMarkers.geomColorArray[ i*3+2 ] = PX.kLocationColor.b;
+                        }
+
                         // When all scale down is done, recompute Level 0 markers and do animation in
                         locationMarkers.SetZoomLevel( 0 );
                         locationMarkers.doPopulation = true;
                         locationMarkers.doAvoidance = true;
 
+                        // Do level0 animation
                         locationMarkers.TweenLevel0( 1.0, 1.0 * 1000.0, 0.0 * 1000.0, 
                         null, 
                         function()
