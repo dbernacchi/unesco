@@ -26,6 +26,7 @@ PX.AppStatesString =
     , "AppStateLevel0"
     , "AppStateLevel0ToLevel1"
     , "AppStateLevel1"
+    , "AppStateLevel1ToLevel0"
     , "AppStateLevel1ToLevel2"
     , "AppStateLevel2"
     , "AppStateLevel2ToLevel1"
