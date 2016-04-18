@@ -555,11 +555,19 @@ function Setup()
                 currentTime = 0.0;
 				UNESCO.showExploreButton();
 				break;
+			case PX.AppStates.AppStateLevel0:	
+				UNESCO.hideLegend();
+				break;
+			case PX.AppStates.AppStateLevel1:
+				UNESCO.showLegend();
+				break;
+					
 			case PX.AppStates.AppStateLevel1ToLevel2:
 				UNESCO.showBrowse();
 				break;
 			case PX.AppStates.AppStateLevel2ToLevel1:
 				UNESCO.hideBrowse();
+				
 				break;
             default:
                 break;

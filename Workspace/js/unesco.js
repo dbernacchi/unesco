@@ -231,20 +231,14 @@ var UNESCO = {};
 			
 			//HEIGHT
 			var height = elm.height();
-			
-			console.log('H '  + height);
 
 			var window_height = window.innerHeight;
 
-			console.log('WH '  + window_height);
-			
 			var offset = height / 2;
 
 			var middle = window_height / 2;
 
 			var top = middle - offset;
-
-			console.log('top '  + top);
 			
 			elm.css('top', top + 'px');
 			
@@ -342,6 +336,20 @@ var UNESCO = {};
 		$(".UNESCO#browse").hide();
 
 	}
+	
+	this.showLegend = function() {
+
+		var elm = $(".UNESCO#legend");
+
+		elm.show();
+
+	}
+
+	this.hideLegend = function() {
+
+		$(".UNESCO#legend").hide();
+
+	}	
 	
 	this.afterLoadImages = function() {
 
