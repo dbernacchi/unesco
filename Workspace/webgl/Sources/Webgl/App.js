@@ -261,6 +261,7 @@ function LoadData()
         , LoadTexture( "EarthNightLightsMap", "webgl/data/textures/earth_night_lights.jpg" )
         , LoadTexture( "Background", "webgl/data/textures/background.png" )
         , LoadTexture( "Circle", "webgl/data/textures/circle_full.png" )
+        , LoadTexture( "EarthShadow", "webgl/data/textures/blobshadow.png" )
         , LoadShaderData("EarthVertexShader", "webgl/data/shaders/Earth.vertex")
         , LoadShaderData("EarthPixelShader", "webgl/data/shaders/Earth.fragment")
         //, LoadTexture( "TextAtlasTex", "webgl/data/fonts/lucida_0.png" )
@@ -611,7 +612,7 @@ function InitStats()
 function InitGUI()
 {
     g_GUI = new dat.gui.GUI( { width: 300 } );
-    g_GUI.close();
+    //g_GUI.close();
 
 /*    g_GUI.add( Params, 'MainScene' ).onChange( function( newValue ) 
     {
@@ -647,6 +648,14 @@ function InitGUI()
             });
         }
     });*/
+
+    g_GUI.add( Params, "EarthShadowScaleX" ).min(-400.0).max(400.0).step(0.001);
+    g_GUI.add( Params, "EarthShadowScaleY" ).min(-400.0).max(400.0).step(0.001);
+    g_GUI.add( Params, "EarthShadowScaleZ" ).min(-400.0).max(400.0).step(0.001);
+    g_GUI.add( Params, "EarthShadowPosX" ).min(-100.0).max(100.0).step(0.001);
+    g_GUI.add( Params, "EarthShadowPosY" ).min(-100.0).max(100.0).step(0.001);
+    g_GUI.add( Params, "EarthShadowPosZ" ).min(-100.0).max(100.0).step(0.001);
+
     g_GUI.add( Params, 'ShowMaps' ).onChange( function( newValue ) 
     {
         var maps = $("#map");

@@ -8,6 +8,8 @@ UG.Earth = function ()
     this.material = null;
     this.uniforms = null;
 
+    this.shadowPlaneMesh = null;
+
     this.worldMatrix = new THREE.Matrix4();
 
     this.doIntroAnimation = true;
@@ -76,11 +78,27 @@ UG.Earth.prototype =
         //this.mesh = new THREE.Mesh( new THREE.SphereGeometry( PX.kEarthScale, 32*4, 22*4 ), this.material );
         this.mesh = new THREE.Mesh( new THREE.SphereGeometry( PX.kEarthScale, PX.kEarthDetailX, PX.kEarthDetailY ), this.material );
         this.mesh.position.set( 0, 0, 0 );
-
         scene.add( this.mesh );
 
 
-        this.tempQuat = PX.IdentityQuat.clone();;
+        // Shadow plane
+        var planeMat = new THREE.MeshBasicMaterial( { color: 0xffffff, map: PX.AssetsDatabase["EarthShadow"], opacity: 1.5, transparent: true, vertexColors: THREE.VertexColors } );
+        planeMat.side = THREE.DoubleSide;
+        //planeMat.depthTest = false;
+        planeMat.depthWrite = false;
+        var planeGeom = new THREE.PlaneGeometry( 1, 1, 0 );
+	    var matTrans = new THREE.Matrix4().makeTranslation( 0, -0.5, 0 );
+        var matRot = new THREE.Matrix4(); //.makeRotationX( THREE.Math.degToRad( 90.0 ) )
+	    var objMat = new THREE.Matrix4().multiplyMatrices( matTrans, matRot );
+	    planeGeom.applyMatrix( objMat );
+        this.shadowPlaneMesh = new THREE.Mesh( planeGeom, planeMat );
+/*        var planeMat = new THREE.SpriteMaterial( { color: 0xffffff, map: PX.AssetsDatabase["EarthShadow"], opacity: 1.0, transparent: true, vertexColors: THREE.VertexColors } );
+        this.shadowPlaneMesh = new THREE.Sprite( planeMat );*/
+
+        this.shadowPlaneMesh.position.set( 0, 0, 0 );
+        //this.shadowPlaneMesh.position.set( Params.EarthShadowPosX, Params.EarthShadowPosY, Params.EarthShadowPosZ );
+        //this.shadowPlaneMesh.scale.set( Params.EarthShadowScaleX, Params.EarthShadowScaleY, Params.EarthShadowScaleZ );
+        scene.add( this.shadowPlaneMesh );
 
 
         // Add intro tween
@@ -101,6 +119,15 @@ UG.Earth.prototype =
         // Update globe's scale
         //
         this.mesh.scale.set( this.introScale.x, this.introScale.x, this.introScale.x );
+
+
+        // Shadow Plane
+        this.shadowPlaneMesh.material.opacity = PX.Pow2( this.introScale.x );
+        //this.shadowPlaneMesh.position.set( Params.EarthShadowPosX, Params.EarthShadowPosY, Params.EarthShadowPosZ );
+        this.shadowPlaneMesh.scale.set( Params.EarthShadowScaleX * this.introScale.x, Params.EarthShadowScaleY * this.introScale.x, Params.EarthShadowScaleZ * this.introScale.x );
+        //this.shadowPlaneMesh.quaternion.copy( camera.quaternion );
+        this.shadowPlaneMesh.rotation.setFromRotationMatrix( camera.matrix );
+        //this.shadowPlaneMesh.lookAt( camera );
 
 
         // Update shader params

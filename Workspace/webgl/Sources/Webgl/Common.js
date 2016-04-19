@@ -44,7 +44,7 @@ PX =
 
     , kTransparentCanvas: true
     , kEnableStats: false
-    , kEnableGUI: false
+    , kEnableGUI: true
 
     , kEarthScale: 30.0
     , kEarthDetailX: 32*4
@@ -164,6 +164,11 @@ PX =
         return ( x * x );
     }
 
+    , Pow3: function( x )
+    {
+        return ( x * x * x );
+    }
+
     , Pow4: function( x )
     {
         var x2 = x * x;
@@ -217,4 +222,12 @@ var Params =
     , ZoomLevel: 0.0
     , Intersects: 0
     , Dummy: 0
+
+    , EarthShadowScaleX: 170.0 //PX.kEarthScale * 4.0
+    , EarthShadowScaleY: 100.0 //PX.kEarthScale * 2.0
+    , EarthShadowScaleZ: 0.0
+    , EarthShadowPosX: 2.0
+    , EarthShadowPosY: -40.0 //-PX.kEarthScale * 1.5
+    , EarthShadowPosZ: 0.0
+
 };
