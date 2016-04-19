@@ -724,7 +724,6 @@ UG.LocationMarkers.prototype =
                 locationMarkers.level1FilterScales[ i ].set( 1.0, 1.0, 1.0 );
             }
             //
-            console.log( "WebpageStates.FilterSwitches: ", WebpageStates.FilterSwitches );
             locationMarkers.FilterLocationMeshColors( WebpageStates.FilterSwitches );
 
 

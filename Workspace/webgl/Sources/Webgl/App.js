@@ -532,8 +532,8 @@ function Setup()
     renderer.domElement.addEventListener('mousewheel', OnMouseWheel, false);
 
     //
-    InitStats();
-    InitGUI();
+    if( PX.kEnableStats ) InitStats();
+    if( PX.kEnableGUI ) InitGUI();
 
     // Init Trackball
     //
@@ -886,7 +886,7 @@ function MainLoop()
         frameTime = delta;
     }
 
-    g_Stats.begin();
+    if( PX.kEnableStats ) g_Stats.begin();
 
     if( Params.MainScene )
     {
@@ -898,8 +898,11 @@ function MainLoop()
         modelRenderer.OnFrame( currentTime, frameTime );
     }
 
-    g_Stats.end();
-    g_Stats.update();
+    if( PX.kEnableStats )
+    {
+        g_Stats.end();
+        g_Stats.update();
+    }
 }
 
 
