@@ -703,18 +703,26 @@ UG.LocationMarkers.prototype =
     }
 
 
-    , OnMouseClickEvent: function( mouse3d, camera, onLocationClickCB )
+    //
+    // isZoomToLocation: Used to zoom in to a given location or simply to get camera zoomed in. true/false
+    //
+    , OnMouseClickEvent: function( mouse3d, camera, isZoomToLocation, onLocationClickCB )
     {
         var scope = this;
 
         // Level 0
         if( appStateMan.IsState( PX.AppStates.AppStateLevel0 ) )
         {
-            var index = this.IntersectsLevel0( mouse3d );
-            if( index < 0 )
+            var index = -1;
+
+            if( isZoomToLocation )
             {
-                //console.log( "no intersection", index );
-                return;
+                index = this.IntersectsLevel0( mouse3d );
+                if( index < 0 )
+                {
+                    //console.log( "no intersection", index );
+                    return;
+                }
             }
 
             //console.log( "moooo" );
@@ -745,13 +753,23 @@ UG.LocationMarkers.prototype =
                 //scope.doAvoidance = false;
             });
 
-
-            var loc = this.markers[ index ];
-
             Params.CameraDistance = PX.Lerp( PX.kCameraMinDistance, PX.kCameraMaxDistance, 0.0 );
 
-            //var cameraSourcePoint = camera.position.clone();
-            var cameraTargetPoint = loc.position.clone().normalize().multiplyScalar( Params.CameraDistance );
+            var cameraTargetPoint = null;
+            
+            if( isZoomToLocation )
+            {
+                var loc = this.markers[ index ];
+                cameraTargetPoint = loc.position.clone().normalize().multiplyScalar( Params.CameraDistance );
+            }
+            else
+            {
+                // Just zoom in in camera's direction
+                cameraTargetPoint = camera.position.clone().normalize();
+                cameraTargetPoint.multiplyScalar( Params.CameraDistance );
+                //console.log( cameraTargetPoint );
+            }
+
 
             // POSITION
             var tween = new TWEEN.Tween( camera.position ).to( cameraTargetPoint, Params.AnimTime * 1000.0 );
@@ -760,12 +778,6 @@ UG.LocationMarkers.prototype =
             tween.onStart(function()
             {
             });
-            /*tween.onUpdate(function()
-            {
-                camera.position.x = cameraSourcePoint.x;
-                camera.position.y = cameraSourcePoint.y;
-                camera.position.z = cameraSourcePoint.z;
-            });*/
             tween.onComplete(function()
             {
                 scope.SetZoomLevel( 1 );
