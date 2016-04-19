@@ -366,6 +366,14 @@ var UNESCO = {};
 		ns.center($("#splash"));
 	
 	}	
+
+    this.changeLevel2SelectedMarker = function( colorHex )
+    {
+        if( locationMarkers.clickedMarkerIndex && appStateMan.IsState( PX.AppStates.AppStateLevel2 ) )
+        {
+            locationMarkers.markers[ locationMarkers.clickedMarkerIndex ].targetColor.set( colorHex );
+        }
+    }
 	
 }).apply(UNESCO);
 

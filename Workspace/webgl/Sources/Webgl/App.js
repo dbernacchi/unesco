@@ -1016,6 +1016,8 @@ function OnMouseUp(event)
             //console.log( "+--+  Clicked Marker:\t", object.GUID, object );
         } );
     }
+
+    UNESCO.changeLevel2SelectedMarker( 0xff0000 );
 }
 
 function OnMouseMove(event)

@@ -519,6 +519,15 @@ UG.LocationMarkers.prototype =
     }
 
 
+    , ChangeSelectedLocationTargetColor( colorHex )
+    {
+        if( i === this.clickedMarkerIndex && appStateMan.IsState( PX.AppStates.AppStateLevel2 ) )
+        {
+            //UNESCO.changeLevel2SelectedMarker( colorHex );
+            this.markers[ this.clickedMarkerIndex ].targetColor.set( colorHex );
+        }
+    }
+
     , SetLocationTargetColor( filters, loc )
     {
         if( filters[ loc.type ] )
@@ -899,14 +908,17 @@ UG.LocationMarkers.prototype =
                 return;
             }
 
+            // Change State
+            appStateMan.SetState( PX.AppStates.AppStateLevel2ToLevel1 );
+
             var index = this.clickedMarkerIndex;
+
+            // Reset clicked marker to its original color (Gets changed by the scroller)
+            this.markers[ index ].targetColor.set( PX.kFilterColor );
 
             // Restore default color
             this.SetLocationTargetColor( WebpageStates.FilterSwitches, this.markers[ index ] );
 
-
-            // Change State
-            appStateMan.ChangeState( PX.AppStates.AppStateLevel2ToLevel1 );
 
             // Marker Global Scale
             var gsTarget = new THREE.Vector3( 1, 1, 1 );
