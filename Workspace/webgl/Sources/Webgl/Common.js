@@ -44,7 +44,7 @@ PX =
 
     , kTransparentCanvas: true
     , kEnableStats: false
-    , kEnableGUI: true
+    , kEnableGUI: false
 
     , kEarthScale: 30.0
     , kEarthDetailX: 32*4
