@@ -64,4 +64,12 @@ PX.Utils =
         return ( Math.sin( 2.0 * Math.PI * frequency * time ) );
         //return 0.5 * ( 1.0 + Math.sin( 2.0 * Math.PI * frequency * time ) );
     }
+
+    , NextMultiple: function( value, multiple )
+    {
+        var a = parseInt( value );
+        var b = parseInt( multiple );
+        var c = b - 1;
+        return ( a + c ) - ( ( a + c ) % b );
+    }
 }

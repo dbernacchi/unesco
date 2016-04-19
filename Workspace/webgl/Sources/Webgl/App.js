@@ -1065,6 +1065,15 @@ function OnMouseWheel( event )
                 {
                     m.tween.onComplete( function()
                     {
+                        // Reset filter scales and switches
+                        for( var i=0; i<3; ++i )
+                        {
+                            WebpageStates.FilterSwitches[ i ] = 0;
+                            locationMarkers.level1FilterScales[ i ].set( 1.0, 1.0, 1.0 );
+                        }
+                        //
+                        locationMarkers.FilterLocationMeshColors( WebpageStates.FilterSwitches );
+
                         // Cancel any markerd marker 
                         locationMarkers.currentMouseOverMarkerIndex = -1;
 
