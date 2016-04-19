@@ -1123,14 +1123,6 @@ function OnMouseDown(event)
     isMouseMoved = false;
     mouseX = event.clientX;
     mouseY = event.clientY;
-
-    locationMarkers.OnMouseClickEvent( mouseVector3d, camera, false,
-    function( object )  // Callback returning clicked marker
-    {
-        console.log( "+--+  Clicked Marker ID:\t", object.id );
-        //console.log( "+--+  Clicked Marker:\t", object.GUID, object );
-    } );
-
 }
 
 
