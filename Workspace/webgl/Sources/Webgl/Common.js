@@ -202,7 +202,7 @@ var Params =
     , AnimTime: 1.0
     , Art_CameraDistance: 100.0
     , AmbientIntensity: 0.00033
-    , DiffuseIntensity: 2.0 //1.125
+    , DiffuseIntensity: 1.5 //1.125
     , SpecularIntensity: 0.07
     , NormalMapIntensity: 0.6
     , CloudsIntensity: 0.0 //0.1
