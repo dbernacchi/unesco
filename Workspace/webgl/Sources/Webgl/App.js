@@ -69,7 +69,7 @@ var locationMarkers = null;
 
 // Raycaster
 var g_Raycaster = null;
-var g_Projector = null;
+//var g_Projector = null;
 
 // Locations
 var locationsDB = [];
@@ -520,7 +520,7 @@ function Setup()
     // Raycaster
     //
     g_Raycaster = new THREE.Raycaster();
-    g_Projector = new THREE.Projector();
+    //g_Projector = new THREE.Projector();
 
 
     // Events
@@ -531,6 +531,9 @@ function Setup()
     renderer.domElement.addEventListener('mousedown', OnMouseDown, false);
     renderer.domElement.addEventListener('mouseup', OnMouseUp, false);
     renderer.domElement.addEventListener('mousewheel', OnMouseWheel, false);
+	renderer.domElement.addEventListener( 'touchstart', onTouchStart, false );
+	renderer.domElement.addEventListener( 'touchend', onTouchEnd, false );
+	renderer.domElement.addEventListener( 'touchmove', onTouchMove, false );
 
     //
     if( PX.kEnableStats ) InitStats();
@@ -939,6 +942,8 @@ function UpdateFilterSwitches( id )
     }
 }
 
+
+/*
 function ComputeZoomLevel( distanceToCenter )
 {
     var level = PX.Saturate( (distanceToCenter - PX.kCameraMinDistance) / ( PX.kCameraMaxDistance - PX.kCameraMinDistance ) );
@@ -952,8 +957,9 @@ function ComputeZoomLevel( distanceToCenter )
 
     return PX.kZoomMaxLevel;
 }
+*/
 
-
+/*
 function ComputeMapGridSizeFromZoomLevel( zoomLevel )
 {
     var maxZoomScale = 2.0;
@@ -969,7 +975,7 @@ function ComputeMapGridSizeFromZoomLevel( zoomLevel )
 
     return gridSize;
 }
-
+*/
 
 function OnResize()
 {
@@ -990,6 +996,56 @@ function OnResize()
     }
 }
 
+
+function onTouchStart( event ) 
+{
+    isMouseDown = true;
+    isMouseMoved = false;
+
+	switch ( event.touches.length ) 
+    {
+        case 1:
+            mouseX = event.touches[ 0 ].pageX;
+            mouseY = event.touches[ 0 ].pageY;
+            break;
+        default:
+            break;
+    }
+}
+
+
+function onTouchMove( event ) 
+{
+    isMouseMoved = true;
+    mouseX = event.touches[ 0 ].pageX;
+    mouseY = event.touches[ 0 ].pageY;
+
+	event.preventDefault();
+	event.stopPropagation();
+}
+
+
+function onTouchEnd( event ) 
+{
+    isMouseDown = false;
+    if( isMouseMoved ) isMouseClick = false;
+    else isMouseClick = true;
+    mouseX = event.touches[ 0 ].pageX;
+    mouseY = event.touches[ 0 ].pageY;
+
+    //
+    if( isMouseClick )
+    {
+        locationMarkers.OnMouseClickEvent( mouseVector3d, camera, 
+        function( object )  // Callback returning clicked marker
+        {
+            console.log( "+--+  Clicked Marker ID:\t", object.id );
+            //console.log( "+--+  Clicked Marker:\t", object.GUID, object );
+        } );
+    }
+}
+
+
 function OnMouseDown(event)
 {
     isMouseDown = true;
@@ -997,6 +1053,7 @@ function OnMouseDown(event)
     mouseX = event.clientX;
     mouseY = event.clientY;
 }
+
 
 function OnMouseUp(event)
 {
@@ -1019,6 +1076,7 @@ function OnMouseUp(event)
 
     //UNESCO.changeLevel2SelectedMarker( 0xff0000 );
 }
+
 
 function OnMouseMove(event)
 {
@@ -1043,8 +1101,10 @@ function OnMouseMove(event)
         default:
             break;
     }
-}
 
+	event.preventDefault();
+	event.stopPropagation();
+}
 
 function OnMouseWheel( event )
 {

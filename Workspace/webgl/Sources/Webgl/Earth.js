@@ -124,7 +124,7 @@ UG.Earth.prototype =
         // Shadow Plane
         this.shadowPlaneMesh.material.opacity = PX.Pow2( this.introScale.x );
         //this.shadowPlaneMesh.position.set( Params.EarthShadowPosX, Params.EarthShadowPosY, Params.EarthShadowPosZ );
-        this.shadowPlaneMesh.scale.set( Params.EarthShadowScaleX * this.introScale.x, Params.EarthShadowScaleY * this.introScale.x, Params.EarthShadowScaleZ * this.introScale.x );
+        this.shadowPlaneMesh.scale.set( PX.EPSILON + Params.EarthShadowScaleX * this.introScale.x, PX.EPSILON + Params.EarthShadowScaleY * this.introScale.x, PX.EPSILON + Params.EarthShadowScaleZ * this.introScale.x );
         //this.shadowPlaneMesh.quaternion.copy( camera.quaternion );
         this.shadowPlaneMesh.rotation.setFromRotationMatrix( camera.matrix );
         //this.shadowPlaneMesh.lookAt( camera );
