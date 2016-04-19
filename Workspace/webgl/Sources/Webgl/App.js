@@ -1017,7 +1017,7 @@ function OnMouseUp(event)
         } );
     }
 
-    UNESCO.changeLevel2SelectedMarker( 0xff0000 );
+    //UNESCO.changeLevel2SelectedMarker( 0xff0000 );
 }
 
 function OnMouseMove(event)
