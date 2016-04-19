@@ -612,7 +612,7 @@ function InitStats()
 function InitGUI()
 {
     g_GUI = new dat.gui.GUI( { width: 300 } );
-    //g_GUI.close();
+    g_GUI.close();
 
 /*    g_GUI.add( Params, 'MainScene' ).onChange( function( newValue ) 
     {
