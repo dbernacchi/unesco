@@ -40,10 +40,15 @@ var trackball = null;
 
 var postFXScene = null;
 var postFXQuad = null;
+var postFXScene2 = null;
+var postFXQuad2 = null;
 
 var composer = null;
 var renderMainPass = null;
 var effectBloomPass = null;
+var effectTiltShiftHBlur = null;
+var effectTiltShiftVBlur = null;
+var effectFXAAPass = null;
 var effectCopyPass = null;
 
 var bmFontDescriptor = null;
@@ -227,24 +232,6 @@ function CreateRenderer()
     renderer.autoClearStencil = false;
     //renderer.sortObjects = false;
     //renderer.autoUpdateObjects = false;
-
-    /*container.width = 1;
-    container.height = 1;
-    container.style.width = 1;
-    container.style.height = 1;
-    renderer.setSize( 1, 1 );
-    windowWidth = container.width;
-    windowHeight = container.height;
-    deviceContentScale = renderer.devicePixelRatio;*/
-
-    //container.width = window.innerWidth;// * window.devicePixelRatio;
-    //container.height = window.innerHeight;// * window.devicePixelRatio;
-    //container.style.width = window.innerWidth;
-    //container.style.height = window.innerHeight;
-    //renderer.setSize( container.width, container.height);
-    //windowWidth = container.width;
-    //windowHeight = container.height;
-    //deviceContentScale = renderer.devicePixelRatio;
 }
 
 function LoadData()
@@ -290,7 +277,7 @@ function PostLoadData()
     windowHeight = container.height;
     Params.WindowWidth = windowWidth;
     Params.WindowHeight = windowHeight;
-    deviceContentScale = renderer.devicePixelRatio;
+    deviceContentScale = window.devicePixelRatio || 1;
 
     BeginApp();
     //preloaderBG.hide();
@@ -319,7 +306,7 @@ function BeginApp()
     renderer.setSize( container.width, container.height );
     windowWidth = container.width;
     windowHeight = container.height;
-    deviceContentScale = renderer.devicePixelRatio;
+    deviceContentScale = window.devicePixelRatio;
 
     
     Setup();
@@ -431,14 +418,39 @@ function Setup()
 
     // Composer
     //
+	var parameters = {
+		minFilter: THREE.LinearFilter,
+		magFilter: THREE.LinearFilter,
+		format: THREE.RGBAFormat,
+		stencilBuffer: false
+	};
+    console.log( "deviceContentScale: ", window.devicePixelRatio );
+    var renderTarget = new THREE.WebGLRenderTarget( windowWidth*deviceContentScale, windowHeight*deviceContentScale, parameters );
+    renderTarget.texture.generateMipmaps = false;
+    composer = new THREE.EffectComposer( renderer, renderTarget );
+    //
     renderMainPass = new THREE.RenderPass( scene, camera );
-    effectBloomPass = new THREE.BloomPass( 1.5, 25, 4, 512 );
-    //effectBloomPass.clear = true;
-    //effectCopyPass = new THREE.ShaderPass( THREE.CopyShader );
-    composer = new THREE.EffectComposer( renderer );
     composer.addPass( renderMainPass );
-    composer.addPass( effectBloomPass );
+
+    //effectBloomPass = new THREE.BloomPass( 0.195, 15, 4, 512 );
+    //composer.addPass( effectBloomPass );
+
+	// tilt shift
+	effectTiltShiftHBlur = new THREE.ShaderPass( THREE.HorizontalTiltShiftShader );
+	effectTiltShiftVBlur = new THREE.ShaderPass( THREE.VerticalTiltShiftShader );
+	effectTiltShiftHBlur.uniforms[ 'r' ].value = Params.TiltShiftPosition;
+	effectTiltShiftVBlur.uniforms[ 'r' ].value = Params.TiltShiftPosition;
+	effectTiltShiftHBlur.uniforms[ 'h' ].value = Params.TiltShiftStrength / (windowWidth*deviceContentScale);
+	effectTiltShiftVBlur.uniforms[ 'v' ].value = Params.TiltShiftStrength / (windowHeight*deviceContentScale);
+    composer.addPass( effectTiltShiftHBlur );
+    composer.addPass( effectTiltShiftVBlur );
+
+    //effectCopyPass = new THREE.ShaderPass( THREE.CopyShader );
     //composer.addPass( effectCopyPass );
+
+	effectFXAAPass = new THREE.ShaderPass( THREE.FXAAShader );
+	effectFXAAPass.uniforms[ 'resolution' ].value.set( 1.0 / (windowWidth*deviceContentScale), 1.0 / (windowHeight*deviceContentScale) );
+    composer.addPass( effectFXAAPass );
 
     //effectCopyPass.uniforms.opacity.value = 1.0;
     //effectCopyPass.renderToScreen = true;
@@ -491,6 +503,15 @@ function Setup()
     postFXMat.depthWrite = false;
     postFXQuad = new THREE.Mesh( new THREE.PlaneGeometry(2, 2, 0), postFXMat );
     postFXScene.add( postFXQuad );
+
+
+    // PostFX Layer
+    postFXScene2 = new THREE.Scene();
+    var postFXMat2 = new THREE.MeshBasicMaterial({ color: 0xffffff, opacity: 1.0, transparent: true, vertexColors: THREE.VertexColors });
+    postFXMat2.depthTest = false;
+    postFXMat2.depthWrite = false;
+    postFXQuad2 = new THREE.Mesh( new THREE.PlaneGeometry(2, 2, 0), postFXMat2 );
+    postFXScene2.add( postFXQuad2 );
 
 
     // Background scene
@@ -709,6 +730,10 @@ function InitGUI()
     g_GUI.add( Params, "Longitude" ).listen();
     g_GUI.add( Params, "ZoomLevel" ).listen();
     g_GUI.add( Params, "Intersects" ).listen();
+    g_GUI.add( Params, "TiltShiftStrength" ).min(0.0).max(50.0);
+    g_GUI.add( Params, "TiltShiftMaxStrength" ).min(0.0).max(100.0);
+    g_GUI.add( Params, "TiltShiftPosition" ).min(0.0).max(1.0);
+    //g_GUI.add( Params, "Dummy" ).min(0.0).max(1.0);
     /*g_GUI.add( Params, "Dummy" ).min(0).max(10).onChange( function( newValue ) 
     {
         tval = { x: 0.0 };
@@ -839,6 +864,14 @@ function Update( time, frameTime )
     }
 
 
+    // Update Tilt Shift stuff
+    //
+	effectTiltShiftHBlur.uniforms[ 'r' ].value = Params.TiltShiftPosition;
+	effectTiltShiftVBlur.uniforms[ 'r' ].value = Params.TiltShiftPosition;
+	effectTiltShiftVBlur.uniforms[ 'v' ].value = Params.TiltShiftStrength / windowHeight;
+	effectTiltShiftHBlur.uniforms[ 'h' ].value = Params.TiltShiftStrength / windowWidth;
+
+
     // Fade in
     //
     //fgMaterial.map = composer.renderTarget1;
@@ -858,6 +891,17 @@ function Render()
         renderer.render( bgScene, bgCamera );
     }
 
+/*
+    //
+    renderer.setViewport( 0, 0, windowWidth, windowHeight );
+    composer.render();
+    //
+    postFXQuad.material.opacity = Params.BloomOpacity;
+    postFXQuad.material.map = composer.renderTarget1;
+    renderer.setViewport( 0, 0, windowWidth, windowHeight );
+    renderer.render( postFXScene, fgCamera );
+*/
+
     //
     renderer.setViewport( 0, 0, windowWidth, windowHeight );
     renderer.render( scene, camera );
@@ -867,12 +911,21 @@ function Render()
         //
         composer.render();
 
+        renderer.setViewport( 0, 0, windowWidth, windowHeight );
+
+        //
+        postFXQuad2.material.opacity = PX.Saturate( Params.TiltShiftStrength );
+        postFXQuad2.material.map = composer.renderTarget1;
+        renderer.render( postFXScene2, fgCamera );
+
         //
         postFXQuad.material.opacity = Params.BloomOpacity;
-        postFXQuad.material.map = composer.renderTarget2;
-        renderer.setViewport( 0, 0, windowWidth, windowHeight );
+        postFXQuad.material.map = composer.renderTarget1;
         renderer.render( postFXScene, fgCamera );
     }
+
+
+    renderer.setViewport( 0, 0, windowWidth, windowHeight );
 
     //
     renderer.render( locationMarkers.markerScene, locationMarkers.camera2d );
@@ -949,11 +1002,25 @@ function ZoomInFromLevel0ToLevel1( isUserClickOnLocation )
     {
         if( isMouseClick )
         {
-            locationMarkers.OnMouseClickEvent( mouseVector3d, camera, true,
+            var res = locationMarkers.OnMouseClickEvent( mouseVector3d, camera, true,
             function( object )  // Callback returning clicked marker
             {
                 console.log( "+--+  Clicked Marker ID:\t", object.id );
             } );
+
+            // If something is clicked, we are going in, so apply tilt shift
+            if( res > 0 )
+            {
+                var tiltStart = { x: Params.TiltShiftStrength };
+                var tiltEnd = { x: Params.TiltShiftMaxStrength };
+                var tiltTween = new TWEEN.Tween( tiltStart ).to( tiltEnd, 1000.0 );
+                tiltTween.easing( TWEEN.Easing.Quintic.InOut );
+                tiltTween.start();
+                tiltTween.onUpdate( function()
+                {
+                    Params.TiltShiftStrength = tiltStart.x;
+                });
+            }
         }
     }
     else
@@ -974,6 +1041,16 @@ function ZoomOutFromLevel1ToLevel0()
         {
             // Change state
             appStateMan.SetState( PX.AppStates.AppStateLevel1ToLevel0 );
+
+            var tiltStart = { x: Params.TiltShiftStrength };
+            var tiltEnd = { x: 0.0 };
+            var tiltTween = new TWEEN.Tween( tiltStart ).to( tiltEnd, 1000.0 );
+            tiltTween.easing( TWEEN.Easing.Quintic.InOut );
+            tiltTween.start();
+            tiltTween.onUpdate( function()
+            {
+                Params.TiltShiftStrength = tiltStart.x;
+            });
 
             // Disable auto scale in main loop
             locationMarkers.zoomLevel1IntroAnimDone = false;

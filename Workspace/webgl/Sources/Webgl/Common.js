@@ -44,7 +44,7 @@ PX =
 
     , kTransparentCanvas: true
     , kEnableStats: false
-    , kEnableGUI: false
+    , kEnableGUI: true
 
     , kEarthScale: 30.0
     , kEarthDetailX: 32*4
@@ -195,13 +195,14 @@ var Params =
     , ShowStats: false
     , EnableSunLight: false
     , EnableBloom: true
-    , BloomOpacity: 0.15
+    , BloomOpacity: 0.5
+    //, BloomOpacity: 1.0
     , CameraDistance: PX.kCameraMaxDistance
     , Level0MarkerRadius: 30.0
     , AnimTime: 1.0
     , Art_CameraDistance: 100.0
     , AmbientIntensity: 0.00033
-    , DiffuseIntensity: 1.125
+    , DiffuseIntensity: 2.0 //1.125
     , SpecularIntensity: 0.07
     , NormalMapIntensity: 0.6
     , CloudsIntensity: 0.0 //0.1
@@ -220,8 +221,11 @@ var Params =
     , Latitude: 0.0
     , Longitude: 0.0
     , ZoomLevel: 0.0
+    , TiltShiftStrength: 0.0
+    , TiltShiftMaxStrength: 5.0
+    , TiltShiftPosition: 0.5
     , Intersects: 0
-    , Dummy: 0
+    , Dummy: 0.5
 
     , EarthShadowScaleX: 170.0 //PX.kEarthScale * 4.0
     , EarthShadowScaleY: 100.0 //PX.kEarthScale * 2.0

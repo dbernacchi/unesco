@@ -721,7 +721,7 @@ UG.LocationMarkers.prototype =
                 if( index < 0 )
                 {
                     //console.log( "no intersection", index );
-                    return;
+                    return 0;
                 }
             }
 
@@ -1007,7 +1007,9 @@ UG.LocationMarkers.prototype =
             });
         }
 
+        return 1;
     }
+
 
     , SetZoomLevel: function( level )
     {
