@@ -942,6 +942,30 @@ function UpdateFilterSwitches( id )
     }
 }
 
+
+function ZoomInFromLevel0ToLevel1( isUserClickOnLocation )
+{
+    if( isUserClickOnLocation )
+    {
+        if( isMouseClick )
+        {
+            locationMarkers.OnMouseClickEvent( mouseVector3d, camera, true,
+            function( object )  // Callback returning clicked marker
+            {
+                console.log( "+--+  Clicked Marker ID:\t", object.id );
+            } );
+        }
+    }
+    else
+    {
+        if( isMouseClick )
+        {
+            locationMarkers.OnMouseClickEvent( mouseVector3d, camera, false, null );
+        }
+    }
+}
+
+
 function ZoomOutFromLevel1ToLevel0()
 {
     if( appStateMan.IsState( PX.AppStates.AppStateLevel1 ) )
@@ -1105,15 +1129,7 @@ function onTouchEnd( event )
     mouseY = event.touches[ 0 ].pageY;
 
     //
-    if( isMouseClick )
-    {
-        locationMarkers.OnMouseClickEvent( mouseVector3d, camera, true,
-        function( object )  // Callback returning clicked marker
-        {
-            console.log( "+--+  Clicked Marker ID:\t", object.id );
-            //console.log( "+--+  Clicked Marker:\t", object.GUID, object );
-        } );
-    }
+    ZoomInFromLevel0ToLevel1( true );
 }
 
 
@@ -1135,17 +1151,7 @@ function OnMouseUp(event)
     mouseY = event.clientY;
 
     //
-    if( isMouseClick )
-    {
-        locationMarkers.OnMouseClickEvent( mouseVector3d, camera, true,
-        function( object )  // Callback returning clicked marker
-        {
-            console.log( "+--+  Clicked Marker ID:\t", object.id );
-            //console.log( "+--+  Clicked Marker:\t", object.GUID, object );
-        } );
-    }
-
-    //UNESCO.changeLevel2SelectedMarker( 0xff0000 );
+    ZoomInFromLevel0ToLevel1( true );
 }
 
 
@@ -1180,6 +1186,7 @@ function OnMouseMove(event)
 function OnMouseWheel( event )
 {
     ZoomOutFromLevel1ToLevel0();
+
 /**    if( appStateMan.IsState( PX.AppStates.AppStateLevel1 ) )
     {
         if( event.wheelDelta < 0.0 )
