@@ -160,8 +160,8 @@ PX.ModelRenderer.prototype =
             scope.artefactCamera.position.y = scope.sceneCenter.y;
             scope.artefactCamera.position.z = scope.sceneCenter.z + scope.distToCamera;
             scope.artefactCamera.lookAt( scope.sceneCenter.clone() );
-            console.log( "scope.artefactCamera.position: ", scope.artefactCamera.position );
-            console.log( "scope.artefactCamera.direction: ", scope.artefactCamera.getWorldDirection() );
+            //console.log( "scope.artefactCamera.position: ", scope.artefactCamera.position );
+            //console.log( "scope.artefactCamera.direction: ", scope.artefactCamera.getWorldDirection() );
 
             //
             //console.log( "set orbit controls" );
@@ -171,8 +171,8 @@ PX.ModelRenderer.prototype =
                 scope.artefactOrbitControls.maxDistance = scope.distToCamera * 2.0;
                 scope.artefactOrbitControls.target.copy( scope.sceneCenter );
                 scope.artefactOrbitControls.update();
-                console.log( "(2) scope.artefactCamera.position: ", scope.artefactCamera.position );
-                console.log( "(2) scope.artefactCamera.direction: ", scope.artefactCamera.getWorldDirection() );
+                //console.log( "(2) scope.artefactCamera.position: ", scope.artefactCamera.position );
+                //console.log( "(2) scope.artefactCamera.direction: ", scope.artefactCamera.getWorldDirection() );
             }
 
             if( this.trackball ) this.trackball.Reset( scope.artefactCamera, scope.sceneCenter );
