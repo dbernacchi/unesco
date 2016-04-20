@@ -147,7 +147,6 @@ function LoadBINScene( path, filename, scene, onProgressCB, onCompleteCB )
 
         var material = materials[0];
 	    console.log( material );
-	    console.log( material.map );
 
         material.color.setHex( 0xffffff );
         material.emissive.setHex( 0x000000 );
@@ -208,7 +207,7 @@ function LoadOBJScene( path, filename, scene, onProgressCB, onCompleteCB )
                     object.material.side = THREE.DoubleSide;
                     object.material.transparent = false;
                     object.material.opacity = 1.0;
-                    console.log( "LoadOBJScene()  object.material.map: " + object.material.map );
+                    console.log( "LoadOBJScene()  object.material: " + object.material );
                 }
             });
 

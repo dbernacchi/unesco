@@ -125,7 +125,8 @@ var UNESCO = {};
 			}
 
             // @NOTE: We do not pass filename extension. That's added internally in the Loaders
-			modelRenderer.Load("webgl/data/models/06_Mihrab_of_the_Mosque_Al_Hasan/", "Mihrab_of_the_mosque_al_Hasan", function(per)
+            modelRenderer.Load("webgl/data/models/01_Nimrud_Relief/", "Nimrud_Relief", function(per)
+			//modelRenderer.Load("webgl/data/models/06_Mihrab_of_the_Mosque_Al_Hasan/", "Mihrab_of_the_mosque_al_Hasan", function(per)
 			//modelRenderer.Load("webgl/data/models/06_Mihrab_of_the_Mosque_Al_Hasan/", "mesh", function(per)
             {
 				console.log("+---+  Loading: " + parseInt(per * 100.0) + "%" );
