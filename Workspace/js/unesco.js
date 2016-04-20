@@ -129,7 +129,7 @@ var UNESCO = {};
 			//modelRenderer.Load("webgl/data/models/06_Mihrab_of_the_Mosque_Al_Hasan/", "Mihrab_of_the_mosque_al_Hasan", function(per)
 			//modelRenderer.Load("webgl/data/models/06_Mihrab_of_the_Mosque_Al_Hasan/", "mesh", function(per)
             {
-				console.log("+---+  Loading: " + parseInt(per * 100.0) + "%" );
+				//console.log("+---+  Loading: " + parseInt(per * 100.0) + "%" );
 			});
 
 		});

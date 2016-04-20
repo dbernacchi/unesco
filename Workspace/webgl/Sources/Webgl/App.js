@@ -1211,6 +1211,7 @@ function OnMouseUp(event)
     isMouseDown = false;
     if( isMouseMoved ) isMouseClick = false;
     else isMouseClick = true;
+    console.log( "isMouseClick: ", isMouseClick );
     mouseX = event.clientX;
     mouseY = event.clientY;
 

@@ -726,7 +726,7 @@ UG.LocationMarkers.prototype =
                 }
             }
 
-            //console.log( "moooo" );
+            //console.log( "entered OnMouseClickEvent" );
             //trackball.Reset( camera, cameraLookAtPoint );
 
 

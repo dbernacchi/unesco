@@ -200,14 +200,16 @@ function LoadOBJScene( path, filename, scene, onProgressCB, onCompleteCB )
         {
             scene.add( object );
 
+            // Apply some defaults we want. Just is case 3d models come with bad properties
             scene.traverse( function (object) 
             {
                 if( object instanceof THREE.Mesh )
                 {
+                    object.material.color.set( 0xffffff );
                     object.material.side = THREE.DoubleSide;
                     object.material.transparent = false;
                     object.material.opacity = 1.0;
-                    console.log( "LoadOBJScene()  object.material: " + object.material );
+                    //console.log( "LoadOBJScene()  object.material: " + object.material );
                 }
             });
 

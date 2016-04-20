@@ -115,6 +115,8 @@ PX.ModelRenderer.prototype =
     {
         var scope = this;
 
+		preloaderBG.css( "opacity", 1.0 );
+        preloaderFG.css( "opacity", 1.0 );
         preloaderBG.show();
         preloaderFG.show();
 
@@ -123,16 +125,22 @@ PX.ModelRenderer.prototype =
         function( per )
         {
             //console.log( "+--+  Load: Percentage: ", per );
-            onProgressCB( per );
 
             // Since we do a margin on the FG bar we need to compute the offset to remove from the bar in %
             // sub that from the total width % and we get the proper fitting size
             var offset = ( ( parseInt(preloaderFG.css('margin-left')) * 2.0 ) / windowWidth) * 100.0;
-            var percentage = Math.round( per * 80.0 );
+            var percentage = PX.Clamp( ( Math.ceil( (per+0.25) * 80.0 ) ), 0.0, 80.0 );
+            console.log( "Load()  percentage: ", percentage, "  offset: ", offset );
             preloaderFG.css( "width", (percentage - offset) + '%' );
+
+            onProgressCB( per );
         },
         function()
         {
+		    preloaderBG.fadeTo(1000, 0);
+            preloaderFG.fadeTo(1000, 0, function()
+            {
+            // hide progress
             preloaderBG.hide();
             preloaderFG.hide();
 
@@ -172,6 +180,7 @@ PX.ModelRenderer.prototype =
             // Need to call this after Reset
             console.log( "+--+  ModelRenderer enabled" );
             scope.enabled = true;
+            });
         }
         );
     }
