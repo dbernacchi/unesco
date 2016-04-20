@@ -1007,20 +1007,6 @@ function ZoomInFromLevel0ToLevel1( isUserClickOnLocation )
             {
                 console.log( "+--+  Clicked Marker ID:\t", object.id );
             } );
-
-            // If something is clicked, we are going in, so apply tilt shift
-            if( res > 0 )
-            {
-                var tiltStart = { x: Params.TiltShiftStrength };
-                var tiltEnd = { x: Params.TiltShiftMaxStrength };
-                var tiltTween = new TWEEN.Tween( tiltStart ).to( tiltEnd, 1000.0 );
-                tiltTween.easing( TWEEN.Easing.Quintic.InOut );
-                tiltTween.start();
-                tiltTween.onUpdate( function()
-                {
-                    Params.TiltShiftStrength = tiltStart.x;
-                });
-            }
         }
     }
     else

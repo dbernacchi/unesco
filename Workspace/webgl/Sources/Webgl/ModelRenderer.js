@@ -118,8 +118,8 @@ PX.ModelRenderer.prototype =
         preloaderBG.show();
         preloaderFG.show();
 
-        //LoadOBJScene( url, this.artefactScene, 
-        LoadBINScene( path, filename, this.artefactScene, 
+        LoadOBJScene( path, filename, this.artefactScene, 
+        //LoadBINScene( path, filename, this.artefactScene, 
         function( per )
         {
             //console.log( "+--+  Load: Percentage: ", per );
@@ -128,7 +128,6 @@ PX.ModelRenderer.prototype =
             // Since we do a margin on the FG bar we need to compute the offset to remove from the bar in %
             // sub that from the total width % and we get the proper fitting size
             var offset = ( ( parseInt(preloaderFG.css('margin-left')) * 2.0 ) / windowWidth) * 100.0;
-            console.log( offset, parseInt(preloaderFG.css('margin-left')) );
             var percentage = Math.round( per * 80.0 );
             preloaderFG.css( "width", (percentage - offset) + '%' );
         },
@@ -151,8 +150,10 @@ PX.ModelRenderer.prototype =
             //console.log( "Set camera" );
             scope.artefactCamera.position.x = scope.sceneCenter.x;
             scope.artefactCamera.position.y = scope.sceneCenter.y;
-            scope.artefactCamera.position.z = scope.distToCamera;
-            //console.log( "scope.artefactCamera.position: ", scope.artefactCamera.position );
+            scope.artefactCamera.position.z = scope.sceneCenter.z + scope.distToCamera;
+            scope.artefactCamera.lookAt( scope.sceneCenter.clone() );
+            console.log( "scope.artefactCamera.position: ", scope.artefactCamera.position );
+            console.log( "scope.artefactCamera.direction: ", scope.artefactCamera.getWorldDirection() );
 
             //
             //console.log( "set orbit controls" );
@@ -162,6 +163,8 @@ PX.ModelRenderer.prototype =
                 scope.artefactOrbitControls.maxDistance = scope.distToCamera * 2.0;
                 scope.artefactOrbitControls.target.copy( scope.sceneCenter );
                 scope.artefactOrbitControls.update();
+                console.log( "(2) scope.artefactCamera.position: ", scope.artefactCamera.position );
+                console.log( "(2) scope.artefactCamera.direction: ", scope.artefactCamera.getWorldDirection() );
             }
 
             if( this.trackball ) this.trackball.Reset( scope.artefactCamera, scope.sceneCenter );
@@ -193,7 +196,6 @@ PX.ModelRenderer.prototype =
 
         //
         if( this.trackball ) this.trackball.Update( this.artefactCamera, frameTime );
-
 
         if( this.artefactOrbitControls ) this.artefactOrbitControls.update();
     }

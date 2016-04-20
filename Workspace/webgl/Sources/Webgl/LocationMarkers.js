@@ -735,6 +735,17 @@ UG.LocationMarkers.prototype =
 
             scope.doAvoidance = true;
 
+            // Apply tilt shift
+            var tiltStart = { x: Params.TiltShiftStrength };
+            var tiltEnd = { x: Params.TiltShiftMaxStrength };
+            var tiltTween = new TWEEN.Tween( tiltStart ).to( tiltEnd, 1000.0 );
+            tiltTween.easing( TWEEN.Easing.Quintic.InOut );
+            tiltTween.start();
+            tiltTween.onUpdate( function()
+            {
+                Params.TiltShiftStrength = tiltStart.x;
+            });
+
 /***
             // Reset filter scales and switches
             for( var i=0; i<3; ++i )
@@ -836,6 +847,18 @@ UG.LocationMarkers.prototype =
             appStateMan.ChangeState( PX.AppStates.AppStateLevel1ToLevel2 );
 
 
+            // Apply tilt shift
+            var tiltStart = { x: Params.TiltShiftStrength };
+            var tiltEnd = { x: 0.0 };
+            var tiltTween = new TWEEN.Tween( tiltStart ).to( tiltEnd, 1000.0 );
+            tiltTween.easing( TWEEN.Easing.Quintic.InOut );
+            tiltTween.start();
+            tiltTween.onUpdate( function()
+            {
+                Params.TiltShiftStrength = tiltStart.x;
+            });
+
+
             // Compute right vector
             var dir0 = this.meshes[ index ].position.clone().normalize();
             var right = new THREE.Vector3();
@@ -934,6 +957,17 @@ UG.LocationMarkers.prototype =
             // Restore default color
             this.SetLocationTargetColor( WebpageStates.FilterSwitches, this.markers[ index ] );
 
+
+            // Apply tilt shift
+            var tiltStart = { x: Params.TiltShiftStrength };
+            var tiltEnd = { x: Params.TiltShiftMaxStrength };
+            var tiltTween = new TWEEN.Tween( tiltStart ).to( tiltEnd, 1000.0 );
+            tiltTween.easing( TWEEN.Easing.Quintic.InOut );
+            tiltTween.start();
+            tiltTween.onUpdate( function()
+            {
+                Params.TiltShiftStrength = tiltStart.x;
+            });
 
             // Marker Global Scale
             var gsTarget = new THREE.Vector3( 1, 1, 1 );

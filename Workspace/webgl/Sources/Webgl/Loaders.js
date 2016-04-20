@@ -133,7 +133,7 @@ function LoadScene( url, scene )
 
 function LoadBINScene( path, filename, scene, onProgressCB, onCompleteCB )
 {
-    var url = path + filename;
+    var url = path + filename + ".js";
     console.log( "+--+  Load BIN Scene:\t", url );
 
     var binLoader = new THREE.BinaryLoader();
@@ -178,35 +178,57 @@ function LoadBINScene( path, filename, scene, onProgressCB, onCompleteCB )
 }
 
 
-function LoadOBJScene( url, scene, onProgressCB, onCompleteCB )
+function LoadOBJScene( path, filename, scene, onProgressCB, onCompleteCB )
 {
+    var url = path + filename;
     console.log( "+--+  Load OBJ Scene:\t", url );
 
-    var binLoader = new THREE.OBJLoader();
+    var mtlLoader = new THREE.MTLLoader();
+    var objLoader = new THREE.OBJLoader();
 
 	var loadStartTime = Date.now();
-	binLoader.load( url
-    , function( object ) 
+
+	mtlLoader.setBaseUrl( path );
+	mtlLoader.setPath( path );
+	mtlLoader.load( filename+".mtl", function( materials ) 
     {
-        scene.add( object );
+        materials.preload();
 
-        ComputeSceneBounds( scene );
+		objLoader.setMaterials( materials );
+	    objLoader.setPath( path );
+	    objLoader.load( filename+".obj"
+        , function( object ) 
+        {
+            scene.add( object );
 
-        //ComputeSceneBoundingSphere( scene, sceneCenter, distToCamera );
+            scene.traverse( function (object) 
+            {
+                if( object instanceof THREE.Mesh )
+                {
+                    object.material.side = THREE.DoubleSide;
+                    object.material.transparent = false;
+                    object.material.opacity = 1.0;
+                    console.log( "LoadOBJScene()  object.material.map: " + object.material.map );
+                }
+            });
 
-    	var loadEndTime = Date.now();
-	    var loadTime = (loadEndTime - loadStartTime) / 1000;
-        console.log( "+--+  Loaded OBJ Scene:\t  Load time: ", loadTime );
+            ComputeSceneBounds( scene );
 
-        if( onCompleteCB ) onCompleteCB();
-    } 
-    , function(result) 
-    {
-        var percentage = ( result.loaded / result.total );
-        if( result.total <= 0.0 ) percentage = 0.0;
-        if( onProgressCB ) onProgressCB( percentage );
-    }
-    );
+            //ComputeSceneBoundingSphere( scene, sceneCenter, distToCamera );
+
+    	    var loadEndTime = Date.now();
+	        var loadTime = (loadEndTime - loadStartTime) / 1000;
+            console.log( "+--+  Loaded OBJ Scene:\t  Load time: ", loadTime );
+
+            if( onCompleteCB ) onCompleteCB();
+        } 
+        , function(result) 
+        {
+            var percentage = ( result.loaded / result.total );
+            if( result.total <= 0.0 ) percentage = 0.0;
+            if( onProgressCB ) onProgressCB( percentage );
+        });
+    } );
 }
 
 

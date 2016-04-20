@@ -222,7 +222,7 @@ var Params =
     , Longitude: 0.0
     , ZoomLevel: 0.0
     , TiltShiftStrength: 0.0
-    , TiltShiftMaxStrength: 5.0
+    , TiltShiftMaxStrength: 3.0
     , TiltShiftPosition: 0.5
     , Intersects: 0
     , Dummy: 0.5
