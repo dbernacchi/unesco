@@ -1076,12 +1076,13 @@ function ZoomOutFromLevel1ToLevel0()
                 {
                     m.tween.onComplete( function()
                     {
+/***
                         // Reset filter scales and switches
                         for( var i=0; i<3; ++i )
                         {
                             WebpageStates.FilterSwitches[ i ] = 0;
                             locationMarkers.level1FilterScales[ i ].set( 1.0, 1.0, 1.0 );
-                        }
+                        }**/
                         //
                         locationMarkers.FilterLocationMeshColors( WebpageStates.FilterSwitches );
 
@@ -1263,75 +1264,6 @@ function OnMouseMove(event)
 function OnMouseWheel( event )
 {
     ZoomOutFromLevel1ToLevel0();
-
-/**    if( appStateMan.IsState( PX.AppStates.AppStateLevel1 ) )
-    {
-        if( event.wheelDelta < 0.0 )
-        {
-            // Change state
-            appStateMan.SetState( PX.AppStates.AppStateLevel1ToLevel0 );
-
-            // Disable auto scale in main loop
-            locationMarkers.zoomLevel1IntroAnimDone = false;
-
-            // Move camera far far away
-            Params.CameraDistance = PX.Lerp( PX.kCameraMinDistance, PX.kCameraMaxDistance, 1.0 );
-            var cameraTargetPoint = camera.position.clone().normalize().multiplyScalar( Params.CameraDistance );
-            var tween = new TWEEN.Tween( camera.position ).to( cameraTargetPoint, 2000 ); //Params.AnimTime * 1000.0 );
-            tween.easing( TWEEN.Easing.Quadratic.InOut );
-            tween.start();
-
-            // Scale down all Level 1 markers
-            var target = new THREE.Vector3( PX.EPSILON, PX.EPSILON, PX.EPSILON );
-            for( var i=0; i<locationMarkers.markersCount; ++i )
-            {
-                var m = locationMarkers.markers[ i ];
-
-                m.tween = new TWEEN.Tween( m.scale ).to( target, 1000.0 );
-                m.tween.easing( TWEEN.Easing.Quintic.InOut );
-                m.tween.start();
-                // Next calls only happen once, when last marker scale down is done
-                if( i === locationMarkers.markersCount-1 )
-                {
-                    m.tween.onComplete( function()
-                    {
-                        // Reset filter scales and switches
-                        for( var i=0; i<3; ++i )
-                        {
-                            WebpageStates.FilterSwitches[ i ] = 0;
-                            locationMarkers.level1FilterScales[ i ].set( 1.0, 1.0, 1.0 );
-                        }
-                        //
-                        locationMarkers.FilterLocationMeshColors( WebpageStates.FilterSwitches );
-
-                        // Cancel any markerd marker 
-                        locationMarkers.currentMouseOverMarkerIndex = -1;
-
-                        // Restore original cluster colors
-                        for( var i=0; i<locationMarkers.markersCount; ++i )
-                        {
-		                    locationMarkers.geomColorArray[ i*3+0 ] = PX.kLocationColor.r;
-                            locationMarkers.geomColorArray[ i*3+1 ] = PX.kLocationColor.g;
-                            locationMarkers.geomColorArray[ i*3+2 ] = PX.kLocationColor.b;
-                        }
-
-                        // When all scale down is done, recompute Level 0 markers and do animation in
-                        locationMarkers.SetZoomLevel( 0 );
-                        locationMarkers.doPopulation = true;
-                        locationMarkers.doAvoidance = true;
-
-                        // Do level0 animation
-                        locationMarkers.TweenLevel0( 1.0, 1.0 * 1000.0, 0.0 * 1000.0, 
-                        null, 
-                        function()
-                        {
-                            appStateMan.SetState( PX.AppStates.AppStateLevel0 );
-                        } );
-                    });
-                }
-            }
-        }
-    }**/
 }
 
 

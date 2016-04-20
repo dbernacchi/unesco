@@ -67,7 +67,7 @@ UG.LocationMarkers = function()
     this.level2GlobalScale      = new THREE.Vector3( 1.0, 1.0, 1.0 );
     this.level2SelectedGlobalScale = new THREE.Vector3( 1.0, 1.0, 1.0 );
 
-    this.level1FilterScales     = [];
+    //this.level1FilterScales     = [];
 
     this.locationsGroupAnim     = false;
 };
@@ -204,11 +204,11 @@ UG.LocationMarkers.prototype =
         this.camera2d = new THREE.OrthographicCamera( 0, Params.WindowWidth, Params.WindowHeight, 0, -100, 100 );
         this.markerScene.add( this.camera2d );
 
-
+/***
         this.level1FilterScales.push( new THREE.Vector3( 1.0, 1.0, 1.0 ) );
         this.level1FilterScales.push( new THREE.Vector3( 1.0, 1.0, 1.0 ) );
         this.level1FilterScales.push( new THREE.Vector3( 1.0, 1.0, 1.0 ) );
-
+***/
         // Init
         //this.locationsGroup.visible = false;
 
@@ -436,8 +436,7 @@ UG.LocationMarkers.prototype =
                     locationScale *= this.level2SelectedGlobalScale.x;
                 }
 
-                //if( appStateMan.GetCurrentState() > PX.AppStates.AppStateLevel1 )
-                    locationScale *= this.level1FilterScales[ loc.type ].x;
+                //locationScale *= this.level1FilterScales[ loc.type ].x;
 
                 loc.scale.set( locationScale, locationScale, locationScale );
 
@@ -548,6 +547,7 @@ UG.LocationMarkers.prototype =
         if( this.doPopulation || !this.zoomLevel1IntroAnimDone )
             return;
 
+/***
         // find is all filters are on
         var allFiltersOff = 0;
         for( var i=0; i<3; ++i )
@@ -566,7 +566,7 @@ UG.LocationMarkers.prototype =
             tween.start();
             //this.level1FilterScales[ i ].set( filters[i], filters[i], filters[i] );
         }
-
+***/
         for( var i=0; i<this.markersCount; ++i )
         {
             var loc = this.markers[i];
@@ -581,11 +581,12 @@ UG.LocationMarkers.prototype =
         if( this.doPopulation )
             return -1;
 
+/***
         for( var i=0; i<3; ++i )
         {
             this.level1FilterScales[ i ].set( 1.0, 1.0, 1.0 );
         }
-
+***/
         for( var i=0; i<this.markersCount; ++i )
         {
             var loc = this.markers[i];
@@ -734,12 +735,14 @@ UG.LocationMarkers.prototype =
 
             scope.doAvoidance = true;
 
+/***
             // Reset filter scales and switches
             for( var i=0; i<3; ++i )
             {
                 WebpageStates.FilterSwitches[ i ] = 0;
                 locationMarkers.level1FilterScales[ i ].set( 1.0, 1.0, 1.0 );
             }
+***/
             //
             locationMarkers.FilterLocationMeshColors( WebpageStates.FilterSwitches );
 
