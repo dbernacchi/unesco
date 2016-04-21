@@ -150,7 +150,8 @@ UG.LocationMarkers.prototype =
 	    scene.add( this.locationsGroup );
 
 
-        this.billboardMaterial = new THREE.PointsMaterial( { size: Params.Level0MarkerRadius, sizeAttenuation: false, color: 0xffffff, opacity: 0.8, map: PX.AssetsDatabase[ "Circle" ], transparent: true } );
+        this.billboardMaterial = new THREE.PointsMaterial( { size: Params.Level0MarkerRadius, sizeAttenuation: false, color: 0xffffff, opacity: 1.0, map: PX.AssetsDatabase[ "Circle" ], transparent: true } );
+        //this.billboardMaterial = new THREE.PointsMaterial( { size: Params.Level0MarkerRadius, sizeAttenuation: false, color: 0xffffff, opacity: 0.8, map: PX.AssetsDatabase[ "Circle" ], transparent: true } );
         this.billboardMaterial.vertexColors = THREE.VertexColors;
         //this.billboardMaterial.depthTest = false;
         //this.billboardMaterial.depthWrite = false;
@@ -848,7 +849,7 @@ UG.LocationMarkers.prototype =
 
 
             // Apply tilt shift
-            var tiltStart = { x: Params.TiltShiftStrength };
+            /*var tiltStart = { x: Params.TiltShiftStrength };
             var tiltEnd = { x: 0.0 };
             var tiltTween = new TWEEN.Tween( tiltStart ).to( tiltEnd, 1000.0 );
             tiltTween.easing( TWEEN.Easing.Quintic.InOut );
@@ -856,7 +857,7 @@ UG.LocationMarkers.prototype =
             tiltTween.onUpdate( function()
             {
                 Params.TiltShiftStrength = tiltStart.x;
-            });
+            });*/
 
 
             // Compute right vector
@@ -899,7 +900,7 @@ UG.LocationMarkers.prototype =
             v1 = v1.crossVectors( v1, v0 ).normalize();
 
             var start = earth.mesh.quaternion.clone();
-            var end = new THREE.Quaternion().setFromAxisAngle( v1, PX.ToRadians(50) );
+            var end = new THREE.Quaternion().setFromAxisAngle( v1, PX.ToRadians(40) );
 
             var positionw = { x: 0.0 };
             var targetw = { x: 1.0 };
@@ -1214,7 +1215,7 @@ UG.LocationMarkers.prototype =
         //
         var MinDistancesPerLevel = [ 
             230,
-            70
+            130
         ];
         /*var MinDistancesPerLevel = [ 
             230,

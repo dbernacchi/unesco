@@ -66,7 +66,7 @@ PX =
     , kCameraFovY: 36.0
     , kCameraNearPlane: 1.0
     , kCameraFarPlane: 200.0
-    , kCameraMinDistance: 60
+    , kCameraMinDistance: 90 //60
     , kCameraMaxDistance: 160.0
     , kCameraOneOverMinDistance: 1.0 / 60.0     // IMPORTANT!!
     , kCameraOneOverMaxDistance: 1.0 / 160.0    // If the above limits change, also change these
@@ -195,14 +195,14 @@ var Params =
     , ShowStats: false
     , EnableSunLight: false
     , EnableBloom: true
-    , BloomOpacity: 0.5
-    //, BloomOpacity: 1.0
+    //, BloomOpacity: 0.5
+    , BloomOpacity: 1.0
     , CameraDistance: PX.kCameraMaxDistance
     , Level0MarkerRadius: 30.0
     , AnimTime: 1.0
     , Art_CameraDistance: 100.0
     , AmbientIntensity: 0.00033
-    , DiffuseIntensity: 1.5 //1.125
+    , DiffuseIntensity: 0.5 //1.5 //1.125
     , SpecularIntensity: 0.07
     , NormalMapIntensity: 0.6
     , CloudsIntensity: 0.0 //0.1
@@ -222,7 +222,7 @@ var Params =
     , Longitude: 0.0
     , ZoomLevel: 0.0
     , TiltShiftStrength: 0.0
-    , TiltShiftMaxStrength: 3.0
+    , TiltShiftMaxStrength: 2.0
     , TiltShiftPosition: 0.5
     , Intersects: 0
     , Dummy: 0.5

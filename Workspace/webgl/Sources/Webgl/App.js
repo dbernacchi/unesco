@@ -432,8 +432,8 @@ function Setup()
     renderMainPass = new THREE.RenderPass( scene, camera );
     composer.addPass( renderMainPass );
 
-    //effectBloomPass = new THREE.BloomPass( 0.195, 15, 4, 512 );
-    //composer.addPass( effectBloomPass );
+    effectBloomPass = new THREE.BloomPass( 0.85, 15, 4, 512 );
+    composer.addPass( effectBloomPass );
 
 	// tilt shift
 	effectTiltShiftHBlur = new THREE.ShaderPass( THREE.HorizontalTiltShiftShader );
@@ -891,17 +891,17 @@ function Render()
         renderer.render( bgScene, bgCamera );
     }
 
-/*
+
     //
     renderer.setViewport( 0, 0, windowWidth, windowHeight );
     composer.render();
     //
-    postFXQuad.material.opacity = Params.BloomOpacity;
-    postFXQuad.material.map = composer.renderTarget1;
+    postFXQuad2.material.opacity = Params.BloomOpacity;
+    postFXQuad2.material.map = composer.renderTarget1;
     renderer.setViewport( 0, 0, windowWidth, windowHeight );
-    renderer.render( postFXScene, fgCamera );
-*/
+    renderer.render( postFXScene2, fgCamera );
 
+/**
     //
     renderer.setViewport( 0, 0, windowWidth, windowHeight );
     renderer.render( scene, camera );
@@ -923,7 +923,7 @@ function Render()
         postFXQuad.material.map = composer.renderTarget1;
         renderer.render( postFXScene, fgCamera );
     }
-
+**/
 
     renderer.setViewport( 0, 0, windowWidth, windowHeight );
 
@@ -933,6 +933,7 @@ function Render()
 
     //renderer.setViewport( 0, 0, windowWidth, windowHeight );
     //renderer.render( fgScene, fgCamera );
+
 }
 
 
