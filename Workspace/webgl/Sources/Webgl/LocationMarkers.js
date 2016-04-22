@@ -1302,13 +1302,6 @@ UG.LocationMarkers.prototype =
 
         // Avoid touching
         //
-/*        var MinDistancesPerLevel = [ 
-            230,
-            80
-        ];*/
-        console.log( PX.MinDistancesPerLevel[0], "-- ", PX.MinDistancesPerLevel[1] );
-
-
         this.avoidanceCount = 0;
 
         var distToCamera = new THREE.Vector3();
