@@ -160,7 +160,7 @@ PX.TextRenderer.prototype =
         this.mesh.frustumCulled = false;
         this.mesh.position = new THREE.Vector3( 0, 0, 0 );
 
-        scene.add( this.mesh );
+        if( scene ) scene.add( this.mesh );
     }
 
 

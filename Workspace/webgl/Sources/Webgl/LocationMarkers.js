@@ -10,6 +10,7 @@ UG.LocationMarker = function()
     this.index          = -1;
     this.latlon         = new THREE.Vector2();
     this.position       = new THREE.Vector3();
+    this.direction      = new THREE.Vector3();
     this.positionSS     = new THREE.Vector3();
     this.scale          = new THREE.Vector3();
     this.markerCount    = 0;
@@ -75,7 +76,7 @@ UG.LocationMarkers = function()
 
     //this.level1FilterScales     = [];
 
-    this.locationsGroupAnim     = false;
+    this.locationsGroupAnim     = true;
 };
 
 UG.LocationMarkers.prototype =
@@ -207,8 +208,8 @@ UG.LocationMarkers.prototype =
 		this.billboardGeometry.addAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );
 		//this.billboardGeometry.addAttribute( 'size', new THREE.BufferAttribute( sizes, 1 ) );
 		this.billboardGeometry.addAttribute( 'color', new THREE.BufferAttribute( colors, 3 ) );
-
         this.billboardGeometry.dynamic = true;
+
         this.geomPositionArray = this.billboardGeometry.attributes.position.array;
         this.geomColorArray = this.billboardGeometry.attributes.color.array;
 
@@ -314,14 +315,6 @@ UG.LocationMarkers.prototype =
             }
             case PX.AppStates.AppStateLevel0:
             {
-                // Reset cluster location positions
-                for( var i=0; i<this.markersCount; ++i )
-                {
-		            this.geomPositionArray[i*3+0] = 10000;
-		            this.geomPositionArray[i*3+1] = 0;
-		            this.geomPositionArray[i*3+2] = 0;
-                }
-
                 this.UpdateLocationCircleBillboards( time, frameTime, camera );
                 break;
             }
@@ -378,22 +371,25 @@ UG.LocationMarkers.prototype =
         this.textRenderer2.Begin();
 
         var distToCamera = new THREE.Vector3();
+        var camDir = camera.getWorldDirection().multiplyScalar( -1.0 );
+
+        // Update billboard's size
+        this.billboards.material.size = this.billboardsGroup.scale.x * Params.Level0MarkerRadius;
+        //console.log( "this.billboards.material.size: ", this.billboards.material.size );
 
         for( var i=0; i<this.markersCount; ++i )
         {
-            var loc = this.markers[i];
+            var loc = this.markers[ i ];
 
             // Text Info
             //
             //var ttt = (1.0) * PX.kLocationMarkerZScale;
             //var ttt = ( loc.markerCount > 0 ? loc.markerCount * PX.kLocationMarkerZScale : 1.0 );
 
-            var v0 = camera.position.clone().sub( loc.position ).normalize();
-            var v1 = loc.position.clone().normalize();
-            var dot = v0.dot( v1 );
-
-            // Update billboard's size
-            this.billboards.material.size = this.billboardsGroup.scale.x * Params.Level0MarkerRadius;
+            //var v0 = camera.position.clone().sub( loc.position ).normalize();
+            var v1 = loc.direction;
+            //var v1 = loc.position.clone().normalize();
+            var dot = camDir.dot( v1 );
 
             // BILLBOARDS
             if( dot >= 0.0 )
@@ -730,6 +726,11 @@ UG.LocationMarkers.prototype =
         // Level 1
         if( appStateMan.IsState( PX.AppStates.AppStateLevel1 ) )
         {
+            // Update raycaster
+            mouseVector.x = 2.0 * (mouseX / windowWidth) - 1.0;
+            mouseVector.y = 1.0 - 2.0 * ( mouseY / windowHeight );
+            g_Raycaster.setFromCamera( mouseVector, camera );
+
             var index = this.IntersectsLevel1( g_Raycaster );
             if( index < 0 )
             {
@@ -881,6 +882,11 @@ UG.LocationMarkers.prototype =
         // Level 1
         else if( appStateMan.IsState( PX.AppStates.AppStateLevel1 ) )
         {
+            // Update raycaster
+            mouseVector.x = 2.0 * (mouseX / windowWidth) - 1.0;
+            mouseVector.y = 1.0 - 2.0 * ( mouseY / windowHeight );
+            g_Raycaster.setFromCamera( mouseVector, camera );
+
             var index = this.IntersectsLevel1( g_Raycaster );
             if( index < 0 )
             {
@@ -996,6 +1002,11 @@ UG.LocationMarkers.prototype =
         // Level 2
         else if( appStateMan.IsState( PX.AppStates.AppStateLevel2 ) )
         {
+            // Update raycaster
+            mouseVector.x = 2.0 * (mouseX / windowWidth) - 1.0;
+            mouseVector.y = 1.0 - 2.0 * ( mouseY / windowHeight );
+            g_Raycaster.setFromCamera( mouseVector, camera );
+
             // If clicking on the globe, go back to Level 1
             var intersects = g_Raycaster.intersectObject( earth.mesh, false );
             if( ! intersects.length )
@@ -1060,7 +1071,6 @@ UG.LocationMarkers.prototype =
             var ogsTarget = new THREE.Vector2( 1.0, 1.0 );
             var tweenogs = new TWEEN.Tween( this.outlineGlobalScale ).to( ogsTarget, Params.AnimTime * 1000.0 );
             tweenogs.easing( TWEEN.Easing.Quadratic.InOut );
-            tweenogs.delay( Params.AnimTime * 1000.0 );
             tweenogs.start();
 
             // CAMERA POSITION
@@ -1122,7 +1132,6 @@ UG.LocationMarkers.prototype =
             case 0:
             {
                 // Hide level 0 stuff
-                this.billboards.visible = true;
                 this.locationsGroup.visible = false;
                 this.textRenderer.visible = false;
 
@@ -1150,7 +1159,6 @@ UG.LocationMarkers.prototype =
                 // Hide level 0 stuff
                 this.locationsGroup.visible = true;
                 this.textRenderer.visible = true;
-                this.billboards.visible = false;
 
                 this.zoomLevel1IntroAnimDone = false;
 
@@ -1180,14 +1188,15 @@ UG.LocationMarkers.prototype =
 
     , PopulateMarkers: function( markerCluster, locations, camera )
     {
-        this.markersCount = 0;
 
         var clusterCount = markerCluster.getTotalClusters();
 
-        var scope = this;
+        this.markersCount = 0;
 
         if( clusterCount > 0 )
         {
+            var scope = this;
+
             console.log( "+--+  Number of clusters: " + clusterCount + " at zoom level: " + this.zoomLevel );
 
             this.doPopulation = false;
@@ -1218,6 +1227,7 @@ UG.LocationMarkers.prototype =
                 loc.latlon.set( clusterCenter.lat(), clusterCenter.lng() );
                 loc.scale.set( PX.EPSILON, PX.EPSILON, PX.EPSILON );
                 loc.position.copy( PX.Utils.FromLatLon( clusterCenter.lat(), clusterCenter.lng(), PX.kEarthScale, PX.kMarkerOffsetFromEarthSurface ) );
+                loc.direction.copy( loc.position.clone().normalize() );
                 loc.markerCount = c.markers_.length;
                 loc.index = i;
 

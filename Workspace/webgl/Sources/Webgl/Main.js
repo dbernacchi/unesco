@@ -29,6 +29,11 @@ $( document ).ready( function()
     if( checks.iphone || checks.ipod || checks.ipad || checks.android || checks.androidTablet || checks.mobile )
     {
         PX.IsMobile = true;
+
+        // change defauls for mobile
+        PX.kEarthDetailX = 32;
+        PX.kEarthDetailY = 22;
+        PX.kLocationMarkerDetail = 10;
     }
     else
     {

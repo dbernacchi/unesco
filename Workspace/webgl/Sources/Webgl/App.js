@@ -106,7 +106,7 @@ var mouseDeltaY = 0.0;
 var isMouseDown = false;
 var isMouseMoved = false;
 var isMouseClick = false;
-var mouseVector = new THREE.Vector2();
+//var mouseVector = new THREE.Vector2();
 var mouseVector3d = new THREE.Vector3();
 
 
@@ -226,7 +226,7 @@ function CreateRenderer()
     renderer.autoClear = false;
     renderer.autoClearStencil = false;
     renderer.sortObjects = false;
-    renderer.autoUpdateObjects = false;
+    //renderer.autoUpdateObjects = false;
 }
 
 function LoadData()
@@ -414,7 +414,11 @@ function Setup()
 		format: THREE.RGBAFormat,
 		stencilBuffer: false
 	};
-    var renderTarget = new THREE.WebGLRenderTarget( windowWidth * deviceContentScale, windowHeight * deviceContentScale, parameters );
+    var renderTarget = null;
+    if( PX.IsMobile ) 
+        renderTarget = new THREE.WebGLRenderTarget( windowWidth, windowHeight, parameters );
+    else
+        renderTarget = new THREE.WebGLRenderTarget( windowWidth * deviceContentScale, windowHeight * deviceContentScale, parameters );
     renderTarget.texture.generateMipmaps = false;
     composer = new THREE.EffectComposer( renderer, renderTarget );
     //
@@ -721,13 +725,13 @@ function InitGUI()
     g_GUI.add( Params, "CameraDistance" ).min( PX.kEarthScale*1.333 ).max( 300.0 );
     g_GUI.addFolder( "INTERACTION" );
     g_GUI.add( Params, "EarthRotationSpeed" ).min(0.0).max(1.0).step(0.001);
-    /*g_GUI.add( Params, "MapGridSize" ).min(0).max(20).step(1).onChange( function( newValue ) 
+    g_GUI.add( Params, "MapGridSize" ).min(0).max(20).step(1).onChange( function( newValue ) 
     {
         console.log( parseInt(newValue) );
         markerCluster.setGridSize( parseInt(newValue) );
         markerCluster.repaint();
         locationMarkers.doPopulation = true;
-    });*/
+    });
     //g_GUI.add( Params, "Latitude" ).listen();
     //g_GUI.add( Params, "Longitude" ).listen();
     //g_GUI.add( Params, "ZoomLevel" ).listen();
@@ -781,7 +785,8 @@ function Update( time, frameTime )
 
 
     //
-    if( appStateMan.IsState( PX.AppStates.AppStateLevel0 ) || appStateMan.IsState( PX.AppStates.AppStateLevel1 ) )
+    if( appStateMan.IsState( PX.AppStates.AppStateLevel0 ) 
+        || appStateMan.IsState( PX.AppStates.AppStateLevel1 ) )
     {
         if( isMouseDown )
         {
@@ -799,11 +804,6 @@ function Update( time, frameTime )
 
     mouseVector3d.set( mouseX, Params.WindowHeight-mouseY, 0.0 );
 
-    // Update raycaster
-    mouseVector.x = 2.0 * (mouseX / windowWidth) - 1.0;
-    mouseVector.y = 1.0 - 2.0 * ( mouseY / windowHeight );
-    g_Raycaster.setFromCamera( mouseVector, camera );
-
 
     // Update Earth
     //
@@ -819,7 +819,7 @@ function Update( time, frameTime )
     }
 
     // Avoidance
-    locationMarkers.MarkerAvoidance( markerCluster, frameTime );
+    //locationMarkers.MarkerAvoidance( markerCluster, frameTime );
 
     //
     locationMarkers.Update( currentTime, frameTime, camera );
@@ -941,8 +941,12 @@ function Render()
     renderer.setViewport( 0, 0, windowWidth, windowHeight );
 
     //
-    renderer.render( locationMarkers.markerScene, locationMarkers.camera2d );
-    //renderer.render( locationMarkers.markerScene, fgCamera );
+    if( appStateMan.IsState( PX.AppStates.AppStateLevel0 ) 
+        || appStateMan.IsState( PX.AppStates.AppStateLevel0ToLevel1 ) )
+    {
+        renderer.render( locationMarkers.markerScene, locationMarkers.camera2d );
+        //renderer.render( locationMarkers.markerScene, fgCamera );
+    }
 
     //renderer.setViewport( 0, 0, windowWidth, windowHeight );
     //renderer.render( fgScene, fgCamera );
@@ -969,8 +973,12 @@ function MainLoop()
 
     if( Params.MainScene )
     {
+        //console.time("Update");
         Update( currentTime, frameTime );
+        //console.timeEnd("Update");
+        //console.time("Render");
         Render();
+        //console.timeEnd("Render");
     }
     else
     {
@@ -1061,6 +1069,12 @@ function ZoomOutFromLevel1ToLevel0()
             var tween = new TWEEN.Tween( camera.position ).to( cameraTargetPoint, 2000 ); //Params.AnimTime * 1000.0 );
             tween.easing( TWEEN.Easing.Quadratic.InOut );
             tween.start();
+
+            // Outline Global Scale
+            var ogsTarget = new THREE.Vector2( 1.0, 1.0 );
+            var tweenogs = new TWEEN.Tween( locationMarkers.outlineGlobalScale ).to( ogsTarget, Params.AnimTime * 1000.0 );
+            tweenogs.easing( TWEEN.Easing.Quadratic.InOut );
+            tweenogs.start();
 
             // Scale down all Level 1 markers
             var target = new THREE.Vector3( PX.EPSILON, PX.EPSILON, PX.EPSILON );
@@ -1274,7 +1288,6 @@ function OnMouseMove(event)
         }
         case PX.AppStates.AppStateLevel1:
         {
-            //var markerIndex = locationMarkers.IntersectsLevel1( g_Raycaster );
             locationMarkers.OnMouseOverEvent();
             break;
         }
