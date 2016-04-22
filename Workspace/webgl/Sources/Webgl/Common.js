@@ -50,6 +50,9 @@ PX =
     , kEnableStats: true
     , kEnableGUI: false
 
+    , MinDistancesPerLevel: [ 230, 80 ]
+    //, MinDistancesPerLevel: []
+
     , kEarthScale: 30.0
     , kEarthDetailX: 32 * 2
     , kEarthDetailY: 22 * 2
@@ -57,6 +60,7 @@ PX =
     , kLocationMarkerScale: 0.6
     , kLocationMarkerDetail: 14
     , kLocationMarkerZScale: 0.125
+    , kLocationFontSize: 9
     , kAvoidanceSpeed: 0.031
     //, kAvoidanceSpeed: 6.0
     , kMaxGridSize: 4
@@ -70,10 +74,12 @@ PX =
     , kCameraFovY: 36.0
     , kCameraNearPlane: 1.0
     , kCameraFarPlane: 200.0
-    , kCameraMinDistance: 70 //60
+    // IMPORTANT!!
+    // If these change, also change the 2 below
+    , kCameraMinDistance: 70.0
     , kCameraMaxDistance: 160.0
-    , kCameraOneOverMinDistance: 1.0 / 60.0     // IMPORTANT!!
-    , kCameraOneOverMaxDistance: 1.0 / 160.0    // If the above limits change, also change these
+    , kCameraOneOverMinDistance: 1.0 / 70.0     
+    , kCameraOneOverMaxDistance: 1.0 / 160.0
     //, kGlobalTimeScale: 1.0
 
     , kZoomMaxLevel: 3.0

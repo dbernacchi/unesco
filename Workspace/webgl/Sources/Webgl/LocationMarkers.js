@@ -406,7 +406,9 @@ UG.LocationMarkers.prototype =
 		        this.geomPositionArray[i*3+1] = loc.positionSS.y;
 		        this.geomPositionArray[i*3+2] = 0;
 
-                this.textRenderer2.AppendText2D( loc.text, loc.positionSS, 9, this.billboardsGroup.scale.x, true, true );
+                var fontSize = PX.kLocationFontSize;
+
+                this.textRenderer2.AppendText2D( loc.text, loc.positionSS, fontSize, this.billboardsGroup.scale.x, true, true );
             }
             else
             {
@@ -557,7 +559,7 @@ UG.LocationMarkers.prototype =
                     loc.positionSS.y -= offsetValue;
                 }
 
-                var fontSize = 9;
+                var fontSize = PX.kLocationFontSize;
 
                 this.textRenderer.AppendText2D( loc.title, loc.positionSS, fontSize, 1.0, false, true );
             }
@@ -727,6 +729,7 @@ UG.LocationMarkers.prototype =
         if( appStateMan.IsState( PX.AppStates.AppStateLevel1 ) )
         {
             // Update raycaster
+            var mouseVector = new THREE.Vector2();
             mouseVector.x = 2.0 * (mouseX / windowWidth) - 1.0;
             mouseVector.y = 1.0 - 2.0 * ( mouseY / windowHeight );
             g_Raycaster.setFromCamera( mouseVector, camera );
@@ -799,13 +802,6 @@ UG.LocationMarkers.prototype =
             {
                 Params.TiltShiftStrength = tiltStart.x;
             });
-
-            // Outline Global Scale
-            var ogsTarget = new THREE.Vector2( 1.0, 1.0 );
-            var tweenogs = new TWEEN.Tween( this.outlineGlobalScale ).to( ogsTarget, Params.AnimTime * 1000.0 );
-            tweenogs.easing( TWEEN.Easing.Quadratic.InOut );
-            tweenogs.delay( Params.AnimTime * 1000.0 );
-            tweenogs.start();
 
 /***
             // Reset filter scales and switches
@@ -883,6 +879,7 @@ UG.LocationMarkers.prototype =
         else if( appStateMan.IsState( PX.AppStates.AppStateLevel1 ) )
         {
             // Update raycaster
+            var mouseVector = new THREE.Vector2();
             mouseVector.x = 2.0 * (mouseX / windowWidth) - 1.0;
             mouseVector.y = 1.0 - 2.0 * ( mouseY / windowHeight );
             g_Raycaster.setFromCamera( mouseVector, camera );
@@ -1003,6 +1000,7 @@ UG.LocationMarkers.prototype =
         else if( appStateMan.IsState( PX.AppStates.AppStateLevel2 ) )
         {
             // Update raycaster
+            var mouseVector = new THREE.Vector2();
             mouseVector.x = 2.0 * (mouseX / windowWidth) - 1.0;
             mouseVector.y = 1.0 - 2.0 * ( mouseY / windowHeight );
             g_Raycaster.setFromCamera( mouseVector, camera );
@@ -1268,6 +1266,13 @@ UG.LocationMarkers.prototype =
                     loc.tween.start();
                     if( i === clusterCount-1 )
                     {
+                        // Outline Global Scale
+                        var ogsTarget = new THREE.Vector2( 1.0, 1.0 );
+                        var tweenogs = new TWEEN.Tween( scope.outlineGlobalScale ).to( ogsTarget, Params.AnimTime * 500.0 );
+                        tweenogs.easing( TWEEN.Easing.Quadratic.InOut );
+                        tweenogs.delay( Params.AnimTime * 1000.0 );
+                        tweenogs.start();
+
                         loc.tween.onComplete( function()
                         {
                             scope.zoomLevel1IntroAnimDone = true;
@@ -1297,10 +1302,11 @@ UG.LocationMarkers.prototype =
 
         // Avoid touching
         //
-        var MinDistancesPerLevel = [ 
+/*        var MinDistancesPerLevel = [ 
             230,
             80
-        ];
+        ];*/
+        console.log( PX.MinDistancesPerLevel[0], "-- ", PX.MinDistancesPerLevel[1] );
 
 
         this.avoidanceCount = 0;
@@ -1325,15 +1331,16 @@ UG.LocationMarkers.prototype =
                 //var dist = locj.position.clone().sub( loci.position );
                 //var dir = dist.clone().normalize();
 
-                var minDistance = MinDistancesPerLevel[ this.zoomLevel ];
-                //var minDistance = MinDistancesPerLevel[ PX.Clamp( this.zoomLevel, 0, PX.kZoomMaxLevel ) ];
+                var minDistance = PX.MinDistancesPerLevel[ this.zoomLevel ];
+                //var minDistance = PX.MinDistancesPerLevel[ PX.Clamp( this.zoomLevel, 0, PX.kZoomMaxLevel ) ];
 
                 var distInKm = markerCluster.distanceBetweenPoints_( p1, p2 );
 
                 // If there is more than 1 model, increase the min distance
                 if( loci.modelCount > 1 || locj.modelCount > 1 )
                 {
-                    minDistance *= 1.75;
+                    minDistance *= 2.0;
+                    //minDistance *= 1.75;
                 }
 
                 if( distInKm <= minDistance )

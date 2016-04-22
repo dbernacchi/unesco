@@ -819,7 +819,7 @@ function Update( time, frameTime )
     }
 
     // Avoidance
-    //locationMarkers.MarkerAvoidance( markerCluster, frameTime );
+    locationMarkers.MarkerAvoidance( markerCluster, frameTime );
 
     //
     locationMarkers.Update( currentTime, frameTime, camera );
