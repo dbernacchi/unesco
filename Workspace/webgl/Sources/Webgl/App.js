@@ -112,12 +112,10 @@ var mouseVector3d = new THREE.Vector3();
 
 $(window).unload(function(e) 
 {
-    OnResize();
 });
 
 $(window).blur(function(e) 
 {
-    OnResize();
 });
 
 $(window).focus(function(e) 
@@ -1154,7 +1152,7 @@ function ComputeMapGridSizeFromZoomLevel( zoomLevel )
 
 function OnResize()
 {
-    if( !renderer )
+    if( !renderer || !camera )
         return;
 
     /*if( PX.IsMobile )
