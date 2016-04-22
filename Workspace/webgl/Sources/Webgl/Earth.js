@@ -44,7 +44,7 @@ UG.Earth.prototype =
 	        planeGeom.applyMatrix( objMat );
             this.shadowPlaneMesh = new THREE.Mesh( planeGeom, planeMat );
             this.shadowPlaneMesh.position.set( 0, 0, 0 );
-            this.shadowPlaneMesh.renderOrder = 0;
+            //this.shadowPlaneMesh.renderOrder = 0;
             //scene.add( this.shadowPlaneMesh );
             this.sceneShadow.add( this.shadowPlaneMesh );
         }
@@ -98,13 +98,17 @@ UG.Earth.prototype =
         this.material.extensions.derivatives = true;
         this.material.depthTest = true;
         this.material.depthWrite = true;
-        //this.material.transparent = true;
+        this.material.transparent = false;
         //this.material.wireframe = true;
+        //this.material.polygonOffset = true;
+        //this.material.polygonOffsetFactor = 1;
+        //this.material.polygonOffsetUnits = 1.0;
 
         //this.mesh = new THREE.Mesh( new THREE.SphereGeometry( PX.kEarthScale, 32*4, 22*4 ), this.material );
         this.mesh = new THREE.Mesh( new THREE.SphereGeometry( PX.kEarthScale, PX.kEarthDetailX, PX.kEarthDetailY ), this.material );
         this.mesh.position.set( 0, 0, 0 );
-        this.mesh.renderOrder = 100;
+        //this.mesh.renderOrder = 100;
+
         scene.add( this.mesh );
 
 

@@ -99,7 +99,7 @@ UG.LocationMarkers.prototype =
         //
         this.locationsGroup = new THREE.Object3D();
 	    this.locationsGroup.position.set( 0, 0, 0 );
-        this.locationsGroup.renderOrder = 1000;
+        //this.locationsGroup.renderOrder = 1000;
 
         //
 	    for( var i=0; i<locations.length; ++i )
@@ -114,8 +114,13 @@ UG.LocationMarkers.prototype =
 	        var material = new THREE.MeshLambertMaterial( { color: color } );
 	        //var material = new THREE.MeshBasicMaterial( { color: color } );
 	        //material.depthWrite = false;
+            //material.polygonOffset = true;
+            //material.polygonOffsetFactor = -1;
+            //material.polygonOffsetUnits = 1.0;
+
 	        var geom = new THREE.CylinderGeometry( PX.kLocationMarkerScale, PX.kLocationMarkerScale, PX.kLocationMarkerScale, PX.kLocationMarkerDetail, 1 );
 
+	        //var matTrans = new THREE.Matrix4().makeTranslation( 0, 0, -PX.kLocationMarkerScale*15.0 );
 	        var matTrans = new THREE.Matrix4().makeTranslation( 0, 0, -PX.kLocationMarkerScale*0.5 );
 	        var matRot = new THREE.Matrix4().makeRotationX( THREE.Math.degToRad( 90.0 ) )
 	        var objMat = new THREE.Matrix4().multiplyMatrices( matTrans, matRot );
@@ -512,42 +517,50 @@ UG.LocationMarkers.prototype =
         {
             var loc = this.markers[ this.currentMouseOverMarkerIndex ];
 
-            loc.positionSS.copy( loc.position.clone().applyQuaternion( earth.mesh.quaternion ) );
-            loc.positionSS.project( camera );
+            var v0 = camera.position.clone().sub( loc.position ).normalize();
+            var v1 = loc.position.clone().normalize();
+            var dot = v0.dot( v1 );
 
-            // 2d ortho
-            /*if( appStateMan.IsState( PX.AppStates.AppStateLevel1 ) )
-                loc.positionSS.x = mouseX;
-            else*/
-                loc.positionSS.x = ( (loc.positionSS.x + 1.0 ) * 0.5 ) * Params.WindowWidth;
-            loc.positionSS.y = ( (loc.positionSS.y + 1.0 ) * 0.5 ) * Params.WindowHeight;
-            loc.positionSS.z = 0.0;
-
-            var offsetValue = 40.0;
-
-            // Offset overlay text
             //
-            if( loc.positionSS.y < Params.WindowHeight-(Params.WindowHeight/10) )
+            if( dot >= 0.0 )
             {
-                this.lineSprite.position.set( loc.positionSS.x + offsetValue*0.5, loc.positionSS.y + offsetValue*0.5, 0 );
-                this.lineSprite.scale.set( offsetValue, offsetValue, 1 );
-                // @NOTE: Must be done after changing lineSprite
-                loc.positionSS.x += offsetValue + offsetValue * 0.1;
-                loc.positionSS.y += offsetValue;
-            }
-            // If near the top, move tooltip down (invert)
-            else
-            {
-                this.lineSprite.position.set( loc.positionSS.x + offsetValue*0.5, loc.positionSS.y - offsetValue*0.5, 0 );
-                this.lineSprite.scale.set( offsetValue, -offsetValue, 1 );
-                // @NOTE: Must be done after changing lineSprite
-                loc.positionSS.x += offsetValue + offsetValue * 0.1;
-                loc.positionSS.y -= offsetValue;
-            }
+                loc.positionSS.copy( loc.position.clone().applyQuaternion( earth.mesh.quaternion ) );
+                loc.positionSS.project( camera );
 
-            var fontSize = 9;
+                // 2d ortho
+                /*if( appStateMan.IsState( PX.AppStates.AppStateLevel1 ) )
+                    loc.positionSS.x = mouseX;
+                else*/
+                    loc.positionSS.x = ( (loc.positionSS.x + 1.0 ) * 0.5 ) * Params.WindowWidth;
+                loc.positionSS.y = ( (loc.positionSS.y + 1.0 ) * 0.5 ) * Params.WindowHeight;
+                loc.positionSS.z = 0.0;
 
-            this.textRenderer.AppendText2D( loc.title, loc.positionSS, fontSize, 1.0, false, true );
+                var offsetValue = 40.0;
+
+                // Offset overlay text
+                //
+                if( loc.positionSS.y < Params.WindowHeight-(Params.WindowHeight/10) )
+                {
+                    this.lineSprite.position.set( loc.positionSS.x + offsetValue*0.5, loc.positionSS.y + offsetValue*0.5, 0 );
+                    this.lineSprite.scale.set( offsetValue, offsetValue, 1 );
+                    // @NOTE: Must be done after changing lineSprite
+                    loc.positionSS.x += offsetValue + offsetValue * 0.1;
+                    loc.positionSS.y += offsetValue;
+                }
+                // If near the top, move tooltip down (invert)
+                else
+                {
+                    this.lineSprite.position.set( loc.positionSS.x + offsetValue*0.5, loc.positionSS.y - offsetValue*0.5, 0 );
+                    this.lineSprite.scale.set( offsetValue, -offsetValue, 1 );
+                    // @NOTE: Must be done after changing lineSprite
+                    loc.positionSS.x += offsetValue + offsetValue * 0.1;
+                    loc.positionSS.y -= offsetValue;
+                }
+
+                var fontSize = 9;
+
+                this.textRenderer.AppendText2D( loc.title, loc.positionSS, fontSize, 1.0, false, true );
+            }
         }
 
         this.textRenderer.End();
@@ -922,7 +935,11 @@ UG.LocationMarkers.prototype =
             v1 = v1.crossVectors( v1, v0 ).normalize();
 
             var start = earth.mesh.quaternion.clone();
-            var end = new THREE.Quaternion().setFromAxisAngle( v1, PX.ToRadians(40) );
+            var end = null;
+            if( PX.IsMobile )
+                end = new THREE.Quaternion().setFromAxisAngle( v1, PX.ToRadians(50) );
+            else
+                end = new THREE.Quaternion().setFromAxisAngle( v1, PX.ToRadians(40) );
 
             var positionw = { x: 0.0 };
             var targetw = { x: 1.0 };
