@@ -67,8 +67,8 @@ UG.LocationMarkers = function()
     this.currentMouseOverMarkerIndex = -1;
 
     this.clickedStartTime       = 0.0;
-    this.level2GlobalScale      = new THREE.Vector3( 1.0, 1.0, 1.0 );
-    //this.level2SelectedGlobalScale = new THREE.Vector2( 1.0, 1.0 );
+    this.level2GlobalScale      = new THREE.Vector2( 1.0, 1.0 );
+    this.level2SelectedGlobalScale = new THREE.Vector2( 1.0, 1.0 );
     this.outlineGlobalScale     = new THREE.Vector2( 0.0, 0.0 );
 
     this.lineSprite             = null;
@@ -468,10 +468,10 @@ UG.LocationMarkers.prototype =
                 {
                     locationScale *= this.level2GlobalScale.x;
                 }
-                /*if( i === this.clickedMarkerIndex )
+                if( i === this.clickedMarkerIndex )
                 {
                     locationScale *= this.level2SelectedGlobalScale.x;
-                }*/
+                }
 
                 //locationScale *= this.level1FilterScales[ loc.type ].x;
 
@@ -803,6 +803,7 @@ UG.LocationMarkers.prototype =
             var ogsTarget = new THREE.Vector2( 1.0, 1.0 );
             var tweenogs = new TWEEN.Tween( this.outlineGlobalScale ).to( ogsTarget, Params.AnimTime * 1000.0 );
             tweenogs.easing( TWEEN.Easing.Quadratic.InOut );
+            tweenogs.delay( Params.AnimTime * 1000.0 );
             tweenogs.start();
 
 /***
@@ -974,16 +975,16 @@ UG.LocationMarkers.prototype =
             });
 
             // Non-Selected Marker Global Scale
-            var gsTarget = new THREE.Vector3( PX.EPSILON, PX.EPSILON, PX.EPSILON );
+            var gsTarget = new THREE.Vector2( PX.EPSILON, PX.EPSILON );
             var tweengs = new TWEEN.Tween( this.level2GlobalScale ).to( gsTarget, Params.AnimTime * 1000.0 );
             tweengs.easing( TWEEN.Easing.Quadratic.InOut );
             tweengs.start();
 
-            // Non-Selected Marker Global Scale
-            /**var gs2Target = new THREE.Vector2( 2.0, 2.0 );
+            // Selected Marker Global Scale
+            var gs2Target = new THREE.Vector2( 2.0, 2.0 );
             var tweengs2 = new TWEEN.Tween( this.level2SelectedGlobalScale ).to( gs2Target, Params.AnimTime * 1000.0 );
             tweengs2.easing( TWEEN.Easing.Quadratic.InOut );
-            tweengs2.start();***/
+            tweengs2.start();
 
             // Outline Global Scale
             var ogsTarget = new THREE.Vector2( 0.0, 0.0 );
@@ -1043,22 +1044,23 @@ UG.LocationMarkers.prototype =
                 Params.TiltShiftPosition = tiltPosStart.x;
             });
 
-            // Marker Global Scale
-            var gsTarget = new THREE.Vector3( 1, 1, 1 );
+            // Non-Selected Marker Global Scale
+            var gsTarget = new THREE.Vector2( 1, 1 );
             var tweengs = new TWEEN.Tween( this.level2GlobalScale ).to( gsTarget, Params.AnimTime * 1000.0 );
             tweengs.easing( TWEEN.Easing.Quadratic.InOut );
             tweengs.start();
 
-            // Non-Selected Marker Global Scale
-            /***var gs2Target = new THREE.Vector2( 1.0, 1.0 );
+            // Selected Marker Global Scale
+            var gs2Target = new THREE.Vector2( 1.0, 1.0 );
             var tweengs2 = new TWEEN.Tween( this.level2SelectedGlobalScale ).to( gs2Target, Params.AnimTime * 1000.0 );
             tweengs2.easing( TWEEN.Easing.Quadratic.InOut );
-            tweengs2.start();***/
+            tweengs2.start();
 
             // Outline Global Scale
             var ogsTarget = new THREE.Vector2( 1.0, 1.0 );
             var tweenogs = new TWEEN.Tween( this.outlineGlobalScale ).to( ogsTarget, Params.AnimTime * 1000.0 );
             tweenogs.easing( TWEEN.Easing.Quadratic.InOut );
+            tweenogs.delay( Params.AnimTime * 1000.0 );
             tweenogs.start();
 
             // CAMERA POSITION
