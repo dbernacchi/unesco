@@ -6,6 +6,8 @@ var UNESCO = {};
 	var max_width = 1920;
 
 	var resized_images_to_load = 0;
+	
+	var stop_loading_fade = false;
 
 	this.init = function() {
 
@@ -62,10 +64,31 @@ var UNESCO = {};
 			}
 		});
 		*/
+	
+		function fading() {
+
+			$(".loading").fadeTo(1000, 1, function() {
+				
+				if(!stop_loading_fade){
+
+					$(".loading").fadeTo(1000, 0, function() {
+	
+						if(!stop_loading_fade){
+							fading();
+						}
+					});
+				}
+			});
+
+		}
+		
+		fading(); 
 		
 		$(".UNESCO .explore-button").click(function(e) {
 			e.preventDefault();
 
+			console.log("HIDE");
+			$(".close-button").hide();
 			
 			ns.hideSplash();
 
@@ -133,7 +156,39 @@ var UNESCO = {};
 			});
 
 		});
+		
+		$(".UNESCO#share-button").click(function(e) {
+			e.preventDefault();
 
+			var menu = $(".UNESCO.share-menu");
+			
+			if(menu.css('display') == 'none'){
+				menu.fadeTo(1000, 1);
+			} else {
+				menu.fadeTo(1000, 0);
+			}
+		
+
+		});		
+		
+		$(".UNESCO#menu-button").click(function(e) {
+			e.preventDefault();
+
+			$(".UNESCO.furniture").hide();
+			$(".UNESCO.about-wrapper").show();
+			
+		});
+		
+		$(".UNESCO#about .close-button").click(function(e) {
+			e.preventDefault();
+
+			$(".UNESCO.about-wrapper").hide();
+			$(".UNESCO.furniture").show();
+
+			
+
+		});
+		
 	}
 
 	this.resize = function() {
@@ -149,7 +204,7 @@ var UNESCO = {};
 		}
 
 		function apply(elm, target) {
-
+			
 			if (elm.hasClass('resize-' + target)) {
 
 				var attr = elm.css(target);
@@ -171,6 +226,12 @@ var UNESCO = {};
 			var attr = attr * .01 * percentage;
 
 			img.prop('width', attr);
+			
+			var attr = img[0].naturalHeight;
+			
+			var attr = attr * .01 * percentage;
+
+			img.prop('height', attr);
 			
 			resized_images_to_load--;
 			
@@ -213,6 +274,9 @@ var UNESCO = {};
 			apply($(this), 'width');
 			apply($(this), 'height');
 			apply($(this), 'top');
+			apply($(this), 'left');
+			apply($(this), 'right');
+			apply($(this), 'bottom');
 			apply($(this), 'font-size');
 			apply($(this), 'margin-top');
 			apply($(this), 'margin-bottom');
@@ -310,6 +374,10 @@ var UNESCO = {};
 	 */
 
 	this.showExploreButton = function() {
+		
+		stop_loading_fade = true;
+		
+		$(".UNESCO .loading").hide(); 
 
 		var exploreButton = $(".UNESCO .explore-button");
 		exploreButton.css('display', 'block');

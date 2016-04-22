@@ -80,19 +80,41 @@ ul.clr li {
 	display: none;
 }
 
-a.resize {
+.resize {
 	background-size: contain;
+	background-repeat: no-repeat;
+	display: block;
 }
 
 #splash {
 	position: absolute;
 	z-index: 2;
 	text-align: center;
+	/*border: 1px solid;*/
 }
 
-#splash img {
-	position: relative;
-	z-index: -1;
+#splash .splash-text-top {
+	display: block;
+    margin-top: 200px;
+}
+
+#splash .splash-text-bottom {
+	display: block;
+   	
+}
+
+#splash .explore-container {
+	width: 184px;
+	height: 59px;
+	
+	margin: 50px auto 127px auto;
+}
+
+#splash .loading {
+	display: none;
+	width: 184px;
+	height: 59px;
+	background-image: url(../img/splash/loading.png);
 }
 
 #splash .explore-button {
@@ -100,12 +122,9 @@ a.resize {
 	width: 184px;
 	height: 59px;
 	background-image: url(../img/splash/explore-button.png);
-	/*position: absolute; bottom: 30%; right: 0; left: 0; */
-
-	margin: 0 auto;
-	margin-top: -274px;
 }
 
+/*
 #splash .status-bar-top {
 	width: 526px;
 	height: 44px;
@@ -128,43 +147,108 @@ a.resize {
 	overflow: hidden;
 	background: url(../img/splash/status-bar-bottom.png) no-repeat;
 }
+*/
 
 #share-button {
 	display: block;
 	position: absolute;
-	top: 2%;
-	left: 2%;
+	top: 20px;
+	right: 20px;
 	width: 34px;
 	height: 31px;
-	background: url(../img/share/share-button.png);
+	background-image: url(../img/share/share-button.png);
+}
+
+.share-menu{
+
+	position: absolute;
+	top: 37px;
+	right: 20px;
+	
+}
+
+.facebook {
+	display: block;
+	width: 34px;
+	height: 31px;
+	background-image: url(../img/share/facebook.png);
+}
+
+.twitter {
+	display: block;
+	width: 34px;
+	height: 31px;
+	background-image: url(../img/share/twitter.png);
 }
 
 #logo {
 	position: absolute;
-	top: 0.5%;
-	left: 5%;
-	width: 208px;
-	height: 105px;
-	background: url(../img/logo.png);
+	top: 20px;
+	left: 20px;
+	width: 194px;
+	height: 99px;
+	background-image: url(../img/logo.png);
 }
 
 #logo-bottom {
 	position: absolute;
-	bottom: 2%;
-	right: 2%;
+	bottom: 20px;
+	right: 20px;
+}
+
+#logo-bottom-inner {
+	position: relative;
+	display: block;
 	width: 342px;
-	height: 22px;
-	background: url(../img/logo-bottom.png);
+	height: 19px;
+	background-image: url(../img/logo-bottom.png);
+	background-repeat: no-repeat;
+}
+
+.zoom-container {
+	position: absolute;
+	left: 100px;
+	top: 50%;
+}
+
+
+.zoom-container-inner {
+	position: relative;
+	top: -50%;
+}
+
+#zoom-in-button{
+	margin-bottom: 15px;
+	width: 25px;
+	height: 25px;
+	background-image: url(../img/map/zoom_in.png)
+}
+
+#zoom-in-button.disabled{
+	
+	background-image: url(../img/map/zoom_in_disabled.png)
+}
+
+#zoom-out-button{
+	
+	width: 25px;
+	height: 25px;
+	background-image: url(../img/map/zoom_out.png)
+}
+
+#zoom-out-button.disabled{
+	
+	background-image: url(../img/map/zoom_out_disabled.png)
 }
 
 #menu-button {
 	display: block;
 	position: absolute;
-	right: 2%;
-	top: 2%;
+	right: 78px;
+	top: 24px;
 	width: 28px;
 	height: 21px;
-	background: url(../img/menu/menu-button.png)
+	background-image: url(../img/menu/menu-button.png)
 };
 
 #browse {
@@ -256,14 +340,14 @@ a.resize {
 	top: 50%;
 	left: 50%
 }
-#slide-5 .close-button, #slide-9 .close-button {
+#slide-5 .close-button, #slide-9 .close-button, #about .close-button {
 	display: block;
 	position: absolute;
-	right: 2%;
-	top: 2%;
+	right: 20px;
+	top: 20px;
 	width: 34px;
 	height: 30px;
-	background: url(../img/close-button.png);
+	background-image: url(../img/close-button.png);
 }
 
 #slide-5 ul.clr {
@@ -291,6 +375,58 @@ a.resize {
 	height: 42px;
 	background-image: url(../img/slides/magnify.png);
 	background-repeat: no-repeat;
+}
+
+.about-wrapper{
+	width: 100%;
+	height: 100%;	
+	background: rgba(0, 0, 0, 0.5);
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+}
+
+#about{
+	width: 720px;
+	position: absolute;
+	left: 50%;
+	top: 50%;	
+	font-family: Nunito;
+	font-size: 14px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 300;
+	line-height: 20px;
+	color: #B9CBD5;
+}
+
+.about-inner {
+	position: relative;
+	top: -50%;
+	left: -50%
+}
+
+#about .logo {
+	width: 194px;
+	height: 99px;
+	background-image: url(../img/logo.png);
+	margin: 0 auto;
+}
+
+#about .body {
+	margin-top: 20px;
+	margin-bottom: 20px;
+	
+}
+
+#about .contribute-button {
+	display: block;
+	width: 200px;
+	height: 59px;
+	background-image: url(../img/about/contribute-button.png);
+	background-repeat: no-repeat;
+	margin: 0 auto;
 }
 
 #browse {
