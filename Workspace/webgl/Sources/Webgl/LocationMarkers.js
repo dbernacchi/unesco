@@ -39,6 +39,7 @@ UG.LocationMarkers = function()
 	this.level0Scales           = [];
     this.textRenderer           = null;
     this.textRenderer2          = null;
+    this.circleRenderer         = null;
 	this.markersCount           = 0;
 
     this.titleTargetOpacity     = 0.0;
@@ -67,7 +68,8 @@ UG.LocationMarkers = function()
 
     this.clickedStartTime       = 0.0;
     this.level2GlobalScale      = new THREE.Vector3( 1.0, 1.0, 1.0 );
-    this.level2SelectedGlobalScale = new THREE.Vector3( 1.0, 1.0, 1.0 );
+    //this.level2SelectedGlobalScale = new THREE.Vector2( 1.0, 1.0 );
+    this.outlineGlobalScale     = new THREE.Vector2( 0.0, 0.0 );
 
     this.lineSprite             = null;
 
@@ -163,6 +165,12 @@ UG.LocationMarkers.prototype =
         this.textRenderer.material.opacity = 0.0;
         //this.locationsGroup.add( this.textRenderer.mesh );
         //this.markerScene.add( this.textRenderer.mesh );
+
+        this.circleRenderer = new PX.CircleRenderer();
+        this.circleRenderer.Init( 4096, 0xffffff, PX.AssetsDatabase["Circle"], null );
+        this.circleRenderer.material.depthWrite = false;
+        this.circleRenderer.material.opacity = 0.0;
+        this.locationsGroup.add( this.circleRenderer.mesh );
 
         //
         if( this.locationsGroupAnim ) this.locationsGroup.scale.set( PX.EPSILON, PX.EPSILON, PX.EPSILON );
@@ -435,6 +443,9 @@ UG.LocationMarkers.prototype =
         var matRes = new THREE.Matrix4();
         var distToCamera = new THREE.Vector3();
 
+        this.circleRenderer.Begin();
+        this.circleRenderer.material.opacity = 1.0;
+
         for( var i=0; i<this.markersCount; ++i )
         {
             var loc = this.markers[i];
@@ -457,10 +468,10 @@ UG.LocationMarkers.prototype =
                 {
                     locationScale *= this.level2GlobalScale.x;
                 }
-                if( i === this.clickedMarkerIndex )
+                /*if( i === this.clickedMarkerIndex )
                 {
                     locationScale *= this.level2SelectedGlobalScale.x;
-                }
+                }*/
 
                 //locationScale *= this.level1FilterScales[ loc.type ].x;
 
@@ -490,24 +501,16 @@ UG.LocationMarkers.prototype =
             this.meshes[i].material.color.copy( loc.color );
 
 
-            // Text Info
             //
-            var ttt = (1.0) * PX.kLocationMarkerZScale;
-            //var ttt = ( loc.markerCount > 0 ? loc.markerCount * PX.kLocationMarkerZScale : 1.0 );
-
-            var smallOffset = 0.001;
-            var p = PX.Utils.FromLatLon( loc.latlon.x, loc.latlon.y, PX.kEarthScale, smallOffset + (ttt * loc.scale.z * PX.kLocationMarkerScale) );
-
-            matTrans = matTrans.makeTranslation( p.x, p.y, p.z );
-            matRot.makeRotationFromQuaternion( this.meshes[i].quaternion );
-            //matRot.makeRotationFromEuler( this.meshes[i].rotation );
-            matScale.makeScale( loc.scale.x, loc.scale.y, loc.scale.z );
-            matRes.multiplyMatrices( matTrans, matRot );
-            matRes.multiplyMatrices( matRes, matScale );
-            //matRes = locationMeshes[i].matrixWorld;
+            var outlinePos = new THREE.Vector3();
+            outlinePos.z -= PX.kLocationMarkerScale * 0.5;
+            this.circleRenderer.AppendRect( outlinePos, this.outlineGlobalScale.x * (PX.kLocationMarkerScale + ((Params.OutlineThickness * 0.001) / loc.scale.x)), this.meshes[i].matrix );
 	    }
 
+        this.circleRenderer.End();
 
+
+        //
         this.textRenderer.Begin();
 
         this.textRenderer.material.opacity += ( this.titleTargetOpacity - this.textRenderer.material.opacity ) * frameTime * 10.0;
@@ -524,6 +527,7 @@ UG.LocationMarkers.prototype =
             //
             if( dot >= 0.0 )
             {
+                //loc.positionSS.copy( loc.position.clone().applyMatrix4( earth.mesh.matrix ) );
                 loc.positionSS.copy( loc.position.clone().applyQuaternion( earth.mesh.quaternion ) );
                 loc.positionSS.project( camera );
 
@@ -795,6 +799,12 @@ UG.LocationMarkers.prototype =
                 Params.TiltShiftStrength = tiltStart.x;
             });
 
+            // Outline Global Scale
+            var ogsTarget = new THREE.Vector2( 1.0, 1.0 );
+            var tweenogs = new TWEEN.Tween( this.outlineGlobalScale ).to( ogsTarget, Params.AnimTime * 1000.0 );
+            tweenogs.easing( TWEEN.Easing.Quadratic.InOut );
+            tweenogs.start();
+
 /***
             // Reset filter scales and switches
             for( var i=0; i<3; ++i )
@@ -970,10 +980,16 @@ UG.LocationMarkers.prototype =
             tweengs.start();
 
             // Non-Selected Marker Global Scale
-            var gs2Target = new THREE.Vector3( 2.0, 2.0, 2.0 );
+            /**var gs2Target = new THREE.Vector2( 2.0, 2.0 );
             var tweengs2 = new TWEEN.Tween( this.level2SelectedGlobalScale ).to( gs2Target, Params.AnimTime * 1000.0 );
             tweengs2.easing( TWEEN.Easing.Quadratic.InOut );
-            tweengs2.start();
+            tweengs2.start();***/
+
+            // Outline Global Scale
+            var ogsTarget = new THREE.Vector2( 0.0, 0.0 );
+            var tweenogs = new TWEEN.Tween( this.outlineGlobalScale ).to( ogsTarget, Params.AnimTime * 1000.0 );
+            tweenogs.easing( TWEEN.Easing.Quadratic.InOut );
+            tweenogs.start();
         }
 
         // Level 2
@@ -1034,11 +1050,16 @@ UG.LocationMarkers.prototype =
             tweengs.start();
 
             // Non-Selected Marker Global Scale
-            var gs2Target = new THREE.Vector3( 1.0, 1.0, 1.0 );
+            /***var gs2Target = new THREE.Vector2( 1.0, 1.0 );
             var tweengs2 = new TWEEN.Tween( this.level2SelectedGlobalScale ).to( gs2Target, Params.AnimTime * 1000.0 );
             tweengs2.easing( TWEEN.Easing.Quadratic.InOut );
-            tweengs2.start();
+            tweengs2.start();***/
 
+            // Outline Global Scale
+            var ogsTarget = new THREE.Vector2( 1.0, 1.0 );
+            var tweenogs = new TWEEN.Tween( this.outlineGlobalScale ).to( ogsTarget, Params.AnimTime * 1000.0 );
+            tweenogs.easing( TWEEN.Easing.Quadratic.InOut );
+            tweenogs.start();
 
             // CAMERA POSITION
             var target = this.meshes[ index ].position.clone().normalize().multiplyScalar( Params.CameraDistance );
@@ -1266,7 +1287,7 @@ UG.LocationMarkers.prototype =
         //
         var MinDistancesPerLevel = [ 
             230,
-            70
+            80
         ];
 
 

@@ -379,6 +379,7 @@ function Setup()
     //var aspectRatio = maxDim / minDim;
     aspectRatio = windowWidth / windowHeight;
     console.log( "+--+  Aspect Ratio:", aspectRatio );
+    console.log( "+--+  Device Content Scale: ", window.devicePixelRatio );
 
     // Create camera
     //
@@ -407,13 +408,6 @@ function Setup()
     sunLight.position.set( 0.7, 0.0, 1.0 );
     scene.add( sunLight );
 
-
-    // Update camera position to look at latlon: 0, 0
-    //
-    //var camPos = PX.Utils.FromLatLon( 0.0, 0.0, Params.CameraDistance, 0.0 );
-    //camera.position.set( camPos.x, camPos.y, camPos.z );
-
-
     // Composer
     //
 	var parameters = {
@@ -422,7 +416,6 @@ function Setup()
 		format: THREE.RGBAFormat,
 		stencilBuffer: false
 	};
-    console.log( "deviceContentScale: ", window.devicePixelRatio );
     var renderTarget = new THREE.WebGLRenderTarget( windowWidth * deviceContentScale, windowHeight * deviceContentScale, parameters );
     renderTarget.texture.generateMipmaps = false;
     composer = new THREE.EffectComposer( renderer, renderTarget );
@@ -730,50 +723,34 @@ function InitGUI()
     g_GUI.add( Params, "CameraDistance" ).min( PX.kEarthScale*1.333 ).max( 300.0 );
     g_GUI.addFolder( "INTERACTION" );
     g_GUI.add( Params, "EarthRotationSpeed" ).min(0.0).max(1.0).step(0.001);
-    g_GUI.add( Params, "MapGridSize" ).min(0).max(20).step(1).onChange( function( newValue ) 
+    /*g_GUI.add( Params, "MapGridSize" ).min(0).max(20).step(1).onChange( function( newValue ) 
     {
         console.log( parseInt(newValue) );
         markerCluster.setGridSize( parseInt(newValue) );
         markerCluster.repaint();
         locationMarkers.doPopulation = true;
-    });
-    g_GUI.add( Params, "Latitude" ).listen();
-    g_GUI.add( Params, "Longitude" ).listen();
-    g_GUI.add( Params, "ZoomLevel" ).listen();
-    g_GUI.add( Params, "Intersects" ).listen();
+    });*/
+    //g_GUI.add( Params, "Latitude" ).listen();
+    //g_GUI.add( Params, "Longitude" ).listen();
+    //g_GUI.add( Params, "ZoomLevel" ).listen();
+    //g_GUI.add( Params, "Intersects" ).listen();
     g_GUI.add( Params, "TiltShiftStrength" ).min(0.0).max(50.0);
-    g_GUI.add( Params, "TiltShiftMaxStrength" ).min(0.0).max(100.0);
-    g_GUI.add( Params, "TiltShiftPosition" ).min(0.0).max(1.0);
-    //g_GUI.add( Params, "Dummy" ).min(0.0).max(1.0);
-    /*g_GUI.add( Params, "Dummy" ).min(0).max(10).onChange( function( newValue ) 
+    g_GUI.add( Params, "TiltShiftMaxStrength" ).min(0.0).max(100.0).onChange( function( newValue )
     {
-        tval = { x: 0.0 };
-        var tweenw = new TWEEN.Tween( tval ).to( {x: 1.0}, 3000 );
-        tweenw.easing( TWEEN.Easing.Quadratic.InOut );
-        tweenw.start();
-        tweenw.onUpdate(function()
-        {
-            var ttt = tval.x;
-            var start = earth.mesh.quaternion.clone();
+        Params.TiltShiftMaxStrength = newValue;
 
-            var v1 = camera.getWorldDirection().clone().multiplyScalar(-1);
-            var v2 = locationMarkers.markers[parseInt(Params.Dummy)].position.clone().normalize();
-            var cc = new THREE.Vector3().crossVectors( v2, v1 );
-            var dd = v1.clone().dot( v2 );
-            var end = new THREE.Quaternion();
-            end.x = cc.x;
-            end.y = cc.y;
-            end.z = cc.z;
-            end.w = Math.sqrt( v1.lengthSq() * v2.lengthSq() ) + dd;
-            end.normalize();
-            THREE.Quaternion.slerp( start, end, earth.mesh.quaternion, ttt );
-            THREE.Quaternion.slerp( start, end, locationMarkers.locationsGroup.quaternion, ttt );
+        var tiltStart = { x: Params.TiltShiftStrength };
+        var tiltEnd = { x: newValue };
+        var tiltTween = new TWEEN.Tween( tiltStart ).to( tiltEnd, 100.0 );
+        tiltTween.easing( TWEEN.Easing.Linear.None );
+        tiltTween.start();
+        tiltTween.onUpdate( function()
+        {
+            Params.TiltShiftStrength = tiltStart.x;
         });
-    });*/
-    /*g_GUI.add( Params, 'Art_CameraDistance' ).onChange( function( newValue ) 
-    {
-        artefactCamera.position.z = newValue;
-    });*/
+    });
+    g_GUI.add( Params, "TiltShiftPosition" ).min(0.0).max(1.0);
+    g_GUI.add( Params, "OutlineThickness" ).min(0.0).max(1000.0);
 
     //g_GUI.remember( Params );
 }

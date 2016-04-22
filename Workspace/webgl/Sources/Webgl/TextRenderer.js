@@ -324,6 +324,7 @@ PX.TextRenderer.prototype =
         this.textRenderTextVertexOffset += text.length;
     }
 
+
     , AppendText2D: function( text, pos, textSize, scaleFactor, isCenterX, isCenterY )
     {
 	    // set factor which bitmap font tiles shall be scaled with

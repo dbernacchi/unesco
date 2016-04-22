@@ -230,6 +230,7 @@ var Params =
     , TiltShiftPosition: 0.5
     , Intersects: 0
     , Dummy: 0.5
+    , OutlineThickness: 50.0
 
     , EarthShadowScaleX: 170.0 //PX.kEarthScale * 4.0
     , EarthShadowScaleY: 100.0 //PX.kEarthScale * 2.0
