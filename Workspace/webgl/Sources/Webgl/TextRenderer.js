@@ -205,6 +205,9 @@ PX.TextRenderer.prototype =
             for( var ci=0; ci<text.length; ++ci )
             {
 		        letterDescriptor = this.bmFontDescriptor.getLetter( text[ci] );
+                if( !letterDescriptor )
+                    continue;
+
     		    var letterxAdvance = letterDescriptor.xadvance * fontSizeFactor;
 		        var letteryOffset = -(letterDescriptor.yoffset);
 
@@ -226,6 +229,8 @@ PX.TextRenderer.prototype =
             var i = ci + this.textRenderTextVertexOffset;
 
 		    letterDescriptor = this.bmFontDescriptor.getLetter( text[ci] );
+            if( !letterDescriptor )
+                continue;
 
 		    var letterxOffset = letterDescriptor.xoffset * fontSizeFactor;
 		    var letteryOffset = -(letterDescriptor.yoffset * fontSizeFactor);
@@ -345,6 +350,8 @@ PX.TextRenderer.prototype =
             for( var ci=0; ci<text.length; ++ci )
             {
 		        letterDescriptor = this.bmFontDescriptor.getLetter( text[ci] );
+                if( !letterDescriptor )
+                    continue;
 
 		        var letterxOffset = letterDescriptor.xoffset * fontSizeFactor;
 		        var letteryOffset = -(letterDescriptor.yoffset) * fontSizeFactor;
@@ -368,6 +375,8 @@ PX.TextRenderer.prototype =
             var i = ci + this.textRenderTextVertexOffset;
 
 		    letterDescriptor = this.bmFontDescriptor.getLetter( text[ci] );
+            if( !letterDescriptor )
+                continue;
 
 		    var letterxOffset = letterDescriptor.xoffset * fontSizeFactor;
 		    var letteryOffset = -(letterDescriptor.yoffset * fontSizeFactor);

@@ -47,8 +47,6 @@ THREE.HorizontalTiltShiftShader = {
 			"float hh = h * abs( r - vUv.x );",
 			"//float hh = h * abs( r - vUv.y );",
 
-            "//hh = smoothstep( 0.4, 0.6, hh );",
-
 			"vec4 texel = texture2D( tDiffuse, vUv );",
 			"sum += texture2D( tDiffuse, vec2( vUv.x - 4.0 * hh, vUv.y ) ) * 0.051;",
 			"sum += texture2D( tDiffuse, vec2( vUv.x - 3.0 * hh, vUv.y ) ) * 0.0918;",
@@ -59,10 +57,6 @@ THREE.HorizontalTiltShiftShader = {
 			"sum += texture2D( tDiffuse, vec2( vUv.x + 2.0 * hh, vUv.y ) ) * 0.12245;",
 			"sum += texture2D( tDiffuse, vec2( vUv.x + 3.0 * hh, vUv.y ) ) * 0.0918;",
 			"sum += texture2D( tDiffuse, vec2( vUv.x + 4.0 * hh, vUv.y ) ) * 0.051;",
-
-            "//if( abs( r - vUv.y ) < 0.3 ) sum = texel;",
-
-            "//sum.a = clamp( hh * 100.0, 0.0, 1.0 );",
 
 			"gl_FragColor = sum;",
 

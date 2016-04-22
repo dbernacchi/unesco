@@ -8,6 +8,7 @@ UG.Earth = function ()
     this.material = null;
     this.uniforms = null;
 
+    this.sceneShadow = null;
     this.shadowPlaneMesh = null;
 
     this.worldMatrix = new THREE.Matrix4();
@@ -26,12 +27,35 @@ UG.Earth.prototype =
 
     , Init: function( scene )
     {
+        // Shadow plane
+        //
+        //if( !PX.IsMobile )
+        {
+            this.sceneShadow = new THREE.Scene();
+
+            var planeMat = new THREE.MeshBasicMaterial( { color: 0xffffff, map: PX.AssetsDatabase["EarthShadow"], opacity: 1.5, transparent: true, vertexColors: THREE.VertexColors } );
+            planeMat.side = THREE.DoubleSide;
+            planeMat.depthTest = false;
+            planeMat.depthWrite = false;
+            var planeGeom = new THREE.PlaneGeometry( 1, 1, 0 );
+	        var matTrans = new THREE.Matrix4().makeTranslation( 0, -0.5, -1.0 );
+            var matRot = new THREE.Matrix4(); //.makeRotationX( THREE.Math.degToRad( 90.0 ) )
+	        var objMat = new THREE.Matrix4().multiplyMatrices( matTrans, matRot );
+	        planeGeom.applyMatrix( objMat );
+            this.shadowPlaneMesh = new THREE.Mesh( planeGeom, planeMat );
+            this.shadowPlaneMesh.position.set( 0, 0, 0 );
+            this.shadowPlaneMesh.renderOrder = 0;
+            //scene.add( this.shadowPlaneMesh );
+            this.sceneShadow.add( this.shadowPlaneMesh );
+        }
+
+
         this.uniforms =
         {
             DiffuseMap: { type: "t", value: PX.AssetsDatabase["EarthDiffuseMap"] }
             , NormalMap: { type: "t", value: PX.AssetsDatabase["EarthNormalMap"] }
             , SpecularMap: { type: "t", value: PX.AssetsDatabase["EarthSpecularMap"] }
-            , CloudsMap: { type: "t", value: PX.AssetsDatabase["EarthCloudsMap"] }
+            //, CloudsMap: { type: "t", value: PX.AssetsDatabase["EarthCloudsMap"] }
             //, CloudsNormalMap: { type: "t", value: PX.AssetsDatabase["EarthCloudsNormalMap"] }
             , NightLightsMap: { type: "t", value: PX.AssetsDatabase["EarthNightLightsMap"] }
             , World: { type: "m4", value: this.worldMatrix }
@@ -72,33 +96,16 @@ UG.Earth.prototype =
         } );
         //this.material.side = THREE.DoubleSide;
         this.material.extensions.derivatives = true;
+        this.material.depthTest = true;
+        this.material.depthWrite = true;
         //this.material.transparent = true;
         //this.material.wireframe = true;
 
         //this.mesh = new THREE.Mesh( new THREE.SphereGeometry( PX.kEarthScale, 32*4, 22*4 ), this.material );
         this.mesh = new THREE.Mesh( new THREE.SphereGeometry( PX.kEarthScale, PX.kEarthDetailX, PX.kEarthDetailY ), this.material );
         this.mesh.position.set( 0, 0, 0 );
+        this.mesh.renderOrder = 100;
         scene.add( this.mesh );
-
-
-        // Shadow plane
-        var planeMat = new THREE.MeshBasicMaterial( { color: 0xffffff, map: PX.AssetsDatabase["EarthShadow"], opacity: 1.5, transparent: true, vertexColors: THREE.VertexColors } );
-        planeMat.side = THREE.DoubleSide;
-        //planeMat.depthTest = false;
-        planeMat.depthWrite = false;
-        var planeGeom = new THREE.PlaneGeometry( 1, 1, 0 );
-	    var matTrans = new THREE.Matrix4().makeTranslation( 0, -0.5, 0 );
-        var matRot = new THREE.Matrix4(); //.makeRotationX( THREE.Math.degToRad( 90.0 ) )
-	    var objMat = new THREE.Matrix4().multiplyMatrices( matTrans, matRot );
-	    planeGeom.applyMatrix( objMat );
-        this.shadowPlaneMesh = new THREE.Mesh( planeGeom, planeMat );
-/*        var planeMat = new THREE.SpriteMaterial( { color: 0xffffff, map: PX.AssetsDatabase["EarthShadow"], opacity: 1.0, transparent: true, vertexColors: THREE.VertexColors } );
-        this.shadowPlaneMesh = new THREE.Sprite( planeMat );*/
-
-        this.shadowPlaneMesh.position.set( 0, 0, 0 );
-        //this.shadowPlaneMesh.position.set( Params.EarthShadowPosX, Params.EarthShadowPosY, Params.EarthShadowPosZ );
-        //this.shadowPlaneMesh.scale.set( Params.EarthShadowScaleX, Params.EarthShadowScaleY, Params.EarthShadowScaleZ );
-        scene.add( this.shadowPlaneMesh );
 
 
         // Add intro tween
@@ -122,12 +129,14 @@ UG.Earth.prototype =
 
 
         // Shadow Plane
-        this.shadowPlaneMesh.material.opacity = PX.Pow2( this.introScale.x );
-        //this.shadowPlaneMesh.position.set( Params.EarthShadowPosX, Params.EarthShadowPosY, Params.EarthShadowPosZ );
-        this.shadowPlaneMesh.scale.set( PX.EPSILON + Params.EarthShadowScaleX * this.introScale.x, PX.EPSILON + Params.EarthShadowScaleY * this.introScale.x, PX.EPSILON + Params.EarthShadowScaleZ * this.introScale.x );
-        //this.shadowPlaneMesh.quaternion.copy( camera.quaternion );
-        this.shadowPlaneMesh.rotation.setFromRotationMatrix( camera.matrix );
-        //this.shadowPlaneMesh.lookAt( camera );
+        //
+        //if( !PX.IsMobile )
+        if( this.shadowPlaneMesh )
+        {
+            this.shadowPlaneMesh.material.opacity = PX.Pow2( this.introScale.x ) * 1.0;
+            this.shadowPlaneMesh.scale.set( PX.EPSILON + Params.EarthShadowScaleX * this.introScale.x, PX.EPSILON + Params.EarthShadowScaleY * this.introScale.x, PX.EPSILON + Params.EarthShadowScaleZ * this.introScale.x );
+            this.shadowPlaneMesh.rotation.setFromRotationMatrix( camera.matrix );
+        }
 
 
         // Update shader params

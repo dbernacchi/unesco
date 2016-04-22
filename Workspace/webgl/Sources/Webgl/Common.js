@@ -33,6 +33,10 @@ PX =
     AssetsDatabase: []
 
 
+    // Globals
+    , IsMobile: true
+
+
     // Constants
     //
     , EPSILON: 0.001
@@ -43,15 +47,15 @@ PX =
     , StartLatLon: { x: 6.3377571, y: 43.139408 }
 
     , kTransparentCanvas: true
-    , kEnableStats: false
+    , kEnableStats: true
     , kEnableGUI: true
 
     , kEarthScale: 30.0
-    , kEarthDetailX: 32*4
-    , kEarthDetailY: 22*4
+    , kEarthDetailX: 32 * 2
+    , kEarthDetailY: 22 * 2
     , kMarkerOffsetFromEarthSurface: 0.0
-    , kLocationMarkerScale: 0.8
-    , kLocationMarkerDetail: 16
+    , kLocationMarkerScale: 0.6
+    , kLocationMarkerDetail: 14
     , kLocationMarkerZScale: 0.125
     , kAvoidanceSpeed: 0.031
     //, kAvoidanceSpeed: 6.0
@@ -66,7 +70,7 @@ PX =
     , kCameraFovY: 36.0
     , kCameraNearPlane: 1.0
     , kCameraFarPlane: 200.0
-    , kCameraMinDistance: 60
+    , kCameraMinDistance: 70 //60
     , kCameraMaxDistance: 160.0
     , kCameraOneOverMinDistance: 1.0 / 60.0     // IMPORTANT!!
     , kCameraOneOverMaxDistance: 1.0 / 160.0    // If the above limits change, also change these
@@ -192,17 +196,17 @@ var Params =
     , WindowHeight: 0
     , MainScene: true
     , ShowMaps: false
-    , ShowStats: false
+    , ShowStats: true
     , EnableSunLight: false
     , EnableBloom: true
-    , BloomOpacity: 0.5
-    //, BloomOpacity: 1.0
+    //, BloomOpacity: 0.5
+    , BloomOpacity: 1.0
     , CameraDistance: PX.kCameraMaxDistance
     , Level0MarkerRadius: 30.0
     , AnimTime: 1.0
     , Art_CameraDistance: 100.0
     , AmbientIntensity: 0.00033
-    , DiffuseIntensity: 1.5 //1.125
+    , DiffuseIntensity: 0.5 //1.5 //1.125
     , SpecularIntensity: 0.07
     , NormalMapIntensity: 0.6
     , CloudsIntensity: 0.0 //0.1
@@ -222,7 +226,7 @@ var Params =
     , Longitude: 0.0
     , ZoomLevel: 0.0
     , TiltShiftStrength: 0.0
-    , TiltShiftMaxStrength: 3.0
+    , TiltShiftMaxStrength: 2.0
     , TiltShiftPosition: 0.5
     , Intersects: 0
     , Dummy: 0.5

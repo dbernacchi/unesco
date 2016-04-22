@@ -112,21 +112,18 @@ var mouseVector3d = new THREE.Vector3();
 
 $(window).unload(function(e) 
 {
+    OnResize();
 });
 
 $(window).blur(function(e) 
 {
+    OnResize();
 });
 
 $(window).focus(function(e) 
 {
+    OnResize();
 });
-
-
-var ClusterOnClickCallback = function( uuid, object )
-{
-    //console.log( uuid, object);
-};
 
 THREE.DefaultLoadingManager.onProgress = function( item, loaded, total )
 {
@@ -230,8 +227,8 @@ function CreateRenderer()
 
     renderer.autoClear = false;
     renderer.autoClearStencil = false;
-    //renderer.sortObjects = false;
-    //renderer.autoUpdateObjects = false;
+    renderer.sortObjects = false;
+    renderer.autoUpdateObjects = false;
 }
 
 function LoadData()
@@ -249,6 +246,7 @@ function LoadData()
         , LoadTexture( "Background", "webgl/data/textures/background.png" )
         , LoadTexture( "Circle", "webgl/data/textures/circle_full.png" )
         , LoadTexture( "EarthShadow", "webgl/data/textures/blobshadow.png" )
+        , LoadTexture( "TooltipLine", "webgl/data/textures/line.png" )
         , LoadShaderData("EarthVertexShader", "webgl/data/shaders/Earth.vertex")
         , LoadShaderData("EarthPixelShader", "webgl/data/shaders/Earth.fragment")
         //, LoadTexture( "TextAtlasTex", "webgl/data/fonts/lucida_0.png" )
@@ -270,7 +268,7 @@ function PostLoadData()
     container.style.height = window.innerHeight;
     //
     renderer.setPixelRatio( window.devicePixelRatio );
-    renderer.setSize(container.width, container.height);
+    renderer.setSize( container.width, container.height );
     //console.log(container.width, container.height);
     //
     windowWidth = container.width;
@@ -425,33 +423,46 @@ function Setup()
 		stencilBuffer: false
 	};
     console.log( "deviceContentScale: ", window.devicePixelRatio );
-    var renderTarget = new THREE.WebGLRenderTarget( windowWidth*deviceContentScale, windowHeight*deviceContentScale, parameters );
+    var renderTarget = new THREE.WebGLRenderTarget( windowWidth * deviceContentScale, windowHeight * deviceContentScale, parameters );
     renderTarget.texture.generateMipmaps = false;
     composer = new THREE.EffectComposer( renderer, renderTarget );
     //
+    var renderEarthShadowPass = new THREE.RenderPass( earth.sceneShadow, camera );
+    renderEarthShadowPass.clear = true;
+    composer.addPass( renderEarthShadowPass );
     renderMainPass = new THREE.RenderPass( scene, camera );
+    renderMainPass.clear = false;
     composer.addPass( renderMainPass );
 
-    //effectBloomPass = new THREE.BloomPass( 0.195, 15, 4, 512 );
-    //composer.addPass( effectBloomPass );
+    if( !PX.IsMobile )
+    {
+        // Bloom
+        effectBloomPass = new THREE.BloomPass( 0.85, 15, 4, 512 );
+        composer.addPass( effectBloomPass );
+    }
 
-	// tilt shift
-	effectTiltShiftHBlur = new THREE.ShaderPass( THREE.HorizontalTiltShiftShader );
-	effectTiltShiftVBlur = new THREE.ShaderPass( THREE.VerticalTiltShiftShader );
-	effectTiltShiftHBlur.uniforms[ 'r' ].value = Params.TiltShiftPosition;
-	effectTiltShiftVBlur.uniforms[ 'r' ].value = Params.TiltShiftPosition;
-	effectTiltShiftHBlur.uniforms[ 'h' ].value = Params.TiltShiftStrength / (windowWidth*deviceContentScale);
-	effectTiltShiftVBlur.uniforms[ 'v' ].value = Params.TiltShiftStrength / (windowHeight*deviceContentScale);
-    composer.addPass( effectTiltShiftHBlur );
-    composer.addPass( effectTiltShiftVBlur );
+    if( !PX.IsMobile )
+    {
+	    // tilt shift
+	    effectTiltShiftHBlur = new THREE.ShaderPass( THREE.HorizontalTiltShiftShader );
+	    effectTiltShiftVBlur = new THREE.ShaderPass( THREE.VerticalTiltShiftShader );
+	    effectTiltShiftHBlur.uniforms[ 'r' ].value = Params.TiltShiftPosition;
+	    effectTiltShiftVBlur.uniforms[ 'r' ].value = Params.TiltShiftPosition;
+	    effectTiltShiftHBlur.uniforms[ 'h' ].value = Params.TiltShiftStrength / (windowWidth*deviceContentScale);
+	    effectTiltShiftVBlur.uniforms[ 'v' ].value = Params.TiltShiftStrength / (windowHeight*deviceContentScale);
+        composer.addPass( effectTiltShiftHBlur );
+        composer.addPass( effectTiltShiftVBlur );
+    }
+
+    if( !PX.IsMobile )
+    {
+    	effectFXAAPass = new THREE.ShaderPass( THREE.FXAAShader );
+    	effectFXAAPass.uniforms[ 'resolution' ].value.set( 1.0 / (windowWidth*deviceContentScale), 1.0 / (windowHeight*deviceContentScale) );
+        composer.addPass( effectFXAAPass );
+    }
 
     //effectCopyPass = new THREE.ShaderPass( THREE.CopyShader );
     //composer.addPass( effectCopyPass );
-
-	effectFXAAPass = new THREE.ShaderPass( THREE.FXAAShader );
-	effectFXAAPass.uniforms[ 'resolution' ].value.set( 1.0 / (windowWidth*deviceContentScale), 1.0 / (windowHeight*deviceContentScale) );
-    composer.addPass( effectFXAAPass );
-
     //effectCopyPass.uniforms.opacity.value = 1.0;
     //effectCopyPass.renderToScreen = true;
 
@@ -546,12 +557,12 @@ function Setup()
 
     // Events
     //
-    window.addEventListener('resize', OnResize, false);
-    renderer.domElement.addEventListener('mousemove', OnMouseMove, false);
-    renderer.domElement.addEventListener('mouseout', OnMouseOut, false);
-    renderer.domElement.addEventListener('mousedown', OnMouseDown, false);
-    renderer.domElement.addEventListener('mouseup', OnMouseUp, false);
-    renderer.domElement.addEventListener('mousewheel', OnMouseWheel, false);
+    window.addEventListener( 'resize', OnResize, false );
+    renderer.domElement.addEventListener( 'mousemove', OnMouseMove, false );
+    renderer.domElement.addEventListener( 'mouseout', OnMouseOut, false );
+    renderer.domElement.addEventListener( 'mousedown', OnMouseDown, false );
+    renderer.domElement.addEventListener( 'mouseup', OnMouseUp, false );
+    renderer.domElement.addEventListener( 'mousewheel', OnMouseWheel, false );
 	renderer.domElement.addEventListener( 'touchstart', onTouchStart, false );
 	renderer.domElement.addEventListener( 'touchend', onTouchEnd, false );
 	renderer.domElement.addEventListener( 'touchmove', onTouchMove, false );
@@ -628,7 +639,8 @@ function InitStats()
     g_Stats.domElement.style.position = 'absolute';
     g_Stats.domElement.style.left = '0px';
     g_Stats.domElement.style.top = '50%';
-    g_Stats.domElement.style.visibility = 'hidden';
+    if( Params.ShowStats ) g_Stats.domElement.style.visibility = 'visible';
+    else g_Stats.domElement.style.visibility = 'hidden';
     document.body.appendChild( g_Stats.domElement );
 }
 
@@ -686,12 +698,11 @@ function InitGUI()
         maps.css( "z-index", newValue ? 1000 : -1000 );
     });
     
-    /*
     g_GUI.add( Params, 'ShowStats' ).onChange( function( newValue ) 
     {
-        g_Stats.domElement.style.visibility = newValue ? 'visible' : 'hidden';
+        if( g_Stats )
+            g_Stats.domElement.style.visibility = newValue ? 'visible' : 'hidden';
     });
-	*/
 	
     g_GUI.add( Params, "EnableSunLight" );
     g_GUI.addFolder( "BLOOM" );
@@ -866,10 +877,35 @@ function Update( time, frameTime )
 
     // Update Tilt Shift stuff
     //
-	effectTiltShiftHBlur.uniforms[ 'r' ].value = Params.TiltShiftPosition;
-	effectTiltShiftVBlur.uniforms[ 'r' ].value = Params.TiltShiftPosition;
-	effectTiltShiftVBlur.uniforms[ 'v' ].value = Params.TiltShiftStrength / windowHeight;
-	effectTiltShiftHBlur.uniforms[ 'h' ].value = Params.TiltShiftStrength / windowWidth;
+    if( effectTiltShiftHBlur )
+    {
+	    effectTiltShiftHBlur.uniforms[ 'r' ].value = Params.TiltShiftPosition;
+	    effectTiltShiftVBlur.uniforms[ 'r' ].value = Params.TiltShiftPosition;
+	    effectTiltShiftVBlur.uniforms[ 'v' ].value = Params.TiltShiftStrength / windowHeight;
+	    effectTiltShiftHBlur.uniforms[ 'h' ].value = Params.TiltShiftStrength / windowWidth;
+
+        // Change tilt focus position
+        if( appStateMan.IsState( PX.AppStates.AppStateLevel1ToLevel2 )
+            || appStateMan.IsState( PX.AppStates.AppStateLevel2 )
+            || appStateMan.IsState( PX.AppStates.AppStateLevel2ToLevel1 ) )
+        {
+            if( locationMarkers.clickedMarkerIndex !== -1 )
+            {
+                var p2d = locationMarkers.markers[ locationMarkers.clickedMarkerIndex ].position.clone();
+                p2d.applyQuaternion( earth.mesh.quaternion );
+                p2d.project( camera );
+                p2d.x = p2d.x * 0.5 + 0.5;
+                Params.TiltShiftPosition = p2d.x;
+                //console.log( "Params.TiltShiftPosition: ", Params.TiltShiftPosition );
+            }
+        }
+    }
+
+    // Update composer FX
+    if( effectFXAAPass )
+    {
+        effectFXAAPass.uniforms[ 'resolution' ].value.set( 1.0 / (windowWidth*deviceContentScale), 1.0 / (windowHeight*deviceContentScale) );
+    }
 
 
     // Fade in
@@ -891,17 +927,19 @@ function Render()
         renderer.render( bgScene, bgCamera );
     }
 
-/*
     //
     renderer.setViewport( 0, 0, windowWidth, windowHeight );
     composer.render();
     //
-    postFXQuad.material.opacity = Params.BloomOpacity;
-    postFXQuad.material.map = composer.renderTarget1;
+    postFXQuad2.material.opacity = Params.BloomOpacity;
+    if( !PX.IsMobile )
+        postFXQuad2.material.map = composer.renderTarget1;
+    else
+        postFXQuad2.material.map = composer.renderTarget2;
     renderer.setViewport( 0, 0, windowWidth, windowHeight );
-    renderer.render( postFXScene, fgCamera );
-*/
+    renderer.render( postFXScene2, fgCamera );
 
+/**
     //
     renderer.setViewport( 0, 0, windowWidth, windowHeight );
     renderer.render( scene, camera );
@@ -923,7 +961,7 @@ function Render()
         postFXQuad.material.map = composer.renderTarget1;
         renderer.render( postFXScene, fgCamera );
     }
-
+**/
 
     renderer.setViewport( 0, 0, windowWidth, windowHeight );
 
@@ -933,6 +971,7 @@ function Render()
 
     //renderer.setViewport( 0, 0, windowWidth, windowHeight );
     //renderer.render( fgScene, fgCamera );
+
 }
 
 
@@ -966,7 +1005,7 @@ function MainLoop()
     if( PX.kEnableStats )
     {
         g_Stats.end();
-        g_Stats.update();
+        //g_Stats.update();
     }
 }
 
@@ -1138,12 +1177,18 @@ function ComputeMapGridSizeFromZoomLevel( zoomLevel )
 
 function OnResize()
 {
+    if( !renderer )
+        return;
+
     //console.log( "OnResize" );
     windowWidth = window.innerWidth;
     windowHeight = window.innerHeight;
+    Params.WindowWidth = windowWidth;
+    Params.WindowHeight = windowHeight;
     camera.aspect = windowWidth / windowHeight;
     camera.updateProjectionMatrix();
     renderer.setSize( windowWidth, windowHeight );
+    composer.setSize( windowWidth * deviceContentScale, windowHeight * deviceContentScale );
     if( modelRenderer )
     {
         if( modelRenderer.enabled )
@@ -1161,15 +1206,33 @@ function onTouchStart( event )
     isMouseDown = true;
     isMouseMoved = false;
 
-	switch ( event.touches.length ) 
+	/*switch ( event.touches.length ) 
     {
-        case 1:
+        case 1:*/
             mouseX = event.touches[ 0 ].pageX;
             mouseY = event.touches[ 0 ].pageY;
-            break;
+            /*break;
         default:
             break;
-    }
+    }*/
+
+    previousMouseX = mouseX;
+    previousMouseY = mouseY;
+}
+
+
+function onTouchEnd( event ) 
+{
+    isMouseDown = false;
+    if( isMouseMoved ) isMouseClick = false;
+    else isMouseClick = true;
+    mouseX = event.touches[ 0 ].pageX;
+    mouseY = event.touches[ 0 ].pageY;
+    previousMouseX = mouseX;
+    previousMouseY = mouseY;
+
+    //
+    ZoomInFromLevel0ToLevel1( true );
 }
 
 
@@ -1184,25 +1247,14 @@ function onTouchMove( event )
 }
 
 
-function onTouchEnd( event ) 
-{
-    isMouseDown = false;
-    if( isMouseMoved ) isMouseClick = false;
-    else isMouseClick = true;
-    mouseX = event.touches[ 0 ].pageX;
-    mouseY = event.touches[ 0 ].pageY;
-
-    //
-    ZoomInFromLevel0ToLevel1( true );
-}
-
-
 function OnMouseDown(event)
 {
     isMouseDown = true;
     isMouseMoved = false;
     mouseX = event.clientX;
     mouseY = event.clientY;
+    previousMouseX = mouseX;
+    previousMouseY = mouseY;
 }
 
 
@@ -1214,6 +1266,8 @@ function OnMouseUp(event)
     console.log( "isMouseClick: ", isMouseClick );
     mouseX = event.clientX;
     mouseY = event.clientY;
+    previousMouseX = mouseX;
+    previousMouseY = mouseY;
 
     //
     ZoomInFromLevel0ToLevel1( true );

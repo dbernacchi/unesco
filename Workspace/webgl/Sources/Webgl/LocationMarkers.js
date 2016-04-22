@@ -18,6 +18,8 @@ UG.LocationMarker = function()
     this.targetColor    = null;
     this.colorChangeSpeed = 2.0;
 
+    this.modelCount     = 0;
+
     this.tween          = null;
 };
 UG.LocationMarker.prototype =
@@ -67,6 +69,8 @@ UG.LocationMarkers = function()
     this.level2GlobalScale      = new THREE.Vector3( 1.0, 1.0, 1.0 );
     this.level2SelectedGlobalScale = new THREE.Vector3( 1.0, 1.0, 1.0 );
 
+    this.lineSprite             = null;
+
     //this.level1FilterScales     = [];
 
     this.locationsGroupAnim     = false;
@@ -83,8 +87,19 @@ UG.LocationMarkers.prototype =
         this.markerScene = new THREE.Scene();
 
         //
+        var spriteMat = new THREE.SpriteMaterial( { map: PX.AssetsDatabase["TooltipLine"], color: 0xffffff, transparent: true, opacity: 0.0 } );
+        this.lineSprite = new THREE.Sprite( spriteMat );
+        this.lineSprite.material.side = THREE.DoubleSide;
+        this.lineSprite.material.blending = THREE.AdditiveBlending;
+        this.lineSprite.material.depthWrite = false;
+        this.lineSprite.material.premultipliedAlpha = true;
+
+        this.markerScene.add( this.lineSprite );
+
+        //
         this.locationsGroup = new THREE.Object3D();
 	    this.locationsGroup.position.set( 0, 0, 0 );
+        this.locationsGroup.renderOrder = 1000;
 
         //
 	    for( var i=0; i<locations.length; ++i )
@@ -96,10 +111,10 @@ UG.LocationMarkers.prototype =
             var color = PX.kLocationColor.clone();
 
 	        //var material = new THREE.MeshLambertMaterial( { color: color, emissive: 0x003333 } );
-	        var material = new THREE.MeshBasicMaterial( { color: color } );
-	        material.depthWrite = false;
+	        var material = new THREE.MeshLambertMaterial( { color: color } );
+	        //var material = new THREE.MeshBasicMaterial( { color: color } );
+	        //material.depthWrite = false;
 	        var geom = new THREE.CylinderGeometry( PX.kLocationMarkerScale, PX.kLocationMarkerScale, PX.kLocationMarkerScale, PX.kLocationMarkerDetail, 1 );
-	        //var geom = new THREE.CylinderGeometry( PX.kLocationMarkerScale, PX.kLocationMarkerScale, PX.kLocationMarkerScale*0.33, 16, 1 );
 
 	        var matTrans = new THREE.Matrix4().makeTranslation( 0, 0, -PX.kLocationMarkerScale*0.5 );
 	        var matRot = new THREE.Matrix4().makeRotationX( THREE.Math.degToRad( 90.0 ) )
@@ -150,7 +165,8 @@ UG.LocationMarkers.prototype =
 	    scene.add( this.locationsGroup );
 
 
-        this.billboardMaterial = new THREE.PointsMaterial( { size: Params.Level0MarkerRadius, sizeAttenuation: false, color: 0xffffff, opacity: 0.8, map: PX.AssetsDatabase[ "Circle" ], transparent: true } );
+        this.billboardMaterial = new THREE.PointsMaterial( { size: Params.Level0MarkerRadius, sizeAttenuation: false, color: 0xffffff, opacity: 1.0, map: PX.AssetsDatabase[ "Circle" ], transparent: true } );
+        //this.billboardMaterial = new THREE.PointsMaterial( { size: Params.Level0MarkerRadius, sizeAttenuation: false, color: 0xffffff, opacity: 0.8, map: PX.AssetsDatabase[ "Circle" ], transparent: true } );
         this.billboardMaterial.vertexColors = THREE.VertexColors;
         //this.billboardMaterial.depthTest = false;
         //this.billboardMaterial.depthWrite = false;
@@ -210,7 +226,8 @@ UG.LocationMarkers.prototype =
         this.level1FilterScales.push( new THREE.Vector3( 1.0, 1.0, 1.0 ) );
 ***/
         // Init
-        //this.locationsGroup.visible = false;
+        this.locationsGroup.visible = false;
+        this.textRenderer.visible = false;
 
     }
 
@@ -284,6 +301,7 @@ UG.LocationMarkers.prototype =
             }
             case PX.AppStates.AppStateLevel0:
             {
+                // Reset cluster location positions
                 for( var i=0; i<this.markersCount; ++i )
                 {
 		            this.geomPositionArray[i*3+0] = 10000;
@@ -404,9 +422,6 @@ UG.LocationMarkers.prototype =
         if( this.doPopulation )
             return;
 
-        //this.textRenderer.Begin();
-
-
         // Place only visible clusters/markers
         //
         var matTrans = new THREE.Matrix4();
@@ -425,6 +440,12 @@ UG.LocationMarkers.prototype =
                 distToCamera.subVectors( camera.position, loc.position );
                 var locationScale = distToCamera.length();
                 locationScale = ( locationScale * PX.kCameraOneOverMaxDistance ); /// PX.kCameraMaxDistance );
+
+                // If there is more than 1 model scale the location marker
+                if( loc.modelCount > 1 )
+                {
+                    locationScale *= 2.0;
+                }
                 
                 // Apply a global scale (used in level 2 to scale all non selected markers)
                 if( i !== this.clickedMarkerIndex )
@@ -479,41 +500,56 @@ UG.LocationMarkers.prototype =
             matRes.multiplyMatrices( matTrans, matRot );
             matRes.multiplyMatrices( matRes, matScale );
             //matRes = locationMeshes[i].matrixWorld;
-
-            //this.textRenderer.AppendText( loc.text, PX.ZeroVector, PX.kLocationTextSize, matRes, true );
 	    }
 
-        // Text End
-        //this.textRenderer.End();
 
         this.textRenderer.Begin();
 
         this.textRenderer.material.opacity += ( this.titleTargetOpacity - this.textRenderer.material.opacity ) * frameTime * 10.0;
+        this.lineSprite.material.opacity = PX.Saturate( this.textRenderer.material.opacity * this.textRenderer.material.opacity );
 
         if( this.currentMouseOverMarkerIndex >= 0 )
         {
             var loc = this.markers[ this.currentMouseOverMarkerIndex ];
 
-            loc.positionSS.copy( loc.position.clone().applyQuaternion(earth.mesh.quaternion) );
+            loc.positionSS.copy( loc.position.clone().applyQuaternion( earth.mesh.quaternion ) );
             loc.positionSS.project( camera );
 
             // 2d ortho
-            if( appStateMan.IsState( PX.AppStates.AppStateLevel1 ) )
+            /*if( appStateMan.IsState( PX.AppStates.AppStateLevel1 ) )
                 loc.positionSS.x = mouseX;
-            else
+            else*/
                 loc.positionSS.x = ( (loc.positionSS.x + 1.0 ) * 0.5 ) * Params.WindowWidth;
             loc.positionSS.y = ( (loc.positionSS.y + 1.0 ) * 0.5 ) * Params.WindowHeight;
-            //loc.positionSS.y = Params.WindowHeight - mouseY;
             loc.positionSS.z = 0.0;
+
+            var offsetValue = 40.0;
+
+            // Offset overlay text
+            //
+            if( loc.positionSS.y < Params.WindowHeight-(Params.WindowHeight/10) )
+            {
+                this.lineSprite.position.set( loc.positionSS.x + offsetValue*0.5, loc.positionSS.y + offsetValue*0.5, 0 );
+                this.lineSprite.scale.set( offsetValue, offsetValue, 1 );
+                // @NOTE: Must be done after changing lineSprite
+                loc.positionSS.x += offsetValue + offsetValue * 0.1;
+                loc.positionSS.y += offsetValue;
+            }
+            // If near the top, move tooltip down (invert)
+            else
+            {
+                this.lineSprite.position.set( loc.positionSS.x + offsetValue*0.5, loc.positionSS.y - offsetValue*0.5, 0 );
+                this.lineSprite.scale.set( offsetValue, -offsetValue, 1 );
+                // @NOTE: Must be done after changing lineSprite
+                loc.positionSS.x += offsetValue + offsetValue * 0.1;
+                loc.positionSS.y -= offsetValue;
+            }
 
             var fontSize = 9;
 
-            loc.positionSS.x += fontSize * 1.0;
-            loc.positionSS.y += fontSize * 0.5;
-
-            //this.textRenderer.AppendText2D( "MW", loc.positionSS, fontSize, 1.0, false, true );
             this.textRenderer.AppendText2D( loc.title, loc.positionSS, fontSize, 1.0, false, true );
         }
+
         this.textRenderer.End();
     }
 
@@ -836,20 +872,13 @@ UG.LocationMarkers.prototype =
 
             trackball.Reset( camera, cameraLookAtPoint );
 
-            //
-            /*if( earthOrbitControls ) 
-            {
-                earthOrbitControls.enabled = false;
-                //earthOrbitControls.update();
-            }*/
-
             // Change State
             appStateMan.ChangeState( PX.AppStates.AppStateLevel1ToLevel2 );
 
 
             // Apply tilt shift
             var tiltStart = { x: Params.TiltShiftStrength };
-            var tiltEnd = { x: 0.0 };
+            var tiltEnd = { x: Params.TiltShiftMaxStrength * 2.0 };
             var tiltTween = new TWEEN.Tween( tiltStart ).to( tiltEnd, 1000.0 );
             tiltTween.easing( TWEEN.Easing.Quintic.InOut );
             tiltTween.start();
@@ -885,12 +914,6 @@ UG.LocationMarkers.prototype =
             tween.onUpdate(function()
             {
                 camera.lookAt( cameraLookAtPoint );
-                /*if( earthOrbitControls )
-                {
-                    earthOrbitControls.target.copy( cameraLookAtPoint );
-                    earthOrbitControls.enabled = false;
-                    earthOrbitControls.update();
-                }*/
             });
 
             // ROTATE EARTH
@@ -899,7 +922,7 @@ UG.LocationMarkers.prototype =
             v1 = v1.crossVectors( v1, v0 ).normalize();
 
             var start = earth.mesh.quaternion.clone();
-            var end = new THREE.Quaternion().setFromAxisAngle( v1, PX.ToRadians(50) );
+            var end = new THREE.Quaternion().setFromAxisAngle( v1, PX.ToRadians(40) );
 
             var positionw = { x: 0.0 };
             var targetw = { x: 1.0 };
@@ -957,6 +980,14 @@ UG.LocationMarkers.prototype =
             // Restore default color
             this.SetLocationTargetColor( WebpageStates.FilterSwitches, this.markers[ index ] );
 
+            // Text and sprite opacity
+            this.titleTargetOpacity = 0.0;
+
+            // Reset clicked marker index
+            this.clickedMarkerIndex = -1;
+
+            //this.currentMouseOverMarkerIndex = -1;
+
 
             // Apply tilt shift
             var tiltStart = { x: Params.TiltShiftStrength };
@@ -967,6 +998,16 @@ UG.LocationMarkers.prototype =
             tiltTween.onUpdate( function()
             {
                 Params.TiltShiftStrength = tiltStart.x;
+            });
+            // tiltshift focus position
+            var tiltPosStart = { x: Params.TiltShiftPosition };
+            var tiltPosEnd = { x: 0.5 };
+            tiltTween = new TWEEN.Tween( tiltPosStart ).to( tiltPosEnd, 1000.0 );
+            tiltTween.easing( TWEEN.Easing.Quintic.InOut );
+            tiltTween.start();
+            tiltTween.onUpdate( function()
+            {
+                Params.TiltShiftPosition = tiltPosStart.x;
             });
 
             // Marker Global Scale
@@ -987,16 +1028,6 @@ UG.LocationMarkers.prototype =
             var tween = new TWEEN.Tween( camera.position ).to( target, Params.AnimTime * 1000.0 );
             tween.easing( TWEEN.Easing.Quadratic.InOut );
             tween.start();
-            /*tween.onComplete(function()
-            {
-                if( earthOrbitControls ) 
-                {
-                    earthOrbitControls.state = -1;
-                    earthOrbitControls.enabled = true;
-		            earthOrbitControls.dispatchEvent( changeEvent );
-                    earthOrbitControls.update();
-                }
-            });*/
 
             // CAMERA LOOKAT
             var target2 = { x : 0, y: 0, z: 0 };
@@ -1007,13 +1038,6 @@ UG.LocationMarkers.prototype =
             tween.onUpdate(function()
             {
                 camera.lookAt( cameraLookAtPoint );
-                /*if( earthOrbitControls )
-                {
-                    earthOrbitControls.enabled = true;
-                    earthOrbitControls.target.copy( cameraLookAtPoint );
-                    earthOrbitControls.state = -1;
-                    earthOrbitControls.update();
-                }*/
             });
 
             // ROTATE EARTH
@@ -1036,9 +1060,10 @@ UG.LocationMarkers.prototype =
                 appStateMan.ChangeState( PX.AppStates.AppStateLevel1 );
 
                 trackball.Reset( camera, cameraLookAtPoint );
-
+/*
                 // Reset clicked marker index
                 scope.clickedMarkerIndex = -1;
+*/
 
                 scope.currentMouseOverMarkerIndex = -1;
             });
@@ -1059,6 +1084,7 @@ UG.LocationMarkers.prototype =
                 // Hide level 0 stuff
                 this.billboards.visible = true;
                 this.locationsGroup.visible = false;
+                this.textRenderer.visible = false;
 
                 //console.log("zoomLevel: ", level );
                 this.markerCluster.setGridSize( Params.MapGridSize );
@@ -1083,6 +1109,7 @@ UG.LocationMarkers.prototype =
             {
                 // Hide level 0 stuff
                 this.locationsGroup.visible = true;
+                this.textRenderer.visible = true;
                 this.billboards.visible = false;
 
                 this.zoomLevel1IntroAnimDone = false;
@@ -1154,6 +1181,8 @@ UG.LocationMarkers.prototype =
                 loc.markerCount = c.markers_.length;
                 loc.index = i;
 
+                loc.modelCount = locations[i].modelCount;
+
                 this.markersCount++;
 
                 if( this.zoomLevel > 0 )
@@ -1165,6 +1194,12 @@ UG.LocationMarkers.prototype =
                     distToCamera.subVectors( camera.position, loc.position );
                     var locationScale = distToCamera.length();
                     locationScale = ( locationScale / PX.kCameraMaxDistance );
+
+                    // If there is more than 1 model, scale the location marker
+                    if( loc.modelCount > 1 )
+                    {
+                        locationScale *= 2.0;
+                    }
 
                     // Tween location markers
                     var target = new THREE.Vector3( locationScale, locationScale, locationScale );
@@ -1216,15 +1251,7 @@ UG.LocationMarkers.prototype =
             230,
             70
         ];
-        /*var MinDistancesPerLevel = [ 
-            230,
-            185,
-            130,
-            105,
-            70,
-            35,
-            20 //17.5
-        ];*/
+
 
         this.avoidanceCount = 0;
 
@@ -1252,6 +1279,13 @@ UG.LocationMarkers.prototype =
                 //var minDistance = MinDistancesPerLevel[ PX.Clamp( this.zoomLevel, 0, PX.kZoomMaxLevel ) ];
 
                 var distInKm = markerCluster.distanceBetweenPoints_( p1, p2 );
+
+                // If there is more than 1 model, increase the min distance
+                if( loci.modelCount > 1 || locj.modelCount > 1 )
+                {
+                    minDistance *= 1.75;
+                }
+
                 if( distInKm <= minDistance )
                 {
                     this.avoidanceCount++;
