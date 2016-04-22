@@ -466,7 +466,7 @@ UG.LocationMarkers.prototype =
                 {
                     locationScale *= this.level2GlobalScale.x;
                 }
-                if( i === this.clickedMarkerIndex )
+                if( i === this.clickedMarkerIndex && loc.modelCount <= 1 )
                 {
                     locationScale *= this.level2SelectedGlobalScale.x;
                 }
