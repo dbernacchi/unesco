@@ -26,27 +26,34 @@ $( document ).ready( function()
 		otherMobileHints: Boolean(ua.match(/(Opera Mini|IEMobile|SonyEricsson|smartphone)/)),
 	};	
 
-    if( checks.iphone || checks.ipod || checks.ipad || checks.android || checks.androidTablet || checks.mobile )
+    //if( checks.iphone || checks.ipod || checks.ipad || checks.android || checks.androidTablet || checks.mobile )
     {
         PX.IsMobile = true;
+
+        PX.kEnableGUI = false;
+
+        Params.Level0MarkerRadius *= 1.5;
+        PX.kLocationFontSize = 5;
 
         // change defauls for mobile
         PX.kEarthDetailX = 32;
         PX.kEarthDetailY = 22;
         //PX.kLocationMarkerDetail = 10;
-        PX.kLocationMarkerScale = 1.5;
-        PX.kLocationFontSize = 8;
+        PX.kLocationMarkerScale = 2.0;
         PX.kCameraMinDistance = 50.0;
-        PX.kCameraMaxDistance = 130.0;
+        PX.kCameraMaxDistance = 100.0;
         PX.kCameraOneOverMinDistance = 1.0 / PX.kCameraMinDistance;
         PX.kCameraOneOverMaxDistance = 1.0 / PX.kCameraMaxDistance;
         PX.MinDistancesPerLevel[0] = 230;
-        PX.MinDistancesPerLevel[1] = 110;
+        PX.MinDistancesPerLevel[1] = 180;
+
+        Params.CameraDistance = PX.kCameraMaxDistance;
+        Params.OutlineThickness = 70.0;
     }
-    else
+    /*else
     {
         PX.IsMobile = false;
-    }
+    }*/
 
     console.log( "PX.IsMobile: ", PX.IsMobile );
 

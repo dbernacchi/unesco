@@ -1169,20 +1169,11 @@ function OnResize()
     if( !renderer || !camera )
         return;
 
-    /*if( PX.IsMobile )
-    {
-        windowWidth = window.innerHeight;
-        windowHeight = window.innerWidth;
-        Params.WindowWidth = windowWidth;
-        Params.WindowHeight = windowHeight;
-    }
-    else*/
-    {
-        windowWidth = window.innerWidth;
-        windowHeight = window.innerHeight;
-        Params.WindowWidth = windowWidth;
-        Params.WindowHeight = windowHeight;
-    }
+    windowWidth = window.innerWidth;
+    windowHeight = window.innerHeight;
+    Params.WindowWidth = windowWidth;
+    Params.WindowHeight = windowHeight;
+
     camera.aspect = windowWidth / windowHeight;
     camera.updateProjectionMatrix();
     renderer.setSize( windowWidth, windowHeight );
