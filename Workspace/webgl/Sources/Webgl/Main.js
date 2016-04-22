@@ -26,7 +26,7 @@ $( document ).ready( function()
 		otherMobileHints: Boolean(ua.match(/(Opera Mini|IEMobile|SonyEricsson|smartphone)/)),
 	};	
 
-    //if( checks.iphone || checks.ipod || checks.ipad || checks.android || checks.androidTablet || checks.mobile )
+    if( checks.iphone || checks.ipod || checks.ipad || checks.android || checks.androidTablet || checks.mobile )
     {
         PX.IsMobile = true;
 
@@ -50,10 +50,10 @@ $( document ).ready( function()
         Params.CameraDistance = PX.kCameraMaxDistance;
         Params.OutlineThickness = 70.0;
     }
-    /*else
+    else
     {
         PX.IsMobile = false;
-    }*/
+    }
 
     console.log( "PX.IsMobile: ", PX.IsMobile );
 
