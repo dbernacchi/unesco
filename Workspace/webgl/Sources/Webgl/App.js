@@ -871,6 +871,22 @@ function Update( time, frameTime )
 	effectTiltShiftVBlur.uniforms[ 'v' ].value = Params.TiltShiftStrength / windowHeight;
 	effectTiltShiftHBlur.uniforms[ 'h' ].value = Params.TiltShiftStrength / windowWidth;
 
+    // Change tilt focus position
+    if( appStateMan.IsState( PX.AppStates.AppStateLevel1ToLevel2 )
+        || appStateMan.IsState( PX.AppStates.AppStateLevel2 )
+        || appStateMan.IsState( PX.AppStates.AppStateLevel2ToLevel1 ) )
+    {
+        if( locationMarkers.clickedMarkerIndex !== -1 )
+        {
+            var p2d = locationMarkers.markers[ locationMarkers.clickedMarkerIndex ].position.clone();
+            p2d.applyQuaternion( earth.mesh.quaternion );
+            p2d.project( camera );
+            p2d.x = p2d.x * 0.5 + 0.5;
+            Params.TiltShiftPosition = p2d.x;
+            //console.log( "Params.TiltShiftPosition: ", Params.TiltShiftPosition );
+        }
+    }
+
 
     // Fade in
     //

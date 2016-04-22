@@ -849,15 +849,15 @@ UG.LocationMarkers.prototype =
 
 
             // Apply tilt shift
-            /*var tiltStart = { x: Params.TiltShiftStrength };
-            var tiltEnd = { x: 0.0 };
+            var tiltStart = { x: Params.TiltShiftStrength };
+            var tiltEnd = { x: Params.TiltShiftMaxStrength * 2.0 };
             var tiltTween = new TWEEN.Tween( tiltStart ).to( tiltEnd, 1000.0 );
             tiltTween.easing( TWEEN.Easing.Quintic.InOut );
             tiltTween.start();
             tiltTween.onUpdate( function()
             {
                 Params.TiltShiftStrength = tiltStart.x;
-            });*/
+            });
 
 
             // Compute right vector
@@ -1215,17 +1215,9 @@ UG.LocationMarkers.prototype =
         //
         var MinDistancesPerLevel = [ 
             230,
-            130
+            90
         ];
-        /*var MinDistancesPerLevel = [ 
-            230,
-            185,
-            130,
-            105,
-            70,
-            35,
-            20 //17.5
-        ];*/
+
 
         this.avoidanceCount = 0;
 

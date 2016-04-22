@@ -50,7 +50,7 @@ PX =
     , kEarthDetailX: 32*4
     , kEarthDetailY: 22*4
     , kMarkerOffsetFromEarthSurface: 0.0
-    , kLocationMarkerScale: 0.8
+    , kLocationMarkerScale: 0.7
     , kLocationMarkerDetail: 16
     , kLocationMarkerZScale: 0.125
     , kAvoidanceSpeed: 0.031
@@ -66,7 +66,7 @@ PX =
     , kCameraFovY: 36.0
     , kCameraNearPlane: 1.0
     , kCameraFarPlane: 200.0
-    , kCameraMinDistance: 90 //60
+    , kCameraMinDistance: 70 //60
     , kCameraMaxDistance: 160.0
     , kCameraOneOverMinDistance: 1.0 / 60.0     // IMPORTANT!!
     , kCameraOneOverMaxDistance: 1.0 / 160.0    // If the above limits change, also change these
