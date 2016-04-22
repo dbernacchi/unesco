@@ -96,9 +96,11 @@ uniform float4      Params2;
 #define SpecularIntensity   Params0.z
 #define NormalMapIntensity  Params0.w
 
+#if 0
 #define CloudsIntensity     Params1.x
 #define CloudsShadowIntensity Params1.y
 #define CloudsShadowOffset  Params1.z
+#endif
 #define NightDayMixFactor   Params1.w
 
 #define Roughness           Params2.x
@@ -113,8 +115,10 @@ uniform float3      LightDirection; // = - float3( 0.15, 1.0, 0.6 );
 uniform sampler2D   DiffuseMap;
 uniform sampler2D   NormalMap;
 uniform sampler2D   SpecularMap;
+#if 0
 uniform sampler2D   CloudsMap;
 //uniform sampler2D   CloudsNormalMap;
+#endif
 uniform sampler2D   NightLightsMap;
 uniform float 		Time;
 
@@ -332,17 +336,16 @@ float3 Normal( float3 P, float3 normalTS, float3 NWS, float2 uv )
 //
 void main()
 {
+/***    
     SHIrradianceCoeffs_s SHCoeffs;
-    // /* Band 0 */ {  4.561910789405168000,  4.338831236354429200,  4.549443672552561300 },
+    //{  4.561910789405168000,  4.338831236354429200,  4.549443672552561300 },
     SHCoeffs.L00 = float4( 4.561910789405168000,  4.338831236354429200,  4.549443672552561300, 0.0 );
-    // /* Band 1 */
     // { -1.066899773558486000, -1.345496977489223100, -1.833896706071564700 },
     // {  6.230533384268796700,  6.243590726282771000,  6.734506428177562400 },
     // { -0.409898387196239890, -0.407305903505398800, -0.419154388937415800 },
     SHCoeffs.L1m1 = float4( -1.066899773558486000, -1.345496977489223100, -1.833896706071564700, 0.0 );
     SHCoeffs.L10  = float4(  6.230533384268796700,  6.243590726282771000,  6.734506428177562400, 0.0 );
     SHCoeffs.L11  = float4( -0.409898387196239890, -0.407305903505398800, -0.419154388937415800, 0.0 );
-    // /* Band 2 */
     // {  0.180521589985128070,  0.181593800661971640,  0.213711851853369020 },
     // { -2.675540875284603700, -2.993401496076991000, -3.844916227520071200 },
     // {  7.100179885362138100,  6.982958493407225300,  7.333083163362351400 },
@@ -353,7 +356,7 @@ void main()
     SHCoeffs.L20  = float4(  7.100179885362138100,  6.982958493407225300,  7.333083163362351400, 0.0 );
     SHCoeffs.L21  = float4( -0.799345351688743430, -0.724684938555545170, -0.723962216050280770, 0.0 );
     SHCoeffs.L22  = float4(  0.077810336762314650, -0.102120561717781100, -0.385290003048672840, 0.0 );
-
+*/
 
     float2 uvs = texcoord; // + float2( Time*0.01, 0.0 );
 
@@ -362,10 +365,13 @@ void main()
     float3 L0 = normalize( -LightDirection );
 
 
+#if 0
     float2 cloudsTexelSize = float2( 1.0/2048.0, 1.0/1024.0 );
     float2 cloudsShadowOffsetDir = -L0.xy * CloudsShadowOffset;
-    
+
     float2 texcoordClouds = uvs;
+#endif
+    
 
     float4 diffuseTexel = texture( DiffuseMap, uvs );
     diffuseTexel.rgb = ToLinearApprox( diffuseTexel.rgb );
@@ -373,16 +379,19 @@ void main()
     float4 specularMaskTexel = texture( SpecularMap, uvs );
     //specularMaskTexel.rgb = ToLinearApprox( specularMaskTexel.rgb ) + float3( Luminance( diffuseTexel.rgb ) );
     //specularMaskTexel.rgb = ToLinearApprox( specularMaskTexel.rgb );
+#if 0
     float4 cloudsTexel = texture( CloudsMap, texcoordClouds );
     //cloudsTexel.a = Luminance( cloudsTexel.rgb );
     cloudsTexel.rgb = ToLinearApprox( cloudsTexel.rgb );
     float4 cloudsTexel2 = texture( CloudsMap, texcoordClouds - ( cloudsTexelSize * cloudsShadowOffsetDir ) );
     //cloudsTexel2.a = Luminance( cloudsTexel2.rgb );
+#endif
     float4 nightLightsTexel = texture( NightLightsMap, uvs );
     nightLightsTexel.rgb = ToLinearApprox( nightLightsTexel.rgb );
 
+#if 0
     float cloudsShadow = saturate( 1.0 - cloudsTexel2.a * CloudsShadowIntensity );
-
+#endif
 
 #if 1 //ENABLE_NORMAL_MAPPING
     float3 NFace = normalize( normalWS );
@@ -430,7 +439,11 @@ void main()
 
     float AO = 1.0;
 
+#if 0
     float shadow = NoL * cloudsShadow;
+#else
+    float shadow = NoL;
+#endif
 
     float dayNightT = 1.0 - smoothstep( 0.0, NightDayMixFactor, saturate( NoLFace ) );
     //float dayNightT = 1.0 - smoothstep( 0.0, NightDayMixFactor, saturate( NoLFace ) );
@@ -438,7 +451,7 @@ void main()
     float3 diffuseAlbedo = diffuseTexel.rgb;
     const float3 specularAlbedo = float3( 1.0 );
 
-    float3 ambientColor = GetIrradianceFromSH( N, SHCoeffs );
+    //float3 ambientColor = GetIrradianceFromSH( N, SHCoeffs );
 
     float diffuseFactor = NoL;//smoothstep( -0.25, 0.0, NoL );
     //float diffuseFactor = max( 0.0, NoL );

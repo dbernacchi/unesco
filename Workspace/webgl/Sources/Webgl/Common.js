@@ -33,6 +33,10 @@ PX =
     AssetsDatabase: []
 
 
+    // Globals
+    , IsMobile: true
+
+
     // Constants
     //
     , EPSILON: 0.001
@@ -43,15 +47,15 @@ PX =
     , StartLatLon: { x: 6.3377571, y: 43.139408 }
 
     , kTransparentCanvas: true
-    , kEnableStats: false
+    , kEnableStats: true
     , kEnableGUI: true
 
     , kEarthScale: 30.0
-    , kEarthDetailX: 32*4
-    , kEarthDetailY: 22*4
+    , kEarthDetailX: 32 * 2
+    , kEarthDetailY: 22 * 2
     , kMarkerOffsetFromEarthSurface: 0.0
-    , kLocationMarkerScale: 0.7
-    , kLocationMarkerDetail: 16
+    , kLocationMarkerScale: 0.6
+    , kLocationMarkerDetail: 14
     , kLocationMarkerZScale: 0.125
     , kAvoidanceSpeed: 0.031
     //, kAvoidanceSpeed: 6.0
@@ -192,7 +196,7 @@ var Params =
     , WindowHeight: 0
     , MainScene: true
     , ShowMaps: false
-    , ShowStats: false
+    , ShowStats: true
     , EnableSunLight: false
     , EnableBloom: true
     //, BloomOpacity: 0.5
