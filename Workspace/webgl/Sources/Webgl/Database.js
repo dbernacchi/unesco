@@ -39,7 +39,7 @@ function ParseLocationData( locationsJson )
         location.position = PX.Utils.FromLatLon( location.latlon.x, location.latlon.y, PX.kEarthScale, PX.kLocationMarkerScale * PX.kLocationMarkerZScale * 0.5 );
 
         // @TEMP:
-        location.modelCount = parseInt( Math.random() * 3 );
+        location.modelCount = parseInt( Math.random() * 10 );
         //console.log( "Location: this.modelCount: ", location.modelCount );
 
         locationsDB.push( location );

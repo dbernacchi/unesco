@@ -938,12 +938,15 @@ function Render()
     }
 **/
 
-    renderer.setViewport( 0, 0, windowWidth, windowHeight );
 
     //
-    if( appStateMan.IsState( PX.AppStates.AppStateLevel0 ) 
-        || appStateMan.IsState( PX.AppStates.AppStateLevel0ToLevel1 ) )
+    /*if( appStateMan.IsState( PX.AppStates.AppStateLevel0 ) 
+        || appStateMan.IsState( PX.AppStates.AppStateLevel0ToLevel1 )
+        || appStateMan.IsState( PX.AppStates.AppStateLevel1 ) 
+        || appStateMan.IsState( PX.AppStates.AppStateLevel1ToLevel2 )
+        || appStateMan.IsState( PX.AppStates.AppStateLevel2 ) )*/
     {
+        renderer.setViewport( 0, 0, windowWidth, windowHeight );
         renderer.render( locationMarkers.markerScene, locationMarkers.camera2d );
         //renderer.render( locationMarkers.markerScene, fgCamera );
     }

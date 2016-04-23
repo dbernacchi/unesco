@@ -39,6 +39,7 @@ UG.LocationMarkers = function()
 	this.markers                = [];
 	this.level0Scales           = [];
     this.textRenderer           = null;
+    this.textRenderer1          = null;
     this.textRenderer2          = null;
     this.circleRenderer         = null;
 	this.markersCount           = 0;
@@ -166,6 +167,14 @@ UG.LocationMarkers.prototype =
         this.textRenderer.material.opacity = 0.0;
         //this.locationsGroup.add( this.textRenderer.mesh );
         //this.markerScene.add( this.textRenderer.mesh );
+
+        //
+        this.textRenderer1 = new PX.TextRenderer();
+        this.textRenderer1.Init( bmFontDescriptor, 2048, 0xffffff, PX.AssetsDatabase["TextAtlasTex"], null );
+        this.textRenderer1.material.depthWrite = false;
+        this.textRenderer1.material.opacity = 1.0;
+        this.locationsGroup.add( this.textRenderer1.mesh );
+
 
         this.circleRenderer = new PX.CircleRenderer();
         this.circleRenderer.Init( 4096, 0xffffff, PX.AssetsDatabase["Circle"], null );
@@ -444,6 +453,9 @@ UG.LocationMarkers.prototype =
         this.circleRenderer.Begin();
         this.circleRenderer.material.opacity = 1.0;
 
+        this.textRenderer1.Begin();
+        this.textRenderer1.material.opacity = 1.0;
+
         for( var i=0; i<this.markersCount; ++i )
         {
             var loc = this.markers[i];
@@ -498,6 +510,26 @@ UG.LocationMarkers.prototype =
             loc.color.b += (loc.targetColor.b - loc.color.b ) * frameTime * loc.colorChangeSpeed;
             this.meshes[i].material.color.copy( loc.color );
 
+            // Marker's Text Info
+            //
+            if( loc.modelCount > 1 )
+            {
+                var ttt = (1.0) * PX.kLocationMarkerZScale;
+                //var ttt = ( loc.markerCount > 0 ? loc.markerCount * PX.kLocationMarkerZScale : 1.0 );
+
+                var smallOffset = 0.001;
+                var p = PX.Utils.FromLatLon( loc.latlon.x, loc.latlon.y, PX.kEarthScale, smallOffset + (ttt * loc.scale.z * PX.kLocationMarkerScale) );
+
+                matTrans = matTrans.makeTranslation( p.x, p.y, p.z );
+                matRot.makeRotationFromQuaternion( this.meshes[i].quaternion );
+                matScale.makeScale( loc.scale.x, loc.scale.y, loc.scale.z );
+                matRes.multiplyMatrices( matTrans, matRot );
+                matRes.multiplyMatrices( matRes, matScale );
+
+                var fontSize = 130;
+                if( PX.IsMobile ) fontSize = 64;
+                this.textRenderer1.AppendText( ""+loc.modelCount, PX.ZeroVector, fontSize, matRes, true );
+            }
 
             //
             var outlinePos = new THREE.Vector3();
@@ -505,6 +537,7 @@ UG.LocationMarkers.prototype =
             this.circleRenderer.AppendRect( outlinePos, this.outlineGlobalScale.x * (PX.kLocationMarkerScale + ((Params.OutlineThickness * 0.001) / loc.scale.x)), this.meshes[i].matrix );
 	    }
 
+        this.textRenderer1.End();
         this.circleRenderer.End();
 
 
@@ -1026,12 +1059,6 @@ UG.LocationMarkers.prototype =
             // Text and sprite opacity
             this.titleTargetOpacity = 0.0;
 
-            // Reset clicked marker index
-            this.clickedMarkerIndex = -1;
-
-            //this.currentMouseOverMarkerIndex = -1;
-
-
             // Apply tilt shift
             var tiltStart = { x: Params.TiltShiftStrength };
             var tiltEnd = { x: Params.TiltShiftMaxStrength };
@@ -1108,10 +1135,9 @@ UG.LocationMarkers.prototype =
                 appStateMan.ChangeState( PX.AppStates.AppStateLevel1 );
 
                 trackball.Reset( camera, cameraLookAtPoint );
-/*
+
                 // Reset clicked marker index
                 scope.clickedMarkerIndex = -1;
-*/
 
                 scope.currentMouseOverMarkerIndex = -1;
             });

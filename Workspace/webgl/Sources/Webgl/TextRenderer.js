@@ -217,7 +217,7 @@ PX.TextRenderer.prototype =
             }
 
 	        xOffset += totalWidth * 0.5;
-            yyy = -(totalHeight / text.length) * fontSizeFactor * 0.5;
+            yyy = -(totalHeight / text.length) * fontSizeFactor * 0.75;
         }
 
 
