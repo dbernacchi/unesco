@@ -551,8 +551,10 @@ UG.LocationMarkers.prototype =
         {
             var loc = this.markers[ this.currentMouseOverMarkerIndex ];
 
-            var v0 = camera.position.clone().sub( loc.position ).normalize();
-            var v1 = loc.position.clone().normalize();
+            var v0 = camera.getWorldDirection().multiplyScalar( -1.0 );
+            var v1 = loc.direction;
+            //var v0 = camera.position.clone().sub( loc.position ).normalize();
+            //var v1 = loc.position.clone().normalize();
             var dot = v0.dot( v1 );
 
             //
@@ -563,33 +565,43 @@ UG.LocationMarkers.prototype =
                 loc.positionSS.project( camera );
 
                 // 2d ortho
-                /*if( appStateMan.IsState( PX.AppStates.AppStateLevel1 ) )
-                    loc.positionSS.x = mouseX;
-                else*/
-                    loc.positionSS.x = ( (loc.positionSS.x + 1.0 ) * 0.5 ) * Params.WindowWidth;
+                loc.positionSS.x = ( (loc.positionSS.x + 1.0 ) * 0.5 ) * Params.WindowWidth;
                 loc.positionSS.y = ( (loc.positionSS.y + 1.0 ) * 0.5 ) * Params.WindowHeight;
                 loc.positionSS.z = 0.0;
 
-                var offsetValue = 40.0;
+                var offsetValue = 30.0;
+                var offsetValueScale = 0.125;
+                if( loc.modelCount > 1 ) offsetValueScale *= 2.0;
 
                 // Offset overlay text
                 //
                 if( loc.positionSS.y < Params.WindowHeight-(Params.WindowHeight/10) )
                 {
-                    this.lineSprite.position.set( loc.positionSS.x + offsetValue*0.5, loc.positionSS.y + offsetValue*0.5, 0 );
+                    this.lineSprite.position.set( loc.positionSS.x + offsetValue * 0.5, loc.positionSS.y + offsetValue * 0.5, 0 );
                     this.lineSprite.scale.set( offsetValue, offsetValue, 1 );
                     // @NOTE: Must be done after changing lineSprite
-                    loc.positionSS.x += offsetValue + offsetValue * 0.1;
+                    loc.positionSS.x += offsetValue;
                     loc.positionSS.y += offsetValue;
+
+                    this.lineSprite.position.x += offsetValue * offsetValueScale;
+                    this.lineSprite.position.y += offsetValue * offsetValueScale;
+                    loc.positionSS.x += offsetValue * offsetValueScale;
+                    loc.positionSS.y += offsetValue * offsetValueScale;
                 }
                 // If near the top, move tooltip down (invert)
                 else
                 {
-                    this.lineSprite.position.set( loc.positionSS.x + offsetValue*0.5, loc.positionSS.y - offsetValue*0.5, 0 );
+                    this.lineSprite.position.set( loc.positionSS.x + offsetValue * 0.5, loc.positionSS.y - offsetValue * 0.5, 0 );
                     this.lineSprite.scale.set( offsetValue, -offsetValue, 1 );
                     // @NOTE: Must be done after changing lineSprite
-                    loc.positionSS.x += offsetValue + offsetValue * 0.1;
+                    loc.positionSS.x += offsetValue;
                     loc.positionSS.y -= offsetValue;
+
+                    this.lineSprite.position.x += offsetValue * offsetValueScale;
+                    this.lineSprite.position.y -= offsetValue * offsetValueScale;
+                    loc.positionSS.x += offsetValue * offsetValueScale;
+                    loc.positionSS.y -= offsetValue * offsetValueScale;
+
                 }
 
                 var fontSize = PX.kLocationFontSize;
@@ -700,7 +712,7 @@ UG.LocationMarkers.prototype =
                 //intersects[ 0 ].object.material.color.set( PX.kLocationMouseOverColor );
                 loc.targetColor.copy( PX.kLocationColors2[3] );
                 loc.colorChangeSpeed = 10.0;
-                this.titleTargetOpacity = 2.0;
+                this.titleTargetOpacity = 1.0;
                 return i;
             }
         }
@@ -823,8 +835,6 @@ UG.LocationMarkers.prototype =
             // Change app state
             appStateMan.ChangeState( PX.AppStates.AppStateLevel0ToLevel1 );
 
-            scope.doAvoidance = true;
-
             // Apply tilt shift
             var tiltStart = { x: Params.TiltShiftStrength };
             var tiltEnd = { x: Params.TiltShiftMaxStrength };
@@ -906,6 +916,10 @@ UG.LocationMarkers.prototype =
             {
                 camera.lookAt( cameraLookAtPoint );
             });
+
+
+            // Outline Global Scale
+            this.outlineGlobalScale.set( 0.0, 0.0 );
         }
 
         // Level 1
@@ -1293,6 +1307,7 @@ UG.LocationMarkers.prototype =
                     if( i === clusterCount-1 )
                     {
                         // Outline Global Scale
+                        scope.outlineGlobalScale.set( 0.0, 0.0 );
                         var ogsTarget = new THREE.Vector2( 1.0, 1.0 );
                         var tweenogs = new TWEEN.Tween( scope.outlineGlobalScale ).to( ogsTarget, Params.AnimTime * 500.0 );
                         tweenogs.easing( TWEEN.Easing.Quadratic.InOut );

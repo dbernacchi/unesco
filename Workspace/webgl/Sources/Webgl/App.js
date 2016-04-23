@@ -247,10 +247,10 @@ function LoadData()
         , LoadTexture( "TooltipLine", "webgl/data/textures/line.png" )
         , LoadShaderData("EarthVertexShader", "webgl/data/shaders/Earth.vertex")
         , LoadShaderData("EarthPixelShader", "webgl/data/shaders/Earth.fragment")
-        //, LoadTexture( "TextAtlasTex", "webgl/data/fonts/lucida_0.png" )
-        //, LoadText( "TextAtlasXml", "webgl/data/fonts/lucida.xml" )
-        , LoadText( "TextAtlasXml", "webgl/data/fonts/arialLarge.xml" )
-        , LoadTexture( "TextAtlasTex", "webgl/data/fonts/arialLargeTransparent.png" )
+        , LoadText( "TextAtlasXml", "webgl/data/fonts/font.xml" )
+        , LoadTexture( "TextAtlasTex", "webgl/data/fonts/font_0.png" )
+        //, LoadText( "TextAtlasXml", "webgl/data/fonts/arialLarge.xml" )
+        //, LoadTexture( "TextAtlasTex", "webgl/data/fonts/arialLargeTransparent.png" )
         , LoadJsonData("LocationsJson", "webgl/data/latlon.json")
     ).done(function ()
     {
@@ -1023,22 +1023,25 @@ function UpdateFilterSwitches( id )
 
 function ZoomInFromLevel0ToLevel1( isUserClickOnLocation )
 {
-    if( isUserClickOnLocation )
+    if( appStateMan.IsState( PX.AppStates.AppStateLevel0 ) )
     {
-        if( isMouseClick )
+        if( isUserClickOnLocation )
         {
-            var res = locationMarkers.OnMouseClickEvent( mouseVector3d, camera, true,
-            function( object )  // Callback returning clicked marker
+            if( isMouseClick )
             {
-                console.log( "+--+  Clicked Marker ID:\t", object.id );
-            } );
+                var res = locationMarkers.OnMouseClickEvent( mouseVector3d, camera, true,
+                function( object )  // Callback returning clicked marker
+                {
+                    console.log( "+--+  Clicked Marker ID:\t", object.id );
+                } );
+            }
         }
-    }
-    else
-    {
-        if( isMouseClick )
+        else
         {
-            locationMarkers.OnMouseClickEvent( mouseVector3d, camera, false, null );
+            if( isMouseClick )
+            {
+                locationMarkers.OnMouseClickEvent( mouseVector3d, camera, false, null );
+            }
         }
     }
 }

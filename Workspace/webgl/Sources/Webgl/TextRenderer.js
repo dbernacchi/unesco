@@ -25,11 +25,11 @@ PX.TextRenderer.prototype =
         this.bmFontDescriptor = bmFontDescriptor;
 
         //this.material = new THREE.MeshBasicMaterial( { map: texture, color: 0xff0000 } );
-        this.material = new THREE.MeshBasicMaterial( { map: texture, color: color, opacity: 2.0, transparent: true } );
+        this.material = new THREE.MeshBasicMaterial( { map: texture, color: color, opacity: 1.0, transparent: true } );
         this.material.side = THREE.DoubleSide;
-        this.material.blending = THREE.AdditiveBlending;
+        //this.material.blending = THREE.AdditiveBlending;
         this.material.depthWrite = false;
-        this.material.premultipliedAlpha = true;
+        //this.material.premultipliedAlpha = true;
 
         this.geometry = new THREE.BufferGeometry();
         this.geometry.dynamic = true;
@@ -217,7 +217,7 @@ PX.TextRenderer.prototype =
             }
 
 	        xOffset += totalWidth * 0.5;
-            yyy = -(totalHeight / text.length) * fontSizeFactor * 0.75;
+            yyy = -(totalHeight / text.length) * fontSizeFactor * 0.5;
         }
 
 
