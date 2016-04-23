@@ -205,9 +205,9 @@ UG.LocationMarkers.prototype =
         {
 		    vertex.copy( locations[i].position );
 
-            positions[ i*3+0] = vertex.x;
-            positions[ i*3+1] = vertex.y;
-            positions[ i*3+2] = vertex.z;
+            positions[ i*3+0] = 10000.0; //vertex.x;
+            positions[ i*3+1] = 0.0; //vertex.y;
+            positions[ i*3+2] = 0.0; //vertex.z;
             colors[ i*3+0] = commonColor.r;
             colors[ i*3+1] = commonColor.g;
             colors[ i*3+2] = commonColor.b;
@@ -249,6 +249,7 @@ UG.LocationMarkers.prototype =
         this.level1FilterScales.push( new THREE.Vector3( 1.0, 1.0, 1.0 ) );
 ***/
         // Init
+        ////this.markerScene.visible = false;
         this.locationsGroup.visible = false;
         this.textRenderer.visible = false;
 
