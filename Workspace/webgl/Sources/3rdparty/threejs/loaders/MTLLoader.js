@@ -377,7 +377,7 @@ THREE.MTLLoader.MaterialCreator.prototype = {
                     if( temp.length > 1 )
                     {
                         mat[ prop ] = temp[0];
-                        console.log( value, temp, mat[ prop ] );
+                        //console.log( value, temp, mat[ prop ] );
                         value = temp[0];
                     }
 

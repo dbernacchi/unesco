@@ -177,7 +177,7 @@ var UNESCO = {};
                 // sub that from the total width % and we get the proper fitting size
                 var offset = ( ( parseInt(preloaderFG.css('margin-left')) * 2.0 ) / windowWidth) * 100.0;
                 var percentage = PX.Clamp( ( Math.ceil( (per+0.25) * 80.0 ) ), 0.0, 80.0 );
-                console.log( "Load()  percentage: ", percentage, "  offset: ", offset );
+                //console.log( "Load()  percentage: ", percentage, "  offset: ", offset );
                 preloaderFG.css( "width", (percentage - offset) + '%' );
 
 				//console.log("+---+  Loading: " + parseInt(per * 100.0) + "%" );

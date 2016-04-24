@@ -180,25 +180,26 @@ function LoadBINScene( path, filename, scene, onProgressCB, onCompleteCB )
 
 function LoadOBJScene( path, filename, scene, onProgressCB, onCompleteCB )
 {
-    var url = path + filename +"?" + new Date().getTime();
-    console.log( "+--+  Load OBJ Scene:\t", url );
+    //var url = path + filename;
+    console.log( "+--+  Load OBJ Scene:\t", path + filename );
 
     var mtlLoader = new THREE.MTLLoader();
     var objLoader = new THREE.OBJLoader();
 
 	var loadStartTime = Date.now();
 
+    var mtlUrl = filename + ".mtl" + "?" + new Date().getTime();;
+    var objUrl = filename + ".obj" + "?" + new Date().getTime();;
+
 	mtlLoader.setBaseUrl( path );
 	mtlLoader.setPath( path );
-	mtlLoader.load( filename+".mtl", function( materials ) 
+	mtlLoader.load( mtlUrl, function( materials ) 
     {
         materials.preload();
 
         var matArray = materials.getAsArray();
 
-        var ourMat = 
-
-        console.log( matArray, matArray.length );
+        //console.log( matArray, matArray.length );
         for ( var i=0; i<matArray.length; ++i )
         {
             var mat = matArray[i];
@@ -212,7 +213,7 @@ function LoadOBJScene( path, filename, scene, onProgressCB, onCompleteCB )
 
 		//objLoader.setMaterials( materials );
 	    objLoader.setPath( path );
-	    objLoader.load( filename+".obj"
+	    objLoader.load( objUrl
         , function( object ) 
         {
             scene.add( object );
@@ -232,7 +233,7 @@ function LoadOBJScene( path, filename, scene, onProgressCB, onCompleteCB )
                     object.material.side = THREE.DoubleSide;
                     object.material.transparent = false;
                     object.material.opacity = 1.0;
-                    console.log( "LoadOBJScene()  object.material: " + object.material );
+                    //console.log( "LoadOBJScene()  object.material: " + object.material );
                 }
             });
 
@@ -366,7 +367,7 @@ function ComputeSceneBoundingSphere( scene )
     sceneCenter.addVectors( sceneMin, sceneMax );
     //radius = sceneCenter.length();
     sceneCenter = sceneCenter.divideScalar( 2.0 );
-    console.log( sceneCenter, sceneMin, sceneMax, radius );
+    //console.log( sceneCenter, sceneMin, sceneMax, radius );
 
     //var len = Math.max( sceneMin.x, sceneMax.x );
     var minLength = sceneMin.length();
