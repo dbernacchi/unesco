@@ -168,10 +168,20 @@ var UNESCO = {};
 			}
 
 			// @NOTE: We do not pass filename extension. That's added internally in the Loaders
-			modelRenderer.Load("webgl/data/models/01_Nimrud_Relief/", "Nimrud_Relief", function(per)
+			//modelRenderer.Load("webgl/data/models/16_Lion_of_Mosul/", "16_lion.fbx.js", function(per)
+			//modelRenderer.Load("webgl/data/models/17_Reclining_Woman_Relief_(Mosul)/", "17_Reclining_Woman_Relief_(Mosul)", function(per)
+			modelRenderer.Load("webgl/data/models/16_Lion_of_Mosul/", "16_lion2", function(per)
+			//modelRenderer.Load("webgl/data/models/01_Nimrud_Relief/", "Nimrud_Relief", function(per)
 			//modelRenderer.Load("webgl/data/models/06_Mihrab_of_the_Mosque_Al_Hasan/", "Mihrab_of_the_mosque_al_Hasan", function(per)
 			//modelRenderer.Load("webgl/data/models/06_Mihrab_of_the_Mosque_Al_Hasan/", "mesh", function(per)
 			{
+                // Since we do a margin on the FG bar we need to compute the offset to remove from the bar in %
+                // sub that from the total width % and we get the proper fitting size
+                var offset = ( ( parseInt(preloaderFG.css('margin-left')) * 2.0 ) / windowWidth) * 100.0;
+                var percentage = PX.Clamp( ( Math.ceil( (per+0.25) * 80.0 ) ), 0.0, 80.0 );
+                //console.log( "Load()  percentage: ", percentage, "  offset: ", offset );
+                preloaderFG.css( "width", (percentage - offset) + '%' );
+
 				//console.log("+---+  Loading: " + parseInt(per * 100.0) + "%" );
 			});
 

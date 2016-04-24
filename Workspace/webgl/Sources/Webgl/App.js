@@ -636,6 +636,10 @@ function Setup()
         }
     });
 
+
+    //LoadOBJScene( "webgl/data/models/16_Lion_of_Mosul/", "16_lion", scene, null, null );
+
+
     //
     startTime = timeNow();
 

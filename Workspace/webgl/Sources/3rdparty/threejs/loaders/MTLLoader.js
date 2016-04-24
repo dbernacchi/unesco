@@ -372,6 +372,15 @@ THREE.MTLLoader.MaterialCreator.prototype = {
 
 					if ( params[ 'bumpMap' ] ) break; // Avoid loading twice.
 
+                    // HACK: get rid of the "-bm" multiplier that comes with "bump" field
+                    var temp = value.split( " -" );
+                    if( temp.length > 1 )
+                    {
+                        mat[ prop ] = temp[0];
+                        //console.log( value, temp, mat[ prop ] );
+                        value = temp[0];
+                    }
+
 					params[ 'bumpMap' ] = this.loadTexture( this.baseUrl + value );
 					params[ 'bumpMap' ].wrapS = this.wrap;
 					params[ 'bumpMap' ].wrapT = this.wrap;
