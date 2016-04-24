@@ -180,7 +180,7 @@ function LoadBINScene( path, filename, scene, onProgressCB, onCompleteCB )
 
 function LoadOBJScene( path, filename, scene, onProgressCB, onCompleteCB )
 {
-    var url = path + filename;
+    var url = path + filename +"?" + new Date().getTime();
     console.log( "+--+  Load OBJ Scene:\t", url );
 
     var mtlLoader = new THREE.MTLLoader();
@@ -205,7 +205,7 @@ function LoadOBJScene( path, filename, scene, onProgressCB, onCompleteCB )
             if( mat.bumpMap )
             {
                 mat.normalMap = mat.bumpMap;
-                console.log( "mat has normalmap", mat );
+                //console.log( "mat has normalmap", mat );
             }
             ourMat = mat;
         }
@@ -223,11 +223,11 @@ function LoadOBJScene( path, filename, scene, onProgressCB, onCompleteCB )
                 if( object instanceof THREE.Mesh )
                 {
                     object.material = ourMat.clone();
-                    if( object.material.bumpMap )
+                    /*if( object.material.bumpMap )
                     {
                         object.material.normalMap = object.material.bumpMap;
-                        console.log( "material as normal maps" );
-                    }
+                        //console.log( "material as normal maps" );
+                    }*/
                     object.material.color = new THREE.Color( 0xffffff );
                     object.material.side = THREE.DoubleSide;
                     object.material.transparent = false;
