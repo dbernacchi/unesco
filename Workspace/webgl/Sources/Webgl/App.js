@@ -588,17 +588,23 @@ function Setup()
 				break;
 			case PX.AppStates.AppStateLevel0:	
 				UNESCO.hideLegend();
+				UNESCO.showZoomIn();
+	            UNESCO.hideZoomOut();
 				break;
 			case PX.AppStates.AppStateLevel1:
 				UNESCO.showLegend();
+	            UNESCO.showZoomOut();
+	            UNESCO.hideZoomIn();
 				break;
 					
 			case PX.AppStates.AppStateLevel1ToLevel2:
 				UNESCO.showBrowse();
+	            UNESCO.hideZoomIn();
+	            UNESCO.hideZoomOut();
 				break;
 			case PX.AppStates.AppStateLevel2ToLevel1:
 				UNESCO.hideBrowse();
-				
+			
 				break;
             default:
                 break;
@@ -612,6 +618,18 @@ function Setup()
     {
         if( appStateMan.IsState( PX.AppStates.AppStateLevel1 ) )
         {
+        	
+        	$("#legend > .clr > li > a" ).removeClass('disabled');
+        	
+        	var cls = $(this).attr('class');
+        	
+        	$("#legend > .clr > li > a" ).each(function(){
+        		
+        		if(cls != $(this).attr('class')){
+        			$(this).addClass('disabled');
+        		}
+        	});	
+        	
             var index = $(this).parent().index();
             UpdateFilterSwitches( index );
             locationMarkers.FilterLocationMeshColors( WebpageStates.FilterSwitches );
@@ -1023,6 +1041,7 @@ function UpdateFilterSwitches( id )
 
 function ZoomInFromLevel0ToLevel1( isUserClickOnLocation )
 {
+	
     if( appStateMan.IsState( PX.AppStates.AppStateLevel0 ) )
     {
         if( isUserClickOnLocation )
@@ -1038,10 +1057,10 @@ function ZoomInFromLevel0ToLevel1( isUserClickOnLocation )
         }
         else
         {
-            if( isMouseClick )
-            {
+            //if( isMouseClick )
+            //{
                 locationMarkers.OnMouseClickEvent( mouseVector3d, camera, false, null );
-            }
+            //}
         }
     }
 }
@@ -1051,8 +1070,8 @@ function ZoomOutFromLevel1ToLevel0()
 {
     if( appStateMan.IsState( PX.AppStates.AppStateLevel1 ) )
     {
-        if( event.wheelDelta < 0.0 )
-        {
+        //if( event.wheelDelta < 0.0 )
+        //{
             // Change state
             appStateMan.SetState( PX.AppStates.AppStateLevel1ToLevel0 );
 
@@ -1132,7 +1151,7 @@ function ZoomOutFromLevel1ToLevel0()
                     });
                 }
             }
-        }
+        //}
     }
 }
 

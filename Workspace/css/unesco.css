@@ -221,24 +221,16 @@ ul.clr li {
 	margin-bottom: 15px;
 	width: 25px;
 	height: 25px;
-	background-image: url(../img/map/zoom_in.png)
-}
-
-#zoom-in-button.disabled{
-	
-	background-image: url(../img/map/zoom_in_disabled.png)
+	background-image: url(../img/map/zoom_in.png);
+	display: block;
 }
 
 #zoom-out-button{
 	
 	width: 25px;
 	height: 25px;
-	background-image: url(../img/map/zoom_out.png)
-}
-
-#zoom-out-button.disabled{
-	
-	background-image: url(../img/map/zoom_out_disabled.png)
+	background-image: url(../img/map/zoom_out.png);
+	display: block;
 }
 
 #menu-button {
@@ -278,6 +270,12 @@ ul.clr li {
 	padding: 0px 80px 5px 35px;
 	color: #fff;
 	text-decoration: none;
+}
+
+#legend a.disabled {
+	display: block;
+	color: #383838;
+
 }
 
 #legend a.destroyed {

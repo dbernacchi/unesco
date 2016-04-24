@@ -6,11 +6,11 @@ var UNESCO = {};
 	var max_width = 1920;
 
 	var resized_images_to_load = 0;
-	
+
 	var stop_loading_fade = false;
 
 	this.init = function() {
-
+		
 		var ns = this;
 
 		this.resize();
@@ -20,60 +20,60 @@ var UNESCO = {};
 		//ns.topStatusBar();
 
 		//$(".UNESCO#slide-5").show();
-		
+
 		//var slider = $(".UNESCO .items-inner-2");
 		//var item_height = 250;
 
 		/*
-		$(".UNESCO .arrow.up").click(function(e) {
-			e.preventDefault();
+		 $(".UNESCO .arrow.up").click(function(e) {
+		 e.preventDefault();
 
-			var top = parseInt(slider.css('top'), 10);
+		 var top = parseInt(slider.css('top'), 10);
 
-			if (!ns.lock && top < 0) {
+		 if (!ns.lock && top < 0) {
 
-				ns.lock = true;
+		 ns.lock = true;
 
-				slider.animate({
-					top : "+=" + item_height,
-				}, 1000, function() {
-					ns.lock = false;
-				});
+		 slider.animate({
+		 top : "+=" + item_height,
+		 }, 1000, function() {
+		 ns.lock = false;
+		 });
 
-			}
-		});
+		 }
+		 });
 
-		$(".UNESCO .arrow.down").click(function(e) {
-			e.preventDefault();
+		 $(".UNESCO .arrow.down").click(function(e) {
+		 e.preventDefault();
 
-			var top = parseInt(slider.css('top'), 10);
+		 var top = parseInt(slider.css('top'), 10);
 
-			var height = slider.height();
+		 var height = slider.height();
 
-			var limit = (height * -1) + (item_height * 3);
+		 var limit = (height * -1) + (item_height * 3);
 
-			if (!ns.lock && top <= 0 && top > limit) {
+		 if (!ns.lock && top <= 0 && top > limit) {
 
-				ns.lock = true;
+		 ns.lock = true;
 
-				slider.animate({
-					top : "-=" + item_height,
-				}, 1000, function() {
-					ns.lock = false;
-				});
-			}
-		});
-		*/
-	
+		 slider.animate({
+		 top : "-=" + item_height,
+		 }, 1000, function() {
+		 ns.lock = false;
+		 });
+		 }
+		 });
+		 */
+
 		function fading() {
 
 			$(".loading").fadeTo(1000, 1, function() {
-				
-				if(!stop_loading_fade){
+
+				if (!stop_loading_fade) {
 
 					$(".loading").fadeTo(1000, 0, function() {
-	
-						if(!stop_loading_fade){
+
+						if (!stop_loading_fade) {
 							fading();
 						}
 					});
@@ -81,22 +81,37 @@ var UNESCO = {};
 			});
 
 		}
-		
-		fading(); 
-		
+
+		fading();
+
 		$(".UNESCO .explore-button").click(function(e) {
 			e.preventDefault();
 
-			console.log("HIDE");
-			$(".close-button").hide();
-			
 			ns.hideSplash();
-
+			
+			ns.centerLogo();
+			
 			// Change app state to Level 0
 			OnExploreClick();
 
 		});
 
+		$(".UNESCO #zoom-in-button").click(function(e) {
+			e.preventDefault();
+			ns.hideZoomIn();
+			ZoomInFromLevel0ToLevel1(false);
+
+		});
+
+		$(".UNESCO #zoom-out-button").click(function(e) {
+			e.preventDefault();
+			ns.hideZoomOut();
+			ZoomOutFromLevel1ToLevel0();
+	
+		});
+
+
+		/*
 		$(".UNESCO#slide-9 .close-button").click(function(e) {
 			e.preventDefault();
 
@@ -108,6 +123,8 @@ var UNESCO = {};
 			if (modelRenderer) {
 				modelRenderer.Clear();
 			}
+
+		
 
 		});
 
@@ -121,6 +138,8 @@ var UNESCO = {};
 
 		});
 
+		*/
+		
 		$(".UNESCO#browse .item a").click(function(e) {
 			e.preventDefault();
 
@@ -129,7 +148,6 @@ var UNESCO = {};
 			$(".UNESCO#menu-button").hide();
 
 			ns.center($(".UNESCO#slide-5 ul"));
-		
 
 		});
 
@@ -147,48 +165,54 @@ var UNESCO = {};
 				modelRenderer.Init(modelContainer[0], windowWidth, windowHeight);
 			}
 
-            // @NOTE: We do not pass filename extension. That's added internally in the Loaders
-            modelRenderer.Load("webgl/data/models/01_Nimrud_Relief/", "Nimrud_Relief", function(per)
+			// @NOTE: We do not pass filename extension. That's added internally in the Loaders
+			modelRenderer.Load("webgl/data/models/01_Nimrud_Relief/", "Nimrud_Relief", function(per)
 			//modelRenderer.Load("webgl/data/models/06_Mihrab_of_the_Mosque_Al_Hasan/", "Mihrab_of_the_mosque_al_Hasan", function(per)
 			//modelRenderer.Load("webgl/data/models/06_Mihrab_of_the_Mosque_Al_Hasan/", "mesh", function(per)
-            {
+			{
 				//console.log("+---+  Loading: " + parseInt(per * 100.0) + "%" );
 			});
 
 		});
-		
+
 		$(".UNESCO#share-button").click(function(e) {
 			e.preventDefault();
 
 			var menu = $(".UNESCO.share-menu");
-			
-			if(menu.css('display') == 'none'){
+
+			if (menu.css('display') == 'none') {
 				menu.fadeTo(1000, 1);
 			} else {
 				menu.fadeTo(1000, 0);
 			}
-		
 
-		});		
-		
+		});
+
 		$(".UNESCO#menu-button").click(function(e) {
 			e.preventDefault();
 
 			$(".UNESCO.furniture").hide();
-			$(".UNESCO.about-wrapper").show();
+
+			ns.overlayAppend();
+			ns.center($(".UNESCO#about"));
 			
+			ns.centerLogo();
+			
+			$(".UNESCO.close-button").show();
+
 		});
-		
-		$(".UNESCO#about .close-button").click(function(e) {
+
+		$(".close-button").click(function(e) {
 			e.preventDefault();
 
-			$(".UNESCO.about-wrapper").hide();
+			ns.overlayRemove();
+			$(".UNESCO#about").hide();
 			$(".UNESCO.furniture").show();
 
-			
+			$(this).hide();
 
 		});
-		
+
 	}
 
 	this.resize = function() {
@@ -204,7 +228,7 @@ var UNESCO = {};
 		}
 
 		function apply(elm, target) {
-			
+
 			if (elm.hasClass('resize-' + target)) {
 
 				var attr = elm.css(target);
@@ -222,19 +246,19 @@ var UNESCO = {};
 		function afterLoad(img) {
 
 			var attr = img[0].naturalWidth;
-			
+
 			var attr = attr * .01 * percentage;
 
 			img.prop('width', attr);
-			
+
 			var attr = img[0].naturalHeight;
-			
+
 			var attr = attr * .01 * percentage;
 
 			img.prop('height', attr);
-			
+
 			resized_images_to_load--;
-			
+
 			if (resized_images_to_load == 0) {
 
 				ns.afterLoadImages();
@@ -246,29 +270,29 @@ var UNESCO = {};
 		$("[class*=resize]").each(function() {
 
 			if ($(this).hasClass('resize')) {
-		
+
 				if ($(this).is('img')) {
-					
+
 					//check if the image is already on cache
 					if ($(this).prop('complete')) {
 
 						afterLoad($(this));
-	
+
 					} else {
 						/* Call the codes/function after the image is loaded */
 						$(this).on('load', function() {
 
 							afterLoad($(this));
-	
+
 						});
 					}
-	
+
 				} else {
 
 					$(this).addClass('resize-width');
 					$(this).addClass('resize-height');
 				}
-				
+
 			}
 
 			apply($(this), 'width');
@@ -288,46 +312,66 @@ var UNESCO = {};
 	}
 
 	this.center = function(elm) {
-
-			elm.css('position', 'absolute');
-
-			elm.css('visibility', 'hidden');
-			
-			elm.parent().show();
-			
-			elm.show();
-			
-			//HEIGHT
-			var height = elm.height();
-
-			var window_height = window.innerHeight;
-
-			var offset = height / 2;
-
-			var middle = window_height / 2;
-
-			var top = middle - offset;
-			
-			elm.css('top', top + 'px');
-			
-			
-			//WIDTH
-			var width = elm.width();
-
-			var window_width = window.innerWidth;
-
-			var offset = width / 2;
-
-			var middle = window_width / 2;
-
-			var left = middle - offset;
-
-			elm.css('left', left + 'px');
 		
-			elm.css('visibility', 'visible');
-			
+		this.centerPrep(elm);
+		this.centerVertical(elm);
+		this.centerHorizontal(elm);
 
 	}
+	
+	this.centerPrep = function(elm) {
+
+		elm.css('position', 'absolute');
+
+		elm.css('visibility', 'hidden');
+
+		elm.parent().show();
+
+		elm.show();
+
+
+	}	
+	
+	this.centerVertical = function(elm) {
+
+		this.centerPrep(elm);
+		
+		//HEIGHT
+		var height = elm.height();
+
+		var window_height = window.innerHeight;
+
+		var offset = height / 2;
+
+		var middle = window_height / 2;
+
+		var top = middle - offset;
+
+		elm.css('top', top + 'px');
+
+	}	
+		
+	this.centerHorizontal = function(elm) {
+
+		this.centerPrep(elm);
+		
+		//WIDTH
+		var width = elm.width();
+
+		var window_width = window.innerWidth;
+
+		var offset = width / 2;
+
+		var middle = window_width / 2;
+
+		var left = middle - offset;
+		
+		elm.css('left', left + 'px');
+
+		elm.css('visibility', 'visible');
+
+	}	
+	
 	/*
 	 this.topStatusBar = function() {
 
@@ -374,10 +418,10 @@ var UNESCO = {};
 	 */
 
 	this.showExploreButton = function() {
-		
+
 		stop_loading_fade = true;
-		
-		$(".UNESCO .loading").hide(); 
+
+		$(".UNESCO .loading").hide();
 
 		var exploreButton = $(".UNESCO .explore-button");
 		exploreButton.css('display', 'block');
@@ -403,12 +447,43 @@ var UNESCO = {};
 
 	}
 
+	this.hideZoomIn = function() {
+
+		var elm = $("#zoom-in-button");
+
+		elm.hide();
+
+	}	
+
+	this.hideZoomOut = function() {
+
+		var elm = $("#zoom-out-button");
+
+		elm.hide();
+
+	}
+	
+	this.showZoomIn = function() {
+
+		var elm = $("#zoom-in-button");
+
+		elm.show();
+
+	}
+	
+	this.showZoomOut = function() {
+
+		var elm = $("#zoom-out-button");
+
+		elm.show();
+
+	}		
 	this.hideBrowse = function() {
 
 		$(".UNESCO#browse").hide();
 
 	}
-	
+
 	this.showLegend = function() {
 
 		var elm = $(".UNESCO#legend");
@@ -421,36 +496,51 @@ var UNESCO = {};
 
 		$(".UNESCO#legend").hide();
 
-	}	
-	
+	}
+
 	this.afterLoadImages = function() {
 
 		var ns = this;
-		
+
 		$("#browse li.text").each(function() {
-			
+
 			var elm = $(this);
 			var sibling_height = elm.parent().find("li.image img").height();
 			elm.css('height', sibling_height + 'px');
-			
-		});
-		
-		ns.center($("#splash"));
-	
-	}	
 
-    this.changeLevel2SelectedMarker = function( colorHex )
-    {
-        if( locationMarkers.clickedMarkerIndex && appStateMan.IsState( PX.AppStates.AppStateLevel2 ) )
-        {
-            locationMarkers.markers[ locationMarkers.clickedMarkerIndex ].targetColor.set( colorHex );
-        }
-    }
+		});
+
+		ns.center($("#splash"));
+
+	}
+
+	this.overlayAppend = function() {
+
+		$("body").append('<div id="overlay"></div>');
+
+	}
 	
+	this.overlayRemove = function() {
+
+		$("#overlay").remove();
+		
+	}	
+	
+	this.centerLogo = function(){
+		
+		this.centerHorizontal($("#logo"));	
+		
+	}
+
+	this.changeLevel2SelectedMarker = function(colorHex) {
+		if (locationMarkers.clickedMarkerIndex && appStateMan.IsState(PX.AppStates.AppStateLevel2)) {
+			locationMarkers.markers[locationMarkers.clickedMarkerIndex].targetColor.set(colorHex);
+		}
+	}
 }).apply(UNESCO);
 
 $(document).ready(function() {
 
 	UNESCO.init();
 
-}); 
+});
