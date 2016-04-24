@@ -1041,8 +1041,9 @@ function UpdateFilterSwitches( id )
 
 function ZoomInFromLevel0ToLevel1( isUserClickOnLocation )
 {
-	
-    if( appStateMan.IsState( PX.AppStates.AppStateLevel0 ) )
+    if( appStateMan.IsState( PX.AppStates.AppStateLevel0 ) 
+        || appStateMan.IsState( PX.AppStates.AppStateLevel1 ) 
+        || appStateMan.IsState( PX.AppStates.AppStateLevel2 ) )
     {
         if( isUserClickOnLocation )
         {
@@ -1057,10 +1058,10 @@ function ZoomInFromLevel0ToLevel1( isUserClickOnLocation )
         }
         else
         {
-            //if( isMouseClick )
-            //{
+            if( isMouseClick )
+            {
                 locationMarkers.OnMouseClickEvent( mouseVector3d, camera, false, null );
-            //}
+            }
         }
     }
 }
@@ -1070,8 +1071,8 @@ function ZoomOutFromLevel1ToLevel0()
 {
     if( appStateMan.IsState( PX.AppStates.AppStateLevel1 ) )
     {
-        //if( event.wheelDelta < 0.0 )
-        //{
+        if( event.wheelDelta < 0.0 )
+        {
             // Change state
             appStateMan.SetState( PX.AppStates.AppStateLevel1ToLevel0 );
 
@@ -1151,7 +1152,7 @@ function ZoomOutFromLevel1ToLevel0()
                     });
                 }
             }
-        //}
+        }
     }
 }
 
