@@ -99,14 +99,14 @@ var UNESCO = {};
 		$(".UNESCO #zoom-in-button").click(function(e) {
 			e.preventDefault();
 			ns.hideZoomIn();
-			ZoomInFromLevel0ToLevel1(false);
+			ZoomInFromLevel0ToLevel1( false );
 
 		});
 
 		$(".UNESCO #zoom-out-button").click(function(e) {
 			e.preventDefault();
 			ns.hideZoomOut();
-			ZoomOutFromLevel1ToLevel0();
+			ZoomOutFromLevel1ToLevel0( false );
 	
 		});
 

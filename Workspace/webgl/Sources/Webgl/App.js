@@ -1049,6 +1049,7 @@ function ZoomInFromLevel0ToLevel1( isUserClickOnLocation )
         {
             if( isMouseClick )
             {
+                console.log( "ZoomInFromLevel0ToLevel1 (0)" );
                 var res = locationMarkers.OnMouseClickEvent( mouseVector3d, camera, true,
                 function( object )  // Callback returning clicked marker
                 {
@@ -1058,21 +1059,24 @@ function ZoomInFromLevel0ToLevel1( isUserClickOnLocation )
         }
         else
         {
-            if( isMouseClick )
-            {
+            //if( isMouseClick )
+            //{
+                console.log( "ZoomInFromLevel0ToLevel1 (1)" );
                 locationMarkers.OnMouseClickEvent( mouseVector3d, camera, false, null );
-            }
+            //}
         }
     }
 }
 
 
-function ZoomOutFromLevel1ToLevel0()
+function ZoomOutFromLevel1ToLevel0( isMouseWheel )
 {
     if( appStateMan.IsState( PX.AppStates.AppStateLevel1 ) )
     {
-        if( event.wheelDelta < 0.0 )
+        if( !isMouseWheel || event.wheelDelta < 0.0 )
         {
+            console.log( "ZoomOutFromLevel1ToLevel0" );
+
             // Change state
             appStateMan.SetState( PX.AppStates.AppStateLevel1ToLevel0 );
 
@@ -1116,13 +1120,6 @@ function ZoomOutFromLevel1ToLevel0()
                 {
                     m.tween.onComplete( function()
                     {
-/***
-                        // Reset filter scales and switches
-                        for( var i=0; i<3; ++i )
-                        {
-                            WebpageStates.FilterSwitches[ i ] = 0;
-                            locationMarkers.level1FilterScales[ i ].set( 1.0, 1.0, 1.0 );
-                        }**/
                         //
                         locationMarkers.FilterLocationMeshColors( WebpageStates.FilterSwitches );
 
@@ -1318,7 +1315,7 @@ function OnMouseMove(event)
 
 function OnMouseWheel( event )
 {
-    ZoomOutFromLevel1ToLevel0();
+    ZoomOutFromLevel1ToLevel0( true );
 }
 
 
