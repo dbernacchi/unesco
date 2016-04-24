@@ -131,6 +131,7 @@ function LoadScene( url, scene )
 }
 ***/
 
+/***
 function LoadBINScene( path, filename, scene, onProgressCB, onCompleteCB )
 {
     var url = path + filename + ".js";
@@ -175,7 +176,7 @@ function LoadBINScene( path, filename, scene, onProgressCB, onCompleteCB )
     }
     );
 }
-
+***/
 
 function LoadOBJScene( path, filename, scene, onProgressCB, onCompleteCB )
 {
@@ -193,7 +194,23 @@ function LoadOBJScene( path, filename, scene, onProgressCB, onCompleteCB )
     {
         materials.preload();
 
-		objLoader.setMaterials( materials );
+        var matArray = materials.getAsArray();
+
+        var ourMat = 
+
+        console.log( matArray, matArray.length );
+        for ( var i=0; i<matArray.length; ++i )
+        {
+            var mat = matArray[i];
+            if( mat.bumpMap )
+            {
+                mat.normalMap = mat.bumpMap;
+                console.log( "mat has normalmap", mat );
+            }
+            ourMat = mat;
+        }
+
+		//objLoader.setMaterials( materials );
 	    objLoader.setPath( path );
 	    objLoader.load( filename+".obj"
         , function( object ) 
@@ -201,15 +218,21 @@ function LoadOBJScene( path, filename, scene, onProgressCB, onCompleteCB )
             scene.add( object );
 
             // Apply some defaults we want. Just is case 3d models come with bad properties
-            scene.traverse( function (object) 
+            scene.traverse( function( object )
             {
                 if( object instanceof THREE.Mesh )
                 {
-                    object.material.color.set( 0xffffff );
+                    object.material = ourMat.clone();
+                    if( object.material.bumpMap )
+                    {
+                        object.material.normalMap = object.material.bumpMap;
+                        console.log( "material as normal maps" );
+                    }
+                    object.material.color = new THREE.Color( 0xffffff );
                     object.material.side = THREE.DoubleSide;
                     object.material.transparent = false;
                     object.material.opacity = 1.0;
-                    //console.log( "LoadOBJScene()  object.material: " + object.material );
+                    console.log( "LoadOBJScene()  object.material: " + object.material );
                 }
             });
 
@@ -232,6 +255,59 @@ function LoadOBJScene( path, filename, scene, onProgressCB, onCompleteCB )
     } );
 }
 
+/**
+function LoadSceneData( path, filename, scene, onProgressCB, onCompleteCB )
+{
+    var url = path + filename;
+    console.log( "+--+  Load SCENE Scene:\t", url );
+
+    //var defer = $.Deferred();
+
+	var loadStartTime = Date.now();
+
+    var loader = new THREE.SceneLoader();
+    //loader.callbackSync = callbackSync;
+    //loader.callbackProgress = onProgressCB;
+    loader.load( url, function( result )
+    //loader.load( url+"?"+new Date().getTime(), function ( result )
+    {
+        // Load textures from scene
+        var scene_ = result.scene;
+        //scene_.autoUpdate = false;
+        scene_.traverse( function( object )
+        {
+            if( object instanceof THREE.Mesh )
+            {
+                console.log( object );
+
+                //scene.add( object );
+            }
+
+        } );
+
+        scene.add( scene_ );
+
+        if( scene )
+            ComputeSceneBounds( scene );
+
+    	var loadEndTime = Date.now();
+	    var loadTime = (loadEndTime - loadStartTime) / 1000;
+        console.log( "+--+  Loaded OBJ Scene:\t  Load time: ", loadTime );
+
+        if( onCompleteCB ) onCompleteCB();
+    },
+    function( result )
+    {
+        var percentage = ( result.loaded / result.total );
+        if( result.total <= 0.0 ) percentage = 0.0;
+        if( onProgressCB ) onProgressCB( percentage );
+
+        var per = result.loaded; // / res.total;
+        console.log( "SCENE progress: ", per );
+    }
+    );
+}
+**/
 
 function ComputeSceneBounds( scene )
 {
@@ -290,7 +366,7 @@ function ComputeSceneBoundingSphere( scene )
     sceneCenter.addVectors( sceneMin, sceneMax );
     //radius = sceneCenter.length();
     sceneCenter = sceneCenter.divideScalar( 2.0 );
-    //console.log( sceneCenter, sceneMin, sceneMax, radius );
+    console.log( sceneCenter, sceneMin, sceneMax, radius );
 
     //var len = Math.max( sceneMin.x, sceneMax.x );
     var minLength = sceneMin.length();

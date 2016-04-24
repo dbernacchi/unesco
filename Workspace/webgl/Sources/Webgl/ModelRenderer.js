@@ -85,6 +85,7 @@ PX.ModelRenderer.prototype =
         //
         var artSunLight = new THREE.DirectionalLight( 0xffffff );
         artSunLight.position.set( 1, 1, 1 );
+        //artSunLight.position.copy( this.artefactCamera.getWorldDirection() );
         this.artefactScene.add( artSunLight );
         var artAmbLight = new THREE.HemisphereLight( 0x7f7faa, 0x040410, 1 );
         this.artefactScene.add( artAmbLight );
@@ -120,20 +121,13 @@ PX.ModelRenderer.prototype =
         preloaderBG.show();
         preloaderFG.show();
 
+        //LoadSceneData( path, filename, this.artefactScene,
         LoadOBJScene( path, filename, this.artefactScene, 
         //LoadBINScene( path, filename, this.artefactScene, 
         function( per )
         {
             //console.log( "+--+  Load: Percentage: ", per );
-
-            // Since we do a margin on the FG bar we need to compute the offset to remove from the bar in %
-            // sub that from the total width % and we get the proper fitting size
-            var offset = ( ( parseInt(preloaderFG.css('margin-left')) * 2.0 ) / windowWidth) * 100.0;
-            var percentage = PX.Clamp( ( Math.ceil( (per+0.25) * 80.0 ) ), 0.0, 80.0 );
-            console.log( "Load()  percentage: ", percentage, "  offset: ", offset );
-            preloaderFG.css( "width", (percentage - offset) + '%' );
-
-            onProgressCB( per );
+            if( onProgressCB ) onProgressCB( per );
         },
         function()
         {
@@ -167,7 +161,7 @@ PX.ModelRenderer.prototype =
             //console.log( "set orbit controls" );
             if( scope.artefactOrbitControls )
             {
-                scope.artefactOrbitControls.minDistance = scope.distToCamera * 0.2;
+                scope.artefactOrbitControls.minDistance = scope.distToCamera * 0.3;
                 scope.artefactOrbitControls.maxDistance = scope.distToCamera * 2.0;
                 scope.artefactOrbitControls.target.copy( scope.sceneCenter );
                 scope.artefactOrbitControls.update();
