@@ -46,9 +46,10 @@ if(!Detector.webgl)
 <div style="z-index: -1000px;" id="glContainer"></div>
 <div id="glModelContainerTEST"></div>
 
-<div style="display: none;" class="preloaderBG" id="preloaderBG"></div>
-<div style="display: none;" class="preloaderFG" id="preloaderFG"></div>
+<!--div style="display: none;" class="preloaderBG" id="preloaderBG"></div>
+<div style="display: none;" class="preloaderFG" id="preloaderFG"></div-->
 
+<!--SPLASH-->
 <div class="UNESCO" id="splash" style="display: none">
 
     <!--div class="status-bar-top resize-top"><img src="img/splash/animated/anim_trans.gif"/></div>
@@ -62,22 +63,23 @@ if(!Detector.webgl)
         <div class="resize loading"></div>
     </div>
     
-    <img class="splash-text-bottom resize" src="img/splash/splash-text-bottom.png"/>
+    <img class="splash-text-bottom" src="img/splash/splash-text-bottom.png"/>
     
 </div>
 
+<!--ZOOM-->
 <div class="UNESCO furniture zoom-container resize-left" style="display: none;">
 
     <div class="zoom-container-inner">
         
-        <a href="#" class="resize resize-margin-bottom" id="zoom-in-button"></a>    
-        <a href="#" class="resize" id="zoom-out-button"></a> 
+        <a href="#" class="resize resize-margin-bottom" id="zoom-in-button" style="display: none;"></a>    
+        <a href="#" class="resize" id="zoom-out-button" style="display: none;"></a> 
            
     </div>
     
 </div>
 
-
+<!--SHARE-->
 <a href="#" class="UNESCO furniture resize resize-top resize-right" id="share-button" style="display: none;"></a>
 <ul class="UNESCO share-menu resize resize-top resize-right" style="display: none;">
     <li>
@@ -89,13 +91,17 @@ if(!Detector.webgl)
 </ul>     
 
 
+<!--LOGO-->
 <div class="UNESCO furniture resize-top resize-left" id="logo" style="display: none;"></div>
+
+<!--MENU-->
 <a href="#" class="UNESCO furniture resize resize-top resize-right" id="menu-button" style="display: none;"></a>
 
+<!--BOTTOM LOGO-->
+<div id="logo-bottom" class="UNESCO furniture resize-bottom resize-right" style="display: none;"><a href="#" id="logo-bottom-inner"></a></div>
 
-<div id="logo-bottom"><a href="#" class="UNESCO furniture resize-bottom resize-right" id="logo-bottom-inner" style="display: none;"></a></div>
-
-<div class="UNESCO" id="legend" style="display: none;">
+<!--LEGEND-->
+<div class="UNESCO resize-left resize-bottom" id="legend" style="display: none;">
 
     <ul class="clr">
         <li>
@@ -111,7 +117,8 @@ if(!Detector.webgl)
     </ul>
     
 </div>
-    
+
+<!--BROWSE-->
 <div class="UNESCO" id="browse" style="display:none;">
     
     <ul class="clr">
@@ -228,34 +235,30 @@ if(!Detector.webgl)
     </div-->
 </div>
 
-<div class="UNESCO about-wrapper" style="display: none;">
-    <div  id="about">
-        
-        <div class="about-inner">
-                
-            <a href="#" class="close-button resize resize-top resize-right"></a>
-            
-            <div class="logo"></div>
-            
-            <div class="body resize-margin-bottom resize-margin-top resize-font-size">     
-                <p>
-                    Over the last year we have seen countless historical sites destroyed by conflict, war and disasters. It’s not just the buildings and artifacts that are lost but the heritage and culture for people around the world. We’ve created this project to celebrate and safeguard heritage for future generations. Join us in rebuilding history by digitally recreating what was lost and protecting what is still standing. 
-                </p>
-                <p>
-                    RebuildingHistory.org is a crowdsourced online musuem. Here people can come together to digitally recreate, experience, learn about and visit monuments that have been lost. We aim to tell the story of heritage lost across the globe. 
-                </p>
-                <p>
-                    This effort is made in coordination with #Unite4Heritage, a global movement powered by UNESCO that aims to celebrate and safeguard cultural heritage and diversity around the globe. It began as Project Mosul by Rekrei. They innovated a new way to digitally recreate monuments lost in Iraq. Building on the initial workflow of using crowdsourced images to virtually recreate artefacts using photogrammetry, their web-based platform is evolving to better utilise publicly-available data on the web to assist their volunteers in new ways.  After partnering with Ogilvy and Pet Gorilla, Rekrei will maintain its efforts to rebuild history.       
-                </p>    
-            </div>
-            
-            <a href="#" class="contribute-button resize"></a>
-            
-        </div>
-        
+<!--CLOSE BUTTON-->
+<a href="#" class="UNESCO close-button page resize-top resize-right" style="display:none;"></a>
+
+<!--ABOUT-->
+<div class="UNESCO" id="about" style="display: none;">
+    
+    <div class="body resize-margin-bottom resize-margin-top">     
+        <p>
+            Over the last year we have seen countless historical sites destroyed by conflict, war and disasters. It’s not just the buildings and artifacts that are lost but the heritage and culture for people around the world. We’ve created this project to celebrate and safeguard heritage for future generations. Join us in rebuilding history by digitally recreating what was lost and protecting what is still standing. 
+        </p>
+        <p>
+            RebuildingHistory.org is a crowdsourced online musuem. Here people can come together to digitally recreate, experience, learn about and visit monuments that have been lost. We aim to tell the story of heritage lost across the globe. 
+        </p>
+        <p>
+            This effort is made in coordination with #Unite4Heritage, a global movement powered by UNESCO that aims to celebrate and safeguard cultural heritage and diversity around the globe. It began as Project Mosul by Rekrei. They innovated a new way to digitally recreate monuments lost in Iraq. Building on the initial workflow of using crowdsourced images to virtually recreate artefacts using photogrammetry, their web-based platform is evolving to better utilise publicly-available data on the web to assist their volunteers in new ways.  After partnering with Ogilvy and Pet Gorilla, Rekrei will maintain its efforts to rebuild history.       
+        </p>    
     </div>
+    
+    <a href="http://www.projectmosul.org" target="_blank" class="contribute-button"></a>
+    
+    
 </div>
 
+<!--SLIDE 5-->
 <div class="UNESCO" id="slide-5" style="display: none;">
     <a href="#" class="close-button resize resize-top resize-right"></a>
     
@@ -285,6 +288,7 @@ if(!Detector.webgl)
     
 </div>
 
+<!--SLIDE 9-->
 <div class="UNESCO" id="slide-9" style="display: none;">
     <div id="glModelContainer"></div>
     <a href="#" class="close-button resize resize-top resize-right"></a>

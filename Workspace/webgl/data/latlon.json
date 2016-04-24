@@ -1,235 +1,49 @@
 ﻿[
-        {
-        
-          "lat": 36.3377571,
-          "lng": 43.139408,
-          "marker_title": "Mosul Museum",
-          "id": 1
-          
-        }, {
-          "lat": 35.588056,
-          "lng": 42.718333,
-          "marker_title": "Hatra",
-          "id": 2
-        }, {
-          "lat": 27.704328,
-          "lng": 85.307296,
-          "marker_title": "Kathmandu Durbar Square",
-          "infowindow": "\u003ca href=\"/locations/kathmandu-durbar-square\"\u003eKathmandu Durbar Square\u003c/a\u003e"
-        }, {
-          "lat": 36.098192,
-          "lng": 43.328769,
-          "marker_title": "Nimrud",
-          "id": 3
-        }, {
-          "lat": 27.672186,
-          "lng": 85.428456,
-          "marker_title": "Bhaktapur Durbar Square",
-          "id": 4
-        }, {
-          "lat": 36.1995226029086,
-          "lng": 37.1569340740662,
-          "marker_title": "Grand Umayyad Mosque in Aleppo",
-          "id": 5
-        }, {
-          "lat": 27.714955,
-          "lng": 85.2906014920654,
-          "marker_title": "Swayambhunath Stupa (Monkey Temple), Kathmandu",
-          "id": 6
-        }, {
-          "lat": 27.7562085113098,
-          "lng": 30.9050723026551,
-          "marker_title": "The tomb of Djehutyhotep",
-          "id": 7
-        }, {
-          "lat": 36.353359,
-          "lng": 43.12336,
-          "marker_title": "Maryam Khatoon Mosque, Mosul",
-          "id": 8
-        }, {
-          "lat": 36.13784,
-          "lng": 43.406288,
-          "marker_title": "Mar Behnam Monastery",
-          "id": 9
-        }, {
-          "lat": 17.8473055939854,
-          "lng": -89.0280746561584,
-          "marker_title": "La Milpa",
-          "id": 10
-        }, {
-          "lat": 34.5505277551874,
-          "lng": 38.2698827513427,
-          "marker_title": "Palmyra",
-          "id": 11
-        }, {
-          "lat": 34.550396,
-          "lng": 40.889232,
-          "marker_title": "Mari ",
-          "id": 12
-        }, {
-          "lat": 32.51769,
-          "lng": 36.481666,
-          "marker_title": "Bosra",
-          "id": 13
-        }, {
-          "lat": 35.133333,
-          "lng": 36.75,
-          "marker_title": "Hamah ",
-          "id": 14
-        }, {
-          "lat": 36.199671,
-          "lng": 37.1627060000001,
-          "marker_title": "Ayyubid Palace, Aleppo",
-          "id": 15
-        }, {
-          "lat": 15.3168913,
-          "lng": 44.4748018,
-          "marker_title": "Old city of Sanaa",
-          "id": 16
-        }, {
-          "lat": 35.6491607944861,
-          "lng": 36.6797780000611,
-          "marker_title": "Ma'arra Mosiac Museum ",
-          "id": 17
-        }, {
-          "lat": 13.566938,
-          "lng": 44.013688,
-          "marker_title": "Al-Qahira Castle",
-          "id": 18
-        }, {
-          "lat": 36.1995836193299,
-          "lng": 37.156925214386,
-          "marker_title": "Great Mosque of Aleppo",
-          "id": 19
-        }, {
-          "lat": 15.9956777,
-          "lng": 44.8019906,
-          "marker_title": "the temple of Nakrah",
-          "id": 20
-        }, {
-          "lat": 14.572856,
-          "lng": 44.39058,
-          "marker_title": "The Dhamar Museum",
-          "id": 21
-        }, {
-          "lat": 34.2361111,
-          "lng": 37.225,
-          "marker_title": "Mar Elian monastery",
-          "id": 22
-        }, {
-          "lat": 50.1084205,
-          "lng": 1.82822606878665,
-          "marker_title": "Saint Jacques church",
-          "id": 23
-        }, {
-          "lat": 34.6468842,
-          "lng": 43.7142484,
-          "marker_title": "Saint Ahoadamah Church",
-          "id": 24
-        }, {
-          "lat": 36.3436867385096,
-          "lng": 43.1264065584472,
-          "marker_title": "Prophet Jonah mosque",
-          "id": 25
-        }, {
-          "lat": 36.3533649831804,
-          "lng": 43.1233595690063,
-          "marker_title": "Mary Church",
-          "id": 26
-        }, {
-          "lat": 18.2172933479742,
-          "lng": -88.5847576900879,
-          "marker_title": "Nohmul",
-          "id": 27
-        }, {
-          "lat": -11.953773,
-          "lng": -77.118134,
-          "marker_title": "Huaca El Paraiso",
-          "id": 28
-        }, {
-          "lat": 34.756898,
-          "lng": 36.2947300000001,
-          "marker_title": "Krak Des Chevaliers",
-          "id": 29
-        }, {
-          "lat": 51.5133628235095,
-          "lng": -0.090080606884726,
-          "marker_title": "The Mappin \u0026 Webb building at Bank",
-          "id": 30
-        }, {
-          "lat": 48.8494444,
-          "lng": 2.32111110000005,
-          "marker_title": "Chapel of Laennec hospital",
-          "id": 31
-        }, {
-          "lat": 16.9389540620678,
-          "lng": 43.7649404376953,
-          "marker_title": "The al-Hadi mosque",
-          "id": 32
-        }, {
-          "lat": 28.089216913509,
-          "lng": 30.7581489803955,
-          "marker_title": "Malawi Monuments Museum",
-          "id": 33
-        }, {
-          "lat": 32.8890473076378,
-          "lng": 13.1963593952759,
-          "marker_title": "Sidi Sha’ab Mosque",
-          "id": 34
-        }, {
-          "lat": 32.8912095031092,
-          "lng": 13.1858665936096,
-          "marker_title": "Karamanli Ahmet Pasha Tomb",
-          "id": 35
-        }, {
-          "lat": 13.1489588,
-          "lng": 44.8505494999999,
-          "marker_title": "Tomb of Sufi Saint Sufyan Bin Abdullah",
-          "id": 36
-        }, {
-          "lat": 36.3658672662596,
-          "lng": 43.1588379,
-          "marker_title": "Nineveh",
-          "id": 37
-        }, {
-          "lat": 35.4203075499505,
-          "lng": 36.4012562,
-          "marker_title": "Apamea",
-          "id": 38
-        }, {
-          "lat": 34.7489316705747,
-          "lng": 40.7297969,
-          "marker_title": "Dura-Europos",
-          "id": 39
-        }, {
-          "lat": 35.7990323491174,
-          "lng": 36.7987918576721,
-          "marker_title": "Ebla",
-          "id": 40
-        }, {
-          "lat": 35.6892863,
-          "lng": 39.8225387,
-          "marker_title": "Halabiyah Castle",
-          "id": 41
-        }, {
-          "lat": 36.1996708,
-          "lng": 37.1627062,
-          "marker_title": "Aleppo Citadel",
-          "id": 42
-        }, {
-          "lat": 35.621479,
-          "lng": 38.77243,
-          "marker_title": "Resafa",
-          "id": 43
-        }, {
-          "lat": 34.7563342650208,
-          "lng": 36.2947726153443,
-          "marker_title": "Krak des Chevaliers",
-          "id": 44
-        }, {
-          "lat": 36.3436009,
-          "lng": 43.1265441,
-          "marker_title": "Al-Hadba Minaret (al-Noree Grand Mosque)",
-          "id": 45
-        }
+{"id": "1", "marker_title": "Mosul Museum", "lat": "36.3377571", "lng": "43.139408"},
+{"id": "2", "marker_title": "Hatra", "lat": "35.588056", "lng": "42.718333"},
+{"id": "4", "marker_title": "Kathmandu Durbar Square", "lat": "27.704328", "lng": "85.307296"},
+{"id": "3", "marker_title": "Nimrud", "lat": "36.098192", "lng": "43.328769"},
+{"id": "5", "marker_title": "Bhaktapur Durbar Square", "lat": "27.672186", "lng": "85.428456"},
+{"id": "6", "marker_title": "Grand Umayyad Mosque in Aleppo", "lat": "36.1995226029086", "lng": "37.1569340740662"},
+{"id": "7", "marker_title": "Swayambhunath Stupa (Monkey Temple), Kathmandu", "lat": "27.714955", "lng": "85.2906014920654"},
+{"id": "8", "marker_title": "The tomb of Djehutyhotep", "lat": "27.7562085113098", "lng": "30.9050723026551"},
+{"id": "9", "marker_title": "Maryam Khatoon Mosque, Mosul", "lat": "36.353359", "lng": "43.12336"},
+{"id": "10", "marker_title": "Mar Behnam Monastery", "lat": "36.13784", "lng": "43.406288"},
+{"id": "46", "marker_title": "La Milpa", "lat": "17.8473055939854", "lng": "-89.0280746561584"},
+{"id": "12", "marker_title": "Palmyra", "lat": "34.5505277551874", "lng": "38.2698827513427"},
+{"id": "13", "marker_title": "Mari", "lat": "34.550396", "lng": "40.889232"},
+{"id": "15", "marker_title": "Bosra", "lat": "32.51769", "lng": "36.481666"},
+{"id": "14", "marker_title": "Hamah", "lat": "35.133333", "lng": "36.75"},
+{"id": "17", "marker_title": "Ayyubid Palace, Aleppo", "lat": "36.199671", "lng": "37.1627060000001"},
+{"id": "20", "marker_title": "Old city of Sanaa", "lat": "15.3168913", "lng": "44.4748018"},
+{"id": "21", "marker_title": "Ma'arra Mosiac Museum", "lat": "35.6491607944861", "lng": "36.6797780000611"},
+{"id": "22", "marker_title": "Al-Qahira Castle", "lat": "13.566938", "lng": "44.013688"},
+{"id": "23", "marker_title": "Great Mosque of Aleppo", "lat": "36.1995836193299", "lng": "37.156925214386"},
+{"id": "24", "marker_title": "the temple of Nakrah", "lat": "15.9956777", "lng": "44.8019906"},
+{"id": "25", "marker_title": "The Dhamar Museum", "lat": "14.572856", "lng": "44.39058"},
+{"id": "26", "marker_title": "Mar Elian monastery", "lat": "34.2361111", "lng": "37.225"},
+{"id": "27", "marker_title": "Saint Jacques church", "lat": "50.1084205", "lng": "1.82822606878665"},
+{"id": "28", "marker_title": "Saint Ahoadamah Church", "lat": "34.6468842", "lng": "43.7142484"},
+{"id": "29", "marker_title": "Prophet Jonah mosque", "lat": "36.3436867385096", "lng": "43.1264065584472"},
+{"id": "30", "marker_title": "Mary Church", "lat": "36.3533649831804", "lng": "43.1233595690063"},
+{"id": "31", "marker_title": "Nohmul", "lat": "18.2172933479742", "lng": "-88.5847576900879"},
+{"id": "32", "marker_title": "Huaca El Paraiso", "lat": "-11.953773", "lng": "-77.118134"},
+{"id": "33", "marker_title": "Krak Des Chevaliers", "lat": "34.756898", "lng": "36.2947300000001"},
+{"id": "34", "marker_title": "The Mappin & Webb building at Bank", "lat": "51.5133628235095", "lng": "-0.090080606884726"},
+{"id": "35", "marker_title": "Chapel of Laennec hospital", "lat": "48.8494444", "lng": "2.32111110000005"},
+{"id": "36", "marker_title": "The al-Hadi mosque", "lat": "16.9389540620678", "lng": "43.7649404376953"},
+{"id": "37", "marker_title": "Malawi Monuments Museum", "lat": "28.089216913509", "lng": "30.7581489803955"},
+{"id": "38", "marker_title": "Sidi Sha’ab Mosque", "lat": "32.8890473076378", "lng": "13.1963593952759"},
+{"id": "39", "marker_title": "Karamanli Ahmet Pasha Tomb", "lat": "32.8912095031092", "lng": "13.1858665936096"},
+{"id": "40", "marker_title": "Tomb of Sufi Saint Sufyan Bin Abdullah", "lat": "13.1489588", "lng": "44.8505494999999"},
+{"id": "41", "marker_title": "Nineveh", "lat": "36.3658672662596", "lng": "43.1588379"},
+{"id": "42", "marker_title": "Apamea", "lat": "35.4203075499505", "lng": "36.4012562"},
+{"id": "43", "marker_title": "Dura-Europos", "lat": "34.7489316705747", "lng": "40.7297969"},
+{"id": "44", "marker_title": "Ebla", "lat": "35.7990323491174", "lng": "36.7987918576721"},
+{"id": "45", "marker_title": "Halabiyah Castle", "lat": "35.6892863", "lng": "39.8225387"},
+{"id": "47", "marker_title": "Aleppo Citadel", "lat": "36.1996708", "lng": "37.1627062"},
+{"id": "48", "marker_title": "Resafa", "lat": "35.621479", "lng": "38.77243"},
+{"id": "49", "marker_title": "Krak des Chevaliers", "lat": "34.7563342650208", "lng": "36.2947726153443"},
+{"id": "50", "marker_title": "Al-Hadba Minaret (al-Noree Grand Mosque)", "lat": "36.3436009", "lng": "43.1265441"}
+
 ]

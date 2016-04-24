@@ -95,7 +95,9 @@ ul.clr li {
 
 #splash .splash-text-top {
 	display: block;
+    margin: 0 auto;
     margin-top: 200px;
+    
 }
 
 #splash .splash-text-bottom {
@@ -253,8 +255,8 @@ ul.clr li {
 
 #legend {
 	position: absolute;
-	bottom: 2%;
-	left: 2%;
+	bottom: 20px;
+	left: 112px;
 	font-family: Nunito;
 	font-size: 14px;
 	font-style: normal;
@@ -267,7 +269,7 @@ ul.clr li {
 #legend a {
 	display: block;
 	height: 12px;
-	padding: 0px 80px 5px 35px;
+	padding: 0px 20px 5px 20px;
 	color: #fff;
 	text-decoration: none;
 }
@@ -338,7 +340,7 @@ ul.clr li {
 	top: 50%;
 	left: 50%
 }
-#slide-5 .close-button, #slide-9 .close-button, #about .close-button {
+.close-button.page {
 	display: block;
 	position: absolute;
 	right: 20px;
@@ -346,6 +348,7 @@ ul.clr li {
 	width: 34px;
 	height: 30px;
 	background-image: url(../img/close-button.png);
+	background-repeat: no-repeat;
 }
 
 #slide-5 ul.clr {
@@ -375,16 +378,6 @@ ul.clr li {
 	background-repeat: no-repeat;
 }
 
-.about-wrapper{
-	width: 100%;
-	height: 100%;	
-	background: rgba(0, 0, 0, 0.5);
-	-webkit-background-size: cover;
-	-moz-background-size: cover;
-	-o-background-size: cover;
-	background-size: cover;
-}
-
 #about{
 	width: 720px;
 	position: absolute;
@@ -397,19 +390,6 @@ ul.clr li {
 	font-weight: 300;
 	line-height: 20px;
 	color: #B9CBD5;
-}
-
-.about-inner {
-	position: relative;
-	top: -50%;
-	left: -50%
-}
-
-#about .logo {
-	width: 194px;
-	height: 99px;
-	background-image: url(../img/logo.png);
-	margin: 0 auto;
 }
 
 #about .body {

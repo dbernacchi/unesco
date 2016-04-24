@@ -14,8 +14,10 @@ var UNESCO = {};
 		var ns = this;
 
 		this.resize();
+		
+		this.buildBrowse();
 
-		//this.showBrowse();
+		this.showBrowse();
 
 		//ns.topStatusBar();
 
@@ -196,7 +198,7 @@ var UNESCO = {};
 			ns.overlayAppend();
 			ns.center($(".UNESCO#about"));
 			
-			ns.centerLogo();
+			//ns.centerLogo();
 			
 			$(".UNESCO.close-button").show();
 
@@ -537,6 +539,63 @@ var UNESCO = {};
 			locationMarkers.markers[locationMarkers.clickedMarkerIndex].targetColor.set(colorHex);
 		}
 	}
+	
+	this.buildBrowse(){
+
+		//read through latlon.js
+		$.getJSON("webgl/data/latlon.json", function(data) {
+			
+			var items = [];
+			$.each(data, function(key, val) {
+				items.push("<li id='" + key + "'>" + val + "</li>");
+			});
+
+			$("<ul/>", {
+				"class" : "my-new-list",
+				html : items.join("")
+			}).appendTo("body");
+			
+		}); 
+
+
+
+				
+		//for each item
+		
+			//read data.json
+			
+			//create element
+		
+/*
+            <div class="item unselected resize-margin-bottom">
+                <ul class="clr">
+                    <li class="image resize-width">
+                        <a href="#"><img class="resize" src="img/browse/static-browse-1.png" /></a>
+                    </li>
+                    <li class="resize-width text">
+                        <div class="inner">
+                            <div class="title resize-font-size resize-width">
+                                Hatra Relief
+
+                                <div class="date">
+                                    600BC - 2015
+                                </div>
+                            </div>
+
+                            <div class="status resize-margin-left resize-margin-top">
+                                DESTROYED
+                            </div>
+                         </div>
+                    </li>
+                </ul>    
+            </div>
+ */		
+ 
+ 			//add to browse
+		
+	}	
+	
+	
 }).apply(UNESCO);
 
 $(document).ready(function() {

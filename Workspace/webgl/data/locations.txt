@@ -1,0 +1,49 @@
+ [
+  1 | Mosul Museum                                   |       36.3377571 |          43.139408
+  2 | Hatra                                          |        35.588056 |          42.718333
+  4 | Kathmandu Durbar Square                        |        27.704328 |          85.307296
+  3 | Nimrud                                         |        36.098192 |          43.328769
+  5 | Bhaktapur Durbar Square                        |        27.672186 |          85.428456
+  6 | Grand Umayyad Mosque in Aleppo                 | 36.1995226029086 |   37.1569340740662
+  7 | Swayambhunath Stupa (Monkey Temple), Kathmandu |        27.714955 |   85.2906014920654
+  8 | The tomb of Djehutyhotep                       | 27.7562085113098 |   30.9050723026551
+  9 | Maryam Khatoon Mosque, Mosul                   |        36.353359 |           43.12336
+ 10 | Mar Behnam Monastery                           |         36.13784 |          43.406288
+ 46 | La Milpa                                       | 17.8473055939854 |  -89.0280746561584
+ 12 | Palmyra                                        | 34.5505277551874 |   38.2698827513427
+ 13 | Mari                                           |        34.550396 |          40.889232
+ 15 | Bosra                                          |         32.51769 |          36.481666
+ 14 | Hamah                                          |        35.133333 |              36.75
+ 17 | Ayyubid Palace, Aleppo                         |        36.199671 |   37.1627060000001
+ 20 | Old city of Sanaa                              |       15.3168913 |         44.4748018
+ 21 | Ma'arra Mosiac Museum                          | 35.6491607944861 |   36.6797780000611
+ 22 | Al-Qahira Castle                               |        13.566938 |          44.013688
+ 23 | Great Mosque of Aleppo                         | 36.1995836193299 |    37.156925214386
+ 24 | the temple of Nakrah                           |       15.9956777 |         44.8019906
+ 25 | The Dhamar Museum                              |        14.572856 |           44.39058
+ 26 | Mar Elian monastery                            |       34.2361111 |             37.225
+ 27 | Saint Jacques church                           |       50.1084205 |   1.82822606878665
+ 28 | Saint Ahoadamah Church                         |       34.6468842 |         43.7142484
+ 29 | Prophet Jonah mosque                           | 36.3436867385096 |   43.1264065584472
+ 30 | Mary Church                                    | 36.3533649831804 |   43.1233595690063
+ 31 | Nohmul                                         | 18.2172933479742 |  -88.5847576900879
+ 32 | Huaca El Paraiso                               |       -11.953773 |         -77.118134
+ 33 | Krak Des Chevaliers                            |        34.756898 |   36.2947300000001
+ 34 | The Mappin & Webb building at Bank             | 51.5133628235095 | -0.090080606884726
+ 35 | Chapel of Laennec hospital                     |       48.8494444 |   2.32111110000005
+ 36 | The al-Hadi mosque                             | 16.9389540620678 |   43.7649404376953
+ 37 | Malawi Monuments Museum                        |  28.089216913509 |   30.7581489803955
+ 38 | Sidi Sha’ab Mosque                             | 32.8890473076378 |   13.1963593952759
+ 39 | Karamanli Ahmet Pasha Tomb                     | 32.8912095031092 |   13.1858665936096
+ 40 | Tomb of Sufi Saint Sufyan Bin Abdullah         |       13.1489588 |   44.8505494999999
+ 41 | Nineveh                                        | 36.3658672662596 |         43.1588379
+ 42 | Apamea                                         | 35.4203075499505 |         36.4012562
+ 43 | Dura-Europos                                   | 34.7489316705747 |         40.7297969
+ 44 | Ebla                                           | 35.7990323491174 |   36.7987918576721
+ 45 | Halabiyah Castle                               |       35.6892863 |         39.8225387
+ 47 | Aleppo Citadel                                 |       36.1996708 |         37.1627062
+ 48 | Resafa                                         |        35.621479 |           38.77243
+ 49 | Krak des Chevaliers                            | 34.7563342650208 |   36.2947726153443
+ 50 | Al-Hadba Minaret (al-Noree Grand Mosque)       |       36.3436009 |         43.1265441
+ 
+]
