@@ -18,9 +18,7 @@ Location.prototype =
 }
 
 
-
-
-
+/*
 function FindLocationById( id )
 {
     for( var i=0; i<locationsDB.length; ++i )
@@ -31,7 +29,7 @@ function FindLocationById( id )
     }
 
     return null;
-}
+}*/
 
 
 // Loaders
@@ -47,7 +45,8 @@ function ParseLocationData( locationsJson )
         location.name = locationsJson[i]["marker_title"];
         location.id = parseInt( locationsJson[i]["id"] );
         location.latlon = new THREE.Vector2( locationsJson[i]["lat"], locationsJson[i]["lng"] );
-        location.position = PX.Utils.FromLatLon( location.latlon.x, location.latlon.y, PX.kEarthScale, PX.kLocationMarkerScale * PX.kLocationMarkerZScale * 0.5 );
+        location.position = PX.Utils.FromLatLon( location.latlon.x, location.latlon.y, PX.kEarthScale, PX.kLocationMarkerScale ); // * PX.kLocationMarkerZScale * 0.5 );
+        //location.position = PX.Utils.FromLatLon( location.latlon.x, location.latlon.y, PX.kEarthScale, PX.kLocationMarkerScale * PX.kLocationMarkerZScale * 0.5 );
         location.modelCount = 0;
 
         locationsDB.push( location );
@@ -57,14 +56,12 @@ function ParseLocationData( locationsJson )
 
     // Connect models with locations
     //
-/*    var reconstructions = PX.AssetsDatabase["ReconstructionsJson"];
+    var reconstructions = PX.AssetsDatabase["ReconstructionsJson"];
     for( var i=0; i<reconstructions.length; ++i )
     {
         var locId = parseInt( reconstructions[i]["location_id"] );
         var modelId = parseInt( reconstructions[i]["id"] );
-        //var loc = FindLocationById( locId );
         var loc = locationsDBMap.get( locId );
-        //console.log( loc );
         if( loc )
         {
             loc.modelCount++;
@@ -79,6 +76,6 @@ function ParseLocationData( locationsJson )
     for( var i=0; i<locationsDB.length; ++i )
     {
         var loc = locationsDB[i];
-        console.log( "location: ", loc.id, "  modelCount: ", loc.modelCount );
-    }*/
+        console.log( "+--+  ParseLocationData()  location: ", loc.id, "  modelCount: ", loc.modelCount );
+    }
 }
