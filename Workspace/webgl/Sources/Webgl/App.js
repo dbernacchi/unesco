@@ -78,6 +78,7 @@ var g_Raycaster = null;
 
 // Locations
 var locationsDB = [];
+var locationsDBMap = new Map();
 
 // Earth rotation
 var earthAccel = new THREE.Vector2();
@@ -227,9 +228,6 @@ function CreateRenderer()
     renderer.autoClearStencil = false;
     renderer.sortObjects = false;
     //renderer.autoUpdateObjects = false;
-
-    var deri = renderer.context.getExtension('OES_standard_derivatives');
-    console.log( deri );
 }
 
 function LoadData()
@@ -266,6 +264,7 @@ function LoadData()
         //, LoadText( "TextAtlasXml", "webgl/data/fonts/arialLarge.xml" )
         //, LoadTexture( "TextAtlasTex", "webgl/data/fonts/arialLargeTransparent.png" )
         , LoadJsonData("LocationsJson", "webgl/data/latlon.json")
+        , LoadJsonData("ReconstructionsJson", "webgl/data/reconstructions.json")
     ).done(function ()
     {
         PostLoadData();
@@ -716,29 +715,29 @@ function InitGUI()
         }
     });*/
 
-    g_GUI.add( Params, "EarthShadowScaleX" ).min(-400.0).max(400.0).step(0.001);
+    /*g_GUI.add( Params, "EarthShadowScaleX" ).min(-400.0).max(400.0).step(0.001);
     g_GUI.add( Params, "EarthShadowScaleY" ).min(-400.0).max(400.0).step(0.001);
     g_GUI.add( Params, "EarthShadowScaleZ" ).min(-400.0).max(400.0).step(0.001);
     g_GUI.add( Params, "EarthShadowPosX" ).min(-100.0).max(100.0).step(0.001);
     g_GUI.add( Params, "EarthShadowPosY" ).min(-100.0).max(100.0).step(0.001);
-    g_GUI.add( Params, "EarthShadowPosZ" ).min(-100.0).max(100.0).step(0.001);
+    g_GUI.add( Params, "EarthShadowPosZ" ).min(-100.0).max(100.0).step(0.001);*/
 
-    g_GUI.add( Params, 'ShowMaps' ).onChange( function( newValue ) 
+    /*g_GUI.add( Params, 'ShowMaps' ).onChange( function( newValue ) 
     {
         var maps = $("#map");
         maps.css( "z-index", newValue ? 1000 : -1000 );
-    });
+    });*/
     
-    g_GUI.add( Params, 'ShowStats' ).onChange( function( newValue ) 
+    /*g_GUI.add( Params, 'ShowStats' ).onChange( function( newValue ) 
     {
         if( g_Stats )
             g_Stats.domElement.style.visibility = newValue ? 'visible' : 'hidden';
-    });
+    });*/
 	
-    g_GUI.add( Params, "EnableSunLight" );
-    g_GUI.addFolder( "BLOOM" );
-    g_GUI.add( Params, "EnableBloom" );
-    g_GUI.add( Params, "BloomOpacity" ).min(0.0).max(1.0).step(0.001);
+    //g_GUI.add( Params, "EnableSunLight" );
+    //g_GUI.addFolder( "BLOOM" );
+    //g_GUI.add( Params, "EnableBloom" );
+    //g_GUI.add( Params, "BloomOpacity" ).min(0.0).max(1.0).step(0.001);
     g_GUI.addFolder( "MODEL SHADING" );
     g_GUI.add( Params, "ModelAmbientIntensity" ).min(0.0);
     g_GUI.add( Params, "ModelDiffuseIntensity" ).min(0.0);
@@ -756,16 +755,16 @@ function InitGUI()
     g_GUI.add( Params, "RimAngle" ).min(0.0);
     g_GUI.add( Params, "DiffuseRimIntensity" ).min(0.0);
     g_GUI.add( Params, "NightDayMixFactor" ).min(0.0).max(1.0).step(0.001);
-    g_GUI.addFolder( "CLOUDS SHADING" );
-    g_GUI.add( Params, "CloudsIntensity" ).min(0.0).max(1.0).step(0.01);
-    g_GUI.add( Params, "CloudsShadowIntensity" ).min(0.0).max(1.0).step(0.01);
-    g_GUI.add( Params, "CloudsShadowOffset" ).min(0.0).max(20.0).step(0.01);
-    g_GUI.addFolder( "LIGHT DIRECTION" );
+    //g_GUI.addFolder( "CLOUDS SHADING" );
+    //g_GUI.add( Params, "CloudsIntensity" ).min(0.0).max(1.0).step(0.01);
+    //g_GUI.add( Params, "CloudsShadowIntensity" ).min(0.0).max(1.0).step(0.01);
+    //g_GUI.add( Params, "CloudsShadowOffset" ).min(0.0).max(20.0).step(0.01);
+    g_GUI.addFolder( "GLOBE LIGHT DIRECTION" );
     g_GUI.add( Params, "LightDirX" ).min(-1.0).max(1.0).step(0.001);
     g_GUI.add( Params, "LightDirY" ).min(-1.0).max(1.0).step(0.001);
     g_GUI.add( Params, "LightDirZ" ).min(-1.0).max(1.0).step(0.001);
-    g_GUI.addFolder( "CAMERA" );
-    g_GUI.add( Params, "CameraDistance" ).min( PX.kEarthScale*1.333 ).max( 300.0 );
+    g_GUI.addFolder( "GLOBE CAMERA" );
+    //g_GUI.add( Params, "CameraDistance" ).min( PX.kEarthScale*1.333 ).max( 300.0 );
     g_GUI.add( Params, 'CameraNearPlane' ).onChange( function( newValue ) 
     {
         PX.kCameraNearPlane = newValue;
@@ -774,13 +773,13 @@ function InitGUI()
     } );
     g_GUI.addFolder( "INTERACTION" );
     g_GUI.add( Params, "EarthRotationSpeed" ).min(0.0).max(1.0).step(0.001);
-    g_GUI.add( Params, "MapGridSize" ).min(0).max(20).step(1).onChange( function( newValue ) 
+    /*g_GUI.add( Params, "MapGridSize" ).min(0).max(20).step(1).onChange( function( newValue ) 
     {
         console.log( parseInt(newValue) );
         markerCluster.setGridSize( parseInt(newValue) );
         markerCluster.repaint();
         locationMarkers.doPopulation = true;
-    });
+    });*/
     //g_GUI.add( Params, "Latitude" ).listen();
     //g_GUI.add( Params, "Longitude" ).listen();
     //g_GUI.add( Params, "ZoomLevel" ).listen();
