@@ -538,60 +538,135 @@ var UNESCO = {};
 		}
 	}
 	
-	/*
+	
 	this.buildBrowse = function(){
 	
+		var ns = this;
+		
 		//read through reconstructions.json
-		console.log('get it');
 		var url = "webgl/data/reconstructions.json";
 		
-		$.getJSON(url, function(data) {
-			
-			console.log(data);
-			
-			var items = [];
-			$.each(data, function(key, val) {
-				
-				console.log(val.details);
-				
-				var content = "<li id='" + key + "'>" + val + "</li>";
-				
-				items.push(content);
-			});
-
-			$("<div/>", {
-				html : items.join("")
-			}).appendTo("#browse .items");
-			
-		}); 
-		
-		
 		$.ajax({
-		  dataType: "json",
-		  url: url,
-		  success: function(data) {
-			
-				console.log(data);
+			dataType: "json",
+			url: url,
+			success: function(data) {
+				
+				reconstructions_to_load = data.length;
 				
 				var items = [];
 				$.each(data, function(key, val) {
 					
-					console.log(val.details);
+					var details = val.details;
 					
-					var content = "<li id='" + key + "'>" + val + "</li>";
+					var url = "details/" + details + "/data.json";
+								
+					if(details){
+						
+						$.ajax({
+							dataType: "json",
+							url: url,
+							success: function(data) {
+											
+								//model folder
+								val.folder = data.folder;
+								
+								//model file name
+								val.filename = data.filename;
+								
+								//date_constructed
+								val.date_constructed = data.date_constructed;
+								
+								//date_destroyed
+								val.date_destroyed = data.date_destroyed;
+								
+								//images
+								val.images = data.images;
+								
+								//videos
+								val.videos = data.videos;
+								
+								ns.buildItem(val);
+							}
+						});	
+											
+					} else {
 					
-					items.push(content);
+						ns.buildItem(val);
+						
+					}			
+					
 				});
-	
-				$("<div/>", {
-					html : items.join("")
-				}).appendTo("#browse .items");
 				
 			}
 		});		
-		console.log("POW");
+
+	}
 	
-	
+	this.buildItem = function(item){
+		
+		var content = $("#browse .items .clone").clone();
+		
+		content.removeClass('clone');
+		
+		content.attr('item-id', item.id);
+		
+		content.attr('location-id', item.location_id);
+		
+		content.find(".title .name").html( item.name );
+		
+		var status = 'Destroyed';
+		
+		if(item.folder){
+
+			content.attr('folder', item.folder);
+		
+			if(item.images.length){
+				status = 'Under Reconstruction';	
+			}
+
+			if(item.folder){
+				content.attr('filename', item.filename);
+				status = 'Reconstructed';	
+			}
+						
+			content.find(".image img").attr('src', 'details/' + item.folder + '/image.png' );
+			
+			content.find(".date .date_created").html( item.date_created );
+			
+			content.find(".date .date_destroyed").html( item.date_destroyed );
+			
+			var p = item.images;
+			
+			for (var key in p) {
+			  if (p.hasOwnProperty(key)) {
+			  	//p[key]
+			  	
+				var obj = p[key];
+				var output = obj[Object.keys(obj)[0]];
+				
+			  	content.find(".media .images").append( '<img src="details/' + item.folder + '/images/' + output + '" />' );
+			  }
+			}
+
+			p = item.videos;
+			
+			for (var key in p) {
+			  if (p.hasOwnProperty(key)) {
+			  	//p[key]
+				var obj = p[key];
+				var output = obj[Object.keys(obj)[0]];
+				
+			  	content.find(".media .videos").append( '<iframe width="420" height="315" src="' + output + '" frameborder="0" allowfullscreen=""></iframe>');
+			  }
+			}
+			
+		}
+		
+		content.find(".status").html(status );
+		
+		$("#browse .items").append(content);
+		
+		/*
 				
 		//for each item
 		
@@ -599,34 +674,42 @@ var UNESCO = {};
 			
 			//create element
 		
-            <div class="item unselected resize-margin-bottom">
+            <div class="clone item unselected resize-margin-bottom" item-id="ITEM_ID" location-id="LOCATION_ID">
                 <ul class="clr">
                     <li class="image resize-width">
-                        <a href="#"><img class="resize" src="img/browse/static-browse-1.png" /></a>
+                        <a href="#"><img class="resize" src="IMAGE.PNG" /></a>
                     </li>
                     <li class="resize-width text">
                         <div class="inner">
                             <div class="title resize-font-size resize-width">
-                                Hatra Relief
+                                <span class="name">NAME</span>
 
                                 <div class="date">
-                                    600BC - 2015
+                                    <span class="date_created">DATE_CREATED</span> - <span class="date_destroyed">DATE_DESTROYED</span>
                                 </div>
                             </div>
 
                             <div class="status resize-margin-left resize-margin-top">
-                                DESTROYED
+                                STATUS
                             </div>
                          </div>
                     </li>
-                </ul>    
+                </ul> 
+                <div class="media">
+                    <div class="images">
+                        
+                    </div>
+                    <div class="videos">
+                        
+                    </div>
+                </div>   
             </div>
 	
- 		
+ 		*/
  		//add to browse
 		
 	}	
-	*/
+	
 	
 }).apply(UNESCO);
 

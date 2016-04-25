@@ -253,6 +253,10 @@ ul.clr li {
 	height: 668px;
 }
 
+#browse .clone{display: none;}
+
+#browse .media{display: none;}
+
 #legend {
 	position: absolute;
 	bottom: 20px;

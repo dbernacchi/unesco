@@ -104,10 +104,10 @@ if(!Detector.webgl)
 
     <ul class="clr">
         <li>
-            <a href="#" class="destroyed">DESTROYED</a>
+            <a href="#" class="destroyed disabled">DESTROYED</a>
         </li>
         <li>
-            <a href="#" class="under">UNDER RECONSTRUCTION</a>
+            <a href="#" class="under disabled">UNDER RECONSTRUCTION</a>
         </li>
         <li>
             <a href="#" class="reconstructed">RECONSTRUCTED</a>
@@ -123,30 +123,38 @@ if(!Detector.webgl)
     <ul class="clr">
         <li class="resize-width items">
 
-
-            <div class="item unselected resize-margin-bottom">
+            <div class="clone item unselected resize-margin-bottom" item-id="ITEM_ID" location-id="LOCATION_ID" folder="" filename="">
                 <ul class="clr">
                     <li class="image resize-width">
-                        <a href="#"><img class="resize" src="img/browse/static-browse-1.png" /></a>
+                        <a href="#"><img class="resize" src="" /></a>
                     </li>
                     <li class="resize-width text">
                         <div class="inner">
                             <div class="title resize-font-size resize-width">
-                                Hatra Relief
+                                <span class="name">NAME</span>
 
                                 <div class="date">
-                                    600BC - 2015
+                                    <span class="date_created">DATE_CREATED</span> - <span class="date_destroyed">DATE_DESTROYED</span>
                                 </div>
                             </div>
 
                             <div class="status resize-margin-left resize-margin-top">
-                                DESTROYED
+                                STATUS
                             </div>
                          </div>
                     </li>
-                </ul>    
+                </ul> 
+                <div class="media">
+                    <div class="images">
+                        IMAGES
+                    </div>
+                    <div class="videos">
+                        VIDEOS
+                    </div>
+                </div>   
             </div>
-            
+
+<!--            
             <div class="item resize-margin-bottom resize-margin-top">
                 <ul class="clr">
                     <li class="image resize-width">
@@ -192,6 +200,7 @@ if(!Detector.webgl)
                     </li>
                 </ul>    
             </div>
+-->
           
         </li>
         <li class="arrows resize-margin-right resize-margin-top">
