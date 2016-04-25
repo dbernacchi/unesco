@@ -196,7 +196,7 @@ function LoadOBJScene( path, filename, scene, onProgressCB, onCompleteCB )
 	mtlLoader.load( mtlUrl, function( materials ) 
     {
         materials.preload();
-
+/*
         var matArray = materials.getAsArray();
 
         var ourMat = null;
@@ -213,7 +213,7 @@ function LoadOBJScene( path, filename, scene, onProgressCB, onCompleteCB )
             }
             ourMat = mat;
         }
-
+        */
 		objLoader.setMaterials( materials );
 	    objLoader.setPath( path );
 	    objLoader.load( objUrl
@@ -227,11 +227,13 @@ function LoadOBJScene( path, filename, scene, onProgressCB, onCompleteCB )
                 if( object instanceof THREE.Mesh )
                 {
                     //object.material = ourMat.clone();
+
                     /*if( object.material.bumpMap )
                     {
                         object.material.normalMap = object.material.bumpMap;
                         //console.log( "material as normal maps" );
                     }*/
+
                     object.material.color = new THREE.Color( 0xffffff );
                     object.material.side = THREE.DoubleSide;
                     object.material.transparent = false;
@@ -379,7 +381,7 @@ function ComputeSceneBoundingSphere( scene )
     //var len = Math.max( sceneMin.x, sceneMax.x );
     var minLength = sceneMin.length();
     var maxLength = sceneMax.length();
-    var len = Math.min( minLength, maxLength );
+    var len = Math.max( minLength, maxLength );
 
     // Reposition camera based on scene bounds
     //

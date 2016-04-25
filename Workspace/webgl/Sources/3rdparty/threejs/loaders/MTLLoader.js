@@ -327,6 +327,7 @@ THREE.MTLLoader.MaterialCreator.prototype = {
 				case 'map_kd':
 
 					// Diffuse texture map
+                    console.log( "MTL: load map texture" );
 
 					params[ 'map' ] = this.loadTexture( this.baseUrl + value );
 					params[ 'map' ].wrapS = this.wrap;
@@ -369,8 +370,10 @@ THREE.MTLLoader.MaterialCreator.prototype = {
 				case 'bump':
 
 					// Bump texture map
+                    console.log( "MTL: load bump texture" );
 
-					if ( params[ 'bumpMap' ] ) break; // Avoid loading twice.
+					//if ( params[ 'bumpMap' ] ) break; // Avoid loading twice.
+					//if ( params[ 'normalMap' ] ) break; // Avoid loading twice.
 
                     // HACK: get rid of the "-bm" multiplier that comes with "bump" field
                     var temp = value.split( " -" );
@@ -381,9 +384,13 @@ THREE.MTLLoader.MaterialCreator.prototype = {
                         value = temp[0];
                     }
 
-					params[ 'bumpMap' ] = this.loadTexture( this.baseUrl + value );
+					/*params[ 'bumpMap' ] = this.loadTexture( this.baseUrl + value );
 					params[ 'bumpMap' ].wrapS = this.wrap;
-					params[ 'bumpMap' ].wrapT = this.wrap;
+					params[ 'bumpMap' ].wrapT = this.wrap;*/
+
+					params[ 'normalMap' ] = this.loadTexture( this.baseUrl + value );
+					params[ 'normalMap' ].wrapS = this.wrap;
+					params[ 'normalMap' ].wrapT = this.wrap;
 
 					break;
 

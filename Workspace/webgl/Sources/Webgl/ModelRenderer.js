@@ -86,7 +86,7 @@ PX.ModelRenderer.prototype =
         // Create Artefact sun light
         //
         var artSunLight = new THREE.DirectionalLight( 0xffffff );
-        artSunLight.position.set( 1, 1, 1 );
+        artSunLight.position.set( 0.5, 1, 1 );
         //artSunLight.position.copy( this.artefactCamera.getWorldDirection() );
         this.artefactScene.add( artSunLight );
         var artAmbLight = new THREE.HemisphereLight( 0x7f7faa, 0x040410, 1 );
