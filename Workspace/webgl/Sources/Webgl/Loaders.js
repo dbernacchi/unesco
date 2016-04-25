@@ -11,7 +11,7 @@ function LoadJsonData( name, url )
     var defer = $.Deferred();
     console.log( "+--+  Load JSON:\t\t" + name, url );
 
-    $.ajax( { scriptCharset: "utf-8" , contentType: "charset=unicode"} );
+/*    $.ajax( { scriptCharset: "utf-8" , contentType: "charset=unicode"} );
     $.ajax({
         url: url,
         dataType: "text",
@@ -24,16 +24,16 @@ function LoadJsonData( name, url )
             console.log( "+--+  Loaded JSON:\t\t" + name, url );
             defer.resolve();
         }
-    });
+    });*/
 
-/*    $.ajax( { scriptCharset: "utf-8" , dataType: "json", contentType: "application/json; charset=unicode"} );
-    $.getJSON( url, function( json )
-    //$.getJSON( url+"?"+new Date().getTime(), function( json )
+    $.ajax( { scriptCharset: "utf-8" , dataType: "json", contentType: "application/json; charset=unicode"} );
+    //$.getJSON( url, function( json )
+    $.getJSON( url+"?"+new Date().getTime(), function( json )
     {
         PX.AssetsDatabase[ name ] = json;
         console.log( "+--+ Loaded JSON:\t\t" + name );
         defer.resolve();
-    } );*/
+    } );
 
     return defer; //.promise();
 }
@@ -83,6 +83,8 @@ function LoadText( name, url )
             defer.resolve();
         }
     });
+
+    return defer;
 }
 
 
