@@ -26,7 +26,7 @@ PX.ModelRenderer = function()
 
     this.trackball = null;
 
-    this.material = null;
+    this.materials = [];
 
     this.artSunLight = null;
 
@@ -89,13 +89,13 @@ PX.ModelRenderer.prototype =
 
         // Create Artefact sun light
         //
-        /*artSunLight = new THREE.DirectionalLight( 0xffffff );
+        artSunLight = new THREE.DirectionalLight( 0xffffff );
         artSunLight.position.set( 0.5, 1, 1 );
         //artSunLight.position.copy( this.artefactCamera.getWorldDirection() );
         this.artefactScene.add( artSunLight );
         var artAmbLight = new THREE.HemisphereLight( 0x7f7faa, 0x040410, 1 );
         this.artefactScene.add( artAmbLight );
-        */
+
 
         this.SetupMaterial();
 
@@ -123,11 +123,33 @@ PX.ModelRenderer.prototype =
 
     , SetupMaterial()
     {
-        var modelUniforms =
+        var modelUniforms0 =
         {
             DiffuseMap: { type: "t", value: null }
             , NormalMap: { type: "t", value: null }
-            , World: { type: "m4", value: new THREE.Matrix4() }
+            , DiffuseColor: { type: "v4", value: new THREE.Vector4( 1, 1, 1, 1 ) }
+            //, World: { type: "m4", value: new THREE.Matrix4() }
+            , ViewPosition: { type: "v3", value: new THREE.Vector3( 0, 0, 100 ) }
+            , LightDirection: { type: "v3", value: new THREE.Vector3( -1, -1, -1 ) }
+            , Params0: { type: "v4", value: new THREE.Vector4( 0.001, 3.14, 0.1, 1 ) }
+            //, Params1: { type: "v4", value: new THREE.Vector4( 1, 1, 1, 1 ) }
+            , Params2: { type: "v4", value: new THREE.Vector4( 0.6, 2.0, 0.4, 1.0 ) }
+        }
+        var modelUniforms1 =
+        {
+            DiffuseMap: { type: "t", value: null }
+            , DiffuseColor: { type: "v4", value: new THREE.Vector4( 1, 1, 1, 1 ) }
+            //, World: { type: "m4", value: new THREE.Matrix4() }
+            , ViewPosition: { type: "v3", value: new THREE.Vector3( 0, 0, 100 ) }
+            , LightDirection: { type: "v3", value: new THREE.Vector3( -1, -1, -1 ) }
+            , Params0: { type: "v4", value: new THREE.Vector4( 0.001, 3.14, 0.1, 1 ) }
+            //, Params1: { type: "v4", value: new THREE.Vector4( 1, 1, 1, 1 ) }
+            , Params2: { type: "v4", value: new THREE.Vector4( 0.6, 2.0, 0.4, 1.0 ) }
+        }
+        var modelUniforms2 =
+        {
+            DiffuseColor: { type: "v4", value: new THREE.Vector4( 1, 1, 1, 1 ) }
+            //, World: { type: "m4", value: new THREE.Matrix4() }
             , ViewPosition: { type: "v3", value: new THREE.Vector3( 0, 0, 100 ) }
             , LightDirection: { type: "v3", value: new THREE.Vector3( -1, -1, -1 ) }
             , Params0: { type: "v4", value: new THREE.Vector4( 0.001, 3.14, 0.1, 1 ) }
@@ -135,18 +157,59 @@ PX.ModelRenderer.prototype =
             , Params2: { type: "v4", value: new THREE.Vector4( 0.6, 2.0, 0.4, 1.0 ) }
         }
 
-        this.material = new THREE.ShaderMaterial(
+
+        // Diffuse + Normal
+        var fragShader0 = "#define ENABLE_NORMAL_MAP";
+        fragShader0 += "#define ENABLE_DIFFUSE_MAP";
+        fragShader0 += PX.AssetsDatabase["ModelPixelShader"];
+        var materialDiffuseAndNormals = new THREE.ShaderMaterial(
         {
-            uniforms: modelUniforms
+            uniforms: modelUniforms0
             , vertexShader: PX.AssetsDatabase["ModelVertexShader"]
-            , fragmentShader: PX.AssetsDatabase["ModelPixelShader"]
+            , fragmentShader: fragShader0
             , vertexColors: THREE.VertexColors
         } );
-        this.material.extensions.derivatives = true;
-        this.material.side = THREE.DoubleSide;
-        this.material.depthTest = true;
-        this.material.depthWrite = true;
-        this.material.transparent = false;
+        materialDiffuseAndNormals.extensions.derivatives = true;
+        materialDiffuseAndNormals.side = THREE.DoubleSide;
+        materialDiffuseAndNormals.depthTest = true;
+        materialDiffuseAndNormals.depthWrite = true;
+        materialDiffuseAndNormals.transparent = false;
+        this.materials.push( materialDiffuseAndNormals );
+
+
+        // Diffuse Only
+        var fragShader1 = "#define ENABLE_DIFFUSE_MAP";
+        fragShader1 += PX.AssetsDatabase["ModelPixelShader"];
+        var materialDiffuseOnly = new THREE.ShaderMaterial(
+        {
+            uniforms: modelUniforms1
+            , vertexShader: PX.AssetsDatabase["ModelVertexShader"]
+            , fragmentShader: fragShader1
+            , vertexColors: THREE.VertexColors
+        } );
+        materialDiffuseOnly.extensions.derivatives = true;
+        materialDiffuseOnly.side = THREE.DoubleSide;
+        materialDiffuseOnly.depthTest = true;
+        materialDiffuseOnly.depthWrite = true;
+        materialDiffuseOnly.transparent = false;
+        this.materials.push( materialDiffuseOnly );
+
+
+        // No Maps
+        var fragShader2 = PX.AssetsDatabase["ModelPixelShader"];
+        var materialNoMaps = new THREE.ShaderMaterial(
+        {
+            uniforms: modelUniforms2
+            , vertexShader: PX.AssetsDatabase["ModelVertexShader"]
+            , fragmentShader: fragShader2
+            , vertexColors: THREE.VertexColors
+        } );
+        materialNoMaps.extensions.derivatives = true;
+        materialNoMaps.side = THREE.DoubleSide;
+        materialNoMaps.depthTest = true;
+        materialNoMaps.depthWrite = true;
+        materialNoMaps.transparent = false;
+        this.materials.push( materialNoMaps );
     }
 
     , Load( path, filename, onProgressCB )
@@ -159,8 +222,8 @@ PX.ModelRenderer.prototype =
         preloaderFG.show();
 
         //LoadSceneData( path, filename, this.artefactScene,
-        LoadOBJScene( path, filename, this.artefactScene, this.material,
-        //LoadBINScene( path, filename, this.artefactScene, 
+        LoadOBJScene( path, filename, this.artefactScene, this.materials,
+        //LoadBINScene( path, filename, this.artefactScene,
         function( per )
         {
             console.log( "+--+  Load: Percentage: ", per );
@@ -191,15 +254,15 @@ PX.ModelRenderer.prototype =
                 scope.sceneCenter.y = res.y;
                 scope.sceneCenter.z = res.z;
                 scope.distToCamera = res.w;
-                //console.log( scope.sceneCenter, scope.distToCamera );
+                console.log( scope.sceneCenter, scope.distToCamera );
 
                 //console.log( "Set camera" );
                 scope.artefactCamera.position.x = scope.sceneCenter.x;
                 scope.artefactCamera.position.y = scope.sceneCenter.y;
                 scope.artefactCamera.position.z = scope.sceneCenter.z + scope.distToCamera;
                 scope.artefactCamera.lookAt( scope.sceneCenter.clone() );
-                //console.log( "scope.artefactCamera.position: ", scope.artefactCamera.position );
-                //console.log( "scope.artefactCamera.direction: ", scope.artefactCamera.getWorldDirection() );
+                console.log( "scope.artefactCamera.position: ", scope.artefactCamera.position );
+                console.log( "scope.artefactCamera.direction: ", scope.artefactCamera.getWorldDirection() );
 
                 //
                 //console.log( "set orbit controls" );
@@ -219,8 +282,7 @@ PX.ModelRenderer.prototype =
                 console.log( "+--+  ModelRenderer enabled" );
                 scope.enabled = true;
             });
-        }
-        );
+        } );
     }
 
     , Update( time, frameTime )
@@ -245,13 +307,27 @@ PX.ModelRenderer.prototype =
         if( this.trackball ) this.trackball.Update( this.artefactCamera, frameTime );
 
         if( this.artefactOrbitControls ) this.artefactOrbitControls.update();
+/*
+        var scope = this;
+        this.artefactScene.traverse( function( object )
+        {
+            if( object instanceof THREE.Mesh )
+            {
+                object.material.uniforms.Params0.value.set( Params.ModelAmbientIntensity, Params.ModelDiffuseIntensity, Params.ModelSpecularIntensity, 1.0 );
+                object.material.uniforms.Params2.value.x = Params.ModelRoughness;
+                object.material.uniforms.ViewPosition.value = scope.artefactCamera.position;
+            }
+        });*/
 
         // Update shader material
 //        console.log( this.artefactCamera.position );
-        this.material.uniforms.Params0.value.set( Params.ModelAmbientIntensity, Params.ModelDiffuseIntensity, Params.ModelSpecularIntensity, 1.0 );
-        this.material.uniforms.Params2.value.x = Params.ModelRoughness;
-        this.material.uniforms.ViewPosition.value = this.artefactCamera.position;
-        //this.material.uniforms.LightDirection.value = this.artSunLight.position;
+/*        for( var i=0; i<3; i++ )
+        {
+            this.materials[i].uniforms.Params0.value.set( Params.ModelAmbientIntensity, Params.ModelDiffuseIntensity, Params.ModelSpecularIntensity, 1.0 );
+            this.materials[i].uniforms.Params2.value.x = Params.ModelRoughness;
+            this.materials[i].uniforms.ViewPosition.value = this.artefactCamera.position;
+            //this.materials[i].uniforms.LightDirection.value = this.artSunLight.position;
+        }*/
     }
 
 

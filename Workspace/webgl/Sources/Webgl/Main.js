@@ -39,10 +39,9 @@ $( document ).ready( function()
         PX.kEarthDetailX = 32;
         PX.kEarthDetailY = 22;
 
-        //PX.kLocationMarkerDetail = 24;
         PX.kLocationMarkerScale = 1.5;
 
-        PX.kCameraMinDistance = 55.0;
+        PX.kCameraMinDistance = 58.0;
         PX.kCameraMaxDistance = 100.0;
         PX.kCameraOneOverMinDistance = 1.0 / PX.kCameraMinDistance;
         PX.kCameraOneOverMaxDistance = 1.0 / PX.kCameraMaxDistance;

@@ -4,7 +4,7 @@
 UG.LocationMarker = function()
 { 
     this.id             = -1;
-    this.GUID           = "";
+    //this.GUID           = "";
     this.title          = "";
     this.text           = "";
     this.index          = -1;
@@ -530,7 +530,7 @@ UG.LocationMarkers.prototype =
 
             // Marker's Text Info
             //
-            if( loc.modelCount > 1 )
+            if( loc.modelCount > 1 && loc.scale.x > PX.EPSILON )
             {
                 var ttt = (1.0) * PX.kLocationMarkerZScale;
                 //var ttt = ( loc.markerCount > 0 ? loc.markerCount * PX.kLocationMarkerZScale : 1.0 );
@@ -551,9 +551,12 @@ UG.LocationMarkers.prototype =
             }
 
             //
-            var outlinePos = new THREE.Vector3();
-            outlinePos.z += Params.OutlineDist;
-            this.circleRenderer.AppendRect( outlinePos, this.outlineGlobalScale.x * (PX.kLocationMarkerScale + ((Params.OutlineThickness * 0.001) / loc.scale.x)), this.meshes[i].matrix );
+            if( this.outlineGlobalScale.x > PX.EPSILON )
+            {
+                var outlinePos = new THREE.Vector3();
+                outlinePos.z += Params.OutlineDist;
+                this.circleRenderer.AppendRect( outlinePos, this.outlineGlobalScale.x * (PX.kLocationMarkerScale + ((Params.OutlineThickness * 0.001) / loc.scale.x)), this.meshes[i].matrix );
+            }
 	    }
 
         this.textRenderer1.End();
@@ -1045,7 +1048,7 @@ UG.LocationMarkers.prototype =
 
             // Non-Selected Marker Global Scale
             var gsTarget = new THREE.Vector2( PX.EPSILON, PX.EPSILON );
-            var tweengs = new TWEEN.Tween( this.level2GlobalScale ).to( gsTarget, Params.AnimTime * 1000.0 );
+            var tweengs = new TWEEN.Tween( this.level2GlobalScale ).to( gsTarget, Params.AnimTime * 1000.0 * 0.25 );
             tweengs.easing( TWEEN.Easing.Quadratic.InOut );
             tweengs.start();
 
@@ -1056,7 +1059,7 @@ UG.LocationMarkers.prototype =
             tweengs2.start();
 
             // Outline Global Scale
-            var ogsTarget = new THREE.Vector2( 0.0, 0.0 );
+            var ogsTarget = new THREE.Vector2( PX.EPSILON, PX.EPSILON );
             var tweenogs = new TWEEN.Tween( this.outlineGlobalScale ).to( ogsTarget, Params.AnimTime * 1000.0 * 0.25 );
             tweenogs.easing( TWEEN.Easing.Quadratic.InOut );
             tweenogs.start();
@@ -1115,7 +1118,7 @@ UG.LocationMarkers.prototype =
 
             // Non-Selected Marker Global Scale
             var gsTarget = new THREE.Vector2( 1, 1 );
-            var tweengs = new TWEEN.Tween( this.level2GlobalScale ).to( gsTarget, Params.AnimTime * 1000.0 );
+            var tweengs = new TWEEN.Tween( this.level2GlobalScale ).to( gsTarget, Params.AnimTime * 1000.0 * 0.5 );
             tweengs.easing( TWEEN.Easing.Quadratic.InOut );
             tweengs.start();
 
@@ -1127,9 +1130,9 @@ UG.LocationMarkers.prototype =
 
             // Outline Global Scale
             var ogsTarget = new THREE.Vector2( 1.0, 1.0 );
-            var tweenogs = new TWEEN.Tween( this.outlineGlobalScale ).to( ogsTarget, Params.AnimTime * 1000.0 * 0.2 ); //Params.AnimTime * 1000.0 );
+            var tweenogs = new TWEEN.Tween( this.outlineGlobalScale ).to( ogsTarget, Params.AnimTime * 1000.0 * 0.9 ); //Params.AnimTime * 1000.0 );
             tweenogs.easing( TWEEN.Easing.Quadratic.InOut );
-            tweenogs.delay( Params.AnimTime * 1000.0 * 0.8 );
+            tweenogs.delay( Params.AnimTime * 1000.0 * 0.1 );
             tweenogs.start();
 
             // CAMERA POSITION
@@ -1327,7 +1330,7 @@ UG.LocationMarkers.prototype =
                     if( i === clusterCount-1 )
                     {
                         // Outline Global Scale
-                        scope.outlineGlobalScale.set( 0.0, 0.0 );
+                        scope.outlineGlobalScale.set( PX.EPSILON, PX.EPSILON );
                         var ogsTarget = new THREE.Vector2( 1.0, 1.0 );
                         var tweenogs = new TWEEN.Tween( scope.outlineGlobalScale ).to( ogsTarget, Params.AnimTime * 500.0 );
                         tweenogs.easing( TWEEN.Easing.Quadratic.InOut );

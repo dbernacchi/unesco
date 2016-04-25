@@ -178,7 +178,7 @@ function LoadBINScene( path, filename, scene, onProgressCB, onCompleteCB )
 }
 ***/
 
-function LoadOBJScene( path, filename, scene, material, onProgressCB, onCompleteCB )
+function LoadOBJScene( path, filename, scene, shaderMaterials, onProgressCB, onCompleteCB )
 {
     //var url = path + filename;
     console.log( "+--+  Load OBJ Scene:\t", path + filename );
@@ -188,8 +188,8 @@ function LoadOBJScene( path, filename, scene, material, onProgressCB, onComplete
 
 	var loadStartTime = Date.now();
 
-    var mtlUrl = filename + ".mtl" + "?" + new Date().getTime();;
-    var objUrl = filename + ".obj" + "?" + new Date().getTime();;
+    var mtlUrl = filename + ".mtl"; // + "?" + new Date().getTime();;
+    var objUrl = filename + ".obj"; // + "?" + new Date().getTime();;
 
 	mtlLoader.setBaseUrl( path );
 	mtlLoader.setPath( path );
@@ -217,61 +217,118 @@ function LoadOBJScene( path, filename, scene, material, onProgressCB, onComplete
 		objLoader.setMaterials( materials );
 	    objLoader.setPath( path );
 	    objLoader.load( objUrl
-        , function( object ) 
+        , function( data ) 
         {
-            scene.add( object );
+            scene.add( data );
 
             // Apply some defaults we want. Just is case 3d models come with bad properties
-            scene.traverse( function( object )
+            data.traverse( function( object )
             {
                 if( object instanceof THREE.Mesh )
                 {
-                    /*var modelUniforms =
+/**                    var modelUniforms =
                     {
-                        DiffuseMap: { type: "t", value: PX.AssetsDatabase["EarthDiffuseMap"] }
-                        , NormalMap: { type: "t", value: PX.AssetsDatabase["EarthNormalMap"] }
-                        , World: { type: "m4", value: new THREE.Matrix4() }
+                        DiffuseMap: { type: "t", value: null }
+                        , NormalMap: { type: "t", value: null }
+                        //, World: { type: "m4", value: new THREE.Matrix4() }
                         , ViewPosition: { type: "v3", value: new THREE.Vector3( 0, 0, 1 ) }
                         , LightDirection: { type: "v3", value: new THREE.Vector3( 0.5, 1, 1 ) }
-                        , Params0: { type: "v4", value: new THREE.Vector4( 0.02, 1, 1, 1 ) }
+                        , Params0: { type: "v4", value: new THREE.Vector4( Params.ModelAmbientIntensity, Params.ModelDiffuseIntensity, Params.ModelSpecularIntensity, 1.0 ) }
                         //, Params1: { type: "v4", value: new THREE.Vector4( 1, 1, 1, 1 ) }
-                        , Params2: { type: "v4", value: new THREE.Vector4( 0.3, 2.0, 0.4, 1 ) }
-                        , Time: { type: "f", value: 0.0 }
+                        , Params2: { type: "v4", value: new THREE.Vector4( Params.ModelRoughness, 2.0, 0.4, 1.0 ) }
+                        //, Time: { type: "f", value: 0.0 }
                     }
+
+                    var fragShader = "";
+
+                    if( object.material.normalMap )
+                    {
+                        fragShader += "#define ENABLE_NORMAL_MAP"
+                    }
+                    else
+                    {
+                        console.log( "****  No normal maps" );
+                    }
+
+                    fragShader += PX.AssetsDatabase["ModelPixelShader"];
 
                     var material = new THREE.ShaderMaterial(
                     {
                         uniforms: modelUniforms
                         , vertexShader: PX.AssetsDatabase["ModelVertexShader"]
-                        , fragmentShader: PX.AssetsDatabase["ModelPixelShader"]
-                        , vertexColors: THREE.VertexColors
+                        , fragmentShader: fragShader
+                        //, vertexColors: THREE.VertexColors
                     } );
-                    material.side = THREE.DoubleSide;
                     material.extensions.derivatives = true;
+                    material.side = THREE.DoubleSide;
                     material.depthTest = true;
                     material.depthWrite = true;
                     material.transparent = false;
 
+                    material.map = object.material.map;
+                    material.normalMap = object.material.normalMap;
                     modelUniforms.DiffuseMap.value = object.material.map;
-                    modelUniforms.NormalMap.value = object.material.normalMap;*/
-
-                    material.uniforms.DiffuseMap.value = object.material.map;
-                    material.uniforms.NormalMap.value = object.material.normalMap;
-                    // Diff Intensity
-                    material.uniforms.Params0.y *= object.material.color.r;
-                    // Spec Intensity
-                    material.uniforms.Params0.z = object.material.specular.r;
-                    console.log( "specular intensity: ", material.uniforms.Params0.z );
-                    if( !object.material.normalMap )
-                        console.log( "NO TEXTURE: object.material.normalMap" );
+                    if( object.material.normalMap )
+                    {
+                        modelUniforms.NormalMap.value = object.material.normalMap;
+                    }
 
                     object.material = material;
+***/
 
-                    /*object.material.color = new THREE.Color( 0xffffff );
+/****
+                    var idx = 0;
+                    if( object.material.map && object.material.normalMap )
+                    {
+                        console.log( "object with diffuse + normals" );
+                        object.material = shaderMaterials[0]; //.clone();
+
+                        object.material.uniforms.DiffuseMap.value = object.material.map;
+                        object.material.uniforms.NormalMap.value = object.material.normalMap;
+
+                        idx = 0;
+                    }
+                    else if( object.material.map && !object.material.normalMap )
+                    {
+                        console.log( "object with diffuse only" );
+
+                        object.material = shaderMaterials[1]; //.clone();
+
+                        object.material.uniforms.DiffuseMap.value = object.material.map;
+                        //object.material.uniforms.NormalMap.value = null;
+
+                        idx = 1;
+                    }
+                    else
+                    {
+                        console.log( "object with no maps" );
+
+                        object.material = shaderMaterials[2]; //.clone();
+
+                        //object.material.uniforms.DiffuseMap.value = null;
+                        //object.material.uniforms.NormalMap.value = null;
+
+                        idx = 2;
+                    }
+***/
+
+                    // Diff Intensity
+                    /*if( object.material.color )
+                    {
+                        console.log( "diffuse intensity: ", object.material.uniforms.Params0.y, object.material.color.r );
+                        object.material.uniforms.Params0.y *= object.material.color.r;
+                    }
+                    // Spec Intensity
+                    object.material.uniforms.Params0.z = object.material.specular.r;
+                    console.log( "specular intensity: ", object.material.uniforms.Params0.z );*/
+
+
+                    //
+                    object.material.color = new THREE.Color( 0xffffff );
                     object.material.side = THREE.DoubleSide;
                     object.material.transparent = false;
                     object.material.opacity = 1.0;
-                    object.shading = THREE.SmoothShading;*/
+                    object.material.shading = THREE.SmoothShading;
 
                     object.frustumCulled = false;
 
