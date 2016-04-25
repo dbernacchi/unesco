@@ -30,7 +30,7 @@ $( document ).ready( function()
     {
         PX.IsMobile = true;
 
-        PX.kEnableGUI = false;
+        //PX.kEnableGUI = false;
 
         Params.Level0MarkerRadius *= 1.5;
         PX.kLocationFontSize = 5;
@@ -38,17 +38,21 @@ $( document ).ready( function()
         // change defauls for mobile
         PX.kEarthDetailX = 32;
         PX.kEarthDetailY = 22;
-        //PX.kLocationMarkerDetail = 10;
-        PX.kLocationMarkerScale = 2.0;
+
+        //PX.kLocationMarkerDetail = 24;
+        PX.kLocationMarkerScale = 1.6;
+
         PX.kCameraMinDistance = 50.0;
         PX.kCameraMaxDistance = 100.0;
         PX.kCameraOneOverMinDistance = 1.0 / PX.kCameraMinDistance;
         PX.kCameraOneOverMaxDistance = 1.0 / PX.kCameraMaxDistance;
+
         PX.MinDistancesPerLevel[0] = 230;
         PX.MinDistancesPerLevel[1] = 180;
 
+        //Params.CameraNearPlane = PX.kCameraNearPlane;
         Params.CameraDistance = PX.kCameraMaxDistance;
-        Params.OutlineThickness = 70.0;
+        Params.OutlineThickness = 120.0;
     }
     else
     {

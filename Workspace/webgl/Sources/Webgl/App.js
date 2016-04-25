@@ -745,6 +745,12 @@ function InitGUI()
     g_GUI.add( Params, "LightDirZ" ).min(-1.0).max(1.0).step(0.001);
     g_GUI.addFolder( "CAMERA" );
     g_GUI.add( Params, "CameraDistance" ).min( PX.kEarthScale*1.333 ).max( 300.0 );
+    g_GUI.add( Params, 'CameraNearPlane' ).onChange( function( newValue ) 
+    {
+        PX.kCameraNearPlane = newValue;
+        camera.near = newValue;
+        camera.updateProjectionMatrix();
+    } );
     g_GUI.addFolder( "INTERACTION" );
     g_GUI.add( Params, "EarthRotationSpeed" ).min(0.0).max(1.0).step(0.001);
     g_GUI.add( Params, "MapGridSize" ).min(0).max(20).step(1).onChange( function( newValue ) 
@@ -758,6 +764,11 @@ function InitGUI()
     //g_GUI.add( Params, "Longitude" ).listen();
     //g_GUI.add( Params, "ZoomLevel" ).listen();
     //g_GUI.add( Params, "Intersects" ).listen();
+    g_GUI.add( Params, "OutlineThickness" ).min(0.0).max(1000.0)
+    g_GUI.add( Params, "OutlineDist" ).min(-1.0).max(1.0).step(0.001);
+    //g_GUI.add( Params, "MarkerCircleDist" ).min(-1.0).max(1.0).step(0.001);
+    g_GUI.add( Params, "MarkerTextDist" ).min(-1.0).max(1.0).step(0.001);
+
     g_GUI.add( Params, "TiltShiftStrength" ).min(0.0).max(50.0);
     g_GUI.add( Params, "TiltShiftMaxStrength" ).min(0.0).max(100.0).onChange( function( newValue )
     {
@@ -774,7 +785,6 @@ function InitGUI()
         });
     });
     g_GUI.add( Params, "TiltShiftPosition" ).min(0.0).max(1.0);
-    g_GUI.add( Params, "OutlineThickness" ).min(0.0).max(1000.0);
 
     //g_GUI.remember( Params );
 }

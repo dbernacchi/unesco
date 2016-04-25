@@ -119,17 +119,27 @@ UG.LocationMarkers.prototype =
 	        //var material = new THREE.MeshBasicMaterial( { color: color } );
 	        //material.depthWrite = false;
             //material.polygonOffset = true;
-            //material.polygonOffsetFactor = -1;
+            //material.polygonOffsetFactor = 0.6;
             //material.polygonOffsetUnits = 1.0;
+            material.side = THREE.DoubleSide;
+            var geom = new THREE.CircleBufferGeometry( PX.kLocationMarkerScale, PX.kLocationMarkerDetail );
+	        var matTrans = new THREE.Matrix4().makeTranslation( 0, 0, Params.MarkerCircleDist );
+	        geom.applyMatrix( matTrans );
+            /*
+	        //var material = new THREE.MeshLambertMaterial( { color: color, emissive: 0x003333 } );
+	        var material = new THREE.MeshLambertMaterial( { color: color } );
+	        //var material = new THREE.MeshBasicMaterial( { color: color } );
+	        //material.depthWrite = false;
+            material.polygonOffset = true;
+            material.polygonOffsetFactor = 0.6;
+            material.polygonOffsetUnits = 1.0;
 
 	        var geom = new THREE.CylinderGeometry( PX.kLocationMarkerScale, PX.kLocationMarkerScale, PX.kLocationMarkerScale, PX.kLocationMarkerDetail, 1 );
-
-	        //var matTrans = new THREE.Matrix4().makeTranslation( 0, 0, -PX.kLocationMarkerScale*15.0 );
 	        var matTrans = new THREE.Matrix4().makeTranslation( 0, 0, -PX.kLocationMarkerScale*0.5 );
 	        var matRot = new THREE.Matrix4().makeRotationX( THREE.Math.degToRad( 90.0 ) )
 	        var objMat = new THREE.Matrix4().multiplyMatrices( matTrans, matRot );
+	        geom.applyMatrix( objMat );*/
 
-	        geom.applyMatrix( objMat );
 	        var mesh = new THREE.Mesh( geom, material );
 
 	        mesh.position.copy( loc.position );
@@ -161,18 +171,13 @@ UG.LocationMarkers.prototype =
 	    }
 
         //
-        this.textRenderer = new PX.TextRenderer();
-        this.textRenderer.Init( bmFontDescriptor, 256, 0xffffff, PX.AssetsDatabase["TextAtlasTex"], this.markerScene );
-        this.textRenderer.material.depthWrite = false;
-        this.textRenderer.material.opacity = 0.0;
-        //this.locationsGroup.add( this.textRenderer.mesh );
-        //this.markerScene.add( this.textRenderer.mesh );
-
-        //
         this.textRenderer1 = new PX.TextRenderer();
         this.textRenderer1.Init( bmFontDescriptor, 2048, 0xffffff, PX.AssetsDatabase["TextAtlasTex"], null );
-        this.textRenderer1.material.depthWrite = false;
+        //this.textRenderer1.material.depthWrite = false;
         this.textRenderer1.material.opacity = 1.0;
+        //this.textRenderer1.material.polygonOffset = true;
+        //this.textRenderer1.material.polygonOffsetFactor = 1.0;
+        //this.textRenderer1.material.polygonOffsetUnits = 1.0;
         this.locationsGroup.add( this.textRenderer1.mesh );
 
 
@@ -180,7 +185,18 @@ UG.LocationMarkers.prototype =
         this.circleRenderer.Init( 4096, 0xffffff, PX.AssetsDatabase["Circle"], null );
         this.circleRenderer.material.depthWrite = false;
         this.circleRenderer.material.opacity = 0.0;
+        //this.circleRenderer.material.polygonOffset = true;
+        //this.circleRenderer.material.polygonOffsetFactor = -1.0;
+        //this.circleRenderer.material.polygonOffsetUnits = 1.0;
         this.locationsGroup.add( this.circleRenderer.mesh );
+
+        //
+        this.textRenderer = new PX.TextRenderer();
+        this.textRenderer.Init( bmFontDescriptor, 256, 0xffffff, PX.AssetsDatabase["TextAtlasTex"], this.markerScene );
+        this.textRenderer.material.depthWrite = false;
+        this.textRenderer.material.opacity = 0.0;
+        //this.locationsGroup.add( this.textRenderer.mesh );
+        //this.markerScene.add( this.textRenderer.mesh );
 
         //
         if( this.locationsGroupAnim ) this.locationsGroup.scale.set( PX.EPSILON, PX.EPSILON, PX.EPSILON );
@@ -529,12 +545,13 @@ UG.LocationMarkers.prototype =
 
                 var fontSize = 130;
                 if( PX.IsMobile ) fontSize = 64;
-                this.textRenderer1.AppendText( ""+loc.modelCount, PX.ZeroVector, fontSize, matRes, true );
+                var localPos = new THREE.Vector3( 0, 0, Params.MarkerTextDist );
+                this.textRenderer1.AppendText( ""+loc.modelCount, localPos, fontSize, matRes, true );
             }
 
             //
             var outlinePos = new THREE.Vector3();
-            outlinePos.z -= PX.kLocationMarkerScale * 0.5;
+            outlinePos.z += Params.OutlineDist;
             this.circleRenderer.AppendRect( outlinePos, this.outlineGlobalScale.x * (PX.kLocationMarkerScale + ((Params.OutlineThickness * 0.001) / loc.scale.x)), this.meshes[i].matrix );
 	    }
 
