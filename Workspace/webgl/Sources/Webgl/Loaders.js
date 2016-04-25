@@ -241,8 +241,8 @@ function LoadOBJScene( path, filename, scene, onProgressCB, onCompleteCB )
 
                     object.frustumCulled = false;
 
-                    console.log( "LoadOBJScene()  object.material: " );
-                    console.log( object.material );
+                    //console.log( "LoadOBJScene()  object.material: " );
+                    //console.log( object.material );
                 }
             });
 

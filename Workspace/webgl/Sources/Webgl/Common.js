@@ -243,8 +243,8 @@ var Params =
     , OutlineThickness: 50.0
 
     , OutlineDist: 0.0
-    , MarkerCircleDist: -PX.kLocationMarkerScale * 0.25
-    , MarkerTextDist: -PX.kLocationMarkerScale * 0.15
+    , MarkerCircleDist: -PX.kLocationMarkerScale * 0.25 // negative means move away from the center
+    , MarkerTextDist: -PX.kLocationMarkerScale * 0.15   //
 
     , EarthShadowScaleX: 170.0 //PX.kEarthScale * 4.0
     , EarthShadowScaleY: 100.0 //PX.kEarthScale * 2.0

@@ -40,7 +40,7 @@ PX.ModelRenderer.prototype =
         this.width = width;
         this.height = height;
 
-        console.log( width, height );
+        //console.log( width, height );
 
         this.renderer = new THREE.WebGLRenderer( { antialias: true, precision: PX.ShaderPrecision, stencil: false, alpha: true } );
         this.renderer.setClearColor( 0x000000, 0.0 );
@@ -60,7 +60,7 @@ PX.ModelRenderer.prototype =
         container.style.width = width;
         container.style.height = height;
 
-        console.log( "model renderer: ", window.devicePixelRatio, width, height );
+        //console.log( "model renderer: ", window.devicePixelRatio, width, height );
         this.renderer.setPixelRatio( window.devicePixelRatio );
         this.renderer.setSize( width, height );
 
@@ -151,21 +151,21 @@ PX.ModelRenderer.prototype =
                 //console.log( "Reset" );
                 scope.Reset();
 
-                console.log( "compute Scene Bounds" );
+                //console.log( "compute Scene Bounds" );
                 var res = ComputeSceneBoundingSphere( scope.artefactScene );
                 scope.sceneCenter.x = res.x;
                 scope.sceneCenter.y = res.y;
                 scope.sceneCenter.z = res.z;
                 scope.distToCamera = res.w;
-                console.log( scope.sceneCenter, scope.distToCamera );
+                //console.log( scope.sceneCenter, scope.distToCamera );
 
                 //console.log( "Set camera" );
                 scope.artefactCamera.position.x = scope.sceneCenter.x;
                 scope.artefactCamera.position.y = scope.sceneCenter.y;
                 scope.artefactCamera.position.z = scope.sceneCenter.z + scope.distToCamera;
                 scope.artefactCamera.lookAt( scope.sceneCenter.clone() );
-                console.log( "scope.artefactCamera.position: ", scope.artefactCamera.position );
-                console.log( "scope.artefactCamera.direction: ", scope.artefactCamera.getWorldDirection() );
+                //console.log( "scope.artefactCamera.position: ", scope.artefactCamera.position );
+                //console.log( "scope.artefactCamera.direction: ", scope.artefactCamera.getWorldDirection() );
 
                 //
                 //console.log( "set orbit controls" );
