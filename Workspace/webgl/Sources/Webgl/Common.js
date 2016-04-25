@@ -74,6 +74,9 @@ PX =
     , kCameraFovY: 36.0
     , kCameraNearPlane: 16.0
     , kCameraFarPlane: 200.0
+    , kModelCameraNearPlane: 1.0
+    , kModelCameraFarPlane: 100.0
+
     // IMPORTANT!!
     // If these change, also change the 2 below
     , kCameraMinDistance: 70.0

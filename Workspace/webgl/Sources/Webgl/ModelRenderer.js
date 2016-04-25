@@ -60,6 +60,7 @@ PX.ModelRenderer.prototype =
         container.style.width = width;
         container.style.height = height;
 
+        console.log( "model renderer: ", window.devicePixelRatio, width, height );
         this.renderer.setPixelRatio( window.devicePixelRatio );
         this.renderer.setSize( width, height );
 
@@ -75,9 +76,9 @@ PX.ModelRenderer.prototype =
         //
         this.aspectRatio = width / height;
 
-        this.artefactCamera = new THREE.PerspectiveCamera( PX.kCameraFovY, this.aspectRatio, PX.kCameraNearPlane, PX.kCameraFarPlane );
+        this.artefactCamera = new THREE.PerspectiveCamera( PX.kCameraFovY, this.aspectRatio, PX.kModelCameraNearPlane, PX.kModelCameraFarPlane );
         this.artefactCamera.updateProjectionMatrix();
-        this.artefactCamera.position = new THREE.Vector3( 0, 0, Params.Art_CameraDistance );
+        this.artefactCamera.position = new THREE.Vector3( 0, 0, 50.0 );
         var currentCamLookAt0 = new THREE.Vector3( 0, 0, 0 );
         this.artefactCamera.lookAt( currentCamLookAt0 );
         this.artefactScene.add( this.artefactCamera );
@@ -90,6 +91,7 @@ PX.ModelRenderer.prototype =
         this.artefactScene.add( artSunLight );
         var artAmbLight = new THREE.HemisphereLight( 0x7f7faa, 0x040410, 1 );
         this.artefactScene.add( artAmbLight );
+
 
         // Init Trackball
         //
@@ -149,21 +151,21 @@ PX.ModelRenderer.prototype =
                 //console.log( "Reset" );
                 scope.Reset();
 
-                //console.log( "compute Scene Bounds" );
+                console.log( "compute Scene Bounds" );
                 var res = ComputeSceneBoundingSphere( scope.artefactScene );
                 scope.sceneCenter.x = res.x;
                 scope.sceneCenter.y = res.y;
                 scope.sceneCenter.z = res.z;
                 scope.distToCamera = res.w;
-                //console.log( scope.sceneCenter, scope.distToCamera );
+                console.log( scope.sceneCenter, scope.distToCamera );
 
                 //console.log( "Set camera" );
                 scope.artefactCamera.position.x = scope.sceneCenter.x;
                 scope.artefactCamera.position.y = scope.sceneCenter.y;
                 scope.artefactCamera.position.z = scope.sceneCenter.z + scope.distToCamera;
                 scope.artefactCamera.lookAt( scope.sceneCenter.clone() );
-                //console.log( "scope.artefactCamera.position: ", scope.artefactCamera.position );
-                //console.log( "scope.artefactCamera.direction: ", scope.artefactCamera.getWorldDirection() );
+                console.log( "scope.artefactCamera.position: ", scope.artefactCamera.position );
+                console.log( "scope.artefactCamera.direction: ", scope.artefactCamera.getWorldDirection() );
 
                 //
                 //console.log( "set orbit controls" );

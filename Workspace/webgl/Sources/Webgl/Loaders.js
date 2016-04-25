@@ -199,19 +199,22 @@ function LoadOBJScene( path, filename, scene, onProgressCB, onCompleteCB )
 
         var matArray = materials.getAsArray();
 
-        //console.log( matArray, matArray.length );
+        var ourMat = null;
+
+        console.log( matArray, matArray.length );
         for ( var i=0; i<matArray.length; ++i )
         {
             var mat = matArray[i];
             if( mat.bumpMap )
             {
-                mat.normalMap = mat.bumpMap;
-                //console.log( "mat has normalmap", mat );
+                mat.normalMap = mat.bumpMap; //.clone();
+                console.log( "mat has normalmap" );
+                console.log( mat );
             }
             ourMat = mat;
         }
 
-		//objLoader.setMaterials( materials );
+		objLoader.setMaterials( materials );
 	    objLoader.setPath( path );
 	    objLoader.load( objUrl
         , function( object ) 
@@ -223,7 +226,7 @@ function LoadOBJScene( path, filename, scene, onProgressCB, onCompleteCB )
             {
                 if( object instanceof THREE.Mesh )
                 {
-                    object.material = ourMat.clone();
+                    //object.material = ourMat.clone();
                     /*if( object.material.bumpMap )
                     {
                         object.material.normalMap = object.material.bumpMap;
@@ -233,7 +236,11 @@ function LoadOBJScene( path, filename, scene, onProgressCB, onCompleteCB )
                     object.material.side = THREE.DoubleSide;
                     object.material.transparent = false;
                     object.material.opacity = 1.0;
-                    //console.log( "LoadOBJScene()  object.material: " + object.material );
+
+                    object.frustumCulled = false;
+
+                    console.log( "LoadOBJScene()  object.material: " );
+                    console.log( object.material );
                 }
             });
 
@@ -372,11 +379,11 @@ function ComputeSceneBoundingSphere( scene )
     //var len = Math.max( sceneMin.x, sceneMax.x );
     var minLength = sceneMin.length();
     var maxLength = sceneMax.length();
-    var len = Math.max( minLength, maxLength );
+    var len = Math.min( minLength, maxLength );
 
     // Reposition camera based on scene bounds
     //
-    var distToCamera = ( len * 1.0 ) / ( Math.tan( PX.ToRadians( PX.kCameraFovY ) * 0.5 ) );
+    var distToCamera = len / ( Math.tan( PX.ToRadians( PX.kCameraFovY ) * 0.5 ) );
 
     return new THREE.Vector4( sceneCenter.x, sceneCenter.y, sceneCenter.z, distToCamera );
 }
