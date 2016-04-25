@@ -26,6 +26,10 @@ PX.ModelRenderer = function()
 
     this.trackball = null;
 
+    this.material = null;
+
+    this.artSunLight = null;
+
     this.aspectRatio = 1.0;
 };
 
@@ -40,7 +44,7 @@ PX.ModelRenderer.prototype =
         this.width = width;
         this.height = height;
 
-        console.log( width, height );
+        //console.log( width, height );
 
         this.renderer = new THREE.WebGLRenderer( { antialias: true, precision: PX.ShaderPrecision, stencil: false, alpha: true } );
         this.renderer.setClearColor( 0x000000, 0.0 );
@@ -60,11 +64,13 @@ PX.ModelRenderer.prototype =
         container.style.width = width;
         container.style.height = height;
 
+        //console.log( "model renderer: ", window.devicePixelRatio, width, height );
         this.renderer.setPixelRatio( window.devicePixelRatio );
         this.renderer.setSize( width, height );
 
         this.renderer.autoClear = false;
         this.renderer.autoClearStencil = false;
+        this.renderer.sortObjects = false;
 
         // Artefact Scene
         //
@@ -74,21 +80,24 @@ PX.ModelRenderer.prototype =
         //
         this.aspectRatio = width / height;
 
-        this.artefactCamera = new THREE.PerspectiveCamera( PX.kCameraFovY, this.aspectRatio, PX.kCameraNearPlane, PX.kCameraFarPlane );
+        this.artefactCamera = new THREE.PerspectiveCamera( PX.kCameraFovY, this.aspectRatio, PX.kModelCameraNearPlane, PX.kModelCameraFarPlane );
         this.artefactCamera.updateProjectionMatrix();
-        this.artefactCamera.position = new THREE.Vector3( 0, 0, Params.Art_CameraDistance );
+        this.artefactCamera.position = new THREE.Vector3( 0, 0, 50.0 );
         var currentCamLookAt0 = new THREE.Vector3( 0, 0, 0 );
         this.artefactCamera.lookAt( currentCamLookAt0 );
         this.artefactScene.add( this.artefactCamera );
 
         // Create Artefact sun light
         //
-        var artSunLight = new THREE.DirectionalLight( 0xffffff );
-        artSunLight.position.set( 1, 1, 1 );
+        /*artSunLight = new THREE.DirectionalLight( 0xffffff );
+        artSunLight.position.set( 0.5, 1, 1 );
         //artSunLight.position.copy( this.artefactCamera.getWorldDirection() );
         this.artefactScene.add( artSunLight );
         var artAmbLight = new THREE.HemisphereLight( 0x7f7faa, 0x040410, 1 );
         this.artefactScene.add( artAmbLight );
+        */
+
+        this.SetupMaterial();
 
         // Init Trackball
         //
@@ -112,6 +121,34 @@ PX.ModelRenderer.prototype =
     }
 
 
+    , SetupMaterial()
+    {
+        var modelUniforms =
+        {
+            DiffuseMap: { type: "t", value: null }
+            , NormalMap: { type: "t", value: null }
+            , World: { type: "m4", value: new THREE.Matrix4() }
+            , ViewPosition: { type: "v3", value: new THREE.Vector3( 0, 0, 100 ) }
+            , LightDirection: { type: "v3", value: new THREE.Vector3( -1, -1, -1 ) }
+            , Params0: { type: "v4", value: new THREE.Vector4( 0.001, 3.14, 0.1, 1 ) }
+            //, Params1: { type: "v4", value: new THREE.Vector4( 1, 1, 1, 1 ) }
+            , Params2: { type: "v4", value: new THREE.Vector4( 0.6, 2.0, 0.4, 1.0 ) }
+        }
+
+        this.material = new THREE.ShaderMaterial(
+        {
+            uniforms: modelUniforms
+            , vertexShader: PX.AssetsDatabase["ModelVertexShader"]
+            , fragmentShader: PX.AssetsDatabase["ModelPixelShader"]
+            , vertexColors: THREE.VertexColors
+        } );
+        this.material.extensions.derivatives = true;
+        this.material.side = THREE.DoubleSide;
+        this.material.depthTest = true;
+        this.material.depthWrite = true;
+        this.material.transparent = false;
+    }
+
     , Load( path, filename, onProgressCB )
     {
         var scope = this;
@@ -122,58 +159,65 @@ PX.ModelRenderer.prototype =
         preloaderFG.show();
 
         //LoadSceneData( path, filename, this.artefactScene,
-        LoadOBJScene( path, filename, this.artefactScene, 
+        LoadOBJScene( path, filename, this.artefactScene, this.material,
         //LoadBINScene( path, filename, this.artefactScene, 
         function( per )
         {
-            //console.log( "+--+  Load: Percentage: ", per );
+            console.log( "+--+  Load: Percentage: ", per );
             if( onProgressCB ) onProgressCB( per );
+
+            // Since we do a margin on the FG bar we need to compute the offset to remove from the bar in %
+            // sub that from the total width % and we get the proper fitting size
+            var offset = ( ( parseInt(preloaderFG.css('margin-left')) * 2.0 ) / windowWidth) * 100.0;
+            var percentage = PX.Clamp( ( Math.ceil( (per+0.25) * 80.0 ) ), 0.0, 80.0 );
+            //console.log( "Load()  percentage: ", percentage, "  offset: ", offset );
+            preloaderFG.css( "width", (percentage - offset) + '%' );
         },
         function()
         {
 		    preloaderBG.fadeTo(1000, 0);
             preloaderFG.fadeTo(1000, 0, function()
             {
-            // hide progress
-            preloaderBG.hide();
-            preloaderFG.hide();
+                // hide progress
+                preloaderBG.hide();
+                preloaderFG.hide();
 
-            //console.log( "Reset" );
-            scope.Reset();
+                //console.log( "Reset" );
+                scope.Reset();
 
-            //console.log( "compute Scene Bounds" );
-            var res = ComputeSceneBoundingSphere( scope.artefactScene );
-            scope.sceneCenter.x = res.x;
-            scope.sceneCenter.y = res.y;
-            scope.sceneCenter.z = res.z;
-            scope.distToCamera = res.w;
-            //console.log( scope.sceneCenter, scope.distToCamera );
+                //console.log( "compute Scene Bounds" );
+                var res = ComputeSceneBoundingSphere( scope.artefactScene );
+                scope.sceneCenter.x = res.x;
+                scope.sceneCenter.y = res.y;
+                scope.sceneCenter.z = res.z;
+                scope.distToCamera = res.w;
+                //console.log( scope.sceneCenter, scope.distToCamera );
 
-            //console.log( "Set camera" );
-            scope.artefactCamera.position.x = scope.sceneCenter.x;
-            scope.artefactCamera.position.y = scope.sceneCenter.y;
-            scope.artefactCamera.position.z = scope.sceneCenter.z + scope.distToCamera;
-            scope.artefactCamera.lookAt( scope.sceneCenter.clone() );
-            //console.log( "scope.artefactCamera.position: ", scope.artefactCamera.position );
-            //console.log( "scope.artefactCamera.direction: ", scope.artefactCamera.getWorldDirection() );
+                //console.log( "Set camera" );
+                scope.artefactCamera.position.x = scope.sceneCenter.x;
+                scope.artefactCamera.position.y = scope.sceneCenter.y;
+                scope.artefactCamera.position.z = scope.sceneCenter.z + scope.distToCamera;
+                scope.artefactCamera.lookAt( scope.sceneCenter.clone() );
+                //console.log( "scope.artefactCamera.position: ", scope.artefactCamera.position );
+                //console.log( "scope.artefactCamera.direction: ", scope.artefactCamera.getWorldDirection() );
 
-            //
-            //console.log( "set orbit controls" );
-            if( scope.artefactOrbitControls )
-            {
-                scope.artefactOrbitControls.minDistance = scope.distToCamera * 0.3;
-                scope.artefactOrbitControls.maxDistance = scope.distToCamera * 2.0;
-                scope.artefactOrbitControls.target.copy( scope.sceneCenter );
-                scope.artefactOrbitControls.update();
-                //console.log( "(2) scope.artefactCamera.position: ", scope.artefactCamera.position );
-                //console.log( "(2) scope.artefactCamera.direction: ", scope.artefactCamera.getWorldDirection() );
-            }
+                //
+                //console.log( "set orbit controls" );
+                if( scope.artefactOrbitControls )
+                {
+                    scope.artefactOrbitControls.minDistance = scope.distToCamera * 0.3;
+                    scope.artefactOrbitControls.maxDistance = scope.distToCamera * 2.0;
+                    scope.artefactOrbitControls.target.copy( scope.sceneCenter );
+                    scope.artefactOrbitControls.update();
+                    //console.log( "(2) scope.artefactCamera.position: ", scope.artefactCamera.position );
+                    //console.log( "(2) scope.artefactCamera.direction: ", scope.artefactCamera.getWorldDirection() );
+                }
 
-            if( this.trackball ) this.trackball.Reset( scope.artefactCamera, scope.sceneCenter );
+                if( this.trackball ) this.trackball.Reset( scope.artefactCamera, scope.sceneCenter );
 
-            // Need to call this after Reset
-            console.log( "+--+  ModelRenderer enabled" );
-            scope.enabled = true;
+                // Need to call this after Reset
+                console.log( "+--+  ModelRenderer enabled" );
+                scope.enabled = true;
             });
         }
         );
@@ -201,6 +245,13 @@ PX.ModelRenderer.prototype =
         if( this.trackball ) this.trackball.Update( this.artefactCamera, frameTime );
 
         if( this.artefactOrbitControls ) this.artefactOrbitControls.update();
+
+        // Update shader material
+//        console.log( this.artefactCamera.position );
+        this.material.uniforms.Params0.value.set( Params.ModelAmbientIntensity, Params.ModelDiffuseIntensity, Params.ModelSpecularIntensity, 1.0 );
+        this.material.uniforms.Params2.value.x = Params.ModelRoughness;
+        this.material.uniforms.ViewPosition.value = this.artefactCamera.position;
+        //this.material.uniforms.LightDirection.value = this.artSunLight.position;
     }
 
 

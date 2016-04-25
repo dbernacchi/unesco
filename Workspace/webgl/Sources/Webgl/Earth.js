@@ -67,7 +67,7 @@ UG.Earth.prototype =
             , Time: { type: "f", value: 0.0 }
         }
 
-        this.materialAttributes =
+        /*this.materialAttributes =
         {
             ParticleColorAndIndex:
             {
@@ -84,7 +84,7 @@ UG.Earth.prototype =
                 type: 'f'
                 , value: null
             }
-        };
+        };*/
 
         this.material = new THREE.ShaderMaterial(
         {

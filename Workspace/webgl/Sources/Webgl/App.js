@@ -227,26 +227,40 @@ function CreateRenderer()
     renderer.autoClearStencil = false;
     renderer.sortObjects = false;
     //renderer.autoUpdateObjects = false;
+
+    var deri = renderer.context.getExtension('OES_standard_derivatives');
+    console.log( deri );
 }
 
 function LoadData()
 {
+    var globeDiffuseTex = "webgl/data/textures/earth_diffuse_blue.jpg";
+    var globeNightLightsTex = "webgl/data/textures/earth_night_lights.jpg";
+
+    if( PX.IsMobile )
+    {
+        globeDiffuseTex = "webgl/data/textures/earth_diffuse_blue_4k.jpg";
+        globeNightLightsTex = "webgl/data/textures/earth_night_lights_2k.jpg";
+    }
+
     $.when(
-        LoadTexture( "EarthDiffuseMap", "webgl/data/textures/earth_diffuse_blue.jpg" )
+        LoadTexture( "EarthDiffuseMap", globeDiffuseTex )
         //LoadTexture( "EarthDiffuseMap", "webgl/data/textures/earth_diffuse.jpg" )
         //LoadTexture( "EarthDiffuseMap", "webgl/data/textures/earth_diffuse_august.jpg" )
         , LoadTexture( "EarthNormalMap", "webgl/data/textures/earth_normals.png" )
         , LoadTexture( "EarthSpecularMap", "webgl/data/textures/earth_specular.jpg" )
         //, LoadTexture( "EarthCloudsMap", "webgl/data/textures/Clouds.png" )
-        , LoadTexture( "EarthCloudsMap", "webgl/data/textures/earth_clouds.png" )
+        //, LoadTexture( "EarthCloudsMap", "webgl/data/textures/earth_clouds.png" )
         //, LoadTexture( "EarthCloudsNormalMap", "webgl/data/textures/earth_clouds_normals.png" )
-        , LoadTexture( "EarthNightLightsMap", "webgl/data/textures/earth_night_lights.jpg" )
-        , LoadTexture( "Background", "webgl/data/textures/background.png" )
+        , LoadTexture( "EarthNightLightsMap", globeNightLightsTex )
+        //, LoadTexture( "Background", "webgl/data/textures/background.png" )
         , LoadTexture( "Circle", "webgl/data/textures/circle_full.png" )
         , LoadTexture( "EarthShadow", "webgl/data/textures/blobshadow.png" )
         , LoadTexture( "TooltipLine", "webgl/data/textures/line.png" )
         , LoadShaderData("EarthVertexShader", "webgl/data/shaders/Earth.vertex")
         , LoadShaderData("EarthPixelShader", "webgl/data/shaders/Earth.fragment")
+        , LoadShaderData("ModelVertexShader", "webgl/data/shaders/Model.vertex")
+        , LoadShaderData("ModelPixelShader", "webgl/data/shaders/Model.fragment")
         , LoadText( "TextAtlasXml", "webgl/data/fonts/font.xml" )
         , LoadTexture( "TextAtlasTex", "webgl/data/fonts/font_0.png" )
         //, LoadText( "TextAtlasXml", "webgl/data/fonts/arialLarge.xml" )
@@ -522,14 +536,14 @@ function Setup()
 
     // Background scene
     //
-    bgScene = new THREE.Scene();
+/*    bgScene = new THREE.Scene();
     bgCamera = new THREE.Camera();
     bgScene.add( bgCamera );
     var bgMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, opacity: 1.0, transparent: true, vertexColors: THREE.VertexColors, map: PX.AssetsDatabase["Background"] });
     bgMaterial.depthTest = false;
     bgMaterial.depthWrite = false;
     bgQuad = new THREE.Mesh( new THREE.PlaneGeometry(2, 2, 0), bgMaterial );
-    bgScene.add( bgQuad );
+    bgScene.add( bgQuad );*/
 
 
     // Foreground scene
@@ -725,6 +739,13 @@ function InitGUI()
     g_GUI.addFolder( "BLOOM" );
     g_GUI.add( Params, "EnableBloom" );
     g_GUI.add( Params, "BloomOpacity" ).min(0.0).max(1.0).step(0.001);
+    g_GUI.addFolder( "MODEL SHADING" );
+    g_GUI.add( Params, "ModelAmbientIntensity" ).min(0.0);
+    g_GUI.add( Params, "ModelDiffuseIntensity" ).min(0.0);
+    g_GUI.add( Params, "ModelSpecularIntensity" ).min(0.0);
+    //g_GUI.add( Params, "NormalMapIntensity" ).min(0.0).max(1.0).step(0.001);
+    g_GUI.add( Params, "ModelRoughness" ).min(0.0).max(1.0).step(0.001);
+
     g_GUI.addFolder( "EARTH SHADING" );
     g_GUI.add( Params, "AmbientIntensity" ).min(0.0);
     g_GUI.add( Params, "DiffuseIntensity" ).min(0.0);
@@ -745,6 +766,12 @@ function InitGUI()
     g_GUI.add( Params, "LightDirZ" ).min(-1.0).max(1.0).step(0.001);
     g_GUI.addFolder( "CAMERA" );
     g_GUI.add( Params, "CameraDistance" ).min( PX.kEarthScale*1.333 ).max( 300.0 );
+    g_GUI.add( Params, 'CameraNearPlane' ).onChange( function( newValue ) 
+    {
+        PX.kCameraNearPlane = newValue;
+        camera.near = newValue;
+        camera.updateProjectionMatrix();
+    } );
     g_GUI.addFolder( "INTERACTION" );
     g_GUI.add( Params, "EarthRotationSpeed" ).min(0.0).max(1.0).step(0.001);
     g_GUI.add( Params, "MapGridSize" ).min(0).max(20).step(1).onChange( function( newValue ) 
@@ -758,6 +785,11 @@ function InitGUI()
     //g_GUI.add( Params, "Longitude" ).listen();
     //g_GUI.add( Params, "ZoomLevel" ).listen();
     //g_GUI.add( Params, "Intersects" ).listen();
+    g_GUI.add( Params, "OutlineThickness" ).min(0.0).max(1000.0)
+    g_GUI.add( Params, "OutlineDist" ).min(-1.0).max(1.0).step(0.001);
+    //g_GUI.add( Params, "MarkerCircleDist" ).min(-1.0).max(1.0).step(0.001);
+    g_GUI.add( Params, "MarkerTextDist" ).min(-1.0).max(1.0).step(0.001);
+
     g_GUI.add( Params, "TiltShiftStrength" ).min(0.0).max(50.0);
     g_GUI.add( Params, "TiltShiftMaxStrength" ).min(0.0).max(100.0).onChange( function( newValue )
     {
@@ -774,7 +806,6 @@ function InitGUI()
         });
     });
     g_GUI.add( Params, "TiltShiftPosition" ).min(0.0).max(1.0);
-    g_GUI.add( Params, "OutlineThickness" ).min(0.0).max(1000.0);
 
     //g_GUI.remember( Params );
 }
@@ -918,11 +949,11 @@ function Render()
 {
     renderer.clear();
 
-    if( !PX.kTransparentCanvas )
+    /*if( !PX.kTransparentCanvas )
     {
         renderer.setViewport( 0, 0, windowWidth, windowHeight );
         renderer.render( bgScene, bgCamera );
-    }
+    }*/
 
     //
     renderer.setViewport( 0, 0, windowWidth, windowHeight );
@@ -1242,8 +1273,8 @@ function onTouchEnd( event )
     isMouseDown = false;
     if( isMouseMoved ) isMouseClick = false;
     else isMouseClick = true;
-    mouseX = event.touches[ 0 ].pageX;
-    mouseY = event.touches[ 0 ].pageY;
+    //mouseX = event.touches[ 0 ].pageX;
+    //mouseY = event.touches[ 0 ].pageY;
     previousMouseX = mouseX;
     previousMouseY = mouseY;
 

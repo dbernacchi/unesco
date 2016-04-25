@@ -41,8 +41,8 @@ PX =
     //
     , EPSILON: 0.001
 
-    , ShaderPrecision: "mediump"
-    //, ShaderPrecision: "highp"
+    //, ShaderPrecision: "mediump"
+    , ShaderPrecision: "highp"
 
     , StartLatLon: { x: 6.3377571, y: 43.139408 }
 
@@ -58,8 +58,8 @@ PX =
     , kEarthDetailY: 22 * 2
     , kMarkerOffsetFromEarthSurface: 0.0
     , kLocationMarkerScale: 0.6
-    , kLocationMarkerDetail: 14
-    , kLocationMarkerZScale: 0.125
+    , kLocationMarkerDetail: 24 //16
+    , kLocationMarkerZScale: 0.2 //0.125
     , kLocationFontSize: 9
     , kAvoidanceSpeed: 0.031
     //, kAvoidanceSpeed: 6.0
@@ -72,8 +72,11 @@ PX =
     , kLocationColors2: [ new THREE.Color( 0x2f4598 ), new THREE.Color( 0x6e89c4 ), new THREE.Color( 0xc0e3fe ), new THREE.Color( 0xf0fbff ) ]
 
     , kCameraFovY: 36.0
-    , kCameraNearPlane: 1.0
+    , kCameraNearPlane: 16.0
     , kCameraFarPlane: 200.0
+    , kModelCameraNearPlane: 0.1
+    , kModelCameraFarPlane: 100.0
+
     // IMPORTANT!!
     // If these change, also change the 2 below
     , kCameraMinDistance: 70.0
@@ -211,6 +214,13 @@ var Params =
     , Level0MarkerRadius: 30.0
     , AnimTime: 1.0
     , Art_CameraDistance: 100.0
+    , CameraNearPlane: PX.kCameraNearPlane
+    // Model
+    , ModelAmbientIntensity: 0.001
+    , ModelDiffuseIntensity: 3.14
+    , ModelSpecularIntensity: 0.1
+    , ModelRoughness: 0.7
+    // Globe
     , AmbientIntensity: 0.00033
     , DiffuseIntensity: 0.5 //1.5 //1.125
     , SpecularIntensity: 0.07
@@ -237,6 +247,10 @@ var Params =
     , Intersects: 0
     , Dummy: 0.5
     , OutlineThickness: 50.0
+
+    , OutlineDist: 0.0
+    , MarkerCircleDist: -PX.kLocationMarkerScale * 0.25 // negative means move away from the center
+    , MarkerTextDist: -PX.kLocationMarkerScale * 0.15   //
 
     , EarthShadowScaleX: 170.0 //PX.kEarthScale * 4.0
     , EarthShadowScaleY: 100.0 //PX.kEarthScale * 2.0

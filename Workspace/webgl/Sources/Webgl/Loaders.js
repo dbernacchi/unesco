@@ -178,7 +178,7 @@ function LoadBINScene( path, filename, scene, onProgressCB, onCompleteCB )
 }
 ***/
 
-function LoadOBJScene( path, filename, scene, onProgressCB, onCompleteCB )
+function LoadOBJScene( path, filename, scene, material, onProgressCB, onCompleteCB )
 {
     //var url = path + filename;
     console.log( "+--+  Load OBJ Scene:\t", path + filename );
@@ -196,22 +196,25 @@ function LoadOBJScene( path, filename, scene, onProgressCB, onCompleteCB )
 	mtlLoader.load( mtlUrl, function( materials ) 
     {
         materials.preload();
-
+/*
         var matArray = materials.getAsArray();
 
-        //console.log( matArray, matArray.length );
+        var ourMat = null;
+
+        console.log( matArray, matArray.length );
         for ( var i=0; i<matArray.length; ++i )
         {
             var mat = matArray[i];
             if( mat.bumpMap )
             {
-                mat.normalMap = mat.bumpMap;
-                //console.log( "mat has normalmap", mat );
+                mat.normalMap = mat.bumpMap; //.clone();
+                console.log( "mat has normalmap" );
+                console.log( mat );
             }
             ourMat = mat;
         }
-
-		//objLoader.setMaterials( materials );
+        */
+		objLoader.setMaterials( materials );
 	    objLoader.setPath( path );
 	    objLoader.load( objUrl
         , function( object ) 
@@ -223,17 +226,57 @@ function LoadOBJScene( path, filename, scene, onProgressCB, onCompleteCB )
             {
                 if( object instanceof THREE.Mesh )
                 {
-                    object.material = ourMat.clone();
-                    /*if( object.material.bumpMap )
+                    /*var modelUniforms =
                     {
-                        object.material.normalMap = object.material.bumpMap;
-                        //console.log( "material as normal maps" );
-                    }*/
-                    object.material.color = new THREE.Color( 0xffffff );
+                        DiffuseMap: { type: "t", value: PX.AssetsDatabase["EarthDiffuseMap"] }
+                        , NormalMap: { type: "t", value: PX.AssetsDatabase["EarthNormalMap"] }
+                        , World: { type: "m4", value: new THREE.Matrix4() }
+                        , ViewPosition: { type: "v3", value: new THREE.Vector3( 0, 0, 1 ) }
+                        , LightDirection: { type: "v3", value: new THREE.Vector3( 0.5, 1, 1 ) }
+                        , Params0: { type: "v4", value: new THREE.Vector4( 0.02, 1, 1, 1 ) }
+                        //, Params1: { type: "v4", value: new THREE.Vector4( 1, 1, 1, 1 ) }
+                        , Params2: { type: "v4", value: new THREE.Vector4( 0.3, 2.0, 0.4, 1 ) }
+                        , Time: { type: "f", value: 0.0 }
+                    }
+
+                    var material = new THREE.ShaderMaterial(
+                    {
+                        uniforms: modelUniforms
+                        , vertexShader: PX.AssetsDatabase["ModelVertexShader"]
+                        , fragmentShader: PX.AssetsDatabase["ModelPixelShader"]
+                        , vertexColors: THREE.VertexColors
+                    } );
+                    material.side = THREE.DoubleSide;
+                    material.extensions.derivatives = true;
+                    material.depthTest = true;
+                    material.depthWrite = true;
+                    material.transparent = false;
+
+                    modelUniforms.DiffuseMap.value = object.material.map;
+                    modelUniforms.NormalMap.value = object.material.normalMap;*/
+
+                    material.uniforms.DiffuseMap.value = object.material.map;
+                    material.uniforms.NormalMap.value = object.material.normalMap;
+                    // Diff Intensity
+                    material.uniforms.Params0.y *= object.material.color.r;
+                    // Spec Intensity
+                    material.uniforms.Params0.z = object.material.specular.r;
+                    console.log( "specular intensity: ", material.uniforms.Params0.z );
+                    if( !object.material.normalMap )
+                        console.log( "NO TEXTURE: object.material.normalMap" );
+
+                    object.material = material;
+
+                    /*object.material.color = new THREE.Color( 0xffffff );
                     object.material.side = THREE.DoubleSide;
                     object.material.transparent = false;
                     object.material.opacity = 1.0;
-                    //console.log( "LoadOBJScene()  object.material: " + object.material );
+                    object.shading = THREE.SmoothShading;*/
+
+                    object.frustumCulled = false;
+
+                    //console.log( "LoadOBJScene()  object.material: " );
+                    //console.log( object.material );
                 }
             });
 
@@ -376,7 +419,7 @@ function ComputeSceneBoundingSphere( scene )
 
     // Reposition camera based on scene bounds
     //
-    var distToCamera = ( len * 1.0 ) / ( Math.tan( PX.ToRadians( PX.kCameraFovY ) * 0.5 ) );
+    var distToCamera = len / ( Math.tan( PX.ToRadians( PX.kCameraFovY ) * 0.5 ) );
 
     return new THREE.Vector4( sceneCenter.x, sceneCenter.y, sceneCenter.z, distToCamera );
 }

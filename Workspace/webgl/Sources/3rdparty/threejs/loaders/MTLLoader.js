@@ -327,6 +327,7 @@ THREE.MTLLoader.MaterialCreator.prototype = {
 				case 'map_kd':
 
 					// Diffuse texture map
+                    console.log( "MTL: load map texture: ", (this.baseUrl + value) );
 
 					params[ 'map' ] = this.loadTexture( this.baseUrl + value );
 					params[ 'map' ].wrapS = this.wrap;
@@ -368,10 +369,6 @@ THREE.MTLLoader.MaterialCreator.prototype = {
 				case 'map_bump':
 				case 'bump':
 
-					// Bump texture map
-
-					if ( params[ 'bumpMap' ] ) break; // Avoid loading twice.
-
                     // HACK: get rid of the "-bm" multiplier that comes with "bump" field
                     var temp = value.split( " -" );
                     if( temp.length > 1 )
@@ -381,9 +378,29 @@ THREE.MTLLoader.MaterialCreator.prototype = {
                         value = temp[0];
                     }
 
-					params[ 'bumpMap' ] = this.loadTexture( this.baseUrl + value );
+					// Bump texture map
+                    console.log( "MTL: load bump texture: ", (this.baseUrl + value) );
+
+					//if ( params[ 'bumpMap' ] ) break; // Avoid loading twice.
+					//if ( params[ 'normalMap' ] ) break; // Avoid loading twice.
+
+					/*params[ 'bumpMap' ] = this.loadTexture( this.baseUrl + value );
 					params[ 'bumpMap' ].wrapS = this.wrap;
-					params[ 'bumpMap' ].wrapT = this.wrap;
+					params[ 'bumpMap' ].wrapT = this.wrap;*/
+
+                    params[ 'normalMap' ] = this.loadTexture( (this.baseUrl + value), undefined, 
+                    function(){
+                        console.log( "normalMap onLoad " );
+                    },
+                    function(){
+                        console.log( "normalMap onProgress " );
+                    }, 
+                    function(){
+                        console.log( "normalMap onError " );
+                    } );
+					//params[ 'normalMap' ] = this.loadTexture( this.baseUrl + value );
+					params[ 'normalMap' ].wrapS = this.wrap;
+					params[ 'normalMap' ].wrapT = this.wrap;
 
 					break;
 
@@ -394,22 +411,24 @@ THREE.MTLLoader.MaterialCreator.prototype = {
 
 		}
 
-		this.materials[ materialName ] = new THREE.MeshPhongMaterial( params );
-		return this.materials[ materialName ];
+        params[ 'shading' ] = THREE.SmoothShading;
 
+		this.materials[ materialName ] = new THREE.MeshPhongMaterial( params );
+
+		return this.materials[ materialName ];
 	},
 
 
 	loadTexture: function ( url, mapping, onLoad, onProgress, onError ) {
 
 		var texture;
-		var loader = THREE.Loader.Handlers.get( url );
+        var loader = null;
+		//var loader = THREE.Loader.Handlers.get( url );
 		var manager = ( this.manager !== undefined ) ? this.manager : THREE.DefaultLoadingManager;
 
-		if ( loader === null ) {
-
+		if ( loader === null ) 
+        {
 			loader = new THREE.TextureLoader( manager );
-
 		}
 
 		if ( loader.setCrossOrigin ) loader.setCrossOrigin( this.crossOrigin );
