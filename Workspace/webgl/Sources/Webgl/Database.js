@@ -6,7 +6,6 @@
 
 var Location = function()
 { 
-    //this.GUID = "";			// GUID
     this.id = -1;
     this.name = null;       // Location name
     this.latlon = null;     // Lat/long
@@ -58,7 +57,7 @@ function ParseLocationData( locationsJson )
 
     // Connect models with locations
     //
-    var reconstructions = PX.AssetsDatabase["ReconstructionsJson"];
+/*    var reconstructions = PX.AssetsDatabase["ReconstructionsJson"];
     for( var i=0; i<reconstructions.length; ++i )
     {
         var locId = parseInt( reconstructions[i]["location_id"] );
@@ -81,5 +80,5 @@ function ParseLocationData( locationsJson )
     {
         var loc = locationsDB[i];
         console.log( "location: ", loc.id, "  modelCount: ", loc.modelCount );
-    }
+    }*/
 }

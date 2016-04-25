@@ -107,6 +107,7 @@ uniform float3      LightDirection; // = - float3( 0.15, 1.0, 0.6 );
 uniform sampler2D   DiffuseMap;
 uniform sampler2D   NormalMap;
 //uniform sampler2D   SpecularMap;
+uniform float4      DiffuseColor;
 
 //
 varying float2 		texcoord;
@@ -378,9 +379,12 @@ void main()
     float2 texcoordClouds = uvs;
 #endif
     
-
+#ifdef ENABLE_DIFFUSE_MAP
     float4 diffuseTexel = texture( DiffuseMap, uvs );
     diffuseTexel.rgb = ToLinearApprox( diffuseTexel.rgb );
+#else
+    float4 diffuseTexel = DiffuseColor;
+#endif
     //float4 specularMaskTexel = float4( 1.0 );
     float4 specularMaskTexel = float4( 1.0 ); //texture( SpecularMap, uvs );
     //specularMaskTexel.rgb = ToLinearApprox( specularMaskTexel.rgb ) + float3( Luminance( diffuseTexel.rgb ) );
@@ -397,8 +401,9 @@ void main()
     float cloudsShadow = saturate( 1.0 - cloudsTexel2.a * CloudsShadowIntensity );
 #endif
 
-#if 1 //ENABLE_NORMAL_MAPPING
     float3 NFace = normalize( normalWS );
+
+#ifdef ENABLE_NORMAL_MAP
     //float3 NFace = normalize( cross( dFdx(P), dFdy(P) ) );
     float3 N1TS = texture( NormalMap, uvs ).rgb;
 	//float3 N2TS = texture( DetailNormalMap, VertexData.baricentric.xy * DetailNormalMapUVScale ).rgb;
@@ -410,7 +415,7 @@ void main()
 	////N = lerp( NFace, N, NormalMapIntensity );
     float3 N = perturbNormal2Arb( uvs, P, NFace, NBaseTS );
 #else
-    float3 N = normalize( normalWS );
+    float3 N = NFace; //normalize( normalWS );
     //float3 N = normalize( cross( dFdx(P), dFdy(P) ) );
 #endif
 
