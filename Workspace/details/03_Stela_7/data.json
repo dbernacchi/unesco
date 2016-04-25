@@ -1,0 +1,12 @@
+{
+  "date_constructed": "600BC",
+  "date_destroyed": "2009",
+  "images":[
+  	{"0": "flower1.jpg"},
+    {"1": "flower2.jpg"}
+  ],
+  "videos":[
+  	{"0": "https://youtu.be/ZqZ9f89Xgcg"},
+    {"1": "https://youtu.be/U37lyRoECn4"}
+  ],
+"status": "reconstructed", "folder": "03_Stela_7", "filename": "03_Stela_7_LOW"}
