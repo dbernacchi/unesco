@@ -440,6 +440,13 @@ ul.clr li {
 
 #browse .items {
 	width: 745px;
+	overflow: hidden;
+	border: 1px solid transparent;
+}
+
+#browse .items-inner {
+	position: absolute;
+	top: 0;
 }
 
 #browse .item {

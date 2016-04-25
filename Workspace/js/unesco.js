@@ -8,13 +8,17 @@ var UNESCO = {};
 	var resized_images_to_load = 0;
 
 	var stop_loading_fade = false;
+	
+	var reconstructions = {};
+	
+	var reconstructions_loaded = 0;
 
 	this.init = function() {
-		
+
 		var ns = this;
 
 		this.resize();
-		
+
 		//this.buildBrowse();
 
 		//this.showBrowse();
@@ -23,49 +27,51 @@ var UNESCO = {};
 
 		//$(".UNESCO#slide-5").show();
 
-		//var slider = $(".UNESCO .items-inner-2");
-		//var item_height = 250;
+		var slider = $(".UNESCO .items-inner");
+		var item_height = 250;
 
-		/*
-		 $(".UNESCO .arrow.up").click(function(e) {
-		 e.preventDefault();
+		$(".UNESCO .arrow.up").click(function(e) {
+			e.preventDefault();
 
-		 var top = parseInt(slider.css('top'), 10);
+			var top = parseInt(slider.css('top'), 10);
 
-		 if (!ns.lock && top < 0) {
+			if (!ns.lock && top < 0) {
 
-		 ns.lock = true;
+				ns.lock = true;
 
-		 slider.animate({
-		 top : "+=" + item_height,
-		 }, 1000, function() {
-		 ns.lock = false;
-		 });
+				slider.animate({
+					top : "+=" + item_height,
+				}, 1000, function() {
+					
+					ns.lock = false;
+				});
 
-		 }
-		 });
+			}
+		});
 
-		 $(".UNESCO .arrow.down").click(function(e) {
-		 e.preventDefault();
+		$(".UNESCO .arrow.down").click(function(e) {
+			e.preventDefault();
 
-		 var top = parseInt(slider.css('top'), 10);
+			var top = parseInt(slider.css('top'), 10);
 
-		 var height = slider.height();
+			var height = slider.height();
 
-		 var limit = (height * -1) + (item_height * 3);
+			var item_height = slider.find('.item').height();
+			
+			var limit = (height * -1) + (item_height * 3);
 
-		 if (!ns.lock && top <= 0 && top > limit) {
+			if (!ns.lock && top <= 0 && top > limit) {
 
-		 ns.lock = true;
+				ns.lock = true;
 
-		 slider.animate({
-		 top : "-=" + item_height,
-		 }, 1000, function() {
-		 ns.lock = false;
-		 });
-		 }
-		 });
-		 */
+				slider.animate({
+					top : "-=" + item_height,
+				}, 1000, function() {
+				
+					ns.lock = false;
+				});
+			}
+		});
 
 		function fading() {
 
@@ -90,9 +96,9 @@ var UNESCO = {};
 			e.preventDefault();
 
 			ns.hideSplash();
-			
+
 			ns.centerLogo();
-			
+
 			// Change app state to Level 0
 			OnExploreClick();
 
@@ -101,47 +107,44 @@ var UNESCO = {};
 		$(".UNESCO #zoom-in-button").click(function(e) {
 			e.preventDefault();
 			ns.hideZoomIn();
-			ZoomInFromLevel0ToLevel1( false );
+			ZoomInFromLevel0ToLevel1(false);
 
 		});
 
 		$(".UNESCO #zoom-out-button").click(function(e) {
 			e.preventDefault();
 			ns.hideZoomOut();
-			ZoomOutFromLevel1ToLevel0( false );
-	
-		});
+			ZoomOutFromLevel1ToLevel0(false);
 
+		});
 
 		/*
-		$(".UNESCO#slide-9 .close-button").click(function(e) {
-			e.preventDefault();
+		 $(".UNESCO#slide-9 .close-button").click(function(e) {
+		 e.preventDefault();
 
-			$(".UNESCO#slide-5").show();
-			$(".UNESCO#slide-9").hide();
+		 $(".UNESCO#slide-5").show();
+		 $(".UNESCO#slide-9").hide();
 
-			// On close, clean up the model Renderer
-			Params.MainScene = true;
-			if (modelRenderer) {
-				modelRenderer.Clear();
-			}
+		 // On close, clean up the model Renderer
+		 Params.MainScene = true;
+		 if (modelRenderer) {
+		 modelRenderer.Clear();
+		 }
 
-		
+		 });
 
-		});
+		 $(".UNESCO#slide-5 .close-button").click(function(e) {
+		 e.preventDefault();
 
-		$(".UNESCO#slide-5 .close-button").click(function(e) {
-			e.preventDefault();
+		 $(".UNESCO#slide-5").hide();
 
-			$(".UNESCO#slide-5").hide();
+		 $(".UNESCO#menu-button").show();
+		 $(".UNESCO#browse").show();
 
-			$(".UNESCO#menu-button").show();
-			$(".UNESCO#browse").show();
+		 });
 
-		});
+		 */
 
-		*/
-		
 		$(".UNESCO#browse .item a").click(function(e) {
 			e.preventDefault();
 
@@ -169,8 +172,7 @@ var UNESCO = {};
 
 			// @NOTE: We do not pass filename extension. That's added internally in the Loaders
 			//modelRenderer.Load("webgl/data/models/03_Stela_7/", "03_Stela_7", function( per )
-			modelRenderer.Load("webgl/data/models/16_Lion_of_Mosul/", "16_lion2", function( per )
-			{
+			modelRenderer.Load("webgl/data/models/16_Lion_of_Mosul/", "16_lion2", function(per) {
 				//console.log("+---+  Loading: " + parseInt(per * 100.0) + "%" );
 			});
 
@@ -196,9 +198,9 @@ var UNESCO = {};
 
 			ns.overlayAppend();
 			ns.center($(".UNESCO#about"));
-			
+
 			//ns.centerLogo();
-			
+
 			$(".UNESCO.close-button").show();
 
 		});
@@ -313,13 +315,13 @@ var UNESCO = {};
 	}
 
 	this.center = function(elm) {
-		
+
 		this.centerPrep(elm);
 		this.centerVertical(elm);
 		this.centerHorizontal(elm);
 
 	}
-	
+
 	this.centerPrep = function(elm) {
 
 		elm.css('position', 'absolute');
@@ -330,13 +332,12 @@ var UNESCO = {};
 
 		elm.show();
 
+	}
 
-	}	
-	
 	this.centerVertical = function(elm) {
 
 		this.centerPrep(elm);
-		
+
 		//HEIGHT
 		var height = elm.height();
 
@@ -350,12 +351,12 @@ var UNESCO = {};
 
 		elm.css('top', top + 'px');
 
-	}	
-		
+	}
+
 	this.centerHorizontal = function(elm) {
 
 		this.centerPrep(elm);
-		
+
 		//WIDTH
 		var width = elm.width();
 
@@ -366,13 +367,12 @@ var UNESCO = {};
 		var middle = window_width / 2;
 
 		var left = middle - offset;
-		
+
 		elm.css('left', left + 'px');
 
 		elm.css('visibility', 'visible');
 
-	}	
-	
+	}
 	/*
 	 this.topStatusBar = function() {
 
@@ -454,7 +454,7 @@ var UNESCO = {};
 
 		elm.hide();
 
-	}	
+	}
 
 	this.hideZoomOut = function() {
 
@@ -463,7 +463,7 @@ var UNESCO = {};
 		elm.hide();
 
 	}
-	
+
 	this.showZoomIn = function() {
 
 		var elm = $("#zoom-in-button");
@@ -471,14 +471,14 @@ var UNESCO = {};
 		elm.show();
 
 	}
-	
+
 	this.showZoomOut = function() {
 
 		var elm = $("#zoom-out-button");
 
 		elm.show();
 
-	}		
+	}
 	this.hideBrowse = function() {
 
 		$(".UNESCO#browse").hide();
@@ -520,17 +520,17 @@ var UNESCO = {};
 		$("body").append('<div id="overlay"></div>');
 
 	}
-	
+
 	this.overlayRemove = function() {
 
 		$("#overlay").remove();
-		
-	}	
-	
-	this.centerLogo = function(){
-		
-		this.centerHorizontal($("#logo"));	
-		
+
+	}
+
+	this.centerLogo = function() {
+
+		this.centerHorizontal($("#logo"));
+
 	}
 
 	this.changeLevel2SelectedMarker = function(colorHex) {
@@ -538,180 +538,192 @@ var UNESCO = {};
 			locationMarkers.markers[locationMarkers.clickedMarkerIndex].targetColor.set(colorHex);
 		}
 	}
-	
-	
-	this.buildBrowse = function(){
-	
+
+	this.buildBrowse = function(callback) {
+
 		var ns = this;
-		
+
 		//read through reconstructions.json
 		var url = "webgl/data/reconstructions.json";
-		
+
 		$.ajax({
-			dataType: "json",
-			url: url,
-			success: function(data) {
-				
-				reconstructions_to_load = data.length;
-				
+			dataType : "json",
+			url : url,
+			success : function(data) {
+
+				reconstructions = data;
+
 				var items = [];
 				$.each(data, function(key, val) {
-					
+
 					var details = val.details;
-					
+
 					var url = "details/" + details + "/data.json";
-								
-					if(details){
-						
+
+					if (details) {
+
 						$.ajax({
-							dataType: "json",
-							url: url,
-							success: function(data) {
-											
+							dataType : "json",
+							url : url,
+							success : function(data) {
+
 								//model folder
 								val.folder = data.folder;
-								
+
 								//model file name
 								val.filename = data.filename;
-								
+
 								//date_constructed
 								val.date_constructed = data.date_constructed;
-								
+
 								//date_destroyed
 								val.date_destroyed = data.date_destroyed;
-								
+
 								//images
 								val.images = data.images;
-								
+
 								//videos
 								val.videos = data.videos;
-								
-								ns.buildItem(val);
+
+								ns.buildItem(key, val, callback);
 							}
-						});	
-											
+						});
+
 					} else {
-					
-						ns.buildItem(val);
-						
-					}			
-					
+
+						ns.buildItem(key, val, callback);
+
+					}
+
 				});
-				
+
 			}
-		});		
+		});
 
 	}
-	
-	this.buildItem = function(item){
+
+	this.buildItem = function(key, item, callback) {
+
+		var ns = this;
 		
 		var content = $("#browse .items .clone").clone();
-		
+
 		content.removeClass('clone');
-		
+
 		content.attr('item-id', item.id);
-		
+
 		content.attr('location-id', item.location_id);
-		
-		content.find(".title .name").html( item.name );
-		
+
+		content.find(".title .name").html(item.name);
+
 		var status = 'Destroyed';
-		
-		if(item.folder){
+
+		if (item.folder) {
 
 			content.attr('folder', item.folder);
-		
-			if(item.images.length){
-				status = 'Under Reconstruction';	
+
+			if (item.images.length) {
+				status = 'Under Reconstruction';
 			}
 
-			if(item.folder){
+			if (item.folder) {
 				content.attr('filename', item.filename);
-				status = 'Reconstructed';	
+				status = 'Reconstructed';
 			}
-						
-			content.find(".image img").attr('src', 'details/' + item.folder + '/image.png' );
-			
-			content.find(".date .date_created").html( item.date_created );
-			
-			content.find(".date .date_destroyed").html( item.date_destroyed );
-			
+
+			content.find(".image img").attr('src', 'details/' + item.folder + '/image.png');
+
+			content.find(".date .date_created").html(item.date_created);
+
+			content.find(".date .date_destroyed").html(item.date_destroyed);
+
 			var p = item.images;
-			
+
 			for (var key in p) {
-			  if (p.hasOwnProperty(key)) {
-			  	//p[key]
-			  	
-				var obj = p[key];
-				var output = obj[Object.keys(obj)[0]];
-				
-			  	content.find(".media .images").append( '<img src="details/' + item.folder + '/images/' + output + '" />' );
-			  }
+				if (p.hasOwnProperty(key)) {
+					//p[key]
+
+					var obj = p[key];
+					var output = obj[Object.keys(obj)[0]];
+
+					content.find(".media .images").append('<img src="details/' + item.folder + '/images/' + output + '" />');
+				}
 			}
 
 			p = item.videos;
-			
+
 			for (var key in p) {
-			  if (p.hasOwnProperty(key)) {
-			  	//p[key]
-				var obj = p[key];
-				var output = obj[Object.keys(obj)[0]];
-				
-			  	content.find(".media .videos").append( '<iframe width="420" height="315" src="' + output + '" frameborder="0" allowfullscreen=""></iframe>');
-			  }
+				if (p.hasOwnProperty(key)) {
+					//p[key]
+					var obj = p[key];
+					var output = obj[Object.keys(obj)[0]];
+
+					content.find(".media .videos").append('<iframe width="420" height="315" src="' + output + '" frameborder="0" allowfullscreen=""></iframe>');
+				}
 			}
-			
+
 		}
+
+		reconstructions[key].status = status;
 		
-		content.find(".status").html(status );
-		
-		$("#browse .items").append(content);
-		
+		content.find(".status").html(status);
+
+		$("#browse .items .items-inner").append(content);
+
 		/*
-				
+
 		//for each item
-		
-			//read data.json
-			
-			//create element
-		
-            <div class="clone item unselected resize-margin-bottom" item-id="ITEM_ID" location-id="LOCATION_ID">
-                <ul class="clr">
-                    <li class="image resize-width">
-                        <a href="#"><img class="resize" src="IMAGE.PNG" /></a>
-                    </li>
-                    <li class="resize-width text">
-                        <div class="inner">
-                            <div class="title resize-font-size resize-width">
-                                <span class="name">NAME</span>
 
-                                <div class="date">
-                                    <span class="date_created">DATE_CREATED</span> - <span class="date_destroyed">DATE_DESTROYED</span>
-                                </div>
-                            </div>
+		//read data.json
 
-                            <div class="status resize-margin-left resize-margin-top">
-                                STATUS
-                            </div>
-                         </div>
-                    </li>
-                </ul> 
-                <div class="media">
-                    <div class="images">
-                        
-                    </div>
-                    <div class="videos">
-                        
-                    </div>
-                </div>   
-            </div>
-	
- 		*/
- 		//add to browse
+		//create element
+
+		<div class="clone item unselected resize-margin-bottom" item-id="ITEM_ID" location-id="LOCATION_ID">
+		<ul class="clr">
+		<li class="image resize-width">
+		<a href="#"><img class="resize" src="IMAGE.PNG" /></a>
+		</li>
+		<li class="resize-width text">
+		<div class="inner">
+		<div class="title resize-font-size resize-width">
+		<span class="name">NAME</span>
+
+		<div class="date">
+		<span class="date_created">DATE_CREATED</span> - <span class="date_destroyed">DATE_DESTROYED</span>
+		</div>
+		</div>
+
+		<div class="status resize-margin-left resize-margin-top">
+		STATUS
+		</div>
+		</div>
+		</li>
+		</ul>
+		<div class="media">
+		<div class="images">
+
+		</div>
+		<div class="videos">
+
+		</div>
+		</div>
+		</div>
+
+		*/
+		//add to browse
 		
-	}	
+		reconstructions_loaded++;
+		
+		if(reconstructions_loaded == reconstructions.length){
+			callback();
+		}
+
+	}
 	
-	
+	this.reconstructions = function() {
+		return reconstructions;
+	}
+		
 }).apply(UNESCO);
 
 $(document).ready(function() {

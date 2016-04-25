@@ -597,7 +597,17 @@ function Setup()
                 // Reset time and show explore button
                 startTime = timeNow();
                 currentTime = 0.0;
-				UNESCO.showExploreButton();
+				
+				UNESCO.buildBrowse(
+					function(){
+						
+						console.log("RECONSTRUCTIONS");
+						console.log(UNESCO.reconstructions());
+					
+						UNESCO.showExploreButton();	
+					}
+				);
+				
 				break;
 			case PX.AppStates.AppStateLevel0:	
 				UNESCO.hideLegend();
