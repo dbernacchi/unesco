@@ -264,7 +264,7 @@ function LoadData()
         //, LoadText( "TextAtlasXml", "webgl/data/fonts/arialLarge.xml" )
         //, LoadTexture( "TextAtlasTex", "webgl/data/fonts/arialLargeTransparent.png" )
         , LoadJsonData("LocationsJson", "webgl/data/latlon.json")
-        , LoadJsonData("ReconstructionsJson", "webgl/data/reconstructions.json")
+        //, LoadJsonData("ReconstructionsJson", "webgl/data/reconstructions.json")
     ).done(function ()
     {
         PostLoadData();
@@ -601,8 +601,10 @@ function Setup()
 				UNESCO.buildBrowse(
 					function(){
 						
-						console.log("RECONSTRUCTIONS");
+						//console.log("RECONSTRUCTIONS");
 						console.log(UNESCO.reconstructions());
+
+                        PopulateLocationsWithModelInfo( UNESCO.reconstructions() );
 					
 						UNESCO.showExploreButton();	
 					}
