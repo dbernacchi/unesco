@@ -173,7 +173,7 @@ UG.LocationMarkers.prototype =
         //
         this.textRenderer1 = new PX.TextRenderer();
         this.textRenderer1.Init( bmFontDescriptor, 2048, 0xffffff, PX.AssetsDatabase["TextAtlasTex"], null );
-        //this.textRenderer1.material.depthWrite = false;
+        this.textRenderer1.material.depthWrite = false;
         this.textRenderer1.material.opacity = 1.0;
         //this.textRenderer1.material.polygonOffset = true;
         //this.textRenderer1.material.polygonOffsetFactor = 1.0;
@@ -519,7 +519,8 @@ UG.LocationMarkers.prototype =
             }
 
             this.meshes[i].position.copy( loc.position );
-            this.meshes[i].scale.set( loc.scale.x, loc.scale.y, loc.scale.z * PX.kLocationMarkerZScale );
+            this.meshes[i].scale.set( loc.scale.x, loc.scale.y, loc.scale.z );
+            //this.meshes[i].scale.set( loc.scale.x, loc.scale.y, loc.scale.z * PX.kLocationMarkerZScale );
             //this.meshes[i].scale.set( loc.scale.x, loc.scale.y, loc.scale.z * ( loc.markerCount > 0 ? loc.markerCount * PX.kLocationMarkerZScale : 1.0 ) );
             this.meshes[i].lookAt( PX.ZeroVector );
             loc.color.r += (loc.targetColor.r - loc.color.r ) * frameTime * loc.colorChangeSpeed;
@@ -1056,7 +1057,7 @@ UG.LocationMarkers.prototype =
 
             // Outline Global Scale
             var ogsTarget = new THREE.Vector2( 0.0, 0.0 );
-            var tweenogs = new TWEEN.Tween( this.outlineGlobalScale ).to( ogsTarget, Params.AnimTime * 1000.0 );
+            var tweenogs = new TWEEN.Tween( this.outlineGlobalScale ).to( ogsTarget, Params.AnimTime * 1000.0 * 0.25 );
             tweenogs.easing( TWEEN.Easing.Quadratic.InOut );
             tweenogs.start();
         }
@@ -1126,8 +1127,9 @@ UG.LocationMarkers.prototype =
 
             // Outline Global Scale
             var ogsTarget = new THREE.Vector2( 1.0, 1.0 );
-            var tweenogs = new TWEEN.Tween( this.outlineGlobalScale ).to( ogsTarget, Params.AnimTime * 1000.0 );
+            var tweenogs = new TWEEN.Tween( this.outlineGlobalScale ).to( ogsTarget, Params.AnimTime * 1000.0 * 0.2 ); //Params.AnimTime * 1000.0 );
             tweenogs.easing( TWEEN.Easing.Quadratic.InOut );
+            tweenogs.delay( Params.AnimTime * 1000.0 * 0.8 );
             tweenogs.start();
 
             // CAMERA POSITION

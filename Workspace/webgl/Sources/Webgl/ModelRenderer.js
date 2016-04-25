@@ -65,6 +65,7 @@ PX.ModelRenderer.prototype =
 
         this.renderer.autoClear = false;
         this.renderer.autoClearStencil = false;
+        this.renderer.sortObjects = false;
 
         // Artefact Scene
         //
@@ -126,54 +127,61 @@ PX.ModelRenderer.prototype =
         //LoadBINScene( path, filename, this.artefactScene, 
         function( per )
         {
-            //console.log( "+--+  Load: Percentage: ", per );
+            console.log( "+--+  Load: Percentage: ", per );
             if( onProgressCB ) onProgressCB( per );
+
+            // Since we do a margin on the FG bar we need to compute the offset to remove from the bar in %
+            // sub that from the total width % and we get the proper fitting size
+            var offset = ( ( parseInt(preloaderFG.css('margin-left')) * 2.0 ) / windowWidth) * 100.0;
+            var percentage = PX.Clamp( ( Math.ceil( (per+0.25) * 80.0 ) ), 0.0, 80.0 );
+            //console.log( "Load()  percentage: ", percentage, "  offset: ", offset );
+            preloaderFG.css( "width", (percentage - offset) + '%' );
         },
         function()
         {
 		    preloaderBG.fadeTo(1000, 0);
             preloaderFG.fadeTo(1000, 0, function()
             {
-            // hide progress
-            preloaderBG.hide();
-            preloaderFG.hide();
+                // hide progress
+                preloaderBG.hide();
+                preloaderFG.hide();
 
-            //console.log( "Reset" );
-            scope.Reset();
+                //console.log( "Reset" );
+                scope.Reset();
 
-            //console.log( "compute Scene Bounds" );
-            var res = ComputeSceneBoundingSphere( scope.artefactScene );
-            scope.sceneCenter.x = res.x;
-            scope.sceneCenter.y = res.y;
-            scope.sceneCenter.z = res.z;
-            scope.distToCamera = res.w;
-            //console.log( scope.sceneCenter, scope.distToCamera );
+                //console.log( "compute Scene Bounds" );
+                var res = ComputeSceneBoundingSphere( scope.artefactScene );
+                scope.sceneCenter.x = res.x;
+                scope.sceneCenter.y = res.y;
+                scope.sceneCenter.z = res.z;
+                scope.distToCamera = res.w;
+                //console.log( scope.sceneCenter, scope.distToCamera );
 
-            //console.log( "Set camera" );
-            scope.artefactCamera.position.x = scope.sceneCenter.x;
-            scope.artefactCamera.position.y = scope.sceneCenter.y;
-            scope.artefactCamera.position.z = scope.sceneCenter.z + scope.distToCamera;
-            scope.artefactCamera.lookAt( scope.sceneCenter.clone() );
-            //console.log( "scope.artefactCamera.position: ", scope.artefactCamera.position );
-            //console.log( "scope.artefactCamera.direction: ", scope.artefactCamera.getWorldDirection() );
+                //console.log( "Set camera" );
+                scope.artefactCamera.position.x = scope.sceneCenter.x;
+                scope.artefactCamera.position.y = scope.sceneCenter.y;
+                scope.artefactCamera.position.z = scope.sceneCenter.z + scope.distToCamera;
+                scope.artefactCamera.lookAt( scope.sceneCenter.clone() );
+                //console.log( "scope.artefactCamera.position: ", scope.artefactCamera.position );
+                //console.log( "scope.artefactCamera.direction: ", scope.artefactCamera.getWorldDirection() );
 
-            //
-            //console.log( "set orbit controls" );
-            if( scope.artefactOrbitControls )
-            {
-                scope.artefactOrbitControls.minDistance = scope.distToCamera * 0.3;
-                scope.artefactOrbitControls.maxDistance = scope.distToCamera * 2.0;
-                scope.artefactOrbitControls.target.copy( scope.sceneCenter );
-                scope.artefactOrbitControls.update();
-                //console.log( "(2) scope.artefactCamera.position: ", scope.artefactCamera.position );
-                //console.log( "(2) scope.artefactCamera.direction: ", scope.artefactCamera.getWorldDirection() );
-            }
+                //
+                //console.log( "set orbit controls" );
+                if( scope.artefactOrbitControls )
+                {
+                    scope.artefactOrbitControls.minDistance = scope.distToCamera * 0.3;
+                    scope.artefactOrbitControls.maxDistance = scope.distToCamera * 2.0;
+                    scope.artefactOrbitControls.target.copy( scope.sceneCenter );
+                    scope.artefactOrbitControls.update();
+                    //console.log( "(2) scope.artefactCamera.position: ", scope.artefactCamera.position );
+                    //console.log( "(2) scope.artefactCamera.direction: ", scope.artefactCamera.getWorldDirection() );
+                }
 
-            if( this.trackball ) this.trackball.Reset( scope.artefactCamera, scope.sceneCenter );
+                if( this.trackball ) this.trackball.Reset( scope.artefactCamera, scope.sceneCenter );
 
-            // Need to call this after Reset
-            console.log( "+--+  ModelRenderer enabled" );
-            scope.enabled = true;
+                // Need to call this after Reset
+                console.log( "+--+  ModelRenderer enabled" );
+                scope.enabled = true;
             });
         }
         );
