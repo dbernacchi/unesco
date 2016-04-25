@@ -15,9 +15,9 @@ var UNESCO = {};
 
 		this.resize();
 		
-		this.buildBrowse();
+		//this.buildBrowse();
 
-		this.showBrowse();
+		//this.showBrowse();
 
 		//ns.topStatusBar();
 
@@ -538,25 +538,60 @@ var UNESCO = {};
 		}
 	}
 	
-	this.buildBrowse(){
-
-		//read through latlon.js
-		$.getJSON("webgl/data/latlon.json", function(data) {
+	/*
+	this.buildBrowse = function(){
+	
+		//read through reconstructions.json
+		console.log('get it');
+		var url = "webgl/data/reconstructions.json";
+		
+		$.getJSON(url, function(data) {
+			
+			console.log(data);
 			
 			var items = [];
 			$.each(data, function(key, val) {
-				items.push("<li id='" + key + "'>" + val + "</li>");
+				
+				console.log(val.details);
+				
+				var content = "<li id='" + key + "'>" + val + "</li>";
+				
+				items.push(content);
 			});
 
-			$("<ul/>", {
-				"class" : "my-new-list",
+			$("<div/>", {
 				html : items.join("")
-			}).appendTo("body");
+			}).appendTo("#browse .items");
 			
 		}); 
-
-
-
+		
+		
+		$.ajax({
+		  dataType: "json",
+		  url: url,
+		  success: function(data) {
+			
+				console.log(data);
+				
+				var items = [];
+				$.each(data, function(key, val) {
+					
+					console.log(val.details);
+					
+					var content = "<li id='" + key + "'>" + val + "</li>";
+					
+					items.push(content);
+				});
+	
+				$("<div/>", {
+					html : items.join("")
+				}).appendTo("#browse .items");
+				
+			}
+		});		
+		console.log("POW");
+	
+	
 				
 		//for each item
 		
@@ -564,7 +599,6 @@ var UNESCO = {};
 			
 			//create element
 		
-/*
             <div class="item unselected resize-margin-bottom">
                 <ul class="clr">
                     <li class="image resize-width">
@@ -587,12 +621,12 @@ var UNESCO = {};
                     </li>
                 </ul>    
             </div>
- */		
- 
- 			//add to browse
+	
+ 		
+ 		//add to browse
 		
 	}	
-	
+	*/
 	
 }).apply(UNESCO);
 
