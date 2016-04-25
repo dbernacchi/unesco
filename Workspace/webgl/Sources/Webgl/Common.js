@@ -41,8 +41,8 @@ PX =
     //
     , EPSILON: 0.001
 
-    , ShaderPrecision: "mediump"
-    //, ShaderPrecision: "highp"
+    //, ShaderPrecision: "mediump"
+    , ShaderPrecision: "highp"
 
     , StartLatLon: { x: 6.3377571, y: 43.139408 }
 
@@ -74,7 +74,7 @@ PX =
     , kCameraFovY: 36.0
     , kCameraNearPlane: 16.0
     , kCameraFarPlane: 200.0
-    , kModelCameraNearPlane: 1.0
+    , kModelCameraNearPlane: 0.1
     , kModelCameraFarPlane: 100.0
 
     // IMPORTANT!!
@@ -215,6 +215,12 @@ var Params =
     , AnimTime: 1.0
     , Art_CameraDistance: 100.0
     , CameraNearPlane: PX.kCameraNearPlane
+    // Model
+    , ModelAmbientIntensity: 0.001
+    , ModelDiffuseIntensity: 3.14
+    , ModelSpecularIntensity: 0.1
+    , ModelRoughness: 0.7
+    // Globe
     , AmbientIntensity: 0.00033
     , DiffuseIntensity: 0.5 //1.5 //1.125
     , SpecularIntensity: 0.07

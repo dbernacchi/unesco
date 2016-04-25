@@ -411,9 +411,11 @@ THREE.MTLLoader.MaterialCreator.prototype = {
 
 		}
 
-		this.materials[ materialName ] = new THREE.MeshPhongMaterial( params );
-		return this.materials[ materialName ];
+        params[ 'shading' ] = THREE.SmoothShading;
 
+		this.materials[ materialName ] = new THREE.MeshPhongMaterial( params );
+
+		return this.materials[ materialName ];
 	},
 
 

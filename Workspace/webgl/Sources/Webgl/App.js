@@ -227,6 +227,9 @@ function CreateRenderer()
     renderer.autoClearStencil = false;
     renderer.sortObjects = false;
     //renderer.autoUpdateObjects = false;
+
+    var deri = renderer.context.getExtension('OES_standard_derivatives');
+    console.log( deri );
 }
 
 function LoadData()
@@ -256,6 +259,8 @@ function LoadData()
         , LoadTexture( "TooltipLine", "webgl/data/textures/line.png" )
         , LoadShaderData("EarthVertexShader", "webgl/data/shaders/Earth.vertex")
         , LoadShaderData("EarthPixelShader", "webgl/data/shaders/Earth.fragment")
+        , LoadShaderData("ModelVertexShader", "webgl/data/shaders/Model.vertex")
+        , LoadShaderData("ModelPixelShader", "webgl/data/shaders/Model.fragment")
         , LoadText( "TextAtlasXml", "webgl/data/fonts/font.xml" )
         , LoadTexture( "TextAtlasTex", "webgl/data/fonts/font_0.png" )
         //, LoadText( "TextAtlasXml", "webgl/data/fonts/arialLarge.xml" )
@@ -734,6 +739,13 @@ function InitGUI()
     g_GUI.addFolder( "BLOOM" );
     g_GUI.add( Params, "EnableBloom" );
     g_GUI.add( Params, "BloomOpacity" ).min(0.0).max(1.0).step(0.001);
+    g_GUI.addFolder( "MODEL SHADING" );
+    g_GUI.add( Params, "ModelAmbientIntensity" ).min(0.0);
+    g_GUI.add( Params, "ModelDiffuseIntensity" ).min(0.0);
+    g_GUI.add( Params, "ModelSpecularIntensity" ).min(0.0);
+    //g_GUI.add( Params, "NormalMapIntensity" ).min(0.0).max(1.0).step(0.001);
+    g_GUI.add( Params, "ModelRoughness" ).min(0.0).max(1.0).step(0.001);
+
     g_GUI.addFolder( "EARTH SHADING" );
     g_GUI.add( Params, "AmbientIntensity" ).min(0.0);
     g_GUI.add( Params, "DiffuseIntensity" ).min(0.0);

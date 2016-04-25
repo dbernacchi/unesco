@@ -26,6 +26,10 @@ PX.ModelRenderer = function()
 
     this.trackball = null;
 
+    this.material = null;
+
+    this.artSunLight = null;
+
     this.aspectRatio = 1.0;
 };
 
@@ -85,13 +89,15 @@ PX.ModelRenderer.prototype =
 
         // Create Artefact sun light
         //
-        var artSunLight = new THREE.DirectionalLight( 0xffffff );
+        /*artSunLight = new THREE.DirectionalLight( 0xffffff );
         artSunLight.position.set( 0.5, 1, 1 );
         //artSunLight.position.copy( this.artefactCamera.getWorldDirection() );
         this.artefactScene.add( artSunLight );
         var artAmbLight = new THREE.HemisphereLight( 0x7f7faa, 0x040410, 1 );
         this.artefactScene.add( artAmbLight );
+        */
 
+        this.SetupMaterial();
 
         // Init Trackball
         //
@@ -115,6 +121,34 @@ PX.ModelRenderer.prototype =
     }
 
 
+    , SetupMaterial()
+    {
+        var modelUniforms =
+        {
+            DiffuseMap: { type: "t", value: null }
+            , NormalMap: { type: "t", value: null }
+            , World: { type: "m4", value: new THREE.Matrix4() }
+            , ViewPosition: { type: "v3", value: new THREE.Vector3( 0, 0, 100 ) }
+            , LightDirection: { type: "v3", value: new THREE.Vector3( -1, -1, -1 ) }
+            , Params0: { type: "v4", value: new THREE.Vector4( 0.001, 3.14, 0.1, 1 ) }
+            //, Params1: { type: "v4", value: new THREE.Vector4( 1, 1, 1, 1 ) }
+            , Params2: { type: "v4", value: new THREE.Vector4( 0.6, 2.0, 0.4, 1.0 ) }
+        }
+
+        this.material = new THREE.ShaderMaterial(
+        {
+            uniforms: modelUniforms
+            , vertexShader: PX.AssetsDatabase["ModelVertexShader"]
+            , fragmentShader: PX.AssetsDatabase["ModelPixelShader"]
+            , vertexColors: THREE.VertexColors
+        } );
+        this.material.extensions.derivatives = true;
+        this.material.side = THREE.DoubleSide;
+        this.material.depthTest = true;
+        this.material.depthWrite = true;
+        this.material.transparent = false;
+    }
+
     , Load( path, filename, onProgressCB )
     {
         var scope = this;
@@ -125,7 +159,7 @@ PX.ModelRenderer.prototype =
         preloaderFG.show();
 
         //LoadSceneData( path, filename, this.artefactScene,
-        LoadOBJScene( path, filename, this.artefactScene, 
+        LoadOBJScene( path, filename, this.artefactScene, this.material,
         //LoadBINScene( path, filename, this.artefactScene, 
         function( per )
         {
@@ -211,6 +245,13 @@ PX.ModelRenderer.prototype =
         if( this.trackball ) this.trackball.Update( this.artefactCamera, frameTime );
 
         if( this.artefactOrbitControls ) this.artefactOrbitControls.update();
+
+        // Update shader material
+//        console.log( this.artefactCamera.position );
+        this.material.uniforms.Params0.value.set( Params.ModelAmbientIntensity, Params.ModelDiffuseIntensity, Params.ModelSpecularIntensity, 1.0 );
+        this.material.uniforms.Params2.value.x = Params.ModelRoughness;
+        this.material.uniforms.ViewPosition.value = this.artefactCamera.position;
+        //this.material.uniforms.LightDirection.value = this.artSunLight.position;
     }
 
 

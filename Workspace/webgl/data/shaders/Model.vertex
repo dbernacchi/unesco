@@ -1,0 +1,68 @@
+
+#line 3 1110
+
+// Type definitions
+//
+#define texture 	texture2D
+
+#define half 		float
+#define half2      	vec2
+#define half3      	vec3
+#define half4      	vec4
+
+#define float2      vec2
+#define float3      vec3
+#define float4      vec4
+#define int2        ivec2
+#define int3        ivec3
+#define int4        ivec4
+#define uint2       uvec2
+#define uint3       uvec3
+#define uint4       uvec4
+#define float2x2    mat2
+#define float3x3    mat3
+#define float4x4    mat4
+#define lerp        mix
+#define	frac		fract
+#define mad( a, b, c ) ( a * b + c )
+//#define saturate(x)	clamp( x, 0.0, 1.0 )
+#define mul( a, b ) a * b
+
+const float PI                      = 3.1415926535897;
+const float TWOPI                   = 2.0 * PI;
+const float ONE_OVER_PI           	= 1.0 / PI;
+const float ONE_OVER_TWOPI         	= 1.0 / TWOPI;
+const float DEG_TO_RAD              = PI / 180.0;
+const float RAD_TO_DEG              = 180.0 / PI;
+
+const float3 ZAxis 					= float3( 0, 0, 1 );
+
+const float2 AllHalfOnes2           = float2( 0.5 );
+const float3 AllHalfOnes3           = float3( 0.5 );
+const float4 AllHalfOnes4           = float4( 0.5 );
+const float3 AllOnes3               = float3( 1.0 );
+const float3 AllMinusOnes3          = float3( -1.0 );
+const float3 AllTwos3               = float3( 2.0 );
+
+
+//
+//uniform float4x4 	World;
+
+//
+varying float2 		texcoord;
+varying float3 		positionWS;
+varying float3 		normalWS;
+
+//
+void main()
+{
+	float4 posOS = float4( position, 1.0 );
+    float4 posWS = posOS;
+    float3 normWS = normal;
+
+	texcoord = uv;
+    positionWS = posWS.xyz;
+    normalWS = normalize( normWS );
+
+    gl_Position = projectionMatrix * modelViewMatrix * posOS;
+}
