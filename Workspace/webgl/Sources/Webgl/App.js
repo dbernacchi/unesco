@@ -462,7 +462,7 @@ function Setup()
         composer.addPass( effectTiltShiftVBlur );
     }
 
-    if( !PX.IsMobile )
+    //if( !PX.IsMobile )
     {
     	effectFXAAPass = new THREE.ShaderPass( THREE.FXAAShader );
     	effectFXAAPass.uniforms[ 'resolution' ].value.set( 1.0 / (windowWidth*deviceContentScale), 1.0 / (windowHeight*deviceContentScale) );
