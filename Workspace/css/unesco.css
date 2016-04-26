@@ -278,11 +278,17 @@ ul.clr li {
 	padding: 0px 20px 5px 20px;
 	color: #fff;
 	text-decoration: none;
+	cursor: default;
 }
 
 #legend a.disabled {
 	display: block;
 	color: #383838;
+
+}
+
+#legend a.clickable {
+	cursor: pointer;
 
 }
 
@@ -299,15 +305,15 @@ ul.clr li {
 }
 
 #legend a.destroyed.disabled {
-	background: url(../img/legend/dot-disabled.png) 0 3px no-repeat;
+	opacity: 0.5;
 }
 
 #legend a.under.disabled {
-	background: url(../img/legend/dot-disabled.png) 0 3px no-repeat;
+	opacity: 0.5;
 }
 
 #legend a.reconstructed.disabled {
-	background: url(../img/legend/dot-disabled.png) 0 3px no-repeat;
+	opacity: 0.5;
 }
 
 #slide-5, #slide-9 {

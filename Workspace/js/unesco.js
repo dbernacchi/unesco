@@ -465,6 +465,8 @@ var UNESCO = {};
 
 		var elm = $(".UNESCO#browse");
 
+		elm.find(".items-inner").css('top', '0');
+		
 		elm.attr('location-id', location_id);
 		
 		var status_selector = "";
@@ -484,16 +486,43 @@ var UNESCO = {};
         var selected = elm.find(filtered_selector)
         
         if(selected.length){ 
-        
+        	
         	selected.addClass('show');
         	
 		} else {
 			
-			elm.find(selector).addClass('show');
+			selected = elm.find(selector);
+			
+			$("#legend > .clr > li > a" ).addClass('disabled').removeClass('clickable');
+			UpdateFilterSwitches( 3 );
+            locationMarkers.FilterLocationMeshColors( WebpageStates.FilterSwitches );				
+			elm.attr('status', "");
+		
+		
+			selected.addClass('show');
 			
 		}
+		
+		this.legendUnclickable(elm, selector,'Destroyed');
+		this.legendUnclickable(elm, selector,'UnderReconstruction');
+		this.legendUnclickable(elm, selector,'Reconstructed');
+		
+
 		elm.show();
 
+	}
+	
+	this.legendUnclickable = function(elm, selector, filter){
+		
+		selector += '[status="' + filter + '"]';
+		
+		console.log(selector);
+	
+		if(!elm.find(selector).length){
+			$("#legend a[status=" + filter + "]").removeClass('clickable').addClass('disabled');
+		
+		}
+						
 	}
 
 	this.hideZoomIn = function() {
@@ -742,7 +771,7 @@ var UNESCO = {};
 		}
 
 		content.find(".status").html(status);
-		content.attr("status", status);
+		content.attr("status", status.replace(' ', ''));
 
 		$("#browse .items .items-inner").append(content);
 
@@ -779,6 +808,13 @@ var UNESCO = {};
 		});
 
 	}
+
+	this.legendClickable = function(){
+		
+		$("#legend > .clr > li > a" ).addClass('clickable');
+		
+	}
+
 }).apply(UNESCO);
 
 var img = new Image();

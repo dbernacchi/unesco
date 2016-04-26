@@ -621,6 +621,9 @@ function Setup()
 
 			case PX.AppStates.AppStateLevel0ToLevel1:
                 // Default: Reconstructed are filtered
+                
+                UNESCO.legendClickable();
+                
                 if( WebpageStates.IsFirstTimeRun )
                 {
 			        UpdateFilterSwitches( 2 );
@@ -643,6 +646,8 @@ function Setup()
 
 			case PX.AppStates.AppStateLevel2ToLevel1:
 				UNESCO.hideBrowse();
+				UNESCO.legendClickable();
+				
 				break;
 
             default:
@@ -652,9 +657,10 @@ function Setup()
     });
 
     // Click callbacks on HTML filter buttons
-    var filterLinks = $("#legend > .clr > li > a" );
-    filterLinks.on( 'click', function()
+    $(document).on( 'click', "#legend a.clickable", function()
     {
+   
+   	
         if( appStateMan.IsState( PX.AppStates.AppStateLevel1 ) || appStateMan.IsState( PX.AppStates.AppStateLevel2 ) )
         {
         	
@@ -670,7 +676,9 @@ function Setup()
 	        	
 	        	var location_id = $("#browse").attr('location-id');
 	        	
-	        	UNESCO.showBrowse(location_id);
+	        	if(appStateMan.IsState( PX.AppStates.AppStateLevel2 )){
+	        		UNESCO.showBrowse(location_id);
+	        	}
 	        	
 	        	$("#legend > .clr > li > a" ).each(function(){
 	        		
