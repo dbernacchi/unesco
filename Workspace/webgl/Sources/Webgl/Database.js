@@ -118,9 +118,9 @@ function PopulateLocationsWithModelInfo( reconstructions )
     }
 
     // @DEBUG:
-    for( var i=0; i<locationsDB.length; ++i )
+    /*for( var i=0; i<locationsDB.length; ++i )
     {
         var loc = locationsDB[i];
         console.log( "+--+  ParseLocationData()  location: ", loc.id, "  modelCount: ", loc.modelCount, "  types: ", loc.types[0], loc.types[1], loc.types[2] );
-    }
+    }*/
 }

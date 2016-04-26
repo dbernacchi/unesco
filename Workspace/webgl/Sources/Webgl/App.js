@@ -1149,10 +1149,10 @@ function ZoomOutFromLevel1ToLevel0( isMouseWheel )
             tween.start();
 
             // Outline Global Scale
-            var ogsTarget = new THREE.Vector2( 1.0, 1.0 );
-            var tweenogs = new TWEEN.Tween( locationMarkers.outlineGlobalScale ).to( ogsTarget, Params.AnimTime * 1000.0 );
+            /*var ogsTarget = new THREE.Vector2( PX.EPSILON, PX.EPSILON );
+            var tweenogs = new TWEEN.Tween( locationMarkers.outlineGlobalScale ).to( ogsTarget, Params.AnimTime * 1000.0 * 0.5 );
             tweenogs.easing( TWEEN.Easing.Quadratic.InOut );
-            tweenogs.start();
+            tweenogs.start();*/
 
             // Scale down all Level 1 markers
             var target = new THREE.Vector3( PX.EPSILON, PX.EPSILON, PX.EPSILON );

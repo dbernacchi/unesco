@@ -23,7 +23,7 @@ PX.CircleRenderer.prototype =
         //this.material = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
         this.material = new THREE.MeshBasicMaterial( { map: texture, color: color, opacity: 1.0, transparent: true } );
         this.material.side = THREE.DoubleSide;
-        this.material.blending = THREE.AdditiveBlending;
+        //this.material.blending = THREE.AdditiveBlending;
         this.material.depthWrite = false;
         this.material.premultipliedAlpha = true;
 

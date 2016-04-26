@@ -246,7 +246,7 @@ var Params =
     , TiltShiftPosition: 0.5
     , Intersects: 0
     , Dummy: 0.5
-    , OutlineThickness: 50.0
+    , OutlineThickness: 50.0 * 3.0
 
     , OutlineDist: 0.0
     , MarkerCircleDist: -PX.kLocationMarkerScale * 0.25 // negative means move away from the center

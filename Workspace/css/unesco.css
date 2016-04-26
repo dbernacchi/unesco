@@ -6,7 +6,7 @@
 #glModelContainer {
 	display: inline-block;
 	position: absolute;
-	overflow: hidden;//
+	overflow: hidden;
 	z-index: 1000;
 }
 #map {

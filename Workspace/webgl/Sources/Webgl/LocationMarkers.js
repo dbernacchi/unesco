@@ -193,7 +193,6 @@ UG.LocationMarkers.prototype =
 
         this.circleRenderer = new PX.CircleRenderer();
         this.circleRenderer.Init( 4096, 0xffffff, PX.AssetsDatabase["Circle"], null );
-        this.circleRenderer.material.depthWrite = false;
         this.circleRenderer.material.opacity = 0.0;
         //this.circleRenderer.material.polygonOffset = true;
         //this.circleRenderer.material.polygonOffsetFactor = -1.0;
@@ -491,11 +490,11 @@ UG.LocationMarkers.prototype =
         var matRes = new THREE.Matrix4();
         var distToCamera = new THREE.Vector3();
 
+        this.circleRenderer.material.opacity = this.outlineGlobalScale.x;
         this.circleRenderer.Begin();
-        this.circleRenderer.material.opacity = 1.0;
 
+        this.textRenderer1.material.opacity = this.outlineGlobalScale.x;
         this.textRenderer1.Begin();
-        this.textRenderer1.material.opacity = 1.0;
 
         for( var i=0; i<this.markersCount; ++i )
         {
@@ -542,6 +541,7 @@ UG.LocationMarkers.prototype =
                 }
             }
 
+            this.meshes[i].material.opacity = this.outlineGlobalScale.x;
             this.meshes[i].position.copy( loc.position );
             this.meshes[i].scale.set( loc.scale.x, loc.scale.y, loc.scale.z );
             //this.meshes[i].scale.set( loc.scale.x, loc.scale.y, loc.scale.z * PX.kLocationMarkerZScale );
@@ -579,7 +579,8 @@ UG.LocationMarkers.prototype =
             {
                 var outlinePos = new THREE.Vector3();
                 outlinePos.z += Params.OutlineDist;
-                this.circleRenderer.AppendRect( outlinePos, this.outlineGlobalScale.x * (PX.kLocationMarkerScale + ((Params.OutlineThickness * 0.001) / loc.scale.x)), this.meshes[i].matrix );
+                this.circleRenderer.AppendRect( outlinePos, (PX.kLocationMarkerScale + ((Params.OutlineThickness * 0.001) )), this.meshes[i].matrix );
+                //this.circleRenderer.AppendRect( outlinePos, this.outlineGlobalScale.x * (PX.kLocationMarkerScale + ((Params.OutlineThickness * 0.001) / loc.scale.x)), this.meshes[i].matrix );
             }
 	    }
 
@@ -951,7 +952,7 @@ UG.LocationMarkers.prototype =
 
 
             // Outline Global Scale
-            this.outlineGlobalScale.set( 0.0, 0.0 );
+            //this.outlineGlobalScale.set( 0.0, 0.0 );
         }
 
         // Level 1
@@ -1272,6 +1273,8 @@ UG.LocationMarkers.prototype =
 
             this.doPopulation = false;
 
+            this.outlineGlobalScale.set( 0, 0 ); //PX.EPSILON, PX.EPSILON );
+
             //
             for( var i=0; i<locations.length; ++i )
             {
@@ -1340,7 +1343,6 @@ UG.LocationMarkers.prototype =
                     if( i === clusterCount-1 )
                     {
                         // Outline Global Scale
-                        scope.outlineGlobalScale.set( PX.EPSILON, PX.EPSILON );
                         var ogsTarget = new THREE.Vector2( 1.0, 1.0 );
                         var tweenogs = new TWEEN.Tween( scope.outlineGlobalScale ).to( ogsTarget, Params.AnimTime * 500.0 );
                         tweenogs.easing( TWEEN.Easing.Quadratic.InOut );
