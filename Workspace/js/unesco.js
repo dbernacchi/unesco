@@ -19,6 +19,9 @@ var UNESCO = {};
 
 		this.resize();
 
+		$("body").css('background-image', 'url(../webgl/data/textures/background.png)');	
+		$("body").fadeIn('fast');
+
 		//this.buildBrowse();
 
 		//this.showBrowse();
@@ -553,59 +556,83 @@ var UNESCO = {};
 			url : url,
 			success : function(data) {
 
-				reconstructions = data;
+				ns.processItems(data, callback);
+			},
+			error : function(data) {
 
-				var items = [];
-				$.each(data, function(key, val) {
-
-					var details = val.details;
-
-					var url = "details/" + details + "/data.json";
-
-					if (details) {
-
-						$.ajax({
-							dataType : "json",
-							url : url,
-							success : function(data) {
-
-								//model folder
-								val.folder = data.folder;
-
-								//model file name
-								val.filename = data.filename;
-
-								//date_constructed
-								val.date_constructed = data.date_constructed;
-
-								//date_destroyed
-								val.date_destroyed = data.date_destroyed;
-
-								//images
-								val.images = data.images;
-
-								//videos
-								val.videos = data.videos;
-
-								ns.buildItem(key, val, callback);
-							}
-						});
-
-					} else {
-
-						ns.buildItem(key, val, callback);
-
-					}
-
-				});
-
+				ns.processItems(data, callback);
 			}
 		});
 
 	}
+	
+	this.processItems = function(data, callback){
+
+		var ns = this;
+		
+		console.log('item');
+				
+		reconstructions = data;
+
+		var items = [];
+		$.each(data, function(key, val) {
+
+			var details = val.details;
+
+			var url = "details/" + details + "/data.json";
+
+			if (details) {
+
+				$.ajax({
+					dataType : "json",
+					url : url,
+					success : function(data) {
+
+						ns.processItem(data, callback);
+					},
+					error : function(data) {
+
+						ns.processItem(data, callback);
+					}
+				});
+
+			} else {
+
+				ns.buildItem(key, val, callback);
+
+			}
+
+		});
+
+		
+	}
+	
+	this.processItem = function(data, callback){
+
+		var ns = this;
+		
+		//model file name
+		val.filename = data.filename;
+
+		//date_constructed
+		val.date_constructed = data.date_constructed;
+
+		//date_destroyed
+		val.date_destroyed = data.date_destroyed;
+
+		//images
+		val.images = data.images;
+
+		//videos
+		val.videos = data.videos;
+
+		ns.buildItem(key, val, callback);
+
+		
+	}	
 
 	this.buildItem = function(key, item, callback) {
-
+				
 		var ns = this;
 		
 		var content = $("#browse .items .clone").clone();
@@ -620,20 +647,20 @@ var UNESCO = {};
 
 		var status = 'Destroyed';
 
-		if (item.folder) {
+		if (item.details) {
 
-			content.attr('folder', item.folder);
+			content.attr('folder', item.details);
 
 			if (item.images.length) {
 				status = 'Under Reconstruction';
 			}
 
-			if (item.folder) {
+			if (item.filename) {
 				content.attr('filename', item.filename);
 				status = 'Reconstructed';
 			}
 
-			content.find(".image img").attr('src', 'details/' + item.folder + '/image.png');
+			content.find(".image img").attr('src', 'details/' + item.details + '/image.png');
 
 			content.find(".date").html(item.date_created + ' - ' + item.date_destroyed);
 
@@ -646,7 +673,7 @@ var UNESCO = {};
 					var obj = p[key];
 					var output = obj[Object.keys(obj)[0]];
 
-					content.find(".media .images").append('<img src="details/' + item.folder + '/images/' + output + '" />');
+					content.find(".media .images").append('<img src="details/' + item.details + '/images/' + output + '" />');
 				}
 			}
 
@@ -664,7 +691,7 @@ var UNESCO = {};
 
 		}
 
-		reconstructions[key].status = status;
+		ns.setStatus(key, status);
 		
 		content.find(".status").html(status);
 
@@ -714,9 +741,14 @@ var UNESCO = {};
 		
 		reconstructions_loaded++;
 		
+		console.log(reconstructions);
+		
+		console.log('loaded: ' + reconstructions_loaded + ' == ' + reconstructions.length);
+		
 		if(reconstructions_loaded == reconstructions.length){
 			
 			$("#browse .item:eq(1)").removeClass('unselected');
+			console.log("CALL IT BACK");
 			callback();
 		}
 
@@ -725,11 +757,43 @@ var UNESCO = {};
 	this.reconstructions = function() {
 		return reconstructions;
 	}
+	
+	this.setStatus = function(key, status){
+		
+		reconstructions[key].status = status;
+	}
+	
+	this.ajaxJSON = function(url, callback){
+		
+		$.ajax({
+			dataType : "json",
+			url : url,
+			success : function(json) {
+				callback(json);
+			},
+			error : function(data) {
+				callback(json);
+			}
+		});	
+		
+	}
+	
 		
 }).apply(UNESCO);
 
-$(document).ready(function() {
+var img = new Image();
+img.onload = function() {
+	
+	$(document).ready(function() {
+	
+		UNESCO.init();
+	
+	});	
 
-	UNESCO.init();
+	
+};
+img.onerror = function() {
+};		
+img.src = "../webgl/data/textures/background.png";
 
-});
+

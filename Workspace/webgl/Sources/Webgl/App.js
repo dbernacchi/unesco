@@ -41,7 +41,7 @@ var trackball = null;
 var postFXScene = null;
 var postFXQuad = null;
 var postFXScene2 = null;
-var postFXQuad2 = null;
+var postFXQuad2 = null; 
 
 var composer = null;
 var renderMainPass = null;
@@ -601,9 +601,6 @@ function Setup()
 				UNESCO.buildBrowse(
 					function(){
 						
-						//console.log("RECONSTRUCTIONS");
-						//console.log(UNESCO.reconstructions());
-
                         PopulateLocationsWithModelInfo( UNESCO.reconstructions() );
                         locationMarkers.FillLocationTypes( locationsDB );
 					
