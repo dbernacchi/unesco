@@ -3,7 +3,7 @@
 var PX = PX || {};
 
 var g_TextureLoader = new THREE.TextureLoader();
-var gltfLoader = null;
+//var gltfLoader = null;
 
 
 function LoadJsonData( name, url )
@@ -93,12 +93,24 @@ function LoadTexture( name, url )
     var defer = $.Deferred();
 
     console.log( "+--+  Load Texture:\t\t" + name, url );
-    g_TextureLoader.load( url, function( tex )
+    g_TextureLoader.load( url
+    , function( tex )
     {
         PX.AssetsDatabase[name] = tex;
         console.log("+--+  Loaded Texture:\t\t" + name, url);
         defer.resolve();
+    }
+    , function()
+    {
+        // progress
+    }
+    , function()
+    {
+        // Error
+        console.log( "**** Failed to load texture" );
+        defer.resolve();
     } );
+
     return defer; //.promise();
 }
 
