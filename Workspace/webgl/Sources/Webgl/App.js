@@ -602,7 +602,7 @@ function Setup()
 					function(){
 						
 						//console.log("RECONSTRUCTIONS");
-						console.log(UNESCO.reconstructions());
+						//console.log(UNESCO.reconstructions());
 
                         PopulateLocationsWithModelInfo( UNESCO.reconstructions() );
                         locationMarkers.FillLocationTypes( locationsDB );
@@ -623,7 +623,8 @@ function Setup()
 	            UNESCO.hideZoomIn();
 				break;
 					
-			case PX.AppStates.AppStateLevel1ToLevel2:
+			case PX.AppStates.AppStateLevel2:
+			//case PX.AppStates.AppStateLevel1ToLevel2:
 				UNESCO.showBrowse();
 	            UNESCO.hideZoomIn();
 	            UNESCO.hideZoomOut();
