@@ -458,6 +458,10 @@ ul.clr li {
 	opacity: 0.5;
 }
 
+#browse .item.unselected a {
+	cursor: default;
+}
+
 #browse .items li.image {
 	width: 345px;
 }
@@ -492,6 +496,7 @@ ul.clr li {
 	margin-top: 20px;
 	font-size: 14px;
 	line-height: 20px;
+	text-transform: uppercase;
 }
 
 #browse .arrows {

@@ -633,9 +633,7 @@ var UNESCO = {};
 
 			content.find(".image img").attr('src', 'details/' + item.folder + '/image.png');
 
-			content.find(".date .date_created").html(item.date_created);
-
-			content.find(".date .date_destroyed").html(item.date_destroyed);
+			content.find(".date").html(item.date_created + ' - ' + item.date_destroyed);
 
 			var p = item.images;
 
@@ -715,6 +713,8 @@ var UNESCO = {};
 		reconstructions_loaded++;
 		
 		if(reconstructions_loaded == reconstructions.length){
+			
+			$("#browse .item:eq(1)").removeClass('unselected');
 			callback();
 		}
 
