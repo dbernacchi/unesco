@@ -462,7 +462,7 @@ function Setup()
         composer.addPass( effectTiltShiftVBlur );
     }
 
-    if( !PX.IsMobile )
+    //if( !PX.IsMobile )
     {
     	effectFXAAPass = new THREE.ShaderPass( THREE.FXAAShader );
     	effectFXAAPass.uniforms[ 'resolution' ].value.set( 1.0 / (windowWidth*deviceContentScale), 1.0 / (windowHeight*deviceContentScale) );
@@ -601,8 +601,11 @@ function Setup()
 				UNESCO.buildBrowse(
 					function(){
 						
-						console.log("RECONSTRUCTIONS");
-						console.log(UNESCO.reconstructions());
+						//console.log("RECONSTRUCTIONS");
+						//console.log(UNESCO.reconstructions());
+
+                        PopulateLocationsWithModelInfo( UNESCO.reconstructions() );
+                        locationMarkers.FillLocationTypes( locationsDB );
 					
 						UNESCO.showExploreButton();	
 					}
@@ -620,7 +623,8 @@ function Setup()
 	            UNESCO.hideZoomIn();
 				break;
 					
-			case PX.AppStates.AppStateLevel1ToLevel2:
+			case PX.AppStates.AppStateLevel2:
+			//case PX.AppStates.AppStateLevel1ToLevel2:
 				UNESCO.showBrowse();
 	            UNESCO.hideZoomIn();
 	            UNESCO.hideZoomOut();
@@ -1145,10 +1149,10 @@ function ZoomOutFromLevel1ToLevel0( isMouseWheel )
             tween.start();
 
             // Outline Global Scale
-            var ogsTarget = new THREE.Vector2( 1.0, 1.0 );
-            var tweenogs = new TWEEN.Tween( locationMarkers.outlineGlobalScale ).to( ogsTarget, Params.AnimTime * 1000.0 );
+            /*var ogsTarget = new THREE.Vector2( PX.EPSILON, PX.EPSILON );
+            var tweenogs = new TWEEN.Tween( locationMarkers.outlineGlobalScale ).to( ogsTarget, Params.AnimTime * 1000.0 * 0.5 );
             tweenogs.easing( TWEEN.Easing.Quadratic.InOut );
-            tweenogs.start();
+            tweenogs.start();*/
 
             // Scale down all Level 1 markers
             var target = new THREE.Vector3( PX.EPSILON, PX.EPSILON, PX.EPSILON );
