@@ -1,118 +1,688 @@
-[
-{"details": "", "location_id": "1", "id": "1", "name": "Hatra King Uthal Statues", "description": "These are actually two statues, and through time can be separated into the appropriate groupings, but as most of the pictures contain both, for now we will keep them together. The one with a raised hand : King Uthal ref: The Artifacts of Hatra and Parthian Art p142"},
-{"details": "", "location_id": "1", "id": "2", "name": "Statue of Sanatruq II", "description": "Statue of King Sanatruq II holding a warrior statuette"},
-{"details": "16_Lion_of_Mosul", "location_id": "1", "id": "3", "name": "Lion Statue", "description": "Ishtar temple lion"},
-{"details": "", "location_id": "1", "id": "5", "name": "Arabic Geometric Reliefs", "description": "Source : http://www.almosul.com/Heritage/Album/MuzahimJalili/MuzahimAlJalili_MosulMuseum.htm"},
-{"details": "", "location_id": "1", "id": "6", "name": "Wooden Gate 1 - Geometric Pattern", "description": "Wodden gate with geometric pattern. Not sure if same item. source : http://www.almosul.com/Heritage/Album/MuzahimJalili/MuzahimAlJalili_MosulMuseum.htm"},
-{"details": "", "location_id": "1", "id": "7", "name": "Wooden Gate II - Circles", "description": "Wooden gate with circles"},
-{"details": "", "location_id": "1", "id": "8", "name": "Stone gate", "description": "Damaged stone gate / source:http://www.almosul.com/Heritage/Album/MuzahimJalili/MuzahimAlJalili_MosulMuseum.htm"},
-{"details": "", "location_id": "1", "id": "9", "name": "Metal Riveted Gate", "description": "source: http://www.almosul.com/Heritage/Album/MuzahimJalili/MuzahimAlJalili_MosulMuseum.htm"},
-{"details": "", "location_id": "1", "id": "10", "name": "Museum exterior", "description": "source: http://www.almosul.com/Heritage/Album/MuzahimJalili/MuzahimAlJalili_MosulMuseum.htm"},
-{"details": "", "location_id": "1", "id": "11", "name": "Lamassu", "description": "Two colossal lamassus were decorating the facade of the North-West Palace ( King Assurnasirpal II's)-Nimrud-883-859"},
-{"details": "13_Lamassus_Right", "location_id": "1", "id": "1100", "name": "Lamassu", "description": "Two colossal lamassus were decorating the facade of the North-West Palace ( King Assurnasirpal II's)-Nimrud-883-859"},
-{"details": "14_Lamassus_Left", "location_id": "1", "id": "12", "name": "Hatra King with Eagle", "description": "One of the destroyed statue (maybe original). picture source :l http://3dprint.com/51531/3d-print-isis-mosul-museum/"},
-{"details": "12_Hatrene_Priest", "location_id": "1", "id": "13", "name": "Priest and Nobleman", "description": "Statues seen at 0:40 and 2:43 of the video. From Safar and Mustafa, Hatra: The City of the Sun God, pl. 19, pl. 199, pp. 75, 212. The sculpture on the right is a statue of a Hatrene nobleman dressed in the Parthian style. This is one of the earlier Hatrene sculptures found and dates to the 1st century AD. Its catalog number is MM14."},
-{"details": "", "location_id": "1", "id": "14", "name": "Statue of Makai ben Nashri", "description": "beheaded swordman . headless statue can be seen, clutching a sword in his hands and wearing long pleated trousers and a cape. An inscription identifies it as a depiction of a certain Makai ben Nashri.[5] Statue of Makai ben Nashri seen in 3:16 of video. Left photo by Diane Siebrandt, U.S. State Department, 2008. Right photo from Safar and Mustafa, Hatra: The City of the Sun God, p. 78. Source: https://gatesofnineveh.wordpress.com/"},
-{"details": "", "location_id": "1", "id": "16", "name": "Statue of Nike", "description": "Statue of NikeGreek goddess of victory. Safar and Mustafa, Hatra: The City of the Sun God, pl. 102 p. 125."},
-{"details": "", "location_id": "1", "id": "17", "name": "Seated Godess", "description": "Seated Godess. The one destroyed in Mosul was a replicas, original is in Bagdad"},
-{"details": "", "location_id": "1", "id": "18", "name": "Steles", "description": "From left to right: Barmaren, Marten, Maren. From Safar and Mustafa, Hatra: The City of the Sun God, pl. 88, 89, 90, p. 113-115."},
-{"details": "", "location_id": "1", "id": "19", "name": "Eagle", "description": "Mosul Museum eagle prior to reconstruction. From Safar and Mustafa, Hatra: The City of the Sun God, pl. 133, p. 143."},
-{"details": "", "location_id": "1", "id": "20", "name": "Reliefs on the wall / interior I", "description": "4 reliefs on the black wall between the king of hatra and the lyed down statu"},
-{"details": "", "location_id": "1", "id": "21", "name": "Small Lion", "description": "Small statue of lion. This lion was published by Safar and Mustafa.Ref:Hatra: The City of the Sun God, pl. 187, p. 198 Source:https://gatesofnineveh.wordpress.com/"},
-{"details": "", "location_id": "1", "id": "22", "name": "seated godess", "description": "A replica represents a seated goddess"},
-{"details": "", "location_id": "1", "id": "23", "name": "Offering tables", "description": "9 offering tables with cuneiform inscription were decorating Mosul Cultural Museum entrance -Khorsabad-back to the modern Assyrian period-Limestone"},
-{"details": "", "location_id": "1", "id": "24", "name": "MCM facade", "description": "Different shoots - the Museum's exterior"},
-{"details": "", "location_id": "1", "id": "25", "name": "MCM facade", "description": "The Museum's exterior"},
-{"details": "", "location_id": "1", "id": "26", "name": "Hatra gallerie", "description": "Room with venus, king of Hatra etc... Main place of destruction displary in ISIS video. Real name to add"},
-{"details": "", "location_id": "1", "id": "27", "name": "Islamic room", "description": ""},
-{"details": "20_Incense_Table_God_Nirgul_Relif", "location_id": "1", "id": "28", "name": "god Nirgul", "description": "An incense table decorated with bas-relief depicts god Nirgul( the god of underworld) -Ce. AD 2nd"},
-{"details": "08_Nigurl_Tablet", "location_id": "1", "id": "29", "name": "The unique Nirgul tablet", "description": "The beauty goddess of Hatra( Atara'ta)-Ce AD 2nd century"},
-{"details": "", "location_id": "1", "id": "30", "name": "A nobleman", "description": "A nobleman with fine cloths rising his right hand in salute and holding a wrapped bag-The stage of lords-1st Ce. AD"},
-{"details": "11_Statue_Lying_on_Floor_in_Mosul", "location_id": "1", "id": "31", "name": "Lied down statue", "description": "Statue lied down in the corner of the room (museum interior I). Near the 4 reliefs on the wall (identification needed)"},
-{"details": "", "location_id": "1", "id": "32", "name": "Hercules", "description": ""},
-{"details": "", "location_id": "1", "id": "15", "name": "Venus", "description": "Statue of Venus + other element in background [7] Safar and Mustafa, Hatra: The City of the Sun God, pl. 84, p. 110."},
-{"details": "", "location_id": "4", "id": "58", "name": "Basantapur Tower", "description": "Basantapur Tower, a nine-story tower"},
-{"details": "", "location_id": "1", "id": "33", "name": "Eagle Stele/Relief", "description": "Next to Hercules statue. Dr. Lucinda Dirven writes that this eagle relief was discovered during excavations at the north gate of the city and was not published until 1978. Ref: Wathiq Isma’il al-Salihi, “Inscriptions from Hatra,” Sumer 34, No. 1 (1978): 69"},
-{"details": "", "location_id": "55,  pl. XXVI", "id": " Inscription published in: Basile Aggoula, “Remarques sur les inscriptions hatréennes (VI),” Syria 58. No. 3/4 (1981): 363-378", "name": "Aggoula, “Remarques sur les inscriptions hatréennes. XIII Ibr. IX, XIV, XX, XXI,” Syria 64. No. 3/4 (1987): 223-229", "description": "J.B. Segal, “Arabs at Hatra and the Vicinity: Marginalia on new Aramaic Texts,” Journal of Semitic Studies 31 (1986): 57-80"},
-{"details": "", "location_id": "eh.wordpress.com/)", "id": "", "name": "", "description": ""},
-{"details": "", "location_id": "1", "id": "34", "name": "Copper Basin", "description": ""},
-{"details": "", "location_id": "1", "id": "35", "name": "Al-Annaz Stone Gravepost -607 A.H.", "description": "A stone gravepost found at Bab al-Jadid quarter near al-Annaz Mausoleum, Mosol with alot of inscription denoting the name if the dead man and the date of his death in 607 A.H."},
-{"details": "06_Mihrab_of_the_Mosque_Al_Hasan", "location_id": "1", "id": "36", "name": "Mihrab of the Mosque of Banat al Hasan in Mosul", "description": "7th Century A.H./13 Century A.D."},
-{"details": "", "location_id": "1", "id": "37", "name": "Maren Stele/Relief (with Halo/Sun)", "description": "Maren. From Safar and Mustafa, Hatra: The City of the Sun God, pl. 88, 89, 90, p. 113-115. Has halo like design around head"},
-{"details": "", "location_id": "1", "id": "38", "name": "Barmaren Stele/Relief (with Spheres)", "description": "Barmaren, From Safar and Mustafa, Hatra: The City of the Sun God, pl. 88, 89, 90, p. 113-115. Lots of \"spheres\""},
-{"details": "", "location_id": "1", "id": "39", "name": "Marten Stele/Relief (Female with Floral Design & Updo)", "description": "Marten From Safar and Mustafa, Hatra: The City of the Sun God, pl. 88, 89, 90, p. 113-115."},
-{"details": "17_Reclining_Woman_Relief_(Mosul)", "location_id": "1", "id": "40", "name": "Reclining Woman Stele/Relief", "description": ""},
-{"details": "", "location_id": "1", "id": "41", "name": "Male and Female Stele/Relief", "description": "Male with Feather and Seated Female Woman possibly Abu Bint Damion"},
-{"details": "", "location_id": "1", "id": "42", "name": "Stone Wash Basin with Geometric Pattern", "description": ""},
-{"details": "", "location_id": "1", "id": "43", "name": "Balawat Gates", "description": "The video briefly shows segments of the bronze gates of the city of Balaway (near modern Qaraqosh). Three such gates were excavated, two by Hormuzd Rassam in 1878 which are now in the British Museum, and another by Max Mallowan in 1956 which were put on display in Mosul. Rassam’s gates were built during the reigns of Ashurnasirpal II (reigned 883-859 BC) and Shalmaneser III (859-824 BC). Mallowan’s gates were also from the reign of Ashurnasirpal II. The bronze bands he"},
-{"details": "", "location_id": "ld the wood beams of the doors together and attached them to the posts. The beams were decorated with ornate scenes from Assyrian military campaigns. 055 Still from ISIS video at 0:55 showing Balawat Gates on display. Around thirty panels from the Mosul gates were looted in the aftermath of the 2003 invasion before American troops were able to secure Mosul. The gaps where the looted pieces once sat can be seen in the image above. Nothing in the video shows the gates being destroyed or damaged. As they are portable, it is possible they may be sol", "id": "", "name": "", "description": ""},
-{"details": "", "location_id": "d on the antiquities black market. (Source: https://gatesofnineveh.wordpress.com/)", "id": "", "name": "", "description": ""},
-{"details": "", "location_id": "1", "id": "44", "name": "Military Figure Stele/Reflief - Hatra", "description": "Relief sculpture of a military figure. From Safar and Mustafa, Hatra: The City of the Sun God, pl. 92, p. 116 Source: https://gatesofnineveh.wordpress.com/"},
-{"details": "", "location_id": "1", "id": "45", "name": "Theatre Mask", "description": "Hatra - At one point likely that it was built into a temple wall Source: https://gatesofnineveh.wordpress.com/"},
-{"details": "", "location_id": "1", "id": "46", "name": "Relief from Dur-Sharrukin (Khorsabad)", "description": "ur-Sharrukin (modern Khorsabad) can be seen. The city was constructed by Sargon II sometime after 716 BC and abandoned upon his death in 705. This sort of relief usually shows tribute-bearers seeking an audience with the king and in this case one of the supplicants is holding a model of a fortification."},
-{"details": "", "location_id": "1", "id": "47", "name": "Maran Stele/Relief (with eagle epaulettes)", "description": "Hatra-Goddess of the Sun"},
-{"details": "", "location_id": "1", "id": "48", "name": "Warrior from Temple III (?)", "description": "1-3rd cent. Mosul, Museum. PALLOTTINO, Massimo (1966). Encyclopedia of World Art. Vol. XI. Pakistan - Rembrandt. McGraw-Hill Book Company, New York.(http://bit.ly/1H73vf4)"},
-{"details": "", "location_id": "1", "id": "49", "name": "Eagle Relief with Shamash Standard", "description": "Black and White Photo: Relief with enrollment in hatreno [15] (H 79). Aquila close to the standard of the god Shamash (taken from M. Sommer, Hatra)."},
-{"details": "", "location_id": "1", "id": "50", "name": "Assyrian room", "description": "Pictures of the Assyrian room in which there is the lion, lamassu, many reliefs (list in progress)"},
-{"details": "", "location_id": "1", "id": "51", "name": "Mihrab 2 & 3", "description": ""},
-{"details": "", "location_id": "1", "id": "52", "name": "Wooden Gate III", "description": ""},
-{"details": "", "location_id": "1", "id": "53", "name": "Clay Pot/Jar", "description": ""},
-{"details": "", "location_id": "1", "id": "54", "name": "Sun Gods Pillar", "description": ""},
-{"details": "", "location_id": "1", "id": "55", "name": "Boundary Pillar", "description": "Label reads: A cylindrical boundary stone carved with latin inscription belong (?) to the Roman Emperor Maxcious, found nearby Sinjar (3rd Century A.D.)"},
-{"details": "", "location_id": "4", "id": "56", "name": "Statue of Hindu god Garud", "description": "Statue toppled during the quake"},
-{"details": "", "location_id": "3", "id": "57", "name": "Lamassu", "description": "The main Lamassu at the gates"},
-{"details": "01_Nimrud_Relief", "location_id": "3", "id": "57", "name": "Nimrud Relief", "description": ""},
-{"details": "", "location_id": "1", "id": "59", "name": "Library", "description": "Contain pictures from the library"},
-{"details": "", "location_id": "2", "id": "60", "name": "Global view", "description": "Pictures of the site from outside or skyview."},
-{"details": "", "location_id": "2", "id": "61", "name": "Temple of Mm", "description": ""},
-{"details": "", "location_id": "7", "id": "62", "name": "Swayambhunath Stupa (Dome)", "description": "White dome plus cubical structure painted with eyes of Buddha"},
-{"details": "", "location_id": "2", "id": "63", "name": "Goddess Shahiro", "description": "The Goddess Shahiro, The Morning Star outside her shrine."},
-{"details": "05_Hatra_Relief", "location_id": "2", "id": "65", "name": "Statues and Reliefs", "description": "Statues and Reliefs that currently aren't separated into their unique categories."},
-{"details": "07_Sculpture_from_Hatra", "location_id": "2", "id": "65000", "name": "Statues and Reliefs", "description": "Statues and Reliefs that currently aren't separated into their unique categories."},
-{"details": "02_Ceiling_in_the_Temple_of_Bel", "location_id": "12", "id": "67", "name": "Temple of Bel", "description": ""},
-{"details": "07_Sculpture_from_Hatra", "location_id": "12", "id": "68", "name": "Tetrapylon", "description": ""},
-{"details": "", "location_id": "22", "id": "82", "name": "The castle (plain view)", "description": ""},
-{"details": "", "location_id": "12", "id": "83", "name": "Monumental Arch", "description": ""},
-{"details": "", "location_id": "1", "id": "70", "name": "Auditorium", "description": "Auditorium"},
-{"details": "", "location_id": "7", "id": "71", "name": "Red building", "description": "Red building"},
-{"details": "", "location_id": "12", "id": "69", "name": "", "description": ""},
-{"details": "", "location_id": "12", "id": "73", "name": "Temple of Baalshamin", "description": ""},
-{"details": "", "location_id": "12", "id": "74", "name": "Temple of Baalshamin", "description": ""},
-{"details": "", "location_id": "2", "id": "75", "name": "", "description": ""},
-{"details": "", "location_id": "12", "id": "76", "name": "Temple of Bel", "description": ""},
-{"details": "", "location_id": "12", "id": "72", "name": "Theatre", "description": ""},
-{"details": "10_The_Box_of Yahya_bin_Al-Kassim_Tomb_in_Mosul", "location_id": "1", "id": "77", "name": "Wooden box from Imam Ohn Al Deen shrine", "description": "Wooden box contains with geometric, plant decoration and Arabic inscription from Imam Ohn Al Deen shrine. (Metal bounds at the corners make this box different from the wooden box from Imam Yahiya Ibn Al Qasim Shrine.)"},
-{"details": "", "location_id": "1", "id": "79", "name": "", "description": ""},
-{"details": "", "location_id": "1", "id": "80", "name": "Cubic bench with lion feet from Nineveh", "description": ""},
-{"details": "", "location_id": "1", "id": "81", "name": "figures for Pizuzu from tell Rimah", "description": "Marble, original. Located in Assyrian room on the stairs."},
-{"details": "", "location_id": "12", "id": "66", "name": "Theatre", "description": ""},
-{"details": "", "location_id": "1", "id": "85", "name": "", "description": ""},
-{"details": "", "location_id": "26", "id": "86", "name": "Building / outside", "description": ""},
-{"details": "", "location_id": "1", "id": "87", "name": "", "description": ""},
-{"details": "18_Lion_of_Al-lat", "location_id": "12", "id": "88", "name": "Palmyra lion god statue", "description": ""},
-{"details": "", "location_id": "12", "id": "89", "name": "FUNERARY TEMPLE", "description": ""},
-{"details": "", "location_id": "1", "id": "90", "name": "Temple / Palace", "description": "unsure unfort."},
-{"details": "", "location_id": "2", "id": "64", "name": "Archways", "description": "The Archways in Hatra"},
-{"details": "", "location_id": "1", "id": "91", "name": "Female Statue Torso (Venus)", "description": "(can be deleted, added pictures to the other venus reconstruction)"},
-{"details": "", "location_id": "1", "id": "92", "name": "", "description": ""},
-{"details": "", "location_id": "12", "id": "78", "name": "Tower Tombs", "description": ""},
-{"details": "19_Segment_of_Elahbel_Tower_Tomb_Interior", "location_id": "12", "id": "93", "name": "Tower Tomb of Elahbel", "description": ""},
-{"details": "", "location_id": "12", "id": "95", "name": "Iamblichus Tower Tomb", "description": ""},
-{"details": "", "location_id": "12", "id": "94", "name": "Iamblichus Tower Tomb", "description": ""},
-{"details": "", "location_id": "28", "id": "96", "name": "View", "description": ""},
-{"details": "", "location_id": "33", "id": "97", "name": "Exterior", "description": ""},
-{"details": "", "location_id": "1", "id": "98", "name": "Temple of Bel, Palmyra", "description": ""},
-{"details": "", "location_id": "2", "id": "99", "name": "", "description": ""},
-{"details": "", "location_id": "1", "id": "101", "name": "", "description": ""},
-{"details": "", "location_id": "3", "id": "84", "name": "", "description": ""},
-{"details": "", "location_id": "15", "id": "100", "name": "Theater", "description": ""},
-{"details": "", "location_id": "1", "id": "104", "name": "Sculpture", "description": ""},
-{"details": "", "location_id": "15", "id": "105", "name": "Unknown Plackard", "description": ""},
-{"details": "", "location_id": "43", "id": "106", "name": "Main Gate", "description": ""},
-{"details": "", "location_id": "43", "id": "107", "name": "", "description": "View of Palmyra."},
-{"details": "03_Stela_7", "location_id": "46", "id": "108", "name": "Stela 7 from La Milpa, Belize", "description": "This is the best preserved stela at the site of La Milpa and the only one with a readable date. It is carved on all four sides with Maya glyphs. The front side, facing west, shows a ruler dressed in a elaborate costume. Unfortunately, erosion has destroyed most of the iconographic details since it was erected in 780 CE. Recently, the monument has collapsed due to continued environmental decay."}
-{"details": "09_Durbar_Square_Kathmandu_Nepal", "location_id": "4", "id": "1001", "name": "Durbar Square Kathmandu Nepal", "description": ""},
-{"details": "15_Nimrud_Wall_Frieze", "location_id": "1", "id": "1002", "name": "Nimrud Wall Friese", "description": ""},
+[{
+		"details": "",
+		"location_id": "1",
+		"id": "1",
+		"name": "Hatra King Uthal Statues",
+		"description": "These are actually two statues, and through time can be separated into the appropriate groupings, but as most of the pictures contain both, for now we will keep them together. The one with a raised hand : King Uthal ref: The Artifacts of Hatra and Parthian Art p142"
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "2",
+		"name": "Statue of Sanatruq II",
+		"description": "Statue of King Sanatruq II holding a warrior statuette"
+	}, {
+		"details": "16_Lion_of_Mosul",
+		"location_id": "1",
+		"id": "3",
+		"name": "Lion Statue",
+		"description": "Ishtar temple lion"
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "5",
+		"name": "Arabic Geometric Reliefs",
+		"description": "Source : http://www.almosul.com/Heritage/Album/MuzahimJalili/MuzahimAlJalili_MosulMuseum.htm"
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "6",
+		"name": "Wooden Gate 1 - Geometric Pattern",
+		"description": "Wodden gate with geometric pattern. Not sure if same item. source : http://www.almosul.com/Heritage/Album/MuzahimJalili/MuzahimAlJalili_MosulMuseum.htm"
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "7",
+		"name": "Wooden Gate II - Circles",
+		"description": "Wooden gate with circles"
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "8",
+		"name": "Stone gate",
+		"description": "Damaged stone gate / source:http://www.almosul.com/Heritage/Album/MuzahimJalili/MuzahimAlJalili_MosulMuseum.htm"
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "9",
+		"name": "Metal Riveted Gate",
+		"description": "source: http://www.almosul.com/Heritage/Album/MuzahimJalili/MuzahimAlJalili_MosulMuseum.htm"
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "10",
+		"name": "Museum exterior",
+		"description": "source: http://www.almosul.com/Heritage/Album/MuzahimJalili/MuzahimAlJalili_MosulMuseum.htm"
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "11",
+		"name": "Lamassu",
+		"description": "Two colossal lamassus were decorating the facade of the North-West Palace ( King Assurnasirpal II's)-Nimrud-883-859"
+	}, {
+		"details": "13_Lamassus_Right",
+		"location_id": "1",
+		"id": "1100",
+		"name": "Lamassu",
+		"description": "Two colossal lamassus were decorating the facade of the North-West Palace ( King Assurnasirpal II's)-Nimrud-883-859"
+	}, {
+		"details": "14_Lamassus_Left",
+		"location_id": "1",
+		"id": "12",
+		"name": "Hatra King with Eagle",
+		"description": "One of the destroyed statue (maybe original). picture source :l http://3dprint.com/51531/3d-print-isis-mosul-museum/"
+	}, {
+		"details": "12_Hatrene_Priest",
+		"location_id": "1",
+		"id": "13",
+		"name": "Priest and Nobleman",
+		"description": "Statues seen at 0:40 and 2:43 of the video. From Safar and Mustafa, Hatra: The City of the Sun God, pl. 19, pl. 199, pp. 75, 212. The sculpture on the right is a statue of a Hatrene nobleman dressed in the Parthian style. This is one of the earlier Hatrene sculptures found and dates to the 1st century AD. Its catalog number is MM14."
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "14",
+		"name": "Statue of Makai ben Nashri",
+		"description": "beheaded swordman . headless statue can be seen, clutching a sword in his hands and wearing long pleated trousers and a cape. An inscription identifies it as a depiction of a certain Makai ben Nashri.[5] Statue of Makai ben Nashri seen in 3:16 of video. Left photo by Diane Siebrandt, U.S. State Department, 2008. Right photo from Safar and Mustafa, Hatra: The City of the Sun God, p. 78. Source: https://gatesofnineveh.wordpress.com/"
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "16",
+		"name": "Statue of Nike",
+		"description": "Statue of NikeGreek goddess of victory. Safar and Mustafa, Hatra: The City of the Sun God, pl. 102 p. 125."
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "17",
+		"name": "Seated Godess",
+		"description": "Seated Godess. The one destroyed in Mosul was a replicas, original is in Bagdad"
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "18",
+		"name": "Steles",
+		"description": "From left to right: Barmaren, Marten, Maren. From Safar and Mustafa, Hatra: The City of the Sun God, pl. 88, 89, 90, p. 113-115."
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "19",
+		"name": "Eagle",
+		"description": "Mosul Museum eagle prior to reconstruction. From Safar and Mustafa, Hatra: The City of the Sun God, pl. 133, p. 143."
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "20",
+		"name": "Reliefs on the wall / interior I",
+		"description": "4 reliefs on the black wall between the king of hatra and the lyed down statu"
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "21",
+		"name": "Small Lion",
+		"description": "Small statue of lion. This lion was published by Safar and Mustafa.Ref:Hatra: The City of the Sun God, pl. 187, p. 198 Source:https://gatesofnineveh.wordpress.com/"
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "22",
+		"name": "seated godess",
+		"description": "A replica represents a seated goddess"
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "23",
+		"name": "Offering tables",
+		"description": "9 offering tables with cuneiform inscription were decorating Mosul Cultural Museum entrance -Khorsabad-back to the modern Assyrian period-Limestone"
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "24",
+		"name": "MCM facade",
+		"description": "Different shoots - the Museum's exterior"
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "25",
+		"name": "MCM facade",
+		"description": "The Museum's exterior"
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "26",
+		"name": "Hatra gallerie",
+		"description": "Room with venus, king of Hatra etc... Main place of destruction displary in ISIS video. Real name to add"
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "27",
+		"name": "Islamic room",
+		"description": ""
+	}, {
+		"details": "20_Incense_Table_God_Nirgul_Relif",
+		"location_id": "1",
+		"id": "28",
+		"name": "god Nirgul",
+		"description": "An incense table decorated with bas-relief depicts god Nirgul( the god of underworld) -Ce. AD 2nd"
+	}, {
+		"details": "08_Nigurl_Tablet",
+		"location_id": "1",
+		"id": "29",
+		"name": "The unique Nirgul tablet",
+		"description": "The beauty goddess of Hatra( Atara'ta)-Ce AD 2nd century"
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "30",
+		"name": "A nobleman",
+		"description": "A nobleman with fine cloths rising his right hand in salute and holding a wrapped bag-The stage of lords-1st Ce. AD"
+	}, {
+		"details": "11_Statue_Lying_on_Floor_in_Mosul",
+		"location_id": "1",
+		"id": "31",
+		"name": "Lied down statue",
+		"description": "Statue lied down in the corner of the room (museum interior I). Near the 4 reliefs on the wall (identification needed)"
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "32",
+		"name": "Hercules",
+		"description": ""
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "15",
+		"name": "Venus",
+		"description": "Statue of Venus + other element in background [7] Safar and Mustafa, Hatra: The City of the Sun God, pl. 84, p. 110."
+	}, {
+		"details": "",
+		"location_id": "4",
+		"id": "58",
+		"name": "Basantapur Tower",
+		"description": "Basantapur Tower, a nine-story tower"
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "33",
+		"name": "Eagle Stele/Relief",
+		"description": "Next to Hercules statue. Dr. Lucinda Dirven writes that this eagle relief was discovered during excavations at the north gate of the city and was not published until 1978. Ref: Wathiq Isma’il al-Salihi, “Inscriptions from Hatra,” Sumer 34, No. 1 (1978): 69"
+	}, {
+		"details": "",
+		"location_id": "55,  pl. XXVI",
+		"id": " Inscription published in: Basile Aggoula, “Remarques sur les inscriptions hatréennes (VI),” Syria 58. No. 3/4 (1981): 363-378",
+		"name": "Aggoula, “Remarques sur les inscriptions hatréennes. XIII Ibr. IX, XIV, XX, XXI,” Syria 64. No. 3/4 (1987): 223-229",
+		"description": "J.B. Segal, “Arabs at Hatra and the Vicinity: Marginalia on new Aramaic Texts,” Journal of Semitic Studies 31 (1986): 57-80"
+	}, {
+		"details": "",
+		"location_id": "eh.wordpress.com/)",
+		"id": "",
+		"name": "",
+		"description": ""
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "34",
+		"name": "Copper Basin",
+		"description": ""
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "35",
+		"name": "Al-Annaz Stone Gravepost -607 A.H.",
+		"description": "A stone gravepost found at Bab al-Jadid quarter near al-Annaz Mausoleum, Mosol with alot of inscription denoting the name if the dead man and the date of his death in 607 A.H."
+	}, {
+		"details": "06_Mihrab_of_the_Mosque_Al_Hasan",
+		"location_id": "1",
+		"id": "36",
+		"name": "Mihrab of the Mosque of Banat al Hasan in Mosul",
+		"description": "7th Century A.H./13 Century A.D."
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "37",
+		"name": "Maren Stele/Relief (with Halo/Sun)",
+		"description": "Maren. From Safar and Mustafa, Hatra: The City of the Sun God, pl. 88, 89, 90, p. 113-115. Has halo like design around head"
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "38",
+		"name": "Barmaren Stele/Relief (with Spheres)",
+		"description": "Barmaren, From Safar and Mustafa, Hatra: The City of the Sun God, pl. 88, 89, 90, p. 113-115. Lots of \"spheres\""
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "39",
+		"name": "Marten Stele/Relief (Female with Floral Design & Updo)",
+		"description": "Marten From Safar and Mustafa, Hatra: The City of the Sun God, pl. 88, 89, 90, p. 113-115."
+	}, {
+		"details": "17_Reclining_Woman_Relief_(Mosul)",
+		"location_id": "1",
+		"id": "40",
+		"name": "Reclining Woman Stele/Relief",
+		"description": ""
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "41",
+		"name": "Male and Female Stele/Relief",
+		"description": "Male with Feather and Seated Female Woman possibly Abu Bint Damion"
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "42",
+		"name": "Stone Wash Basin with Geometric Pattern",
+		"description": ""
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "43",
+		"name": "Balawat Gates",
+		"description": "The video briefly shows segments of the bronze gates of the city of Balaway (near modern Qaraqosh). Three such gates were excavated, two by Hormuzd Rassam in 1878 which are now in the British Museum, and another by Max Mallowan in 1956 which were put on display in Mosul. Rassam’s gates were built during the reigns of Ashurnasirpal II (reigned 883-859 BC) and Shalmaneser III (859-824 BC). Mallowan’s gates were also from the reign of Ashurnasirpal II. The bronze bands he"
+	}, {
+		"details": "",
+		"location_id": "ld the wood beams of the doors together and attached them to the posts. The beams were decorated with ornate scenes from Assyrian military campaigns. 055 Still from ISIS video at 0:55 showing Balawat Gates on display. Around thirty panels from the Mosul gates were looted in the aftermath of the 2003 invasion before American troops were able to secure Mosul. The gaps where the looted pieces once sat can be seen in the image above. Nothing in the video shows the gates being destroyed or damaged. As they are portable, it is possible they may be sol",
+		"id": "",
+		"name": "",
+		"description": ""
+	}, {
+		"details": "",
+		"location_id": "d on the antiquities black market. (Source: https://gatesofnineveh.wordpress.com/)",
+		"id": "",
+		"name": "",
+		"description": ""
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "44",
+		"name": "Military Figure Stele/Reflief - Hatra",
+		"description": "Relief sculpture of a military figure. From Safar and Mustafa, Hatra: The City of the Sun God, pl. 92, p. 116 Source: https://gatesofnineveh.wordpress.com/"
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "45",
+		"name": "Theatre Mask",
+		"description": "Hatra - At one point likely that it was built into a temple wall Source: https://gatesofnineveh.wordpress.com/"
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "46",
+		"name": "Relief from Dur-Sharrukin (Khorsabad)",
+		"description": "ur-Sharrukin (modern Khorsabad) can be seen. The city was constructed by Sargon II sometime after 716 BC and abandoned upon his death in 705. This sort of relief usually shows tribute-bearers seeking an audience with the king and in this case one of the supplicants is holding a model of a fortification."
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "47",
+		"name": "Maran Stele/Relief (with eagle epaulettes)",
+		"description": "Hatra-Goddess of the Sun"
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "48",
+		"name": "Warrior from Temple III (?)",
+		"description": "1-3rd cent. Mosul, Museum. PALLOTTINO, Massimo (1966). Encyclopedia of World Art. Vol. XI. Pakistan - Rembrandt. McGraw-Hill Book Company, New York.(http://bit.ly/1H73vf4)"
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "49",
+		"name": "Eagle Relief with Shamash Standard",
+		"description": "Black and White Photo: Relief with enrollment in hatreno [15] (H 79). Aquila close to the standard of the god Shamash (taken from M. Sommer, Hatra)."
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "50",
+		"name": "Assyrian room",
+		"description": "Pictures of the Assyrian room in which there is the lion, lamassu, many reliefs (list in progress)"
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "51",
+		"name": "Mihrab 2 & 3",
+		"description": ""
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "52",
+		"name": "Wooden Gate III",
+		"description": ""
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "53",
+		"name": "Clay Pot/Jar",
+		"description": ""
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "54",
+		"name": "Sun Gods Pillar",
+		"description": ""
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "55",
+		"name": "Boundary Pillar",
+		"description": "Label reads: A cylindrical boundary stone carved with latin inscription belong (?) to the Roman Emperor Maxcious, found nearby Sinjar (3rd Century A.D.)"
+	}, {
+		"details": "",
+		"location_id": "4",
+		"id": "56",
+		"name": "Statue of Hindu god Garud",
+		"description": "Statue toppled during the quake"
+	}, {
+		"details": "",
+		"location_id": "3",
+		"id": "57",
+		"name": "Lamassu",
+		"description": "The main Lamassu at the gates"
+	}, {
+		"details": "01_Nimrud_Relief",
+		"location_id": "3",
+		"id": "57",
+		"name": "Nimrud Relief",
+		"description": ""
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "59",
+		"name": "Library",
+		"description": "Contain pictures from the library"
+	}, {
+		"details": "",
+		"location_id": "2",
+		"id": "60",
+		"name": "Global view",
+		"description": "Pictures of the site from outside or skyview."
+	}, {
+		"details": "",
+		"location_id": "2",
+		"id": "61",
+		"name": "Temple of Mm",
+		"description": ""
+	}, {
+		"details": "",
+		"location_id": "7",
+		"id": "62",
+		"name": "Swayambhunath Stupa (Dome)",
+		"description": "White dome plus cubical structure painted with eyes of Buddha"
+	}, {
+		"details": "",
+		"location_id": "2",
+		"id": "63",
+		"name": "Goddess Shahiro",
+		"description": "The Goddess Shahiro, The Morning Star outside her shrine."
+	}, {
+		"details": "05_Hatra_Relief",
+		"location_id": "2",
+		"id": "65",
+		"name": "Statues and Reliefs",
+		"description": "Statues and Reliefs that currently aren't separated into their unique categories."
+	}, {
+		"details": "07_Sculpture_from_Hatra",
+		"location_id": "2",
+		"id": "65000",
+		"name": "Statues and Reliefs",
+		"description": "Statues and Reliefs that currently aren't separated into their unique categories."
+	}, {
+		"details": "02_Ceiling_in_the_Temple_of_Bel",
+		"location_id": "12",
+		"id": "67",
+		"name": "Temple of Bel",
+		"description": ""
+	}, {
+		"details": "07_Sculpture_from_Hatra",
+		"location_id": "12",
+		"id": "68",
+		"name": "Tetrapylon",
+		"description": ""
+	}, {
+		"details": "",
+		"location_id": "22",
+		"id": "82",
+		"name": "The castle (plain view)",
+		"description": ""
+	}, {
+		"details": "",
+		"location_id": "12",
+		"id": "83",
+		"name": "Monumental Arch",
+		"description": ""
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "70",
+		"name": "Auditorium",
+		"description": "Auditorium"
+	}, {
+		"details": "",
+		"location_id": "7",
+		"id": "71",
+		"name": "Red building",
+		"description": "Red building"
+	}, {
+		"details": "",
+		"location_id": "12",
+		"id": "69",
+		"name": "",
+		"description": ""
+	}, {
+		"details": "",
+		"location_id": "12",
+		"id": "73",
+		"name": "Temple of Baalshamin",
+		"description": ""
+	}, {
+		"details": "",
+		"location_id": "12",
+		"id": "74",
+		"name": "Temple of Baalshamin",
+		"description": ""
+	}, {
+		"details": "",
+		"location_id": "2",
+		"id": "75",
+		"name": "",
+		"description": ""
+	}, {
+		"details": "",
+		"location_id": "12",
+		"id": "76",
+		"name": "Temple of Bel",
+		"description": ""
+	}, {
+		"details": "",
+		"location_id": "12",
+		"id": "72",
+		"name": "Theatre",
+		"description": ""
+	}, {
+		"details": "10_The_Box_of Yahya_bin_Al-Kassim_Tomb_in_Mosul",
+		"location_id": "1",
+		"id": "77",
+		"name": "Wooden box from Imam Ohn Al Deen shrine",
+		"description": "Wooden box contains with geometric, plant decoration and Arabic inscription from Imam Ohn Al Deen shrine. (Metal bounds at the corners make this box different from the wooden box from Imam Yahiya Ibn Al Qasim Shrine.)"
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "79",
+		"name": "",
+		"description": ""
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "80",
+		"name": "Cubic bench with lion feet from Nineveh",
+		"description": ""
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "81",
+		"name": "figures for Pizuzu from tell Rimah",
+		"description": "Marble, original. Located in Assyrian room on the stairs."
+	}, {
+		"details": "",
+		"location_id": "12",
+		"id": "66",
+		"name": "Theatre",
+		"description": ""
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "85",
+		"name": "",
+		"description": ""
+	}, {
+		"details": "",
+		"location_id": "26",
+		"id": "86",
+		"name": "Building / outside",
+		"description": ""
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "87",
+		"name": "",
+		"description": ""
+	}, {
+		"details": "18_Lion_of_Al-lat",
+		"location_id": "12",
+		"id": "88",
+		"name": "Palmyra lion god statue",
+		"description": ""
+	}, {
+		"details": "",
+		"location_id": "12",
+		"id": "89",
+		"name": "FUNERARY TEMPLE",
+		"description": ""
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "90",
+		"name": "Temple / Palace",
+		"description": "unsure unfort."
+	}, {
+		"details": "",
+		"location_id": "2",
+		"id": "64",
+		"name": "Archways",
+		"description": "The Archways in Hatra"
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "91",
+		"name": "Female Statue Torso (Venus)",
+		"description": "(can be deleted, added pictures to the other venus reconstruction)"
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "92",
+		"name": "",
+		"description": ""
+	}, {
+		"details": "",
+		"location_id": "12",
+		"id": "78",
+		"name": "Tower Tombs",
+		"description": ""
+	}, {
+		"details": "19_Segment_of_Elahbel_Tower_Tomb_Interior",
+		"location_id": "12",
+		"id": "93",
+		"name": "Tower Tomb of Elahbel",
+		"description": ""
+	}, {
+		"details": "",
+		"location_id": "12",
+		"id": "95",
+		"name": "Iamblichus Tower Tomb",
+		"description": ""
+	}, {
+		"details": "",
+		"location_id": "12",
+		"id": "94",
+		"name": "Iamblichus Tower Tomb",
+		"description": ""
+	}, {
+		"details": "",
+		"location_id": "28",
+		"id": "96",
+		"name": "View",
+		"description": ""
+	}, {
+		"details": "",
+		"location_id": "33",
+		"id": "97",
+		"name": "Exterior",
+		"description": ""
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "98",
+		"name": "Temple of Bel, Palmyra",
+		"description": ""
+	}, {
+		"details": "",
+		"location_id": "2",
+		"id": "99",
+		"name": "",
+		"description": ""
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "101",
+		"name": "",
+		"description": ""
+	}, {
+		"details": "",
+		"location_id": "3",
+		"id": "84",
+		"name": "",
+		"description": ""
+	}, {
+		"details": "",
+		"location_id": "15",
+		"id": "100",
+		"name": "Theater",
+		"description": ""
+	}, {
+		"details": "",
+		"location_id": "1",
+		"id": "104",
+		"name": "Sculpture",
+		"description": ""
+	}, {
+		"details": "",
+		"location_id": "15",
+		"id": "105",
+		"name": "Unknown Plackard",
+		"description": ""
+	}, {
+		"details": "",
+		"location_id": "43",
+		"id": "106",
+		"name": "Main Gate",
+		"description": ""
+	}, {
+		"details": "",
+		"location_id": "43",
+		"id": "107",
+		"name": "",
+		"description": "View of Palmyra."
+	}, {
+		"details": "03_Stela_7",
+		"location_id": "46",
+		"id": "108",
+		"name": "Stela 7 from La Milpa, Belize",
+		"description": "This is the best preserved stela at the site of La Milpa and the only one with a readable date. It is carved on all four sides with Maya glyphs. The front side, facing west, shows a ruler dressed in a elaborate costume. Unfortunately, erosion has destroyed most of the iconographic details since it was erected in 780 CE. Recently, the monument has collapsed due to continued environmental decay."
+	}, {
+		"details": "09_Durbar_Square_Kathmandu_Nepal",
+		"location_id": "4",
+		"id": "1001",
+		"name": "Durbar Square Kathmandu Nepal",
+		"description": ""
+	}, {
+		"details": "15_Nimrud_Wall_Frieze",
+		"location_id": "1",
+		"id": "1002",
+		"name": "Nimrud Wall Friese",
+		"description": ""
+	}
 
 
 ]

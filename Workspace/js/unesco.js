@@ -570,14 +570,16 @@ var UNESCO = {};
 	this.processItems = function(data, callback){
 
 		var ns = this;
+
+		reconstructions = data.responseText;
+		if(!reconstructions){
+			reconstructions = data;
+		}
 		
-		console.log('item');
-				
-		reconstructions = data;
-
 		var items = [];
-		$.each(data, function(key, val) {
 
+		$.each(reconstructions, function(key, val) {
+ 		
 			var details = val.details;
 
 			var url = "details/" + details + "/data.json";
@@ -589,11 +591,11 @@ var UNESCO = {};
 					url : url,
 					success : function(data) {
 
-						ns.processItem(data, callback);
+						ns.processItem(data, key, val, callback);
 					},
 					error : function(data) {
 
-						ns.processItem(data, callback);
+						ns.processItem(data, key, val, callback);
 					}
 				});
 
@@ -608,24 +610,29 @@ var UNESCO = {};
 		
 	}
 	
-	this.processItem = function(data, callback){
+	this.processItem = function(data, key, val, callback){
 
 		var ns = this;
 		
+		item = data.responseText;
+		if(!item){
+			item = data;
+		}
+				
 		//model file name
-		val.filename = data.filename;
+		val.filename = item.filename;
 
 		//date_constructed
-		val.date_constructed = data.date_constructed;
+		val.date_constructed = item.date_constructed;
 
 		//date_destroyed
-		val.date_destroyed = data.date_destroyed;
+		val.date_destroyed = item.date_destroyed;
 
 		//images
-		val.images = data.images;
+		val.images = item.images;
 
 		//videos
-		val.videos = data.videos;
+		val.videos = item.videos;
 
 		ns.buildItem(key, val, callback);
 
@@ -652,7 +659,7 @@ var UNESCO = {};
 
 			content.attr('folder', item.details);
 
-			if (item.images.length) {
+			if (item.images && item.images.length) {
 				status = 'Under Reconstruction';
 			}
 
@@ -692,8 +699,6 @@ var UNESCO = {};
 
 		}
 
-		ns.setStatus(key, status);
-		
 		content.find(".status").html(status);
 
 		$("#browse .items .items-inner").append(content);
@@ -742,9 +747,7 @@ var UNESCO = {};
 		
 		reconstructions_loaded++;
 		
-		console.log(reconstructions);
-		
-		console.log('loaded: ' + reconstructions_loaded + ' == ' + reconstructions.length);
+		reconstructions[key].status = status;
 		
 		if(reconstructions_loaded == reconstructions.length){
 			
@@ -757,11 +760,6 @@ var UNESCO = {};
 	
 	this.reconstructions = function() {
 		return reconstructions;
-	}
-	
-	this.setStatus = function(key, status){
-		
-		reconstructions[key].status = status;
 	}
 	
 	this.ajaxJSON = function(url, callback){
