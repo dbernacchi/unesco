@@ -90,6 +90,7 @@ function PopulateLocationsWithModelInfo( reconstructions )
         var locId = parseInt( reconstructions[i]["location_id"] );
         var modelId = parseInt( reconstructions[i]["id"] );
         var status = reconstructions[i]["status"];
+        
         var loc = locationsDBMap.get( locId );
         if( loc )
         {
@@ -98,7 +99,7 @@ function PopulateLocationsWithModelInfo( reconstructions )
             if( status !== undefined )
             {
                 var res = status.toLowerCase();
-                console.log( res );
+           
                 if( res === "destroyed" )
                     loc.types[0]++;
                 else if( res === "reconstructed" )
@@ -114,6 +115,7 @@ function PopulateLocationsWithModelInfo( reconstructions )
         else
         {
             console.log( i, "****  Couldn't find location with id: ", locId, "  model id: ", modelId );
+            console.log(reconstructions[i]);
         }
     }
 

@@ -623,8 +623,7 @@ function Setup()
 					
 			case PX.AppStates.AppStateLevel2:
 			//case PX.AppStates.AppStateLevel1ToLevel2:
-				UNESCO.showBrowse();
-	            UNESCO.hideZoomIn();
+				UNESCO.hideZoomIn();
 	            UNESCO.hideZoomOut();
 				break;
 			case PX.AppStates.AppStateLevel2ToLevel1:
@@ -641,23 +640,37 @@ function Setup()
     var filterLinks = $("#legend > .clr > li > a" );
     filterLinks.on( 'click', function()
     {
-        if( appStateMan.IsState( PX.AppStates.AppStateLevel1 ) )
+        if( appStateMan.IsState( PX.AppStates.AppStateLevel1 ) || appStateMan.IsState( PX.AppStates.AppStateLevel2 ) )
         {
         	
-        	$("#legend > .clr > li > a" ).removeClass('disabled');
-        	
-        	var cls = $(this).attr('class');
-        	
-        	$("#legend > .clr > li > a" ).each(function(){
-        		
-        		if(cls != $(this).attr('class')){
-        			$(this).addClass('disabled');
-        		}
-        	});	
-        	
-            var index = $(this).parent().index();
-            UpdateFilterSwitches( index );
-            locationMarkers.FilterLocationMeshColors( WebpageStates.FilterSwitches );
+        	if($(this).hasClass('disabled')){
+	        	
+	        	$("#legend > .clr > li > a" ).removeClass('disabled');
+	        	
+	        	var cls = $(this).attr('class');
+	        	
+	        	var status = $(this).attr('status');
+	        	
+	        	$("#browse").attr('status', status);
+	        	
+	        	$("#legend > .clr > li > a" ).each(function(){
+	        		
+	        		if(cls != $(this).attr('class')){
+	        			$(this).addClass('disabled');
+	        		}
+	        	});	
+	        	
+	            var index = $(this).parent().index();
+	            
+	        } else {
+				
+				$("#legend > .clr > li > a" ).addClass('disabled');
+	        	$("#browse").attr('status', "");
+	        	index = 3;
+	        }
+	        
+			UpdateFilterSwitches( index );
+            locationMarkers.FilterLocationMeshColors( WebpageStates.FilterSwitches );	        
         }
     });
 
@@ -1079,6 +1092,11 @@ function UpdateFilterSwitches( id )
             WebpageStates.FilterSwitches[1] = 0;
             WebpageStates.FilterSwitches[2] = 1 - WebpageStates.FilterSwitches[2];
             break;
+        case 3:
+            WebpageStates.FilterSwitches[0] = 0;
+            WebpageStates.FilterSwitches[1] = 0;
+            WebpageStates.FilterSwitches[2] = 0;
+            break;            
         default:
             break;
     }
@@ -1100,6 +1118,9 @@ function ZoomInFromLevel0ToLevel1( isUserClickOnLocation )
                 function( object )  // Callback returning clicked marker
                 {
                     console.log( "+--+  Clicked Marker ID:\t", object.id );
+                    
+                    UNESCO.showBrowse(object.id);
+                    
                 } );
             }
         }

@@ -8,9 +8,9 @@ var UNESCO = {};
 	var resized_images_to_load = 0;
 
 	var stop_loading_fade = false;
-	
+
 	var reconstructions = {};
-	
+
 	var reconstructions_loaded = 0;
 
 	this.init = function() {
@@ -19,61 +19,24 @@ var UNESCO = {};
 
 		this.resize();
 
-		$("body").css('background-image', 'url(../webgl/data/textures/background.png)');	
-		$("body").fadeIn('fast');
-
-		//this.buildBrowse();
-
-		//this.showBrowse();
+		$("body").css('background-image', 'url(../webgl/data/textures/background.png)');
 
 		//ns.topStatusBar();
 
 		//$(".UNESCO#slide-5").show();
 
-		var slider = $(".UNESCO .items-inner");
-		var item_height = 250;
-
 		$(".UNESCO .arrow.up").click(function(e) {
 			e.preventDefault();
 
-			var top = parseInt(slider.css('top'), 10);
+			ns.slider(1);
 
-			if (!ns.lock && top < 0) {
-
-				ns.lock = true;
-
-				slider.animate({
-					top : "+=" + item_height,
-				}, 1000, function() {
-					
-					ns.lock = false;
-				});
-
-			}
 		});
 
 		$(".UNESCO .arrow.down").click(function(e) {
 			e.preventDefault();
 
-			var top = parseInt(slider.css('top'), 10);
+			ns.slider(-1);
 
-			var height = slider.height();
-
-			var item_height = slider.find('.item').height();
-			
-			var limit = (height * -1) + (item_height * 3);
-
-			if (!ns.lock && top <= 0 && top > limit) {
-
-				ns.lock = true;
-
-				slider.animate({
-					top : "-=" + item_height,
-				}, 1000, function() {
-				
-					ns.lock = false;
-				});
-			}
 		});
 
 		function fading() {
@@ -148,7 +111,7 @@ var UNESCO = {};
 
 		 */
 
-		$(".UNESCO#browse .item a").click(function(e) {
+		$(".UNESCO#browse .item.selected a").click(function(e) {
 			e.preventDefault();
 
 			$(".UNESCO#browse").hide();
@@ -175,10 +138,9 @@ var UNESCO = {};
 
 			// @NOTE: We do not pass filename extension. That's added internally in the Loaders
 			//modelRenderer.Load("webgl/data/models/01_Nimrud_Relief/", "Nimrud", function( per )
-            //modelRenderer.Load("webgl/data/models/05_Hatra_Relief/", "05_Hatra_relief2", function( per )
+			//modelRenderer.Load("webgl/data/models/05_Hatra_Relief/", "05_Hatra_relief2", function( per )
 			//modelRenderer.Load("webgl/data/models/03_Stela_7/", "03_Stela_7", function( per )
-			modelRenderer.Load("webgl/data/models/16_Lion_of_Mosul/", "16_lion2", function( per )
-			{
+			modelRenderer.Load("webgl/data/models/16_Lion_of_Mosul/", "16_lion2", function(per) {
 				//console.log("+---+  Loading: " + parseInt(per * 100.0) + "%" );
 			});
 
@@ -223,6 +185,59 @@ var UNESCO = {};
 		});
 
 	}
+	
+	this.slider = function(direction) {
+
+		var slider = $(".UNESCO .items-inner");
+		
+		var top = parseInt(slider.css('top'), 10);
+
+		var item = slider.find('.item.selected');
+		
+		item.removeClass('selected');
+		
+		var item_height = item.height();
+
+		var item_margin_bottom = parseInt(slider.find('.item').css('margin-bottom'), 10);
+
+		var item_set_height = (item_height + item_margin_bottom) * 1;
+
+		var limit = 0;
+
+		var adder = "+=";
+
+		if (direction == -1) {
+
+			var height = slider.height();
+			limit = (height * -1) + (item_set_height);
+			adder = "-=";
+		}
+
+		if (!lock && ((direction == -1 && top <= 0 && top > limit) || (direction == 1 && top < 0))) {
+
+			lock = true;
+
+			slider.animate({
+				top : adder + item_set_height,
+			}, 1000, function() {
+
+				item.removeClass('selected');
+				
+				if(direction == -1){
+					
+					item.next().addClass('selected');
+				} else {
+					
+					item.prev().addClass('selected');
+					
+				}
+								
+				lock = false;
+			});
+		}
+
+	}
+
 
 	this.resize = function() {
 
@@ -446,9 +461,24 @@ var UNESCO = {};
 
 	}
 
-	this.showBrowse = function() {
+	this.showBrowse = function(location_id) {
 
 		var elm = $(".UNESCO#browse");
+
+		var status_selector = "";
+		
+		var status = elm.attr('status');
+		
+		if(status){
+			status_selector = "[status=" + status + "]";
+		}
+		
+		elm.find(".item").removeClass('show');
+		var selector = ".item[location-id=" + location_id + "]" + status_selector;
+		
+        var selected = elm.find(selector)
+        
+        selected.addClass('show');
 
 		elm.show();
 
@@ -566,35 +596,35 @@ var UNESCO = {};
 		});
 
 	}
-	
-	this.processItems = function(data, callback){
+
+	this.processItems = function(data, callback) {
 
 		var ns = this;
 
 		reconstructions = data.responseText;
-		if(!reconstructions){
+		if (!reconstructions) {
 			reconstructions = data;
 		}
-		
+
 		var items = [];
 
 		$.each(reconstructions, function(key, val) {
- 		
+			
 			var details = val.details;
 
 			var url = "details/" + details + "/data.json";
 
 			if (details) {
-
+				
 				$.ajax({
 					dataType : "json",
 					url : url,
 					success : function(data) {
-
+					
 						ns.processItem(data, key, val, callback);
 					},
 					error : function(data) {
-
+				
 						ns.processItem(data, key, val, callback);
 					}
 				});
@@ -607,18 +637,17 @@ var UNESCO = {};
 
 		});
 
-		
 	}
-	
-	this.processItem = function(data, key, val, callback){
+
+	this.processItem = function(data, key, val, callback) {
 
 		var ns = this;
-		
+
 		item = data.responseText;
-		if(!item){
+		if (!item) {
 			item = data;
 		}
-				
+
 		//model file name
 		val.filename = item.filename;
 
@@ -636,17 +665,16 @@ var UNESCO = {};
 
 		ns.buildItem(key, val, callback);
 
-		
-	}	
+	}
 
-	this.buildItem = function(key, item, callback) {
-				
+	this.buildItem = function(item_key, item, callback) {
+
 		var ns = this;
-		
+
 		var content = $("#browse .items .clone").clone();
 
 		content.removeClass('clone');
-
+		
 		content.attr('item-id', item.id);
 
 		content.attr('location-id', item.location_id);
@@ -654,7 +682,7 @@ var UNESCO = {};
 		content.find(".title .name").html(item.name);
 
 		var status = 'Destroyed';
-
+		
 		if (item.details) {
 
 			content.attr('folder', item.details);
@@ -700,70 +728,31 @@ var UNESCO = {};
 		}
 
 		content.find(".status").html(status);
+		content.attr("status", status);
 
 		$("#browse .items .items-inner").append(content);
 
-		/*
-
-		//for each item
-
-		//read data.json
-
-		//create element
-
-		<div class="clone item unselected resize-margin-bottom" item-id="ITEM_ID" location-id="LOCATION_ID">
-		<ul class="clr">
-		<li class="image resize-width">
-		<a href="#"><img class="resize" src="IMAGE.PNG" /></a>
-		</li>
-		<li class="resize-width text">
-		<div class="inner">
-		<div class="title resize-font-size resize-width">
-		<span class="name">NAME</span>
-
-		<div class="date">
-		<span class="date_created">DATE_CREATED</span> - <span class="date_destroyed">DATE_DESTROYED</span>
-		</div>
-		</div>
-
-		<div class="status resize-margin-left resize-margin-top">
-		STATUS
-		</div>
-		</div>
-		</li>
-		</ul>
-		<div class="media">
-		<div class="images">
-
-		</div>
-		<div class="videos">
-
-		</div>
-		</div>
-		</div>
-
-		*/
 		//add to browse
-		
+
 		reconstructions_loaded++;
+
+		reconstructions[item_key].status = status;
 		
-		reconstructions[key].status = status;
-		
-		if(reconstructions_loaded == reconstructions.length){
-			
-			$("#browse .item:eq(1)").removeClass('unselected');
-			console.log("CALL IT BACK");
+		if (reconstructions_loaded == reconstructions.length) {
+
+			$("#browse .items .item.show:eq(1)").addClass('selected');
+
 			callback();
 		}
 
 	}
-	
+
 	this.reconstructions = function() {
 		return reconstructions;
 	}
-	
-	this.ajaxJSON = function(url, callback){
-		
+
+	this.ajaxJSON = function(url, callback) {
+
 		$.ajax({
 			dataType : "json",
 			url : url,
@@ -773,26 +762,22 @@ var UNESCO = {};
 			error : function(data) {
 				callback(json);
 			}
-		});	
-		
+		});
+
 	}
-	
-		
 }).apply(UNESCO);
 
 var img = new Image();
 img.onload = function() {
-	
-	$(document).ready(function() {
-	
-		UNESCO.init();
-	
-	});	
 
-	
+	$(document).ready(function() {
+
+		UNESCO.init();
+
+	});
+
 };
 img.onerror = function() {
-};		
+};
 img.src = "../webgl/data/textures/background.png";
-
 
