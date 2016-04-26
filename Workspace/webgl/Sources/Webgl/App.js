@@ -602,12 +602,6 @@ function Setup()
 				UNESCO.buildBrowse(
 					function(){
 						
-<<<<<<< HEAD
-=======
-						console.log("RECONSTRUCTIONS");
-						//console.log(UNESCO.reconstructions());
-
->>>>>>> cce477249f507a0477b0dd3a5e888ebafdfcd48b
                         PopulateLocationsWithModelInfo( UNESCO.reconstructions() );
                         locationMarkers.FillLocationTypes( locationsDB );
 					
