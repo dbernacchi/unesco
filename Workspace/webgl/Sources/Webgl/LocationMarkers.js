@@ -572,7 +572,11 @@ UG.LocationMarkers.prototype =
                 if( PX.IsMobile ) fontSize /= 2;
                 //if( PX.IsMobile ) fontSize = 64;
                 var localPos = new THREE.Vector3( 0, 0, Params.MarkerTextDist );
-                this.textRenderer1.AppendText( ""+loc.modelCount, localPos, Math.floor(fontSize), matRes, true );
+                if( WebpageStates.CurrentActiveFilterIndex >= 0)
+                    this.textRenderer1.AppendText( ""+loc.types[ WebpageStates.CurrentActiveFilterIndex ], localPos, Math.floor(fontSize), matRes, true );
+                else
+                    this.textRenderer1.AppendText( ""+loc.modelCount, localPos, Math.floor(fontSize), matRes, true );
+                //console.log( WebpageStates.CurrentActiveFilterIndex, loc.types[0], loc.types[1], loc.types[2] );
             }
 
             //
@@ -664,6 +668,8 @@ UG.LocationMarkers.prototype =
 
     , ChangeSelectedLocationTargetColor( colorHex )
     {
+        //console.log( "ChangeSelectedLocationTargetColor");
+
         if( i === this.clickedMarkerIndex && appStateMan.IsState( PX.AppStates.AppStateLevel2 ) )
         {
             //UNESCO.changeLevel2SelectedMarker( colorHex );
@@ -674,6 +680,7 @@ UG.LocationMarkers.prototype =
 
     , SetLocationTargetColor( filters, loc )
     {
+        //console.log( "SetLocationTargetColor");
         for( var i=0; i<3; i++ )
         {
             if( filters[ i ] && loc.IsPartOfFilter( i ) )
@@ -693,6 +700,8 @@ UG.LocationMarkers.prototype =
 
     , FilterLocationMeshColors: function( filters )
     {
+        //console.log( "FilterLocationMeshColors");
+
         if( this.doPopulation || !this.zoomLevel1IntroAnimDone )
             return;
 
@@ -889,7 +898,7 @@ UG.LocationMarkers.prototype =
             }
 ***/
             //
-            locationMarkers.FilterLocationMeshColors( WebpageStates.FilterSwitches );
+            //this.FilterLocationMeshColors( WebpageStates.FilterSwitches );
 
 
             this.TweenLevel0( PX.EPSILON, Params.AnimTime * 0.2 * 1000.0, Params.AnimTime * 0.8 * 1000.0, 

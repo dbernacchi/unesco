@@ -194,6 +194,8 @@ PX =
 var WebpageStates =
 {
     FilterSwitches: []
+    , CurrentActiveFilterIndex: -1
+    , IsFirstTimeRun: true  // Allow a set default run one time only
 };
 
 

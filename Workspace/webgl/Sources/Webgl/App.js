@@ -615,12 +615,21 @@ function Setup()
 				UNESCO.showZoomIn();
 	            UNESCO.hideZoomOut();
 				break;
+
+            case PX.AppStates.AppStateLevel1ToLevel0:
+                break;
+
 			case PX.AppStates.AppStateLevel0ToLevel1:
+                // Default: Reconstructed are filtered
+                if( WebpageStates.IsFirstTimeRun )
+                {
+			        UpdateFilterSwitches( 2 );
+                    WebpageStates.IsFirstTimeRun = false;
+                }
                 break;
 
 			case PX.AppStates.AppStateLevel1:
-                // Default: Reconstructed are filtered
-			    UpdateFilterSwitches( 2 );
+                // Default: Color markers with the filter applied
                 locationMarkers.FilterLocationMeshColors( WebpageStates.FilterSwitches );
 				UNESCO.showLegend();
 	            UNESCO.showZoomOut();
@@ -631,10 +640,11 @@ function Setup()
 				UNESCO.hideZoomIn();
 	            UNESCO.hideZoomOut();
 				break;
+
 			case PX.AppStates.AppStateLevel2ToLevel1:
 				UNESCO.hideBrowse();
-			
 				break;
+
             default:
                 break;
 		}
@@ -1110,27 +1120,33 @@ function MainLoop()
 
 function UpdateFilterSwitches( id )
 {
+    console.log( "UpdateFilterSwitches", id );
+
     switch( id )
     {
         case 0:
             WebpageStates.FilterSwitches[0] = 1 - WebpageStates.FilterSwitches[0];
             WebpageStates.FilterSwitches[1] = 0;
             WebpageStates.FilterSwitches[2] = 0;
+            WebpageStates.CurrentActiveFilterIndex = ( WebpageStates.FilterSwitches[0] > 0 ) ? 0 : -1;
             break;
         case 1:
             WebpageStates.FilterSwitches[0] = 0;
             WebpageStates.FilterSwitches[1] = 1 - WebpageStates.FilterSwitches[1];
             WebpageStates.FilterSwitches[2] = 0;
+            WebpageStates.CurrentActiveFilterIndex = ( WebpageStates.FilterSwitches[1] > 0 ) ? 1 : -1;
             break;
         case 2:
             WebpageStates.FilterSwitches[0] = 0;
             WebpageStates.FilterSwitches[1] = 0;
             WebpageStates.FilterSwitches[2] = 1 - WebpageStates.FilterSwitches[2];
+            WebpageStates.CurrentActiveFilterIndex = ( WebpageStates.FilterSwitches[2] > 0 ) ? 2 : -1;
             break;
         case 3:
             WebpageStates.FilterSwitches[0] = 0;
             WebpageStates.FilterSwitches[1] = 0;
             WebpageStates.FilterSwitches[2] = 0;
+            WebpageStates.CurrentActiveFilterIndex = -1;
             break;            
         default:
             break;
