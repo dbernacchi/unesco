@@ -605,6 +605,7 @@ function Setup()
 						console.log(UNESCO.reconstructions());
 
                         PopulateLocationsWithModelInfo( UNESCO.reconstructions() );
+                        locationMarkers.FillLocationTypes( locationsDB );
 					
 						UNESCO.showExploreButton();	
 					}

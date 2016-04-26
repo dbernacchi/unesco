@@ -14,7 +14,8 @@ UG.LocationMarker = function()
     this.positionSS     = new THREE.Vector3();
     this.scale          = new THREE.Vector3();
     this.markerCount    = 0;
-    this.type           = 0;
+    //this.type           = 0;
+    this.types          = [];
     this.color          = null;
     this.targetColor    = null;
     this.colorChangeSpeed = 2.0;
@@ -26,6 +27,13 @@ UG.LocationMarker = function()
 UG.LocationMarker.prototype =
 {
     constructor: UG.LocationMarker
+
+    , IsPartOfFilter: function( filterId )
+    {
+        if( this.types[ filterId ] > 0 )
+            return true;
+        return false;
+    }
 };
 
 
@@ -162,7 +170,9 @@ UG.LocationMarkers.prototype =
             lm.targetColor = color.clone();
             lm.colorChangeSpeed = 10.0;
             lm.index = i;
-            lm.type = rndIdx;
+            //lm.type = rndIdx;
+            for( var k=0; k<loc.types.length; k++ )
+                lm.types.push( 0 );
 	        this.markers.push( lm );
 
             this.level0Scales.push( new THREE.Vector3( PX.EPSILON, PX.EPSILON, PX.EPSILON ) );
@@ -268,8 +278,22 @@ UG.LocationMarkers.prototype =
         ////this.markerScene.visible = false;
         this.locationsGroup.visible = false;
         this.textRenderer.visible = false;
-
     }
+
+
+    , FillLocationTypes( locations )
+    {
+        for( var i=0; i<locations.length; ++i )
+        {
+            var loc = locations[i];
+            var lm = this.markers[i];
+            for( var k=0; k<loc.types.length; k++ )
+            {
+                lm.types[k] = loc.types[k];
+            }
+        }
+    }
+
 
     , TweenLevel0: function( targetValue, time, delay, onStartCB, onCompleteCB )
     {
@@ -645,16 +669,21 @@ UG.LocationMarkers.prototype =
         }
     }
 
+
     , SetLocationTargetColor( filters, loc )
     {
-        if( filters[ loc.type ] )
+        for( var i=0; i<3; i++ )
         {
-            var idx = loc.type;
-            loc.targetColor.copy( PX.kLocationColors2[ idx ] );
-            loc.colorChangeSpeed = 2.0;
-            return;
+            if( filters[ i ] && loc.IsPartOfFilter( i ) )
+            {
+                //console.log( loc.id, filters, loc.types, loc.IsPartOfFilter( i ) );
+                loc.targetColor.copy( PX.kLocationColors2[ i ] );
+                loc.colorChangeSpeed = 2.0;
+                return;
+            }
         }
 
+        // fallback to original color
         loc.targetColor.copy( PX.kLocationColor );
         loc.colorChangeSpeed = 10.0;
     }
@@ -665,34 +694,15 @@ UG.LocationMarkers.prototype =
         if( this.doPopulation || !this.zoomLevel1IntroAnimDone )
             return;
 
-/***
-        // find is all filters are on
-        var allFiltersOff = 0;
-        for( var i=0; i<3; ++i )
-        {
-            allFiltersOff += filters[ i ];
-        }
-
-        for( var i=0; i<3; ++i )
-        {
-            var value = PX.Saturate( filters[i]+PX.EPSILON );
-            if( allFiltersOff === 0 )  value = PX.Saturate( 1.0 ); // IF all filters are off, then show everything
-
-            var target = new THREE.Vector3( value, value, value );
-            tween = new TWEEN.Tween( this.level1FilterScales[ i ] ).to( target, 0.2 * 1000.0 );
-            tween.easing( TWEEN.Easing.Quadratic.InOut );
-            tween.start();
-            //this.level1FilterScales[ i ].set( filters[i], filters[i], filters[i] );
-        }
-***/
         for( var i=0; i<this.markersCount; ++i )
         {
-            var loc = this.markers[i];
+            var loc = this.markers[ i ];
 
             // Use distance to camera for constant size
             this.SetLocationTargetColor( filters, loc );
         }
     }
+
 
     , ResetLevel1: function( raycaster )
     {
