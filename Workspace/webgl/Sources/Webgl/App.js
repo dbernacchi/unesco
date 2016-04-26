@@ -615,14 +615,19 @@ function Setup()
 				UNESCO.showZoomIn();
 	            UNESCO.hideZoomOut();
 				break;
+			case PX.AppStates.AppStateLevel0ToLevel1:
+                break;
+
 			case PX.AppStates.AppStateLevel1:
+                // Default: Reconstructed are filtered
+			    UpdateFilterSwitches( 2 );
+                locationMarkers.FilterLocationMeshColors( WebpageStates.FilterSwitches );
 				UNESCO.showLegend();
 	            UNESCO.showZoomOut();
 	            UNESCO.hideZoomIn();
 				break;
 					
 			case PX.AppStates.AppStateLevel2:
-			//case PX.AppStates.AppStateLevel1ToLevel2:
 				UNESCO.hideZoomIn();
 	            UNESCO.hideZoomOut();
 				break;
