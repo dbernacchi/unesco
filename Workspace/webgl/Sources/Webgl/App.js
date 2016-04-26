@@ -594,6 +594,7 @@ function Setup()
 		switch(state)
         {
 			case PX.AppStates.AppStateEntry:
+				console.log("PX.AppStates.AppStateEntry");
                 // Reset time and show explore button
                 startTime = timeNow();
                 currentTime = 0.0;
@@ -601,6 +602,12 @@ function Setup()
 				UNESCO.buildBrowse(
 					function(){
 						
+<<<<<<< HEAD
+=======
+						console.log("RECONSTRUCTIONS");
+						//console.log(UNESCO.reconstructions());
+
+>>>>>>> cce477249f507a0477b0dd3a5e888ebafdfcd48b
                         PopulateLocationsWithModelInfo( UNESCO.reconstructions() );
                         locationMarkers.FillLocationTypes( locationsDB );
 					

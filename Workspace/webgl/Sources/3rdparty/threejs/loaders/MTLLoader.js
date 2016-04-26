@@ -26,6 +26,7 @@ THREE.MTLLoader.prototype = {
 
 		}, onProgress, onError );
 
+        return loader;
 	},
 
 	setPath: function ( value ) {
@@ -329,7 +330,17 @@ THREE.MTLLoader.MaterialCreator.prototype = {
 					// Diffuse texture map
                     console.log( "MTL: load map texture: ", (this.baseUrl + value) );
 
-					params[ 'map' ] = this.loadTexture( this.baseUrl + value );
+                    params[ 'map' ] = this.loadTexture( (this.baseUrl + value), undefined, 
+                    function(){
+                        console.log( "map onLoad " );
+                    },
+                    function(){
+                        console.log( "map onProgress " );
+                    }, 
+                    function(){
+                        console.log( "map onError " );
+                    } );
+					//params[ 'map' ] = this.loadTexture( this.baseUrl + value );
 					params[ 'map' ].wrapS = this.wrap;
 					params[ 'map' ].wrapT = this.wrap;
 

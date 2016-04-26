@@ -174,9 +174,10 @@ var UNESCO = {};
 			}
 
 			// @NOTE: We do not pass filename extension. That's added internally in the Loaders
+			//modelRenderer.Load("webgl/data/models/01_Nimrud_Relief/", "Nimrud", function( per )
             //modelRenderer.Load("webgl/data/models/05_Hatra_Relief/", "05_Hatra_relief2", function( per )
-			modelRenderer.Load("webgl/data/models/03_Stela_7/", "03_Stela_7", function( per )
-			//modelRenderer.Load("webgl/data/models/16_Lion_of_Mosul/", "16_lion2", function( per )
+			//modelRenderer.Load("webgl/data/models/03_Stela_7/", "03_Stela_7", function( per )
+			modelRenderer.Load("webgl/data/models/16_Lion_of_Mosul/", "16_lion2", function( per )
 			{
 				//console.log("+---+  Loading: " + parseInt(per * 100.0) + "%" );
 			});

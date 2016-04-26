@@ -26,6 +26,7 @@ THREE.OBJLoader.prototype = {
 
 		}, onProgress, onError );
 
+        return loader;
 	},
 
 	setPath: function ( value ) {
