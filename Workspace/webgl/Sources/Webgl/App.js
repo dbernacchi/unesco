@@ -516,20 +516,20 @@ function Setup()
 
     // PostFX Layer
     postFXScene = new THREE.Scene();
-    var postFXMat = new THREE.MeshBasicMaterial({ color: 0xffffff, opacity: 1.0, transparent: true, vertexColors: THREE.VertexColors });
+    var postFXMat = new THREE.MeshBasicMaterial({ color: 0xffffff, opacity: 1.0, transparent: true });//, vertexColors: THREE.VertexColors });
     postFXMat.blending = THREE.AdditiveBlending;
     postFXMat.depthTest = false;
     postFXMat.depthWrite = false;
-    postFXQuad = new THREE.Mesh( new THREE.PlaneGeometry(2, 2, 0), postFXMat );
+    postFXQuad = new THREE.Mesh( new THREE.PlaneBufferGeometry(2, 2, 0), postFXMat );
     postFXScene.add( postFXQuad );
 
 
     // PostFX Layer
     postFXScene2 = new THREE.Scene();
-    var postFXMat2 = new THREE.MeshBasicMaterial({ color: 0xffffff, opacity: 1.0, transparent: true, vertexColors: THREE.VertexColors });
+    var postFXMat2 = new THREE.MeshBasicMaterial({ color: 0xffffff, opacity: 1.0, transparent: true}); //, vertexColors: THREE.VertexColors });
     postFXMat2.depthTest = false;
     postFXMat2.depthWrite = false;
-    postFXQuad2 = new THREE.Mesh( new THREE.PlaneGeometry(2, 2, 0), postFXMat2 );
+    postFXQuad2 = new THREE.Mesh( new THREE.PlaneBufferGeometry(2, 2, 0), postFXMat2 );
     postFXScene2.add( postFXQuad2 );
 
 
@@ -547,15 +547,15 @@ function Setup()
 
     // Foreground scene
     //
-    fgScene = new THREE.Scene();
     fgCamera = new THREE.Camera();
+/*    fgScene = new THREE.Scene();
     fgScene.add( fgCamera );
     fgMaterial = new THREE.MeshBasicMaterial({ color: 0x000000, opacity: 1.0, transparent: true });//, vertexColors: THREE.VertexColors });
     fgMaterial.depthTest = false;
     fgMaterial.depthWrite = false;
     //fgMaterial.map = PX.AssetsDatabase["TextAtlasTex"];
     fgMesh = new THREE.Mesh( new THREE.PlaneGeometry(2, 2, 0), fgMaterial );
-    fgScene.add( fgMesh );
+    fgScene.add( fgMesh );*/
 
     // Raycaster
     //
@@ -951,8 +951,8 @@ function Update( time, frameTime )
     //
     //fgMaterial.map = composer.renderTarget1;
     //fgMaterial.opacity = 1.0;
-    if( currentTime < 4.0 )
-        fgMaterial.opacity = 1.0 - PX.Saturate( currentTime * 0.5 );
+    //if( currentTime < 4.0 )
+        //fgMaterial.opacity = 1.0 - PX.Saturate( currentTime * 0.5 );
 }
 
 
