@@ -20,13 +20,13 @@ THREE.OBJLoader.prototype = {
 
 		var loader = new THREE.XHRLoader( scope.manager );
 		loader.setPath( this.path );
-		loader.load( url, function ( text ) {
+		var request = loader.load( url, function ( text ) {
 
 			onLoad( scope.parse( text ) );
 
 		}, onProgress, onError );
 
-        return loader;
+        return request;
 	},
 
 	setPath: function ( value ) {
