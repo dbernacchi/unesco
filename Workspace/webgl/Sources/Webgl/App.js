@@ -653,6 +653,10 @@ function Setup()
 	        	
 	        	$("#browse").attr('status', status);
 	        	
+	        	var location_id = $("#browse").attr('location-id');
+	        	
+	        	UNESCO.showBrowse(location_id);
+	        	
 	        	$("#legend > .clr > li > a" ).each(function(){
 	        		
 	        		if(cls != $(this).attr('class')){

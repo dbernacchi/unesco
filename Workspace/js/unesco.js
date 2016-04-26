@@ -192,7 +192,7 @@ var UNESCO = {};
 		
 		var top = parseInt(slider.css('top'), 10);
 
-		var item = slider.find('.item.selected');
+		var item = slider.find('.item.show');
 		
 		item.removeClass('selected');
 		
@@ -465,21 +465,33 @@ var UNESCO = {};
 
 		var elm = $(".UNESCO#browse");
 
+		elm.attr('location-id', location_id);
+		
 		var status_selector = "";
 		
 		var status = elm.attr('status');
 		
 		if(status){
-			status_selector = "[status=" + status + "]";
+			status_selector = '[status="' + status + '"]';
 		}
 		
 		elm.find(".item").removeClass('show');
-		var selector = ".item[location-id=" + location_id + "]" + status_selector;
 		
-        var selected = elm.find(selector)
+		var selector = ".item[location-id=" + location_id + "]";
+		
+		var filtered_selector = selector + status_selector;
+		
+        var selected = elm.find(filtered_selector)
         
-        selected.addClass('show');
-
+        if(selected.length){ 
+        
+        	selected.addClass('show');
+        	
+		} else {
+			
+			elm.find(selector).addClass('show');
+			
+		}
 		elm.show();
 
 	}
@@ -698,8 +710,10 @@ var UNESCO = {};
 
 			content.find(".image img").attr('src', 'details/' + item.details + '/image.png');
 
-			content.find(".date").html(item.date_created + ' - ' + item.date_destroyed);
-
+			if(item.date_created && item.date_destroyed){
+				content.find(".date").html(item.date_created + ' - ' + item.date_destroyed);
+			}
+			
 			var p = item.images;
 
 			for (var key in p) {
