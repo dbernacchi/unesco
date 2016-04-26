@@ -338,7 +338,8 @@ function LoadOBJScene( path, filename, scene, shaderMaterials, onProgressCB, onC
 
 
                     //
-                    object.material.color = new THREE.Color( 0xffffff );
+                    if( object.material.map )
+                        object.material.color = new THREE.Color( 0xffffff );
                     object.material.side = THREE.DoubleSide;
                     object.material.transparent = false;
                     object.material.opacity = 1.0;
