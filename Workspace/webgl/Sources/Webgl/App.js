@@ -675,7 +675,37 @@ function Setup()
     });
 
 
-    //LoadOBJScene( "webgl/data/models/16_Lion_of_Mosul/", "16_lion", scene, null, null );
+    // TEMP:
+    var modelFastLane = false;
+    if( modelFastLane )
+    {
+		UNESCO.hideSplash();
+		$(".UNESCO#browse").hide();
+	    $(".UNESCO#slide-5").hide();
+	    $(".UNESCO#slide-9").show();
+	    Params.MainScene = false;
+
+	    var modelContainer = $(".UNESCO#slide-9 #glModelContainer");
+	    if (!modelRenderer) {
+		    modelRenderer = new PX.ModelRenderer();
+		    modelRenderer.Init(modelContainer[0], windowWidth, windowHeight);
+	    }
+	    // @NOTE: We do not pass filename extension. That's added internally in the Loaders
+	    //modelRenderer.Load("webgl/data/models/01_Nimrud_Relief/", "Nimrud", function( per )
+        //modelRenderer.Load("webgl/data/models/05_Hatra_Relief/", "05_Hatra_relief2", function( per )
+	    //modelRenderer.Load("webgl/data/models/03_Stela_7/", "03_Stela_7", function( per )
+	    //modelRenderer.Load("webgl/data/models/07_Sculpture_from_Hatra/", "07", function( per )
+        //modelRenderer.Load("webgl/data/models/09_Durbar_Square_Kathmandu_Nepal/", "09", function( per )
+        //modelRenderer.Load("webgl/data/models/10/", "10", function( per )
+	    //modelRenderer.Load("webgl/data/models/16_Lion_of_Mosul/", "16_lion2", function( per )
+        //modelRenderer.Load("webgl/data/models/11/", "Statue lying on floor_CENTERED", function( per )
+        //modelRenderer.Load("webgl/data/models/19/", "Interior_portion_Elahbel_Tower_Tomb_CENTERED-106K", function( per )
+        modelRenderer.Load("webgl/data/models/20/", "Incense_table", function( per )
+	    {
+		    //console.log("+---+  Loading: " + parseInt(per * 100.0) + "%" );
+	    });
+    }
+
 
 
     //
