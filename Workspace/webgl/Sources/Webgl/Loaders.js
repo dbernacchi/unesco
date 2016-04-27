@@ -207,7 +207,7 @@ function LoadOBJScene( path, filename, scene, shaderMaterials, onProgressCB, onC
 
 	mtlLoader.setBaseUrl( path );
 	mtlLoader.setPath( path );
-	mtlLoader.load( mtlUrl, function( materials ) 
+	var mtlRequest = mtlLoader.load( mtlUrl, function( materials ) 
     {
         materials.preload();
 /*
@@ -230,7 +230,7 @@ function LoadOBJScene( path, filename, scene, shaderMaterials, onProgressCB, onC
         */
 		objLoader.setMaterials( materials );
 	    objLoader.setPath( path );
-	    objLoader.load( objUrl
+	    var objRequest = objLoader.load( objUrl
         , function( data ) 
         {
             scene.add( data );
@@ -367,8 +367,23 @@ function LoadOBJScene( path, filename, scene, shaderMaterials, onProgressCB, onC
             var percentage = ( result.loaded / result.total );
             if( result.total <= 0.0 ) percentage = 0.0;
             if( onProgressCB ) onProgressCB( percentage );
+        }
+        , function()
+        {
+            console.log( "**** onError: Failed to load OBJ" );
         });
-    } );
+
+        console.log( "+--+  OBJ Loader Request: ", objRequest );
+    }
+    , function(result) 
+    {
+    }
+    , function()
+    {
+        console.log( "**** onError: Failed to load MTL" );
+    });
+
+    console.log( "+--+  MTL Loader Request: ", mtlRequest );
 }
 
 /**
