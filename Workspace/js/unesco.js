@@ -189,6 +189,8 @@ var UNESCO = {};
 			} else if($(".UNESCO#slide-9").css('display') == 'block'){
 				$(".preloaderBG").hide();
 				$(".preloaderFG").hide();
+				modelRenderer.Clear();
+				Params.MainScene = true;
 				$(".UNESCO#slide-9").hide();
 				$(".UNESCO#slide-5").show();
 
