@@ -733,8 +733,15 @@ function OnExploreClick()
     });
 }
 
+
 function Update( time, frameTime )
 {
+    /*if( time > 4.0 && PX.kTimeOut )
+    {
+        OnExploreClick();
+        PX.kTimeOut = false;
+    }*/
+
     //
     mouseDeltaX = mouseX - previousMouseX;
     mouseDeltaY = mouseY - previousMouseY;
@@ -1081,7 +1088,16 @@ function onTouchStart( event )
     mouseX = event.touches[ 0 ].pageX;
     mouseY = event.touches[ 0 ].pageY;
 
-    locationMarkers.OnMouseOverEvent();
+    switch( appStateMan.GetCurrentState() )
+    {
+        case PX.AppStates.AppStateLevel1:
+        {
+            locationMarkers.OnMouseOverEvent( true );
+            break;
+        }
+        default:
+            break;
+    }
 
     previousMouseX = mouseX;
     previousMouseY = mouseY;
@@ -1096,6 +1112,17 @@ function onTouchEnd( event )
     previousMouseX = mouseX;
     previousMouseY = mouseY;
 
+    switch( appStateMan.GetCurrentState() )
+    {
+        case PX.AppStates.AppStateLevel1:
+        {
+            locationMarkers.OnMouseOverEvent( isMouseClick );
+            break;
+        }
+        default:
+            break;
+    }
+
     //
     ZoomInFromLevel0ToLevel1( true );
 }
@@ -1107,7 +1134,16 @@ function onTouchMove( event )
     mouseX = event.touches[ 0 ].pageX;
     mouseY = event.touches[ 0 ].pageY;
 
-    locationMarkers.OnMouseOverEvent();
+    switch( appStateMan.GetCurrentState() )
+    {
+        case PX.AppStates.AppStateLevel1:
+        {
+            locationMarkers.OnMouseOverEvent( true );
+            break;
+        }
+        default:
+            break;
+    }
 
 	event.preventDefault();
 	event.stopPropagation();
@@ -1157,7 +1193,7 @@ function OnMouseMove(event)
         }
         case PX.AppStates.AppStateLevel1:
         {
-            locationMarkers.OnMouseOverEvent();
+            locationMarkers.OnMouseOverEvent( true );
             break;
         }
         default:

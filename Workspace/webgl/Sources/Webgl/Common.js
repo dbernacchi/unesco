@@ -95,6 +95,7 @@ PX =
 
     , kEnableGUI: false
     , kEnableStats: false
+    , kTimeOut: true
 
     , ModelTypeDestroyed: 0
     , ModelTypeUnderConstruction: 1

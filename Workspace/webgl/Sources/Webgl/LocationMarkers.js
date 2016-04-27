@@ -883,7 +883,7 @@ UG.LocationMarkers.prototype =
     }
 
 
-    , OnMouseOverEvent: function()
+    , OnMouseOverEvent: function( isMouseClick )
     {
         var scope = this;
 
@@ -907,7 +907,24 @@ UG.LocationMarkers.prototype =
 
                 this.currentMouseOverMarkerIndex = -1;
                 //console.log( "no intersection", index );
-                return;
+                return 0;
+            }
+
+            // MOBILE ONLY
+            // If we move the finger and remove still on top of a marker, it doesn't count
+            // Fade out text and line
+            if( PX.IsMobile )
+            {
+                if( !isMouseClick )
+                {
+                    if( this.currentMouseOverMarkerIndex >= 0 )
+                    {
+                        var loc = this.markers[ this.currentMouseOverMarkerIndex ];
+                        this.SetLocationTargetColor( WebpageStates.FilterSwitches, loc );
+                    }
+                    this.currentMouseOverMarkerIndex = -1;
+                    this.titleTargetOpacity = 0.0;
+                }
             }
 
             // Restore previous loc color (just in case )
@@ -920,6 +937,8 @@ UG.LocationMarkers.prototype =
 
             this.currentMouseOverMarkerIndex = index;
         }
+
+        return 1;
     }
 
 
