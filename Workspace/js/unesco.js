@@ -19,6 +19,8 @@ var UNESCO = {};
 
 		this.resize();
 
+		//this.showBrowse();
+		
 		$("body").css('background-image', 'url(../webgl/data/textures/background.png)');
 
 		//ns.topStatusBar();
@@ -276,7 +278,7 @@ var UNESCO = {};
 		} 
 	}
 
-	this.resize = function() {
+	this.resize = function(selector) {
 
 		var ns = this;
 
@@ -327,8 +329,11 @@ var UNESCO = {};
 
 		}
 
-
-		$("[class*=resize]").each(function() {
+		if(!selector){
+			selector = "body";
+		}
+		
+		$(selector).find("[class*=resize]").each(function() {
 
 			if ($(this).hasClass('resize')) {
 
@@ -857,7 +862,7 @@ var UNESCO = {};
 		content.find(".status").html(status);
 		content.attr("status", status.replace(' ', ''));
 
-		console.log("name: " + item.name + " loc: " + item.location_id + " status: " + status);
+		//console.log("name: " + item.name + " loc: " + item.location_id + " status: " + status);
 		
 		
 		$("#browse .items .items-inner").append(content);
@@ -869,6 +874,8 @@ var UNESCO = {};
 		reconstructions[item_key].status = status;
 
 		if (reconstructions_loaded == reconstructions.length) {
+			
+			this.resize('#browse .container .image');
 			
 			callback();
 			

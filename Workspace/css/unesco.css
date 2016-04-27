@@ -406,6 +406,7 @@ ul.clr li {
 #slide-5 ul.clr {
 	width: 935px;
 	margin: 0 auto;
+	margin-top: 80px;
 }
 
 #slide-5 ul.clr li.text {
@@ -418,7 +419,8 @@ ul.clr li {
 }
 
 #slide-5 ul.clr li.image {
-	width: 615px;
+	
+	
 }
 
 #slide-5 .magnify {
@@ -521,7 +523,7 @@ ul.clr li {
 
 #browse .items li.image {
 	width: 345px;
-	height: 241px;
+	height: 345px;
 }
 
 #browse .items li.text {
