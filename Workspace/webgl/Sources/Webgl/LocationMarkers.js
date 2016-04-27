@@ -3,7 +3,7 @@
 
 UG.LocationMarker = function()
 { 
-    //this.id             = -1;
+    this.id             = -1;
     this.title          = "";
     this.text           = "";
     this.index          = -1;
@@ -162,7 +162,7 @@ UG.LocationMarkers.prototype =
 	        this.meshes.push( mesh );
 
 	        var lm = new UG.LocationMarker();
-            //lm.id = loc.id;
+            lm.id = loc.id;
 	        lm.title = loc.name.toUpperCase();
 	        lm.text = "";
 	        lm.position.copy( loc.position );

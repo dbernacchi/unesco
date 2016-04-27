@@ -46,12 +46,14 @@ function ParseLocationData( locationsJson )
         location.name = locationsJson[i]["marker_title"];
         location.id = parseInt( locationsJson[i]["id"] );
         location.latlon = new THREE.Vector2( locationsJson[i]["lat"], locationsJson[i]["lng"] );
-        location.position = PX.Utils.FromLatLon( location.latlon.x, location.latlon.y, PX.kEarthScale, PX.kLocationMarkerScale ); // * PX.kLocationMarkerZScale * 0.5 );
+        location.position = PX.Utils.FromLatLon( location.latlon.x, location.latlon.y, PX.kEarthScale, PX.kLocationMarkerScale );
         //location.position = PX.Utils.FromLatLon( location.latlon.x, location.latlon.y, PX.kEarthScale, PX.kLocationMarkerScale * PX.kLocationMarkerZScale * 0.5 );
         location.modelCount = 0;
 
         locationsDB.push( location );
         locationsDBMap.set( location.id, location );
+
+        //console.log( location );
     }
 
 /***
