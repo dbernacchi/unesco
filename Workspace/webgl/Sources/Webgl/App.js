@@ -2,11 +2,6 @@
 
 var PX = PX || {}; 
 
-//var progressBarElement = $("#loaderBox");
-//var preloaderBG = $(".preloaderBG");
-//var preloaderFG = $(".preloaderFG");
-//var progressBarTextElement = $("#progressBarText");
-//var startButtonElement = $("#startButton");
 
 var g_Stats = null;
 var g_GUI = null;
@@ -15,11 +10,6 @@ var windowWidth, windowHeight;
 var deviceContentScale = 1.0;
 
 var modelRenderer = null;
-/*var artefactCamera = null;
-var artefactScene = null;
-var artefactSceneBSphere = null;
-var artefactOrbitControls = null;
-var tempIsLoaded = false;*/
 
 var aspectRatio = 1.0;
 var camera2d = null;
@@ -204,16 +194,8 @@ function Shutdown()
 
 function CreateRenderer()
 {
-    if( PX.kTransparentCanvas )
-    {
-        renderer = new THREE.WebGLRenderer( { antialias: true, precision: PX.ShaderPrecision, stencil: false, alpha: true } );
-        renderer.setClearColor( 0x000000, 0 );
-    }
-    else
-    {
-        renderer = new THREE.WebGLRenderer( { antialias: true, precision: PX.ShaderPrecision, stencil: false, alpha: false } );
-        renderer.setClearColor( 0x000000, 1 );
-    }
+    renderer = new THREE.WebGLRenderer( { antialias: true, precision: PX.ShaderPrecision, stencil: false, alpha: true } );
+    renderer.setClearColor( 0x000000, 0 );
     //renderer.gammaInput = true;
     //renderer.gammaOutput = true;
     element = renderer.domElement;
@@ -243,15 +225,9 @@ function LoadData()
 
     $.when(
         LoadTexture( "EarthDiffuseMap", globeDiffuseTex )
-        //LoadTexture( "EarthDiffuseMap", "webgl/data/textures/earth_diffuse.jpg" )
-        //LoadTexture( "EarthDiffuseMap", "webgl/data/textures/earth_diffuse_august.jpg" )
         , LoadTexture( "EarthNormalMap", "webgl/data/textures/earth_normals.png" )
         , LoadTexture( "EarthSpecularMap", "webgl/data/textures/earth_specular.jpg" )
-        //, LoadTexture( "EarthCloudsMap", "webgl/data/textures/Clouds.png" )
-        //, LoadTexture( "EarthCloudsMap", "webgl/data/textures/earth_clouds.png" )
-        //, LoadTexture( "EarthCloudsNormalMap", "webgl/data/textures/earth_clouds_normals.png" )
         , LoadTexture( "EarthNightLightsMap", globeNightLightsTex )
-        //, LoadTexture( "Background", "webgl/data/textures/background.png" )
         , LoadTexture( "Circle", "webgl/data/textures/circle_full.png" )
         , LoadTexture( "EarthShadow", "webgl/data/textures/blobshadow.png" )
         , LoadTexture( "TooltipLine", "webgl/data/textures/line.png" )
@@ -264,7 +240,6 @@ function LoadData()
         //, LoadText( "TextAtlasXml", "webgl/data/fonts/arialLarge.xml" )
         //, LoadTexture( "TextAtlasTex", "webgl/data/fonts/arialLargeTransparent.png" )
         , LoadJsonData("LocationsJson", "webgl/data/latlon.json")
-        //, LoadJsonData("ReconstructionsJson", "webgl/data/reconstructions.json")
     ).done(function ()
     {
         PostLoadData();
@@ -289,18 +264,6 @@ function PostLoadData()
     deviceContentScale = window.devicePixelRatio || 1;
 
     BeginApp();
-    //preloaderBG.hide();
-    //preloaderFG.hide();
-/*    preloaderBG.delay(100).fadeTo(1500, 0).delay(100);
-    preloaderFG.delay(100).fadeTo(1500, 0).delay(100, function()
-    {
-        //
-        BeginApp();
-
-        // hide progress
-        preloaderBG.hide();
-        preloaderFG.hide();
-    }); */
 }
 
 
@@ -384,10 +347,6 @@ function Setup()
     //
     scene = new THREE.Scene();
 
-
-    //var minDim = Math.min( windowWidth, windowHeight );
-    //var maxDim = Math.max( windowWidth, windowHeight );
-    //var aspectRatio = maxDim / minDim;
     aspectRatio = windowWidth / windowHeight;
     console.log( "+--+  Aspect Ratio:", aspectRatio );
     console.log( "+--+  Device Content Scale: ", window.devicePixelRatio );
@@ -474,46 +433,6 @@ function Setup()
     //effectCopyPass.uniforms.opacity.value = 1.0;
     //effectCopyPass.renderToScreen = true;
 
-/***
-    // Artefact Scene
-    //
-    {
-        artefactScene = new THREE.Scene();
-
-        // Create Artefact camera
-        //
-        artefactCamera = new THREE.PerspectiveCamera( PX.kCameraFovY, aspectRatio, 0.01, 100.0 );
-        artefactCamera.updateProjectionMatrix();
-        artefactCamera.position = new THREE.Vector3( 0, 0, Params.Art_CameraDistance );
-        var currentCamLookAt0 = new THREE.Vector3( 0, 0, 0 );
-        artefactCamera.lookAt( currentCamLookAt0 );
-        artefactScene.add( artefactCamera );
-
-        // Create Artefact sun light
-        //
-        var artSunLight = new THREE.DirectionalLight( 0xffffff );
-        artSunLight.position.set( 0.7, 0.0, 1.0 );
-        artefactScene.add( artSunLight );
-        var artAmbLight = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
-        artefactScene.add( artAmbLight );
-
-        //
-        //LoadBINScene( "webgl/data/models/06_Mihrab_of_the_Mosque_Al_Hasan/mesh.js", artefactScene );
-        //LoadScene( "webgl/data/models/duck/glTF/duck.gltf", artefactScene );
-        //LoadScene( "webgl/data/models/07_Sculpture_from_Hatra/sculpture.gltf", artefactScene );
-        //LoadScene( "webgl/data/models/06_Mihrab_of_the_Mosque_Al_Hasan/Mihrab of the mosque al Hasan.gltf", artefactScene );
-
-	    artefactOrbitControls = new THREE.OrbitControls( artefactCamera, renderer.domElement );
-        artefactOrbitControls.enableDamping = true;
-        artefactOrbitControls.dampingFactor = 0.05;
-        artefactOrbitControls.rotateSpeed = 0.1;
-        artefactOrbitControls.minDistance = 1.0;
-        artefactOrbitControls.maxDistance = 5.0;
-        artefactOrbitControls.target.set( 0, 0, 0 );
-        artefactOrbitControls.update();
-    }
-**/
-
     // PostFX Layer
     postFXScene = new THREE.Scene();
     var postFXMat = new THREE.MeshBasicMaterial({ color: 0xffffff, opacity: 1.0, transparent: true });//, vertexColors: THREE.VertexColors });
@@ -523,7 +442,6 @@ function Setup()
     postFXQuad = new THREE.Mesh( new THREE.PlaneBufferGeometry(2, 2, 0), postFXMat );
     postFXScene.add( postFXQuad );
 
-
     // PostFX Layer
     postFXScene2 = new THREE.Scene();
     var postFXMat2 = new THREE.MeshBasicMaterial({ color: 0xffffff, opacity: 1.0, transparent: true}); //, vertexColors: THREE.VertexColors });
@@ -532,36 +450,12 @@ function Setup()
     postFXQuad2 = new THREE.Mesh( new THREE.PlaneBufferGeometry(2, 2, 0), postFXMat2 );
     postFXScene2.add( postFXQuad2 );
 
-
-    // Background scene
-    //
-/*    bgScene = new THREE.Scene();
-    bgCamera = new THREE.Camera();
-    bgScene.add( bgCamera );
-    var bgMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, opacity: 1.0, transparent: true, vertexColors: THREE.VertexColors, map: PX.AssetsDatabase["Background"] });
-    bgMaterial.depthTest = false;
-    bgMaterial.depthWrite = false;
-    bgQuad = new THREE.Mesh( new THREE.PlaneGeometry(2, 2, 0), bgMaterial );
-    bgScene.add( bgQuad );*/
-
-
-    // Foreground scene
     //
     fgCamera = new THREE.Camera();
-/*    fgScene = new THREE.Scene();
-    fgScene.add( fgCamera );
-    fgMaterial = new THREE.MeshBasicMaterial({ color: 0x000000, opacity: 1.0, transparent: true });//, vertexColors: THREE.VertexColors });
-    fgMaterial.depthTest = false;
-    fgMaterial.depthWrite = false;
-    //fgMaterial.map = PX.AssetsDatabase["TextAtlasTex"];
-    fgMesh = new THREE.Mesh( new THREE.PlaneGeometry(2, 2, 0), fgMaterial );
-    fgScene.add( fgMesh );*/
 
     // Raycaster
     //
     g_Raycaster = new THREE.Raycaster();
-    //g_Projector = new THREE.Projector();
-
 
     // Events
     //
@@ -818,12 +712,12 @@ function InitGUI()
     //g_GUI.addFolder( "BLOOM" );
     //g_GUI.add( Params, "EnableBloom" );
     //g_GUI.add( Params, "BloomOpacity" ).min(0.0).max(1.0).step(0.001);
-    g_GUI.addFolder( "MODEL SHADING" );
+/*    g_GUI.addFolder( "MODEL SHADING" );
     g_GUI.add( Params, "ModelAmbientIntensity" ).min(0.0);
     g_GUI.add( Params, "ModelDiffuseIntensity" ).min(0.0);
     g_GUI.add( Params, "ModelSpecularIntensity" ).min(0.0);
     //g_GUI.add( Params, "NormalMapIntensity" ).min(0.0).max(1.0).step(0.001);
-    g_GUI.add( Params, "ModelRoughness" ).min(0.0).max(1.0).step(0.001);
+    g_GUI.add( Params, "ModelRoughness" ).min(0.0).max(1.0).step(0.001);*/
 
     g_GUI.addFolder( "EARTH SHADING" );
     g_GUI.add( Params, "AmbientIntensity" ).min(0.0);
@@ -1013,26 +907,12 @@ function Update( time, frameTime )
     {
         effectFXAAPass.uniforms[ 'resolution' ].value.set( 1.0 / (windowWidth*deviceContentScale), 1.0 / (windowHeight*deviceContentScale) );
     }
-
-
-    // Fade in
-    //
-    //fgMaterial.map = composer.renderTarget1;
-    //fgMaterial.opacity = 1.0;
-    //if( currentTime < 4.0 )
-        //fgMaterial.opacity = 1.0 - PX.Saturate( currentTime * 0.5 );
 }
 
 
 function Render()
 {
     renderer.clear();
-
-    /*if( !PX.kTransparentCanvas )
-    {
-        renderer.setViewport( 0, 0, windowWidth, windowHeight );
-        renderer.render( bgScene, bgCamera );
-    }*/
 
     //
     renderer.setViewport( 0, 0, windowWidth, windowHeight );
@@ -1046,46 +926,9 @@ function Render()
     renderer.setViewport( 0, 0, windowWidth, windowHeight );
     renderer.render( postFXScene2, fgCamera );
 
-/**
     //
     renderer.setViewport( 0, 0, windowWidth, windowHeight );
-    renderer.render( scene, camera );
-
-    if( Params.EnableBloom )
-    {
-        //
-        composer.render();
-
-        renderer.setViewport( 0, 0, windowWidth, windowHeight );
-
-        //
-        postFXQuad2.material.opacity = PX.Saturate( Params.TiltShiftStrength );
-        postFXQuad2.material.map = composer.renderTarget1;
-        renderer.render( postFXScene2, fgCamera );
-
-        //
-        postFXQuad.material.opacity = Params.BloomOpacity;
-        postFXQuad.material.map = composer.renderTarget1;
-        renderer.render( postFXScene, fgCamera );
-    }
-**/
-
-
-    //
-    /*if( appStateMan.IsState( PX.AppStates.AppStateLevel0 ) 
-        || appStateMan.IsState( PX.AppStates.AppStateLevel0ToLevel1 )
-        || appStateMan.IsState( PX.AppStates.AppStateLevel1 ) 
-        || appStateMan.IsState( PX.AppStates.AppStateLevel1ToLevel2 )
-        || appStateMan.IsState( PX.AppStates.AppStateLevel2 ) )*/
-    {
-        renderer.setViewport( 0, 0, windowWidth, windowHeight );
-        renderer.render( locationMarkers.markerScene, locationMarkers.camera2d );
-        //renderer.render( locationMarkers.markerScene, fgCamera );
-    }
-
-    //renderer.setViewport( 0, 0, windowWidth, windowHeight );
-    //renderer.render( fgScene, fgCamera );
-
+    renderer.render( locationMarkers.markerScene, locationMarkers.camera2d );
 }
 
 
@@ -1108,12 +951,8 @@ function MainLoop()
 
     if( Params.MainScene )
     {
-        //console.time("Update");
         Update( currentTime, frameTime );
-        //console.timeEnd("Update");
-        //console.time("Render");
         Render();
-        //console.timeEnd("Render");
     }
     else
     {
@@ -1123,14 +962,13 @@ function MainLoop()
     if( PX.kEnableStats )
     {
         g_Stats.end();
-        //g_Stats.update();
     }
 }
 
 
 function UpdateFilterSwitches( id )
 {
-    console.log( "UpdateFilterSwitches", id );
+    //console.log( "UpdateFilterSwitches", id );
 
     switch( id )
     {
@@ -1174,7 +1012,7 @@ function ZoomInFromLevel0ToLevel1( isUserClickOnLocation )
         {
             if( isMouseClick )
             {
-                console.log( "ZoomInFromLevel0ToLevel1 (0)" );
+                //console.log( "ZoomInFromLevel0ToLevel1 (0)" );
                 var res = locationMarkers.OnMouseClickEvent( mouseVector3d, camera, true,
                 function( object )  // Callback returning clicked marker
                 {
@@ -1189,7 +1027,7 @@ function ZoomInFromLevel0ToLevel1( isUserClickOnLocation )
         {
             //if( isMouseClick )
             //{
-                console.log( "ZoomInFromLevel0ToLevel1 (1)" );
+                //console.log( "ZoomInFromLevel0ToLevel1 (1)" );
                 locationMarkers.OnMouseClickEvent( mouseVector3d, camera, false, null );
             //}
         }
@@ -1203,7 +1041,7 @@ function ZoomOutFromLevel1ToLevel0( isMouseWheel )
     {
         if( !isMouseWheel || event.wheelDelta < 0.0 )
         {
-            console.log( "ZoomOutFromLevel1ToLevel0" );
+            //console.log( "ZoomOutFromLevel1ToLevel0" );
 
             // Change state
             appStateMan.SetState( PX.AppStates.AppStateLevel1ToLevel0 );
@@ -1281,39 +1119,6 @@ function ZoomOutFromLevel1ToLevel0( isMouseWheel )
     }
 }
 
-/*
-function ComputeZoomLevel( distanceToCenter )
-{
-    var level = PX.Saturate( (distanceToCenter - PX.kCameraMinDistance) / ( PX.kCameraMaxDistance - PX.kCameraMinDistance ) );
-    //var level = PX.Saturate( distanceToCenter / PX.kCameraMaxDistance );
-
-    level = Math.floor( PX.kZoomMaxLevel - PX.Clamp( ( level * PX.kZoomMaxLevel ), 0.0, PX.kZoomMaxLevel ) );
-
-    console.log( "zoomLevel: " + level );
-
-    //return level;
-
-    return PX.kZoomMaxLevel;
-}
-*/
-
-/*
-function ComputeMapGridSizeFromZoomLevel( zoomLevel )
-{
-    var maxZoomScale = 2.0;
-
-    var zoomNorm = zoomLevel / PX.kZoomMaxLevel;
-    var zoomT = ( zoomNorm );
-    var gridSize = Math.ceil( PX.Lerp( PX.kMaxGridSize, 1, zoomT ) );
-    //var gridSize = Math.floor( PX.Clamp( (PX.kZoomMaxLevel*maxZoomScale) - zoomLevel, 1.0, 20.0 ) );
-    //var gridSize = Math.floor( PX.Clamp( (PX.kZoomMaxLevel*maxZoomScale) - zoomLevel, 1.0, 20.0 ) );
-    //var gridSize = PX.Clamp( PX.kZoomMaxLevel - zoomLevel, 1.0, 20.0 );
-
-    console.log( "gridSize: " + gridSize );
-
-    return gridSize;
-}
-*/
 
 function OnResize()
 {
@@ -1346,15 +1151,8 @@ function onTouchStart( event )
     isMouseDown = true;
     isMouseMoved = false;
 
-	/*switch ( event.touches.length ) 
-    {
-        case 1:*/
-            mouseX = event.touches[ 0 ].pageX;
-            mouseY = event.touches[ 0 ].pageY;
-            /*break;
-        default:
-            break;
-    }*/
+    mouseX = event.touches[ 0 ].pageX;
+    mouseY = event.touches[ 0 ].pageY;
 
     previousMouseX = mouseX;
     previousMouseY = mouseY;
@@ -1366,8 +1164,6 @@ function onTouchEnd( event )
     isMouseDown = false;
     if( isMouseMoved ) isMouseClick = false;
     else isMouseClick = true;
-    //mouseX = event.touches[ 0 ].pageX;
-    //mouseY = event.touches[ 0 ].pageY;
     previousMouseX = mouseX;
     previousMouseY = mouseY;
 
@@ -1403,7 +1199,7 @@ function OnMouseUp(event)
     isMouseDown = false;
     if( isMouseMoved ) isMouseClick = false;
     else isMouseClick = true;
-    console.log( "isMouseClick: ", isMouseClick );
+    //console.log( "isMouseClick: ", isMouseClick );
     mouseX = event.clientX;
     mouseY = event.clientY;
     previousMouseX = mouseX;

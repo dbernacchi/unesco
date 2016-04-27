@@ -96,8 +96,7 @@ PX =
 
     , StartLatLon: { x: 6.3377571, y: 43.139408 }
 
-    , kTransparentCanvas: true
-    , kEnableGUI: true
+    , kEnableGUI: false
     , kEnableStats: false
 
     , MinDistancesPerLevel: [ 230, 80 ]
