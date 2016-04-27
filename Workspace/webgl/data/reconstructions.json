@@ -457,12 +457,6 @@
 	}, {
 		"details": "",
 		"location_id": "12",
-		"id": "76",
-		"name": "Temple of Bel",
-		"description": ""
-	}, {
-		"details": "",
-		"location_id": "12",
 		"id": "72",
 		"name": "Theatre",
 		"description": ""
@@ -490,12 +484,6 @@
 		"id": "81",
 		"name": "figures for Pizuzu from tell Rimah",
 		"description": "Marble, original. Located in Assyrian room on the stairs."
-	}, {
-		"details": "",
-		"location_id": "12",
-		"id": "66",
-		"name": "Theatre",
-		"description": ""
 	}, {
 		"details": "",
 		"location_id": "1",

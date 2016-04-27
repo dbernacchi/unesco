@@ -471,8 +471,12 @@ ul.clr li {
 	opacity: 1.0;
 }
 
-#browse .item.unselected a {
+#browse .item a {
 	cursor: default;
+}
+
+#browse .item.selected a {
+	cursor: pointer;
 }
 
 #browse .items li.image {
