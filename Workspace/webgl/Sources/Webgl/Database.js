@@ -11,26 +11,12 @@ var Location = function()
     this.latlon = null;     // Lat/long
     this.position = null;   // 3D spherical position
     this.modelCount = 0;
-    this.types = [ 0, 0, 0 ];        // Array of types. 0: Destroyed, 1: Reconstructed, 2: Under Construction. Each element includes the count per type
+    this.types = [ 0, 0, 0 ];        // Array of types. 0: Destroyed, 1: Reconstructed, 2: Under Construction. Each element has the count per type
 };
 Location.prototype =
 {
     constructor: Location
 }
-
-
-/*
-function FindLocationById( id )
-{
-    for( var i=0; i<locationsDB.length; ++i )
-    {
-        var loc = locationsDB[ i ];
-        if( loc.id === id )
-            return loc;
-    }
-
-    return null;
-}*/
 
 
 // Loaders
@@ -52,36 +38,7 @@ function ParseLocationData( locationsJson )
 
         locationsDB.push( location );
         locationsDBMap.set( location.id, location );
-
-        //console.log( location );
     }
-
-/***
-    // Connect models with locations
-    //
-    var reconstructions = PX.AssetsDatabase["ReconstructionsJson"];
-    for( var i=0; i<reconstructions.length; ++i )
-    {
-        var locId = parseInt( reconstructions[i]["location_id"] );
-        var modelId = parseInt( reconstructions[i]["id"] );
-        var loc = locationsDBMap.get( locId );
-        if( loc )
-        {
-            loc.modelCount++;
-        }
-        else
-        {
-            console.log( i, "****  Couldn't find location with id: ", locId, "  model id: ", modelId );
-        }
-    }
-
-    // @DEBUG:
-    for( var i=0; i<locationsDB.length; ++i )
-    {
-        var loc = locationsDB[i];
-        console.log( "+--+  ParseLocationData()  location: ", loc.id, "  modelCount: ", loc.modelCount );
-    }
-***/
 }
 
 
@@ -101,12 +58,13 @@ function PopulateLocationsWithModelInfo( reconstructions )
             if( status !== undefined )
             {
                 var res = status.toLowerCase();
+                //console.log( i, res );
            
                 if( res === "destroyed" )
                     loc.types[0]++;
-                else if( res === "reconstructed" )
+                else if( res === "under reconstruction" )
                     loc.types[1]++;
-                else
+                else if( res === "reconstructed" )
                     loc.types[2]++;
             }
             else
