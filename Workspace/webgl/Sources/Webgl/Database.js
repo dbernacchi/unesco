@@ -58,12 +58,13 @@ function PopulateLocationsWithModelInfo( reconstructions )
             if( status !== undefined )
             {
                 var res = status.toLowerCase();
+                //console.log( i, res );
            
                 if( res === "destroyed" )
                     loc.types[0]++;
-                else if( res === "reconstructed" )
+                else if( res === "under reconstruction" )
                     loc.types[1]++;
-                else
+                else if( res === "reconstructed" )
                     loc.types[2]++;
             }
             else
