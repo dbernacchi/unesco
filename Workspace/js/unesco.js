@@ -12,6 +12,8 @@ var UNESCO = {};
 	var reconstructions = {};
 
 	var reconstructions_loaded = 0;
+	
+	var percentage = 100;
 
 	this.init = function() {
 
@@ -93,6 +95,8 @@ var UNESCO = {};
 			
 			$('#slide-5 .container').html(entry);
 			
+			ns.resize('#slide-5 .container ul');
+		
 			$(".UNESCO#browse").hide();
 
 			$(".UNESCO#menu-button").hide();
@@ -202,6 +206,66 @@ var UNESCO = {};
 
 		});
 
+		$(document).on('click', ".readmore", function(e) {
+			e.preventDefault();
+
+			$(this).hide();
+			
+			var container = $(this).closest('.container');
+			
+			var more = $(this).closest('ul').find('.more');
+			
+			var more_width = more.width();
+			
+			var more_margin = parseInt(more.css('margin-right'), 10);
+			
+			var media = $(this).closest('ul').find('.media');
+			
+			media.find('img').attr('width', more_width);
+			
+			media.find('iframe').attr('width', more_width);
+			
+
+			var container_width =container.width();
+			
+			var new_width = container_width + (more_width * 2) + (more_margin * 2);
+			
+			container.css('width', new_width + 'px');
+			
+			more.show();
+			
+			$(this).closest('ul').find('.media').show();
+			
+			$(this).closest('li').find('.collapse').show();
+		});				
+
+		$(document).on('click', ".collapse", function(e) {
+			e.preventDefault();
+
+			var container = $(this).closest('.container');
+			
+			var more = $(this).closest('ul').find('.more');
+			
+			var more_width = more.width();
+			
+			var more_margin = parseInt(more.css('margin-right'), 10);
+			
+			var container_width = container.width();
+			
+			var new_width = container_width - (more_width * 2) - (more_margin * 2);
+			
+			container.css('width', new_width + 'px');
+
+			more.hide();
+			
+			$('.media').hide();
+			
+			$(this).closest('ul').find('.readmore').show();
+			
+			$(this).closest('ul').find('.collapse').hide();
+			
+		});		
+		
 	}
 
 	this.slider = function(direction) {
@@ -279,33 +343,50 @@ var UNESCO = {};
 		} 
 	}
 
-	this.resize = function(selector) {
+	this.resize = function(selector, callback) {
 
 		var ns = this;
 
 		var window_width = window.innerWidth;
 
 		if (window_width >= max_width) {
-			var percentage = 100;
+			percentage = 100;
 		} else {
-			var percentage = (window_width * 100) / max_width;
+			percentage = (window_width * 100) / max_width;
 		}
 
 		function apply(elm, target) {
 
 			if (elm.hasClass('resize-' + target)) {
 
-				var attr = elm.css(target);
+				var old_attr = elm.css(target);
 
-				attr = parseInt(attr, 10) * .01 * percentage;
-
-				elm.css(target, attr + 'px');
-
+				attr = parseInt(old_attr, 10) * .01 * percentage;
+				
+				if(attr){
+					
+					elm.css(target, attr + 'px');
+				}
+				
+				/*
+				if(target == 'width'){
+					if(elm.hasClass('text')){
+						console.log("TEXT: " + old_attr + " new_attr " + attr);	
+					} 
+					
+				}
+				*/
+				
 			}
 
 		}
 
-		resized_images_to_load = $("img.resize").length;
+		if(!selector){
+			selector = "body";
+		}
+		
+		
+		resized_images_to_load = $(selector).find("img.resize").length;
 
 		function afterLoad(img) {
 
@@ -315,17 +396,19 @@ var UNESCO = {};
 
 			img.prop('width', attr);
 
-			//var attr = img[0].naturalHeight;
+			var attr = img[0].naturalHeight;
 
-			//var attr = attr * .01 * percentage;
+			var attr = attr * .01 * percentage;
 
-			//img.prop('height', attr);
+			img.prop('height', attr);
 
 			resized_images_to_load--;
 
 			if (resized_images_to_load == 0) {
 
-				ns.afterLoadImages();
+				if(selector == 'body'){
+					ns.afterLoadImages();
+				}
 			}
 
 		}
@@ -373,6 +456,7 @@ var UNESCO = {};
 			apply($(this), 'margin-bottom');
 			apply($(this), 'margin-right');
 			apply($(this), 'margin-left');
+			apply($(this), 'padding-top');
 
 		});
 
@@ -506,8 +590,51 @@ var UNESCO = {};
 
 	this.showBrowse = function(location_id) {
 
+		var ns = this;
+		
 		var elm = $(".UNESCO#browse");
 
+		var images = elm.find(".container .slide-image img");
+		
+		var images_count = 0;
+		
+		images.each(function(){
+			
+			if ($(this).prop('complete')) {
+
+				images_count++;
+				
+				if (images_count == images.length) {
+					ns.finishShowBrowse(location_id);
+				}	
+				
+			} else {
+				
+				$(this).on('load', function() {
+
+					images_count++;
+					
+					console.log('loaded ' + images_count);
+										
+					if (images_count == images.length) {
+						ns.finishShowBrowse(location_id);
+					}
+					
+				});
+			}
+
+			
+			
+		});
+
+	}
+	
+	this.finishShowBrowse = function(location_id){
+		
+		var ns = this;
+		
+		var elm = $(".UNESCO#browse");
+				
 		elm.find(".items-inner").css('top', '0');
 
 		elm.attr('location-id', location_id);
@@ -545,15 +672,16 @@ var UNESCO = {};
 
 		}
 
-		this.legendUnclickable(elm, selector, 'Destroyed');
-		this.legendUnclickable(elm, selector, 'UnderReconstruction');
-		this.legendUnclickable(elm, selector, 'Reconstructed');
+		ns.legendUnclickable(elm, selector, 'Destroyed');
+		ns.legendUnclickable(elm, selector, 'UnderReconstruction');
+		ns.legendUnclickable(elm, selector, 'Reconstructed');
 
 		elm.find(".items .item").removeClass('selected');
 		elm.find(".items .item.show:eq(1)").addClass('selected');
 
 		elm.show();
-
+			
+		
 	}
 
 	this.legendUnclickable = function(elm, selector, filter) {
@@ -622,6 +750,7 @@ var UNESCO = {};
 
 		var ns = this;
 
+		/*
 		$("#browse li.text").each(function() {
 
 			var elm = $(this);
@@ -629,7 +758,8 @@ var UNESCO = {};
 			elm.css('height', sibling_height + 'px');
 
 		});
-
+		*/
+		
 		ns.center($("#splash"));
 
 	}
@@ -821,6 +951,7 @@ var UNESCO = {};
 			}
 
 			content.find(".image img").attr('src', 'details/' + item.details + '/image.png');
+			content.find(".slide-image img").attr('src', 'details/' + item.details + '/image.png');
 
 			if (item.date_created && item.date_destroyed) {
 				content.find(".date").html(item.date_created + ' - ' + item.date_destroyed);
@@ -875,8 +1006,6 @@ var UNESCO = {};
 		reconstructions[item_key].status = status;
 
 		if (reconstructions_loaded == reconstructions.length) {
-			
-			this.resize('#browse .container .image');
 			
 			callback();
 			

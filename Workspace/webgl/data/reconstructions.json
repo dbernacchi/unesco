@@ -389,12 +389,6 @@
 		"name": "Statues and Reliefs",
 		"description": "Statues and Reliefs that currently aren't separated into their unique categories."
 	}, {
-		"details": "07_Sculpture_from_Hatra",
-		"location_id": "2",
-		"id": "65000",
-		"name": "Statues and Reliefs",
-		"description": "Statues and Reliefs that currently aren't separated into their unique categories."
-	}, {
 		"details": "02_Ceiling_in_the_Temple_of_Bel",
 		"location_id": "12",
 		"id": "67",
