@@ -603,10 +603,19 @@ UG.LocationMarkers.prototype =
                 if( PX.IsMobile ) fontSize /= 2;
                 //if( PX.IsMobile ) fontSize = 64;
                 var localPos = new THREE.Vector3( 0, 0, Params.MarkerTextDist );
-                if( WebpageStates.CurrentActiveFilterIndex >= 0)
-                    this.textRenderer1.AppendText( ""+loc.types[ WebpageStates.CurrentActiveFilterIndex ], localPos, Math.floor(fontSize), matRes, true );
+                if( WebpageStates.CurrentActiveFilterIndex >= 0 )
+                {
+                    if( loc.types[ WebpageStates.CurrentActiveFilterIndex ] > 0 )
+                    {
+                        var count = loc.types[ WebpageStates.CurrentActiveFilterIndex ];
+                        this.textRenderer1.AppendText( count.toString(), localPos, Math.floor(fontSize), matRes, true );
+                    }
+                }
                 else
-                    this.textRenderer1.AppendText( ""+loc.modelCount, localPos, Math.floor(fontSize), matRes, true );
+                {
+                    var count = loc.modelCount;
+                    this.textRenderer1.AppendText( count.toString(), localPos, Math.floor(fontSize), matRes, true );
+                }
                 //console.log( WebpageStates.CurrentActiveFilterIndex, loc.types[0], loc.types[1], loc.types[2] );
             }
 

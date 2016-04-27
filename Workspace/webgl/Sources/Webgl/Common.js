@@ -113,7 +113,7 @@ PX =
     , kAvoidanceSpeed: 0.031
     , kMaxGridSize: 4
     , kLocationTextSize: 120.0
-    , kLocationColor: new THREE.Color( 0x1a2e62 )   // Default color
+    , kLocationColor: new THREE.Color( 0x171c5e )   // Default color
     , kLocationMouseOverColorLevel0: new THREE.Color( 0xa3d5fe )   // Mouse over color Level 0
     , kLocationMouseOverColorLevel1: new THREE.Color( 0xf0fbff )   // Mouse over color Level 1
     , kLocationColors2: [ 
