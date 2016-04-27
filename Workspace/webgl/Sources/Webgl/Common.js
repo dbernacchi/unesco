@@ -37,6 +37,56 @@ PX =
     , IsMobile: true
 
 
+    // Paths
+    , ModelRootPath: "webgl/data/models/"
+    , ModelPaths: 
+    [
+          "01_Nimrud_Relief/"
+        , "02_Ceiling_in_the_Temple_of_Bel/"
+        , "03_Stela_7/"
+        , ""
+        , "05_Hatra_Relief/"
+        , "06_Mihrab_of_the_mosque_al_Hasan/"
+        , "07_Sculpture_from_Hatra/"
+        , ""
+        , ""
+        , ""
+        , ""
+        , ""
+        , ""
+        , ""
+        , ""
+        , "16_Lion_of_Mosul/"
+        , ""
+        , ""
+        , ""
+        , ""
+    ]
+    , ModelNames: 
+    [
+          "01_Nimrud_Relief2"
+        , "02_Ceiling_Temple_Bel2"
+        , "03_Stela_7_LOW_2"
+        , ""
+        , "05_Hatra_relief3"
+        , "06_Mihrab_of_the_Mosque_Al_Hasan2"
+        , "07_Sculpture_from_Hatra2"
+        , ""
+        , ""
+        , ""
+        , ""
+        , ""
+        , ""
+        , ""
+        , ""
+        , "16_lion3"
+        , ""
+        , ""
+        , ""
+        , ""
+    ]
+
+
     // Constants
     //
     , EPSILON: 0.001
@@ -46,8 +96,7 @@ PX =
 
     , StartLatLon: { x: 6.3377571, y: 43.139408 }
 
-    , kTransparentCanvas: true
-    , kEnableGUI: true
+    , kEnableGUI: false
     , kEnableStats: false
 
     , MinDistancesPerLevel: [ 230, 80 ]
