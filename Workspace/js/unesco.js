@@ -312,11 +312,11 @@ var UNESCO = {};
 
 			img.prop('width', attr);
 
-			var attr = img[0].naturalHeight;
+			//var attr = img[0].naturalHeight;
 
-			var attr = attr * .01 * percentage;
+			//var attr = attr * .01 * percentage;
 
-			img.prop('height', attr);
+			//img.prop('height', attr);
 
 			resized_images_to_load--;
 
