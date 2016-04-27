@@ -52,11 +52,7 @@ var markerCluster;
 var zoomLevel = 0.0;
 var prevZoomLevel = 0.0;
 
-//var prevClickedLocationIndex = -1;
-
 var cameraLookAtPoint = null;
-
-//var earthOrbitControls = null;
 
 var sunLight = null;
 var earth = null;
@@ -64,7 +60,6 @@ var locationMarkers = null;
 
 // Raycaster
 var g_Raycaster = null;
-//var g_Projector = null;
 
 // Locations
 var locationsDB = [];
@@ -82,9 +77,6 @@ var startTime = 0.0;
 var currentTime = 0.0;
 var previousTime = 0.0;
 var frameTime = 0.0;
-//var frameRate = 0;
-//var frameRateTimeCount = 0.0;
-//var frameCount = 0;
 var clock = new THREE.Clock();
 
 // Interaction
@@ -97,11 +89,11 @@ var mouseDeltaY = 0.0;
 var isMouseDown = false;
 var isMouseMoved = false;
 var isMouseClick = false;
-//var mouseVector = new THREE.Vector2();
 var mouseVector3d = new THREE.Vector3();
 
 
-$(window).unload(function(e) 
+
+/*$(window).unload(function(e) 
 {
 });
 
@@ -112,8 +104,8 @@ $(window).blur(function(e)
 $(window).focus(function(e) 
 {
     OnResize();
-});
-
+});*/
+/*
 THREE.DefaultLoadingManager.onProgress = function( item, loaded, total )
 {
     var percentage = Math.round( ( loaded / total ) * 80.0 );
@@ -124,17 +116,7 @@ THREE.DefaultLoadingManager.onProgress = function( item, loaded, total )
     
     //UNESCO.bottomStatusBar(percentage);
 };
-
-
-//// KEEP PHONE AWAKE: IOS Safari
-//iosSleepPreventInterval = setInterval(function () 
-//{
-//        window.location.href = "/new/page";
-//        window.setTimeout(function () 
-//        {
-//                window.stop();
-//        }, 0 );        
-//}, 20000 );
+*/
 
 
 function ParseBitmapFont( data )
@@ -143,53 +125,6 @@ function ParseBitmapFont( data )
     bmFontDescriptor.Parse( data );
 	//bmFontDescriptor.instantiate( url );
 } 
-
-
-function fullscreen() 
-{
-    //console.log( "+--+  Set fullscreen mode" );
-
-    if (container.requestFullscreen) 
-    {
-        container.requestFullscreen();
-    } 
-    else if (container.msRequestFullscreen) 
-    {
-        container.msRequestFullscreen();
-    } 
-    else if (container.mozRequestFullScreen) 
-    {
-        container.mozRequestFullScreen();
-    } 
-    else if (container.webkitRequestFullscreen) 
-    {
-        container.webkitRequestFullscreen();
-    }
-}
-
-function Shutdown()
-{
-    if (document.exitFullscreen)
-    {
-        document.exitFullscreen();
-    }
-    else if (document.msExitFullscreen)
-    {
-        document.msExitFullscreen();
-    }
-    else if (document.mozCancelFullScreen)
-    {
-        document.mozCancelFullScreen();
-    }
-    else if (document.webkitExitFullscreen)
-    {
-        document.webkitExitFullscreen();
-    }
-
-    //$("#main_container_id").removeClass("hidden");
-
-    //UploadImage();
-}
 
 
 function CreateRenderer()
@@ -211,6 +146,7 @@ function CreateRenderer()
     renderer.sortObjects = false;
     //renderer.autoUpdateObjects = false;
 }
+
 
 function LoadData()
 {
@@ -242,28 +178,23 @@ function LoadData()
         , LoadJsonData("LocationsJson", "webgl/data/latlon.json")
     ).done(function ()
     {
-        PostLoadData();
+        container.width = window.innerWidth;
+        container.height = window.innerHeight;
+        container.style.width = window.innerWidth;
+        container.style.height = window.innerHeight;
+        //
+        renderer.setPixelRatio( window.devicePixelRatio );
+        renderer.setSize( container.width, container.height );
+        //console.log(container.width, container.height);
+        //
+        windowWidth = container.width;
+        windowHeight = container.height;
+        Params.WindowWidth = windowWidth;
+        Params.WindowHeight = windowHeight;
+        deviceContentScale = window.devicePixelRatio || 1;
+
+        BeginApp();
     } );
-}
-
-function PostLoadData()
-{
-    container.width = window.innerWidth;
-    container.height = window.innerHeight;
-    container.style.width = window.innerWidth;
-    container.style.height = window.innerHeight;
-    //
-    renderer.setPixelRatio( window.devicePixelRatio );
-    renderer.setSize( container.width, container.height );
-    //console.log(container.width, container.height);
-    //
-    windowWidth = container.width;
-    windowHeight = container.height;
-    Params.WindowWidth = windowWidth;
-    Params.WindowHeight = windowHeight;
-    deviceContentScale = window.devicePixelRatio || 1;
-
-    BeginApp();
 }
 
 
@@ -484,11 +415,10 @@ function Setup()
     //
     appStateMan.AddStateChangeCallback( function( state )
     {
-        console.log( "+--+  Changing State:\t", PX.AppStatesString[ state ] );
+        //console.log( "+--+  Changing State:\t", PX.AppStatesString[ state ] );
 		switch(state)
         {
 			case PX.AppStates.AppStateEntry:
-				console.log("PX.AppStates.AppStateEntry");
                 // Reset time and show explore button
                 startTime = timeNow();
                 currentTime = 0.0;

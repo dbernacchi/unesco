@@ -3,8 +3,7 @@
 
 UG.LocationMarker = function()
 { 
-    this.id             = -1;
-    //this.GUID           = "";
+    //this.id             = -1;
     this.title          = "";
     this.text           = "";
     this.index          = -1;
@@ -13,8 +12,9 @@ UG.LocationMarker = function()
     this.direction      = new THREE.Vector3();
     this.positionSS     = new THREE.Vector3();
     this.scale          = new THREE.Vector3();
+    this.filterScale    = 1.0;
+    this.filterTargetScale = 1.0;
     this.markerCount    = 0;
-    //this.type           = 0;
     this.types          = [];
     this.color          = null;
     this.targetColor    = null;
@@ -84,6 +84,8 @@ UG.LocationMarkers = function()
     this.lineSprite             = null;
 
     //this.level1FilterScales     = [];
+    //this.level1FilterScaleTarget= [];
+    //var level1FilterScaleDown   = 1.0;
 
     this.locationsGroupAnim     = true;
 };
@@ -160,7 +162,7 @@ UG.LocationMarkers.prototype =
 	        this.meshes.push( mesh );
 
 	        var lm = new UG.LocationMarker();
-            lm.id = loc.id;
+            //lm.id = loc.id;
 	        lm.title = loc.name.toUpperCase();
 	        lm.text = "";
 	        lm.position.copy( loc.position );
@@ -268,11 +270,13 @@ UG.LocationMarkers.prototype =
         this.camera2d = new THREE.OrthographicCamera( 0, Params.WindowWidth, Params.WindowHeight, 0, -100, 100 );
         this.markerScene.add( this.camera2d );
 
-/***
-        this.level1FilterScales.push( new THREE.Vector3( 1.0, 1.0, 1.0 ) );
-        this.level1FilterScales.push( new THREE.Vector3( 1.0, 1.0, 1.0 ) );
-        this.level1FilterScales.push( new THREE.Vector3( 1.0, 1.0, 1.0 ) );
-***/
+/*        this.level1FilterScales.push( new THREE.Vector2( 1.0, 1.0 ) );
+        this.level1FilterScales.push( new THREE.Vector2( 1.0, 1.0 ) );
+        this.level1FilterScales.push( new THREE.Vector2( 1.0, 1.0 ) );
+        this.level1FilterScaleTarget.push( 1.0 );
+        this.level1FilterScaleTarget.push( 1.0 );
+        this.level1FilterScaleTarget.push( 1.0 );*/
+
         // Init
         ////this.markerScene.visible = false;
         this.locationsGroup.visible = false;
@@ -387,6 +391,12 @@ UG.LocationMarkers.prototype =
                     this.meshes[i].position.set( 10000, 0, 0 );
 	   	        }
 
+/*                this.level1FilterScales[ 0 ].x += ( this.level1FilterScaleTarget[ 0 ] - this.level1FilterScales[ 0 ].x ) * 0.01;
+                this.level1FilterScales[ 1 ].x += ( this.level1FilterScaleTarget[ 1 ] - this.level1FilterScales[ 1 ].x ) * 0.01;
+                this.level1FilterScales[ 2 ].x += ( this.level1FilterScaleTarget[ 2 ] - this.level1FilterScales[ 2 ].x ) * 0.01;
+                this.level1FilterScaleDown *= 0.975;
+                //console.log( this.level1FilterScales[ 0 ].x, this.level1FilterScales[ 1 ].x, this.level1FilterScales[ 2 ].x );
+                */
                 this.UpdateLocationMeshes( time, frameTime, camera );
                 break;
             }
@@ -523,7 +533,28 @@ UG.LocationMarkers.prototype =
                     locationScale *= this.level2SelectedGlobalScale.x;
                 }
 
-                //locationScale *= this.level1FilterScales[ loc.type ].x;
+                // Scale based on filters
+                // Filtered ones are shown, others are scaled to 0 
+                /*if( WebpageStates.CurrentActiveFilterIndex >= 0 )
+                {
+                    locationScale *= PX.Saturate( loc.types[ WebpageStates.CurrentActiveFilterIndex ] );
+                    locationScale = PX.Clamp( locationScale, PX.EPSILON, locationScale );
+                }*/
+
+                /*if( WebpageStates.CurrentActiveFilterIndex >= 0 )
+                {
+                    if( loc.types[ WebpageStates.CurrentActiveFilterIndex ] > 0 )
+                    {
+                        locationScale *= this.level1FilterScales[ WebpageStates.CurrentActiveFilterIndex ].x;
+                        locationScale = PX.Clamp( locationScale, PX.EPSILON, locationScale );
+                    }
+                    else
+                    {
+                        locationScale *= this.level1FilterScaleDown;
+                        locationScale = PX.Clamp( locationScale, PX.EPSILON, locationScale );
+                        //console.log( i, locationScale );
+                    }
+                }*/
 
                 loc.scale.set( locationScale, locationScale, locationScale );
 
@@ -582,9 +613,17 @@ UG.LocationMarkers.prototype =
             //
             if( this.outlineGlobalScale.x > PX.EPSILON )
             {
+                // Scale based on filters
+                // Filtered ones are shown, others are scaled to 0 
+                var scale = 1.0;
+                /*if( WebpageStates.CurrentActiveFilterIndex >= 0 )
+                {
+                    scale = PX.Saturate( loc.types[ WebpageStates.CurrentActiveFilterIndex ] );
+                }*/
+
                 var outlinePos = new THREE.Vector3();
                 outlinePos.z += Params.OutlineDist;
-                this.circleRenderer.AppendRect( outlinePos, (PX.kLocationMarkerScale + ((Params.OutlineThickness * 0.001) )), this.meshes[i].matrix );
+                this.circleRenderer.AppendRect( outlinePos, scale * (PX.kLocationMarkerScale + ((Params.OutlineThickness * 0.001) )), this.meshes[i].matrix );
                 //this.circleRenderer.AppendRect( outlinePos, this.outlineGlobalScale.x * (PX.kLocationMarkerScale + ((Params.OutlineThickness * 0.001) / loc.scale.x)), this.meshes[i].matrix );
             }
 	    }
@@ -685,7 +724,6 @@ UG.LocationMarkers.prototype =
         {
             if( filters[ i ] && loc.IsPartOfFilter( i ) )
             {
-                //console.log( loc.id, filters, loc.types, loc.IsPartOfFilter( i ) );
                 loc.targetColor.copy( PX.kLocationColors2[ i ] );
                 loc.colorChangeSpeed = 2.0;
                 return;
@@ -705,6 +743,33 @@ UG.LocationMarkers.prototype =
         if( this.doPopulation || !this.zoomLevel1IntroAnimDone )
             return;
 
+/**
+        // Scale filtered markers
+        // Find is all filters are on
+        var allFiltersOff = 0;
+        for( var i=0; i<3; ++i )
+        {
+            allFiltersOff += filters[ i ];
+        }
+
+        this.level1FilterScaleDown = 1.0;
+        for( var i=0; i<3; ++i )
+        {
+            var value = PX.Saturate( filters[i] + PX.EPSILON );
+            if( allFiltersOff === 0 )  value = PX.Saturate( 1.0 ); // IF all filters are off, then show everything
+
+            if( filters[i] > 0 )
+                this.level1FilterScaleTarget[ i ] = value;
+            else
+                this.level1FilterScaleTarget[ i ] = PX.EPSILON;
+            //console.log( i, filters[i], this.level1FilterScaleTarget[ i ] );
+            //var target = new THREE.Vector2( value, value );
+            //tween = new TWEEN.Tween( this.level1FilterScales[ i ] ).to( target, 0.5 * 1000.0 );
+            //tween.easing( TWEEN.Easing.Quadratic.InOut );
+            //tween.start();
+            //this.level1FilterScales[ i ].set( filters[i], filters[i] );
+        }
+**/
         for( var i=0; i<this.markersCount; ++i )
         {
             var loc = this.markers[ i ];
@@ -720,12 +785,13 @@ UG.LocationMarkers.prototype =
         if( this.doPopulation )
             return -1;
 
-/***
-        for( var i=0; i<3; ++i )
+        // Scale filtered markers
+        /*for( var i=0; i<3; ++i )
         {
-            this.level1FilterScales[ i ].set( 1.0, 1.0, 1.0 );
-        }
-***/
+            this.level1FilterScales[ i ].set( 1.0, 1.0 );
+        }*/
+
+
         for( var i=0; i<this.markersCount; ++i )
         {
             var loc = this.markers[i];
@@ -889,14 +955,13 @@ UG.LocationMarkers.prototype =
                 Params.TiltShiftStrength = tiltStart.x;
             });
 
-/***
             // Reset filter scales and switches
-            for( var i=0; i<3; ++i )
+            /*for( var i=0; i<3; ++i )
             {
                 WebpageStates.FilterSwitches[ i ] = 0;
-                locationMarkers.level1FilterScales[ i ].set( 1.0, 1.0, 1.0 );
-            }
-***/
+                locationMarkers.level1FilterScales[ i ].set( 1.0, 1.0 );
+            }*/
+
             //
             //this.FilterLocationMeshColors( WebpageStates.FilterSwitches );
 
@@ -1279,7 +1344,7 @@ UG.LocationMarkers.prototype =
         {
             var scope = this;
 
-            console.log( "+--+  Number of clusters: " + clusterCount + " at zoom level: " + this.zoomLevel );
+            //console.log( "+--+  Number of clusters: " + clusterCount + " at zoom level: " + this.zoomLevel );
 
             this.doPopulation = false;
 
@@ -1334,6 +1399,13 @@ UG.LocationMarkers.prototype =
                     {
                         locationScale *= 2.0;
                     }
+
+                    // Scale based on filters
+                    /*if( WebpageStates.CurrentActiveFilterIndex >= 0 )
+                    {
+                        locationScale *= PX.Saturate( loc.types[ WebpageStates.CurrentActiveFilterIndex ] );
+                        locationScale = PX.Clamp( locationScale, PX.EPSILON, locationScale );
+                    }*/
 
                     // Tween location markers
                     var target = new THREE.Vector3( locationScale, locationScale, locationScale );

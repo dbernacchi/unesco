@@ -178,7 +178,8 @@ UG.Earth.prototype =
     , ResetTransform: function( onCompleteCB )
     {
         var resetAngle = PX.Utils.NextMultiple( this.currentAngle.x, 360 );
-        console.log( "resetAngle: " + resetAngle + " currentAngle: " + this.currentAngle.x );
+        //console.log( "resetAngle: " + resetAngle + " currentAngle: " + this.currentAngle.x );
+
         var tween = new TWEEN.Tween( this.currentAngle ).to( { x: resetAngle }, 2000 );
         tween.easing( TWEEN.Easing.Sinusoidal.InOut );
         //tween.delay( 1000 );
