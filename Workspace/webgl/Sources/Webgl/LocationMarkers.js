@@ -818,8 +818,7 @@ UG.LocationMarkers.prototype =
             {
                 var loc = this.markers[i];
                 //console.log( intersects );
-                //intersects[ 0 ].object.material.color.set( PX.kLocationMouseOverColor );
-                loc.targetColor.copy( PX.kLocationColors2[3] );
+                loc.targetColor.copy( PX.kLocationMouseOverColorLevel1 );     // Mouse Over Color
                 loc.colorChangeSpeed = 10.0;
                 this.titleTargetOpacity = 1.0;
                 return i;
@@ -838,7 +837,7 @@ UG.LocationMarkers.prototype =
             return -1;
 
         var c0 = PX.kLocationColor;
-        var c1 = PX.kLocationColors2[2];
+        var c1 = PX.kLocationMouseOverColorLevel0;
 
         for( var i=0; i<this.markersCount; ++i )
         {
