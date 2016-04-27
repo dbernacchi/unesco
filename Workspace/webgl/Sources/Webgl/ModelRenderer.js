@@ -46,7 +46,10 @@ PX.ModelRenderer.prototype =
 
         //console.log( width, height );
 
-        this.renderer = new THREE.WebGLRenderer( { antialias: true, precision: PX.ShaderPrecision, stencil: false, alpha: true } );
+        if( !this.renderer )
+        {
+            this.renderer = new THREE.WebGLRenderer( { antialias: true, precision: PX.ShaderPrecision, stencil: false, alpha: true } );
+        }
         this.renderer.setClearColor( 0x000000, 0.0 );
         //renderer.gammaInput = true;
         //renderer.gammaOutput = true;
@@ -74,13 +77,19 @@ PX.ModelRenderer.prototype =
 
         // Artefact Scene
         //
-        this.artefactScene = new THREE.Scene();
+        if( !this.artefactScene )
+        {
+            this.artefactScene = new THREE.Scene();
+        }
 
         // Create Artefact camera
         //
         this.aspectRatio = width / height;
 
-        this.artefactCamera = new THREE.PerspectiveCamera( PX.kCameraFovY, this.aspectRatio, PX.kModelCameraNearPlane, PX.kModelCameraFarPlane );
+        if( !this.artefactCamera )
+        {
+            this.artefactCamera = new THREE.PerspectiveCamera( PX.kCameraFovY, this.aspectRatio, PX.kModelCameraNearPlane, PX.kModelCameraFarPlane );
+        }
         this.artefactCamera.updateProjectionMatrix();
         this.artefactCamera.position = new THREE.Vector3( 0, 0, 50.0 );
         var currentCamLookAt0 = new THREE.Vector3( 0, 0, 0 );
@@ -89,10 +98,10 @@ PX.ModelRenderer.prototype =
 
         // Create Artefact sun light
         //
-        artSunLight = new THREE.DirectionalLight( 0xffffff );
-        artSunLight.position.set( 0.5, 1, 1 );
+        this.artSunLight = new THREE.DirectionalLight( 0xffffff );
+        this.artSunLight.position.set( 0.5, 1, 1 );
         //artSunLight.position.copy( this.artefactCamera.getWorldDirection() );
-        this.artefactScene.add( artSunLight );
+        this.artefactScene.add( this.artSunLight );
         var artAmbLight = new THREE.HemisphereLight( 0x7f7faa, 0x040410, 1 );
         this.artefactScene.add( artAmbLight );
 
@@ -356,7 +365,10 @@ PX.ModelRenderer.prototype =
     {
         this.enabled = false;
 
-	    this.artefactOrbitControls = new THREE.OrbitControls( this.artefactCamera, this.renderer.domElement );
+        if( !this.artefactOrbitControls )
+        {
+	        this.artefactOrbitControls = new THREE.OrbitControls( this.artefactCamera, this.renderer.domElement );
+        }
         this.artefactOrbitControls.enableDamping = true;
         this.artefactOrbitControls.dampingFactor = 0.05;
         this.artefactOrbitControls.rotateSpeed = 0.05;
@@ -380,29 +392,59 @@ PX.ModelRenderer.prototype =
             this.artefactOrbitControls = null;
         }
 
+        console.log( "+--+  Scene children count: ", this.artefactScene.children.length );
+
         //
-        if( this.artefactScene.children.length > 0 )
+        var scope = this.artefactScene;
+        this.artefactScene.traverse( function( obj )
+        {
+            console.log( obj );
+
+            if( obj instanceof THREE.Mesh )
+            {
+                console.log( "+--+  Removed 3d model" );
+                scope.remove( obj );
+                if( obj.material.map ) obj.material.map.dispose();
+                if( obj.material.normalMap ) obj.material.normalMap.dispose();
+                obj.material.dispose();
+                obj.geometry.dispose();
+                obj = null;
+            }
+            if( obj instanceof THREE.Group )
+            {
+                console.log( "+--+  Removed 3d group " );
+                scope.remove( obj );
+                obj = null;
+            }
+        });
+
+        console.log( "+--+  Scene children count: ", this.artefactScene.children.length );
+
+        /*if( this.artefactScene.children.length > 0 )
         {
             for( var i=this.artefactScene.children.length-1; i>=0; i-- )
             {
-                obj = this.artefactScene.children[ i ];
-                if( obj instanceof THREE.Mesh )
+                var obj = this.artefactScene.children[ i ];
+                console.log( obj );
+                if( obj instanceof THREE.Mesh ) 
                 {
                     console.log( "+--+  Removed 3d model" );
                     this.artefactScene.remove( obj );
                     if( obj.material.map ) obj.material.map.dispose();
+                    if( obj.material.normalMap ) obj.material.normalMap.dispose();
                     obj.material.dispose();
                     obj.geometry.dispose();
                     //obj.dispose();
                     obj = null;
                 }
             }
-        }
-
-        this.enabled = false;
+        }*/
 
         //
+        this.Render();  // Render once to clear the Scene
         this.renderer.clear();
+
+        this.enabled = false;
     }
 }
 

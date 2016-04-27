@@ -61,11 +61,17 @@ function PopulateLocationsWithModelInfo( reconstructions )
                 //console.log( i, res );
            
                 if( res === "destroyed" )
-                    loc.types[0]++;
+                {
+                    loc.types[ PX.ModelTypeDestroyed ]++;
+                }
                 else if( res === "under reconstruction" )
-                    loc.types[1]++;
+                {
+                    loc.types[ PX.ModelTypeUnderConstruction ]++;
+                }
                 else if( res === "reconstructed" )
-                    loc.types[2]++;
+                {
+                    loc.types[ PX.ModelTypeReconstructed ]++;
+                }
             }
             else
             {
