@@ -114,9 +114,10 @@ var UNESCO = {};
 			Params.MainScene = false;
 
 			var modelContainer = $(".UNESCO#slide-9 #glModelContainer");
-			if (!modelRenderer) {
+			if (!modelRenderer) 
+            {
 				modelRenderer = new PX.ModelRenderer();
-				modelRenderer.Init(modelContainer[0], windowWidth, windowHeight);
+			    modelRenderer.Init(modelContainer[0], windowWidth, windowHeight);
 			}
 
 			// @NOTE: We do not pass filename extension. That's added internally in the Loaders
