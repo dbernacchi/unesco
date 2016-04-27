@@ -166,13 +166,15 @@ function LoadData()
         , LoadTexture( "EarthNightLightsMap", globeNightLightsTex )
         , LoadTexture( "Circle", "webgl/data/textures/circle_full.png" )
         , LoadTexture( "EarthShadow", "webgl/data/textures/blobshadow.png" )
-        , LoadTexture( "TooltipLine", "webgl/data/textures/line.png" )
+        , LoadTexture( "TooltipLine", "webgl/data/textures/line2.png" )
         , LoadShaderData("EarthVertexShader", "webgl/data/shaders/Earth.vertex")
         , LoadShaderData("EarthPixelShader", "webgl/data/shaders/Earth.fragment")
         , LoadShaderData("ModelVertexShader", "webgl/data/shaders/Model.vertex")
         , LoadShaderData("ModelPixelShader", "webgl/data/shaders/Model.fragment")
-        , LoadText( "TextAtlasXml", "webgl/data/fonts/font.xml" )
-        , LoadTexture( "TextAtlasTex", "webgl/data/fonts/font_0.png" )
+        , LoadText( "TextAtlasXml", "webgl/data/fonts/font_bold.xml" )
+        , LoadTexture( "TextAtlasTex", "webgl/data/fonts/font_bold_0.png" )
+        //, LoadText( "TextAtlasXml", "webgl/data/fonts/font.xml" )
+        //, LoadTexture( "TextAtlasTex", "webgl/data/fonts/font_0.png" )
         //, LoadText( "TextAtlasXml", "webgl/data/fonts/arialLarge.xml" )
         //, LoadTexture( "TextAtlasTex", "webgl/data/fonts/arialLargeTransparent.png" )
         , LoadJsonData("LocationsJson", "webgl/data/latlon.json")
@@ -1079,6 +1081,8 @@ function onTouchStart( event )
     mouseX = event.touches[ 0 ].pageX;
     mouseY = event.touches[ 0 ].pageY;
 
+    locationMarkers.OnMouseOverEvent();
+
     previousMouseX = mouseX;
     previousMouseY = mouseY;
 }
@@ -1102,6 +1106,8 @@ function onTouchMove( event )
     isMouseMoved = true;
     mouseX = event.touches[ 0 ].pageX;
     mouseY = event.touches[ 0 ].pageY;
+
+    locationMarkers.OnMouseOverEvent();
 
 	event.preventDefault();
 	event.stopPropagation();
