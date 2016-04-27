@@ -99,6 +99,10 @@ PX =
     , kEnableGUI: false
     , kEnableStats: false
 
+    , ModelTypeDestroyed: 0
+    , ModelTypeUnderConstruction: 1
+    , ModelTypeReconstructed: 2
+
     , MinDistancesPerLevel: [ 230, 80 ]
     //, MinDistancesPerLevel: []
 
