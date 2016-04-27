@@ -86,7 +86,7 @@ PX =
 
 
     // Constants
-    , EPSILON: 0.001
+    , EPSILON: 0.0001
 
     //, ShaderPrecision: "mediump"
     , ShaderPrecision: "highp"

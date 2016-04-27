@@ -300,6 +300,13 @@ UG.LocationMarkers.prototype =
 
     , TweenLevel0: function( targetValue, time, delay, onStartCB, onCompleteCB )
     {
+        this.billboards.visible = true;
+        this.textRenderer2.visible = true;
+        //
+        this.locationsGroup.visible = false;
+        this.textRenderer.visible   = false;
+        this.textRenderer1.visible  = false;
+
         var target = { x : targetValue, y: targetValue, z: targetValue };
         var tween = new TWEEN.Tween( this.billboardsGroup.scale ).to( target, time );
         tween.easing( TWEEN.Easing.Quintic.InOut );
@@ -317,6 +324,10 @@ UG.LocationMarkers.prototype =
 
     , TweenLevel1: function( targetValue, time, delay, onStartCB, onCompleteCB )
     {
+        this.locationsGroup.visible = true;
+        this.textRenderer.visible   = true;
+        this.textRenderer1.visible  = true;
+
         if( this.locationsGroupAnim )
         {
             var target = new THREE.Vector3( targetValue, targetValue, targetValue );
@@ -1039,6 +1050,10 @@ UG.LocationMarkers.prototype =
                     //appStateMan.ChangeState( PX.AppStates.AppStateLevel1 );
 
                     trackball.Reset( camera, cameraLookAtPoint );
+
+                    // Hide billboards
+                    scope.billboards.visible = false;
+                    scope.textRenderer2.visible = false;
                 });
             });
 
