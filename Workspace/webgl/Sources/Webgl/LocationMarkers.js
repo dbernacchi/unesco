@@ -603,10 +603,19 @@ UG.LocationMarkers.prototype =
                 if( PX.IsMobile ) fontSize /= 2;
                 //if( PX.IsMobile ) fontSize = 64;
                 var localPos = new THREE.Vector3( 0, 0, Params.MarkerTextDist );
-                if( WebpageStates.CurrentActiveFilterIndex >= 0)
-                    this.textRenderer1.AppendText( ""+loc.types[ WebpageStates.CurrentActiveFilterIndex ], localPos, Math.floor(fontSize), matRes, true );
+                if( WebpageStates.CurrentActiveFilterIndex >= 0 )
+                {
+                    if( loc.types[ WebpageStates.CurrentActiveFilterIndex ] > 0 )
+                    {
+                        var count = loc.types[ WebpageStates.CurrentActiveFilterIndex ];
+                        this.textRenderer1.AppendText( count.toString(), localPos, Math.floor(fontSize), matRes, true );
+                    }
+                }
                 else
-                    this.textRenderer1.AppendText( ""+loc.modelCount, localPos, Math.floor(fontSize), matRes, true );
+                {
+                    var count = loc.modelCount;
+                    this.textRenderer1.AppendText( count.toString(), localPos, Math.floor(fontSize), matRes, true );
+                }
                 //console.log( WebpageStates.CurrentActiveFilterIndex, loc.types[0], loc.types[1], loc.types[2] );
             }
 
@@ -818,8 +827,7 @@ UG.LocationMarkers.prototype =
             {
                 var loc = this.markers[i];
                 //console.log( intersects );
-                //intersects[ 0 ].object.material.color.set( PX.kLocationMouseOverColor );
-                loc.targetColor.copy( PX.kLocationColors2[3] );
+                loc.targetColor.copy( PX.kLocationMouseOverColorLevel1 );     // Mouse Over Color
                 loc.colorChangeSpeed = 10.0;
                 this.titleTargetOpacity = 1.0;
                 return i;
@@ -838,7 +846,7 @@ UG.LocationMarkers.prototype =
             return -1;
 
         var c0 = PX.kLocationColor;
-        var c1 = PX.kLocationColors2[2];
+        var c1 = PX.kLocationMouseOverColorLevel0;
 
         for( var i=0; i<this.markersCount; ++i )
         {

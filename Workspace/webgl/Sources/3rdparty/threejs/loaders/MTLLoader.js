@@ -20,13 +20,12 @@ THREE.MTLLoader.prototype = {
 
 		var loader = new THREE.XHRLoader( this.manager );
 		loader.setPath( this.path );
-		var request = loader.load( url, function ( text ) {
+		loader.load( url, function ( text ) {
 
 			onLoad( scope.parse( text ) );
 
 		}, onProgress, onError );
 
-        return request;
 	},
 
 	setPath: function ( value ) {
@@ -328,9 +327,15 @@ THREE.MTLLoader.MaterialCreator.prototype = {
 				case 'map_kd':
 
 					// Diffuse texture map
-                    console.log( "MTL: load map texture: ", (this.baseUrl + value) );
 
-                    params[ 'map' ] = this.loadTexture( (this.baseUrl + value), undefined, 
+					/*params[ 'map' ] = this.loadTexture( this.baseUrl + value );
+					params[ 'map' ].wrapS = this.wrap;
+					params[ 'map' ].wrapT = this.wrap;*/
+
+					// Diffuse texture map
+                    console.log( "MTL: load map texture: ", this.baseUrl + value );
+
+                    params[ 'map' ] = this.loadTexture( this.baseUrl + value, undefined, 
                     function(){
                         console.log( "map onLoad " );
                     },
@@ -390,16 +395,16 @@ THREE.MTLLoader.MaterialCreator.prototype = {
                     }
 
 					// Bump texture map
-                    console.log( "MTL: load bump texture: ", (this.baseUrl + value) );
+                    console.log( "MTL: load bump texture: ", this.baseUrl + value );
 
 					//if ( params[ 'bumpMap' ] ) break; // Avoid loading twice.
-					//if ( params[ 'normalMap' ] ) break; // Avoid loading twice.
+					if ( params[ 'normalMap' ] ) break; // Avoid loading twice.
 
 					/*params[ 'bumpMap' ] = this.loadTexture( this.baseUrl + value );
 					params[ 'bumpMap' ].wrapS = this.wrap;
 					params[ 'bumpMap' ].wrapT = this.wrap;*/
 
-                    params[ 'normalMap' ] = this.loadTexture( (this.baseUrl + value), undefined, 
+                    params[ 'normalMap' ] = this.loadTexture( this.baseUrl + value, undefined, 
                     function(){
                         console.log( "normalMap onLoad " );
                     },
@@ -422,24 +427,22 @@ THREE.MTLLoader.MaterialCreator.prototype = {
 
 		}
 
-        params[ 'shading' ] = THREE.SmoothShading;
-
 		this.materials[ materialName ] = new THREE.MeshPhongMaterial( params );
-
 		return this.materials[ materialName ];
+
 	},
 
 
 	loadTexture: function ( url, mapping, onLoad, onProgress, onError ) {
 
 		var texture;
-        var loader = null;
-		//var loader = THREE.Loader.Handlers.get( url );
+		var loader = THREE.Loader.Handlers.get( url );
 		var manager = ( this.manager !== undefined ) ? this.manager : THREE.DefaultLoadingManager;
 
-		if ( loader === null ) 
-        {
+		if ( loader === null ) {
+
 			loader = new THREE.TextureLoader( manager );
+
 		}
 
 		if ( loader.setCrossOrigin ) loader.setCrossOrigin( this.crossOrigin );

@@ -28,8 +28,6 @@ else
 PX =
 {
     // Resources
-    //
-
     AssetsDatabase: []
 
 
@@ -88,7 +86,6 @@ PX =
 
 
     // Constants
-    //
     , EPSILON: 0.001
 
     //, ShaderPrecision: "mediump"
@@ -104,7 +101,6 @@ PX =
     , ModelTypeReconstructed: 2
 
     , MinDistancesPerLevel: [ 230, 80 ]
-    //, MinDistancesPerLevel: []
 
     , kEarthScale: 30.0
     , kEarthDetailX: 32 * 2
@@ -115,14 +111,15 @@ PX =
     , kLocationMarkerZScale: 0.2 //0.125
     , kLocationFontSize: 9
     , kAvoidanceSpeed: 0.031
-    //, kAvoidanceSpeed: 6.0
     , kMaxGridSize: 4
     , kLocationTextSize: 120.0
-    , kLocationColor: new THREE.Color( 0x171c5e )
-    , kLocationColors: [ 0x171c5e, 0x2f4598, 0x6e89c4 ]
-    , kLocationMouseOverColor: 0xf0fbff
-    , kLocationMouseClickedColor: 0xf0fbff
-    , kLocationColors2: [ new THREE.Color( 0x2f4598 ), new THREE.Color( 0x6e89c4 ), new THREE.Color( 0xc0e3fe ), new THREE.Color( 0xf0fbff ) ]
+    , kLocationColor: new THREE.Color( 0x171c5e )   // Default color
+    , kLocationMouseOverColorLevel0: new THREE.Color( 0xa3d5fe )   // Mouse over color Level 0
+    , kLocationMouseOverColorLevel1: new THREE.Color( 0xf0fbff )   // Mouse over color Level 1
+    , kLocationColors2: [ 
+        new THREE.Color( 0x1a2e62 ),    // Destroyed
+        new THREE.Color( 0x273d90 ),    // Under Construction
+        new THREE.Color( 0xa3d5fe ) ]   // Reconstructed
 
     , kCameraFovY: 36.0
     , kCameraNearPlane: 16.0
@@ -136,7 +133,6 @@ PX =
     , kCameraMaxDistance: 160.0
     , kCameraOneOverMinDistance: 1.0 / 70.0     
     , kCameraOneOverMaxDistance: 1.0 / 160.0
-    //, kGlobalTimeScale: 1.0
 
     , kZoomMaxLevel: 3.0
 

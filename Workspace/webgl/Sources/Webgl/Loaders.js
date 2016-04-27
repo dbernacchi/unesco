@@ -197,14 +197,29 @@ function LoadOBJScene( path, filename, scene, shaderMaterials, onProgressCB, onC
     //var url = path + filename;
     console.log( "+--+  Load OBJ Scene:\t", path + filename );
 
-    var mtlLoader = new THREE.MTLLoader();
-    var objLoader = new THREE.OBJLoader();
-
-	var loadStartTime = Date.now();
 
     var mtlUrl = filename + ".mtl"; // + "?" + new Date().getTime();;
     var objUrl = filename + ".obj"; // + "?" + new Date().getTime();;
 
+
+	var onProgress = function ( xhr ) 
+    {
+		if ( xhr.lengthComputable ) 
+        {
+            var percentage = ( xhr.loaded / xhr.total );
+            if( xhr.total <= 0.0 ) percentage = 0.0;
+            if( onProgressCB ) onProgressCB( percentage );
+		}
+	};
+
+	var onError = function ( xhr ) 
+    { 
+        console.log( "**** OBJ onError: ", xhr );
+    };
+
+	var loadStartTime = Date.now();
+
+    var mtlLoader = new THREE.MTLLoader();
 	mtlLoader.setBaseUrl( path );
 	mtlLoader.setPath( path );
 	var mtlRequest = mtlLoader.load( mtlUrl, function( materials ) 
@@ -228,6 +243,7 @@ function LoadOBJScene( path, filename, scene, shaderMaterials, onProgressCB, onC
             ourMat = mat;
         }
         */
+        var objLoader = new THREE.OBJLoader();
 		objLoader.setMaterials( materials );
 	    objLoader.setPath( path );
 	    var objRequest = objLoader.load( objUrl
@@ -362,7 +378,8 @@ function LoadOBJScene( path, filename, scene, shaderMaterials, onProgressCB, onC
 
             if( onCompleteCB ) onCompleteCB();
         } 
-        , function(result) 
+        , onProgress, onError );
+        /*, function(result) 
         {
             var percentage = ( result.loaded / result.total );
             if( result.total <= 0.0 ) percentage = 0.0;
@@ -371,9 +388,9 @@ function LoadOBJScene( path, filename, scene, shaderMaterials, onProgressCB, onC
         , function()
         {
             console.log( "**** onError: Failed to load OBJ" );
-        });
+        });*/
 
-        console.log( "+--+  OBJ Loader Request: ", objRequest );
+        //console.log( "+--+  OBJ Loader Request: ", objRequest );
     }
     , function(result) 
     {
