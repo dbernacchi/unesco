@@ -703,7 +703,7 @@ function Setup()
 
 
     // TEMP:
-    var modelFastLane = true;
+    var modelFastLane = false;
     if( modelFastLane )
     {
 		UNESCO.hideSplash();

@@ -123,8 +123,8 @@ UG.LocationMarkers.prototype =
             var color = PX.kLocationColor.clone();
 
 	        //var material = new THREE.MeshLambertMaterial( { color: color, emissive: 0x003333 } );
-	        var material = new THREE.MeshLambertMaterial( { color: color } );
-	        //var material = new THREE.MeshBasicMaterial( { color: color } );
+	        //var material = new THREE.MeshLambertMaterial( { color: color } );
+	        var material = new THREE.MeshBasicMaterial( { color: color } );
 	        //material.depthWrite = false;
             //material.polygonOffset = true;
             //material.polygonOffsetFactor = 0.6;
