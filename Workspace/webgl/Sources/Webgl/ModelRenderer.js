@@ -97,7 +97,7 @@ PX.ModelRenderer.prototype =
         this.artefactScene.add( artAmbLight );
 
 
-        this.SetupMaterial();
+        //this.SetupMaterial();
 
         // Init Trackball
         //
@@ -212,6 +212,7 @@ PX.ModelRenderer.prototype =
         this.materials.push( materialNoMaps );
     }
 
+
     , Load( path, filename, onProgressCB )
     {
         var scope = this;
@@ -285,6 +286,7 @@ PX.ModelRenderer.prototype =
         } );
     }
 
+
     , Update( time, frameTime )
     {
         //
@@ -339,6 +341,7 @@ PX.ModelRenderer.prototype =
         this.renderer.render( this.artefactScene, this.artefactCamera );
     }
 
+
     , OnFrame( time, frameTime )
     {
         if( ! this.enabled )
@@ -347,6 +350,7 @@ PX.ModelRenderer.prototype =
         this.Update( time, frameTime );
         this.Render();
     }
+
 
     , Reset()
     {

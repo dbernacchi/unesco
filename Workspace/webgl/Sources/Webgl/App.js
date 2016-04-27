@@ -946,8 +946,7 @@ function ZoomInFromLevel0ToLevel1( isUserClickOnLocation )
                 var res = locationMarkers.OnMouseClickEvent( mouseVector3d, camera, true,
                 function( object )  // Callback returning clicked marker
                 {
-                    console.log( "+--+  Clicked Marker ID:\t", object.id );
-                    
+                    //console.log( "+--+  Clicked Marker ID:\t", object.id );                    
                     UNESCO.showBrowse(object.id);
                     
                 } );
@@ -955,11 +954,7 @@ function ZoomInFromLevel0ToLevel1( isUserClickOnLocation )
         }
         else
         {
-            //if( isMouseClick )
-            //{
-                //console.log( "ZoomInFromLevel0ToLevel1 (1)" );
-                locationMarkers.OnMouseClickEvent( mouseVector3d, camera, false, null );
-            //}
+            locationMarkers.OnMouseClickEvent( mouseVector3d, camera, false, null );
         }
     }
 }
