@@ -84,50 +84,31 @@ var UNESCO = {};
 
 		});
 
-		/*
-		 $(".UNESCO#slide-9 .close-button").click(function(e) {
-		 e.preventDefault();
-
-		 $(".UNESCO#slide-5").show();
-		 $(".UNESCO#slide-9").hide();
-
-		 // On close, clean up the model Renderer
-		 Params.MainScene = true;
-		 if (modelRenderer) {
-		 modelRenderer.Clear();
-		 }
-
-		 });
-
-		 $(".UNESCO#slide-5 .close-button").click(function(e) {
-		 e.preventDefault();
-
-		 $(".UNESCO#slide-5").hide();
-
-		 $(".UNESCO#menu-button").show();
-		 $(".UNESCO#browse").show();
-
-		 });
-
-		 */
-
 		$(document).on('click', ".UNESCO#browse .item.selected a", function(e) {
 			e.preventDefault();
 			
-			console.log("CLICK");
-
+			var entry = $('#browse .item.selected .container').html();
+			
+			$('#slide-5 .container').html(entry);
+			
 			$(".UNESCO#browse").hide();
 
 			$(".UNESCO#menu-button").hide();
-
-			ns.center($(".UNESCO#slide-5 ul"));
+			$(".UNESCO.furniture").hide();
+			$(".UNESCO.close-button").show();
+			
+			//ns.center($(".UNESCO#slide-5 ul"));
+			$(".UNESCO#slide-5").show();
 
 		});
 
-		$(".UNESCO#slide-5 .magnify").click(function(e) {
+		$(document).on('click', ".UNESCO#slide-5 .magnify", function(e) {
 			e.preventDefault();
 
 			$(".UNESCO#slide-5").hide();
+			
+			$(".UNESCO.close-button").show();
+			
 			$(".UNESCO#slide-9").show();
 
 			Params.MainScene = false;
@@ -139,17 +120,28 @@ var UNESCO = {};
 			}
 
 			// @NOTE: We do not pass filename extension. That's added internally in the Loaders
-            var modelIndex = 15;
+            /*var modelIndex = 15;
+            
             if( PX.ModelNames[ modelIndex ].length > 0 )
             {
-                    modelRenderer.Load( PX.ModelRootPath + PX.ModelPaths[ modelIndex ], PX.ModelNames[ modelIndex ], function( per ) {
+
+                    modelRenderer.Load( PX.ModelRootPath + PX.ModelPaths[ modelIndex ], PX.ModelNames[ modelIndex ], function( per ) {                 
 		            //console.log("+---+  Loading: " + parseInt(per * 100.0) + "%" );
-	            });
+	            	});
             }
             else
             {
                 console.log( "****  3d Model not available. Index: ", (modelIndex+1) );
             }
+            */
+           
+			var folder =  $("#browse .item.selected").attr('folder');
+			//webgl/data/models/16_Lion_of_Mosul/16_lion3
+			var filename =  $("#browse .item.selected").attr('filename');
+            modelRenderer.Load( PX.ModelRootPath + folder + "/", filename, function( per ) {	
+            	//console.log("+---+  Loading: " + parseInt(per * 100.0) + "%" );
+        	});
+            
 		});
 
 		$(".UNESCO#share-button").click(function(e) {
@@ -183,10 +175,25 @@ var UNESCO = {};
 			e.preventDefault();
 
 			ns.overlayRemove();
-			$(".UNESCO#about").hide();
-			$(".UNESCO.furniture").show();
+			
+			if($(".UNESCO#about").css('display') == 'block'){
+				
+				$(".UNESCO#about").hide();
+				$(".UNESCO.furniture").show();
+				$(this).hide();
+			} else if($(".UNESCO#slide-5").css('display') == 'block'){
+				$(".UNESCO#slide-5").hide();
+				$(".UNESCO.furniture").show();
+				$(".UNESCO#browse").show();
+				$(this).hide();
+			} else if($(".UNESCO#slide-9").css('display') == 'block'){
+				$(".preloaderBG").hide();
+				$(".preloaderFG").hide();
+				$(".UNESCO#slide-9").hide();
+				$(".UNESCO#slide-5").show();
 
-			$(this).hide();
+			}
+			
 
 		});
 
@@ -730,10 +737,51 @@ var UNESCO = {};
 
 		//videos
 		val.videos = item.videos;
+		
+		
+		//get copy	
+		var url = "details/" + val.details + "/copy.html";
+			
+		$.ajax({
+			url : url,
+			success : function(data) {
 
+				ns.getCopy(data, key, val, callback);
+			},
+			error : function(data) {
+
+				ns.getCopy(data, key, val, callback);
+			}
+		});
+		
+	}
+	
+	this.getCopy = function(data, key, val, callback) {
+
+		var ns = this;
+
+		copy = data.responseText;
+		if (!copy) {
+			copy = data;
+		}
+		
+		//get first paragraph (excerpt)
+		var body = $("<div>" + copy + "</div>");
+		
+		var excerpt = body.find('p').first().html();
+		
+		//get rest (more)
+		body.find('p').first().remove();
+		
+		var more = body.html();
+		
+		val.excerpt = excerpt;
+		
+		val.more = more;
+		
 		ns.buildItem(key, val, callback);
 
-	}
+	}	
 
 	this.buildItem = function(item_key, item, callback) {
 
@@ -779,7 +827,7 @@ var UNESCO = {};
 					var obj = p[key];
 					var output = obj[Object.keys(obj)[0]];
 
-					content.find(".media .images").append('<img src="details/' + item.details + '/images/' + output + '" />');
+					content.find(".entry .images").append('<img src="details/' + item.details + '/images/' + output + '" />');
 				}
 			}
 
@@ -791,15 +839,25 @@ var UNESCO = {};
 					var obj = p[key];
 					var output = obj[Object.keys(obj)[0]];
 
-					content.find(".media .videos").append('<iframe width="420" height="315" src="' + output + '" frameborder="0" allowfullscreen=""></iframe>');
+					content.find(".entry .videos").append('<iframe width="420" height="315" src="' + output + '" frameborder="0" allowfullscreen=""></iframe>');
 				}
 			}
-
+			
+			if(item.excerpt){
+				content.find(".entry .excerpt").html(item.excerpt);
+			}
+			
+			if(item.more){
+				content.find(".entry .more").html(item.more);
+			}
 		}
 
 		content.find(".status").html(status);
 		content.attr("status", status.replace(' ', ''));
 
+		console.log("name: " + item.name + " loc: " + item.location_id + " status: " + status);
+		
+		
 		$("#browse .items .items-inner").append(content);
 
 		//add to browse
@@ -809,7 +867,9 @@ var UNESCO = {};
 		reconstructions[item_key].status = status;
 
 		if (reconstructions_loaded == reconstructions.length) {
+			
 			callback();
+			
 		}
 
 	}
