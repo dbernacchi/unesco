@@ -622,8 +622,6 @@ UG.LocationMarkers.prototype =
                 matRes.multiplyMatrices( matRes, matScale );
 
                 var fontSize = 130;
-                if( PX.IsMobile ) fontSize /= 2;
-                //if( PX.IsMobile ) fontSize = 64;
                 var localPos = new THREE.Vector3( 0, 0, Params.MarkerTextDist );
                 if( WebpageStates.CurrentActiveFilterIndex >= 0 )
                 {
