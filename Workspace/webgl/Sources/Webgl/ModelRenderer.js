@@ -77,7 +77,7 @@ PX.ModelRenderer.prototype =
 
         // Artefact Scene
         //
-        if( !this.artefactScene )
+        //if( !this.artefactScene )
         {
             this.artefactScene = new THREE.Scene();
         }
@@ -86,7 +86,7 @@ PX.ModelRenderer.prototype =
         //
         this.aspectRatio = width / height;
 
-        if( !this.artefactCamera )
+        //if( !this.artefactCamera )
         {
             this.artefactCamera = new THREE.PerspectiveCamera( PX.kCameraFovY, this.aspectRatio, PX.kModelCameraNearPlane, PX.kModelCameraFarPlane );
         }
@@ -228,6 +228,7 @@ PX.ModelRenderer.prototype =
 
 		preloaderBG.css( "opacity", 1.0 );
         preloaderFG.css( "opacity", 1.0 );
+        preloaderFG.css( "width", '0%' );
         preloaderBG.show();
         preloaderFG.show();
 
@@ -236,7 +237,7 @@ PX.ModelRenderer.prototype =
         //LoadBINScene( path, filename, this.artefactScene,
         function( per )
         {
-            console.log( "+--+  Load: Percentage: ", per );
+            //console.log( "+--+  Load: Percentage: ", per );
             if( onProgressCB ) onProgressCB( per );
 
             // Since we do a margin on the FG bar we need to compute the offset to remove from the bar in %
