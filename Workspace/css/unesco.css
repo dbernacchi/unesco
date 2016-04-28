@@ -464,6 +464,11 @@ ul.clr li {
 	background-image: url(../img/browse/arrow-down.png);
 }
 
+#browse .arrow.down.disabled, #browse .arrow.up.disabled {
+	opacity: 0.5;
+	cursor: default;
+}
+
 #browse .items {
 	width: 745px;
 	overflow: hidden;
