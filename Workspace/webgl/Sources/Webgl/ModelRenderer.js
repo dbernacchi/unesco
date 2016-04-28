@@ -361,6 +361,20 @@ PX.ModelRenderer.prototype =
     }
 
 
+    , OnResize( w, h )
+    {
+        if( this.enabled )
+        {
+            this.width = w;
+            this.height = h;
+
+            this.artefactCamera.aspect = this.width / this.height;
+            this.artefactCamera.updateProjectionMatrix();
+            this.renderer.setSize( this.width, this.height );
+        }
+    }
+
+
     , Reset()
     {
         this.enabled = false;
