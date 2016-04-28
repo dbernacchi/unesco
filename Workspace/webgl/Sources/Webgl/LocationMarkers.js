@@ -322,6 +322,7 @@ UG.LocationMarkers.prototype =
         });
     }
 
+
     , TweenLevel1: function( targetValue, time, delay, onStartCB, onCompleteCB )
     {
         this.locationsGroup.visible = true;
@@ -354,7 +355,6 @@ UG.LocationMarkers.prototype =
 
     , Render: function( )
 	{
-
 	}
 
 

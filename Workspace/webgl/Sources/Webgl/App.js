@@ -544,7 +544,7 @@ function Setup()
 		    modelRenderer.Init(modelContainer[0], windowWidth, windowHeight);
 	    }
 	    // @NOTE: We do not pass filename extension. That's added internally in the Loaders
-        var modelIndex = 15;
+        var modelIndex = 11;
         if( PX.ModelNames[ modelIndex ].length > 0 )
         {
                 modelRenderer.Load( PX.ModelRootPath + PX.ModelPaths[ modelIndex ], PX.ModelNames[ modelIndex ], function( per ) {

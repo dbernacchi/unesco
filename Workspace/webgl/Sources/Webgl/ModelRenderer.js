@@ -386,12 +386,6 @@ PX.ModelRenderer.prototype =
         preloaderBG.hide();
         preloaderFG.hide();
 
-        if( this.artefactOrbitControls )
-        {
-            this.artefactOrbitControls.dispose();
-            this.artefactOrbitControls = null;
-        }
-
         console.log( "+--+  Scene children count: ", this.artefactScene.children.length );
 
         //
@@ -404,16 +398,88 @@ PX.ModelRenderer.prototype =
             {
                 console.log( "+--+  Removed 3d model" );
                 scope.remove( obj );
-                if( obj.material.map ) obj.material.map.dispose();
-                if( obj.material.normalMap ) obj.material.normalMap.dispose();
+                if( obj.material.map )
+                {
+                    obj.material.map.dispose();
+                    obj.material.map = null;
+                }
+                if( obj.material.normalMap )
+                {
+                    obj.material.normalMap.dispose();
+                    obj.material.normalMap = null;
+                }
                 obj.material.dispose();
+                obj.material = null;
                 obj.geometry.dispose();
+                obj.geometry = null;
                 obj = null;
             }
             if( obj instanceof THREE.Group )
             {
                 console.log( "+--+  Removed 3d group " );
                 scope.remove( obj );
+                if( obj.children.length > 0 )
+                {
+                    for( var i=obj.children.length-1; i>=0; i-- )
+                    {
+                        var obj2 = obj.children[ i ];
+                        console.log( obj2 );
+                        if( obj2 instanceof THREE.Mesh ) 
+                        {
+                            console.log( "+--+  Removed 3d model from Group" );
+                            obj.remove( obj2 );
+                            if( obj2.material.map )
+                            {
+                                obj2.material.map.dispose();
+                                obj2.material.map = null;
+                            }
+                            if( obj2.material.normalMap )
+                            {
+                                obj2.material.normalMap.dispose();
+                                obj2.material.normalMap = null;
+                            }
+                            obj2.material.dispose();
+                            obj2.material = null;
+                            obj2.geometry.dispose();
+                            obj2.geometry = null;
+                        }
+                        obj2 = null;
+                    }
+                }
+                obj = null;
+            }
+            if( obj instanceof THREE.Scene )
+            {
+                console.log( "+--+  Removed 3d scene " );
+                scope.remove( obj );
+                if( obj.children.length > 0 )
+                {
+                    for( var i=obj.children.length-1; i>=0; i-- )
+                    {
+                        var obj2 = obj.children[ i ];
+                        console.log( obj2 );
+                        if( obj2 instanceof THREE.Mesh ) 
+                        {
+                            console.log( "+--+  Removed 3d model from Scene" );
+                            obj.remove( obj2 );
+                            if( obj2.material.map )
+                            {
+                                obj2.material.map.dispose();
+                                obj2.material.map = null;
+                            }
+                            if( obj2.material.normalMap )
+                            {
+                                obj2.material.normalMap.dispose();
+                                obj2.material.normalMap = null;
+                            }
+                            obj2.material.dispose();
+                            obj2.material = null;
+                            obj2.geometry.dispose();
+                            obj2.geometry = null;
+                        }
+                        obj2 = null;
+                    }
+                }
                 obj = null;
             }
         });
@@ -441,9 +507,20 @@ PX.ModelRenderer.prototype =
         }*/
 
         //
+        console.log( "+--+  Do a final render to run GC" );
         this.Render();  // Render once to clear the Scene
         this.renderer.clear();
 
+
+        // Release trackball controller
+        if( this.artefactOrbitControls )
+        {
+            this.artefactOrbitControls.dispose();
+            this.artefactOrbitControls = null;
+        }
+
+        //
+        console.log( "+--+  Model Renderer disabled" );
         this.enabled = false;
     }
 }
