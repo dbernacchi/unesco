@@ -238,45 +238,50 @@ var UNESCO = {};
 		$(document).on('click', ".UNESCO#slide-5 .magnify, .UNESCO#slide-5 .thumbnail", function(e) {
 			e.preventDefault();
 
-			$(".UNESCO#slide-5").hide();
-			
-			$(".UNESCO.close-button").show();
-			
-			$(".UNESCO#slide-9").show();
+			if($(".UNESCO#slide-5").find('.magnify').css('display') == 'none'){
+				
+			} else {
 
-			Params.MainScene = false;
-
-			if( !modelRenderer )
-            {
-			    var modelContainer = $(".UNESCO#slide-9 #glModelContainer");
-                console.log( "+--+  Create Model Renderer (on click)" );
-				modelRenderer = new PX.ModelRenderer();
-			    modelRenderer.Init(modelContainer[0], windowWidth, windowHeight);
-			}
-
-			// @NOTE: We do not pass filename extension. That's added internally in the Loaders
-            /*var modelIndex = 15;
-            
-            if( PX.ModelNames[ modelIndex ].length > 0 )
-            {
-
-                    modelRenderer.Load( PX.ModelRootPath + PX.ModelPaths[ modelIndex ], PX.ModelNames[ modelIndex ], function( per ) {                 
-		            //console.log("+---+  Loading: " + parseInt(per * 100.0) + "%" );
-	            	});
-            }
-            else
-            {
-                console.log( "****  3d Model not available. Index: ", (modelIndex+1) );
-            }
-            */
+				$(".UNESCO#slide-5").hide();
+				
+				$(".UNESCO.close-button").show();
+				
+				$(".UNESCO#slide-9").show();
+	
+				Params.MainScene = false;
+	
+				if( !modelRenderer )
+	            {
+				    var modelContainer = $(".UNESCO#slide-9 #glModelContainer");
+	                console.log( "+--+  Create Model Renderer (on click)" );
+					modelRenderer = new PX.ModelRenderer();
+				    modelRenderer.Init(modelContainer[0], windowWidth, windowHeight);
+				}
+	
+				// @NOTE: We do not pass filename extension. That's added internally in the Loaders
+	            /*var modelIndex = 15;
+	            
+	            if( PX.ModelNames[ modelIndex ].length > 0 )
+	            {
+	
+	                    modelRenderer.Load( PX.ModelRootPath + PX.ModelPaths[ modelIndex ], PX.ModelNames[ modelIndex ], function( per ) {                 
+			            //console.log("+---+  Loading: " + parseInt(per * 100.0) + "%" );
+		            	});
+	            }
+	            else
+	            {
+	                console.log( "****  3d Model not available. Index: ", (modelIndex+1) );
+	            }
+	            */
+	           
+				var folder =  $("#slide-5 .entry").attr('folder');
+				//webgl/data/models/16_Lion_of_Mosul/16_lion3
+				var filename = $("#slide-5 .entry").attr('filename');
+	            modelRenderer.Load( PX.ModelRootPath + folder + "/", filename, function( per ) {	
+	            	//console.log("+---+  Loading: " + parseInt(per * 100.0) + "%" );
+	        	});
+           }
            
-			var folder =  $("#slide-5 .entry").attr('folder');
-			//webgl/data/models/16_Lion_of_Mosul/16_lion3
-			var filename = $("#slide-5 .entry").attr('filename');
-            modelRenderer.Load( PX.ModelRootPath + folder + "/", filename, function( per ) {	
-            	//console.log("+---+  Loading: " + parseInt(per * 100.0) + "%" );
-        	});
-            
 		});
 
 		$(".UNESCO#share-button").click(function(e) {
@@ -468,6 +473,14 @@ var UNESCO = {};
 			$(".next").removeClass('disabled');	
 		}
 		
+		if(!$(".UNESCO#slide-5").find(".entry").attr('filename')){
+			$(".UNESCO#slide-5").find(".magnify").hide();
+			
+		} else {
+			
+			$(this).find(".magnify").show();
+		}		
+		
 		$(".UNESCO#slide-5").show();
 	}
 	
@@ -513,6 +526,14 @@ var UNESCO = {};
 								
 				ns.resize('#slide-5 .container ul');
 								
+				if(!$(this).find(".entry").attr('filename')){
+					$(this).find(".magnify").hide();
+					
+				} else {
+					
+					$(this).find(".magnify").show();
+				}
+				
 				$('#slide-5 .container').fadeIn('fast');
 				
 			});
@@ -1407,9 +1428,11 @@ var UNESCO = {};
 			}
 			
 			if(!item.excerpt){
-				
+				console.log("NO EXCERPT");
 				item.excerpt = "<p>This information hasn't been written yet. Join us to get involved.</p>"
 				
+			} else {
+				console.log("EXCERPT: " + item.excerpt);	
 			}
 			
 			content.find(".entry .excerpt").html(item.excerpt);
