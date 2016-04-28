@@ -286,10 +286,14 @@ UG.LocationMarkers.prototype =
 
     , OnResize( w, h )
     {
-        this.camera2d.right = Params.WindowWidth;
-        this.camera2d.top = Params.WindowHeight;
-        this.camera2d.updateProjectionMatrix();
+        if( this.camera2d )
+        {
+            this.camera2d.right = Params.WindowWidth;
+            this.camera2d.top = Params.WindowHeight;
+            this.camera2d.updateProjectionMatrix();
+        }
     }
+
 
     , FillLocationTypes( locations )
     {
