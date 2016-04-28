@@ -33,7 +33,7 @@ PX.CameraTrackball.prototype =
 {
     constructor: PX.CameraTrackball
 
-    , Init( camera )
+    , Init: function( camera )
     {
         //this.camera = camera;
         this.target.copy( camera.getWorldDirection() );
@@ -54,7 +54,7 @@ PX.CameraTrackball.prototype =
         }
     }
 
-    , Reset( camera, center )
+    , Reset: function( camera, center )
     {
         //this.camera = camera;
         this.target.copy( center );
@@ -64,7 +64,7 @@ PX.CameraTrackball.prototype =
     }
 
 
-    , Update( camera, frameTime )
+    , Update: function( camera, frameTime )
     {
         this.rotateVel.add( this.rotateAccel );
 		// Damping
@@ -116,7 +116,7 @@ PX.CameraTrackball.prototype =
     }
 
 
-    , Transform( center, orientation )
+    , Transform: function( center, orientation )
     {
         var m0, m1, m2;
 
@@ -133,7 +133,7 @@ PX.CameraTrackball.prototype =
     }
 
 
-    , Rotate( offsetX, offsetY, frameTime, aspectRatio )
+    , Rotate: function( offsetX, offsetY, frameTime, aspectRatio )
     {
         // Cancel out the least value for the highest move
         if( Math.abs(offsetX) < Math.abs(offsetY) )

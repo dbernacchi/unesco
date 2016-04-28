@@ -284,7 +284,7 @@ UG.LocationMarkers.prototype =
     }
 
 
-    , OnResize( w, h )
+    , OnResize: function( w, h )
     {
         if( this.camera2d )
         {
@@ -295,7 +295,7 @@ UG.LocationMarkers.prototype =
     }
 
 
-    , FillLocationTypes( locations )
+    , FillLocationTypes: function( locations )
     {
         for( var i=0; i<locations.length; ++i )
         {
@@ -736,7 +736,7 @@ UG.LocationMarkers.prototype =
     }
 
 
-    , ChangeSelectedLocationTargetColor( colorHex )
+    , ChangeSelectedLocationTargetColor: function( colorHex )
     {
         //console.log( "ChangeSelectedLocationTargetColor");
 
@@ -748,7 +748,7 @@ UG.LocationMarkers.prototype =
     }
 
 
-    , SetLocationTargetColor( filters, loc )
+    , SetLocationTargetColor: function( filters, loc )
     {
         //console.log( "SetLocationTargetColor");
         for( var i=0; i<3; i++ )
