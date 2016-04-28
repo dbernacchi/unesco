@@ -150,8 +150,10 @@ function CreateRenderer()
 
 function LoadData()
 {
-    var globeDiffuseTex = "webgl/data/textures/earth_diffuse_blue.jpg";
-    var globeNightLightsTex = "webgl/data/textures/earth_night_lights.jpg";
+    var globeDiffuseTex = "webgl/data/textures/earth_diffuse_blue_4k.jpg";
+    //var globeDiffuseTex = "webgl/data/textures/earth_diffuse_blue.jpg";
+    var globeNightLightsTex = "webgl/data/textures/earth_night_lights_2k.jpg";  // Default night lights to 2k
+    //var globeNightLightsTex = "webgl/data/textures/earth_night_lights.jpg";
 
     if( PX.IsMobile )
     {
@@ -187,7 +189,6 @@ function LoadData()
         //
         renderer.setPixelRatio( window.devicePixelRatio );
         renderer.setSize( container.width, container.height );
-        //console.log(container.width, container.height);
         //
         windowWidth = container.width;
         windowHeight = container.height;
@@ -281,8 +282,9 @@ function Setup()
     scene = new THREE.Scene();
 
     aspectRatio = windowWidth / windowHeight;
-    console.log( "+--+  Aspect Ratio:", aspectRatio );
+    console.log( "+--+  Dims: ", container.width, container.height );
     console.log( "+--+  Device Content Scale: ", window.devicePixelRatio );
+    console.log( "+--+  Aspect Ratio:", aspectRatio );
 
     // Create camera
     //
@@ -544,7 +546,7 @@ function Setup()
 		    modelRenderer.Init(modelContainer[0], windowWidth, windowHeight);
 	    }
 	    // @NOTE: We do not pass filename extension. That's added internally in the Loaders
-        var modelIndex = 15;
+        var modelIndex = 11;
         if( PX.ModelNames[ modelIndex ].length > 0 )
         {
                 modelRenderer.Load( PX.ModelRootPath + PX.ModelPaths[ modelIndex ], PX.ModelNames[ modelIndex ], function( per ) {
@@ -1068,14 +1070,12 @@ function OnResize()
     camera.updateProjectionMatrix();
     renderer.setSize( windowWidth, windowHeight );
     composer.setSize( windowWidth * deviceContentScale, windowHeight * deviceContentScale );
+    
+    locationMarkers.OnResize( windowWidth, windowHeight );
+
     if( modelRenderer )
     {
-        if( modelRenderer.enabled )
-        {
-            modelRenderer.artefactCamera.aspect = windowWidth / windowHeight;
-            modelRenderer.artefactCamera.updateProjectionMatrix();
-            modelRenderer.renderer.setSize( windowWidth, windowHeight );
-        }
+        modelRenderer.OnResize( windowWidth, windowHeight );
     }
 }
 

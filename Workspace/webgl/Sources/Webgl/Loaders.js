@@ -97,8 +97,10 @@ function LoadTexture( name, url )
     , function( tex )
     {
         PX.AssetsDatabase[name] = tex;
-        console.log("+--+  Loaded Texture:\t\t" + name, url);
+        console.log( "+--+  Loaded Texture:\t\t" + name, url );
         defer.resolve();
+
+        tex = null;
     }
     , function()
     {
@@ -377,6 +379,9 @@ function LoadOBJScene( path, filename, scene, shaderMaterials, onProgressCB, onC
             console.log( "+--+  Loaded OBJ Scene:\t  Load time: ", loadTime );
 
             if( onCompleteCB ) onCompleteCB();
+
+            mtlLoader = null;
+            objLoader = null;
         } 
         , onProgress, onError );
         /*, function(result) 
