@@ -200,8 +200,8 @@ function LoadOBJScene( path, filename, scene, shaderMaterials, onProgressCB, onC
     console.log( "+--+  Load OBJ Scene:\t", path + filename );
 
 
-    var mtlUrl = filename + ".mtl"; // + "?" + new Date().getTime();;
-    var objUrl = filename + ".obj"; // + "?" + new Date().getTime();;
+    var mtlUrl = filename + ".mtl"; // + "?" + new Date().getTime();
+    var objUrl = filename + ".obj"; // + "?" + new Date().getTime();
 
 
 	var onProgress = function ( xhr ) 
@@ -224,7 +224,7 @@ function LoadOBJScene( path, filename, scene, shaderMaterials, onProgressCB, onC
     var mtlLoader = new THREE.MTLLoader();
 	mtlLoader.setBaseUrl( path );
 	mtlLoader.setPath( path );
-	var mtlRequest = mtlLoader.load( mtlUrl, function( materials ) 
+	mtlLoader.load( mtlUrl, function( materials ) 
     {
         materials.preload();
 /*
@@ -397,15 +397,13 @@ function LoadOBJScene( path, filename, scene, shaderMaterials, onProgressCB, onC
 
         //console.log( "+--+  OBJ Loader Request: ", objRequest );
     }
-    , function(result) 
+    , function( xhr ) 
     {
     }
-    , function()
+    , function( xhr )
     {
         console.log( "**** onError: Failed to load MTL" );
     });
-
-    console.log( "+--+  MTL Loader Request: ", mtlRequest );
 }
 
 /**

@@ -246,10 +246,10 @@ var UNESCO = {};
 
 			Params.MainScene = false;
 
-			var modelContainer = $(".UNESCO#slide-9 #glModelContainer");
-			if (!modelRenderer) 
+			if( !modelRenderer )
             {
-                console.log( "+--+  Create Model Renderer" );
+			    var modelContainer = $(".UNESCO#slide-9 #glModelContainer");
+                console.log( "+--+  Create Model Renderer (on click)" );
 				modelRenderer = new PX.ModelRenderer();
 			    modelRenderer.Init(modelContainer[0], windowWidth, windowHeight);
 			}

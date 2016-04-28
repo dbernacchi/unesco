@@ -439,25 +439,48 @@ THREE.MTLLoader.MaterialCreator.prototype = {
 
 	loadTexture1: function( url ) 
     {
-        var loader = new THREE.TextureLoader();
-        var texture = loader.load( url
-        , function( tex )
+		var texture = new THREE.Texture();
+
+		var loader = new THREE.ImageLoader();
+		//loader.setCrossOrigin( this.crossOrigin );
+		//loader.setPath( this.path );
+		loader.load( url, function( image ) 
         {
-            texture = tex;
-            //console.log( texture );
-            console.log( "+--+  Loaded MTL Texture:\t\t" + url );
-            tex = null;
-        }
+			texture.image = image;
+			texture.needsUpdate = true;
+		}
         , function( xhr )
         {
             // progress
-            console.log( "*--* onProgress to load MTL texture ", xhr );
+            console.log( "+--+ onProgress to load MTL texture ", xhr );
         }
         , function( xhr )
         {
             // Error
             console.log( "**** Failed to load MTL texture ", xhr );
         } );
+
+        /*
+        var texLoader = new THREE.TextureLoader();
+        var texture = texLoader.load( url
+        , function( tex )
+        {
+            //texture = tex;
+            //console.log( texture );
+            console.log( "+--+  Loaded MTL Texture:\t\t" + url );
+            //tex = null;
+        }
+        , function( xhr )
+        {
+            // progress
+            console.log( "+--+ onProgress to load MTL texture ", xhr );
+        }
+        , function( xhr )
+        {
+            // Error
+            console.log( "**** Failed to load MTL texture ", xhr );
+        } );
+        */
 
         return texture;
     },

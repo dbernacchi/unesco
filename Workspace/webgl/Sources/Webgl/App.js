@@ -49,6 +49,8 @@ var markerCluster;
 //var visibleClustersCount = 0;
 //var visibleMarkersCount = 0;
 
+var clickedMarkerID = -1;
+
 var zoomLevel = 0.0;
 var prevZoomLevel = 0.0;
 
@@ -468,6 +470,9 @@ function Setup()
 				break;
 					
 			case PX.AppStates.AppStateLevel2:
+                // Only show browse when hitting Level 2
+                //if( clickedMarkerID !== -1 )
+                    //UNESCO.showBrowse( clickedMarkerID );
 				UNESCO.hideZoomIn();
 	            UNESCO.hideZoomOut();
 				break;
@@ -483,6 +488,15 @@ function Setup()
 		}
 
     });
+
+	/*if( !modelRenderer )
+    {
+        console.log( "+--+  Create Model Renderer (on Setup)" );
+		var modelContainer = $(".UNESCO#slide-9 #glModelContainer");
+		modelRenderer = new PX.ModelRenderer();
+		modelRenderer.Init( modelContainer[0], windowWidth, windowHeight );
+	}*/
+
 
     // Click callbacks on HTML filter buttons
     $(document).on( 'click', "#legend a.clickable", function()
@@ -505,7 +519,7 @@ function Setup()
 	        	var location_id = $("#browse").attr('location-id');
 	        	
 	        	if(appStateMan.IsState( PX.AppStates.AppStateLevel2 )){
-	        		UNESCO.showBrowse(location_id);
+	        		UNESCO.showBrowse( location_id );
 	        	}
 	        	
 	        	$("#legend > .clr > li > a" ).each(function(){
@@ -532,7 +546,7 @@ function Setup()
 
 
     // TEMP:
-    var modelFastLane = false;
+/*    var modelFastLane = false;
     if( modelFastLane )
     {
 		UNESCO.hideSplash();
@@ -558,8 +572,7 @@ function Setup()
         {
             console.log( "****  3d Model not available. Index: ", (modelIndex+1) );
         }
-    }
-
+    }*/
 
 
     //
@@ -954,13 +967,16 @@ function ZoomInFromLevel0ToLevel1( isUserClickOnLocation )
         {
             if( isMouseClick )
             {
+                clickedMarkerID = -1;
                 //console.log( "ZoomInFromLevel0ToLevel1 (0)" );
                 var res = locationMarkers.OnMouseClickEvent( mouseVector3d, camera, true,
                 function( object )  // Callback returning clicked marker
                 {
                     //console.log( "+--+  Clicked Marker ID:\t", object.id );                    
-                    UNESCO.showBrowse(object.id);
-                    
+                    clickedMarkerID = object.id;
+
+                    // Show browse immediately on click
+                    UNESCO.showBrowse( object.id );
                 } );
             }
         }
