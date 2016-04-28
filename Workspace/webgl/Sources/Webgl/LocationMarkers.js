@@ -994,15 +994,18 @@ UG.LocationMarkers.prototype =
             appStateMan.ChangeState( PX.AppStates.AppStateLevel0ToLevel1 );
 
             // Apply tilt shift
-            var tiltStart = { x: Params.TiltShiftStrength };
-            var tiltEnd = { x: Params.TiltShiftMaxStrength };
-            var tiltTween = new TWEEN.Tween( tiltStart ).to( tiltEnd, 1000.0 );
-            tiltTween.easing( TWEEN.Easing.Quintic.InOut );
-            tiltTween.start();
-            tiltTween.onUpdate( function()
+            if( effectTiltShiftHBlur )
             {
-                Params.TiltShiftStrength = tiltStart.x;
-            });
+                var tiltStart = { x: Params.TiltShiftStrength };
+                var tiltEnd = { x: Params.TiltShiftMaxStrength };
+                var tiltTween = new TWEEN.Tween( tiltStart ).to( tiltEnd, 1000.0 );
+                tiltTween.easing( TWEEN.Easing.Quintic.InOut );
+                tiltTween.start();
+                tiltTween.onUpdate( function()
+                {
+                    Params.TiltShiftStrength = tiltStart.x;
+                });
+            }
 
             // Reset filter scales and switches
             /*for( var i=0; i<3; ++i )
@@ -1112,16 +1115,18 @@ UG.LocationMarkers.prototype =
 
 
             // Apply tilt shift
-            var tiltStart = { x: Params.TiltShiftStrength };
-            var tiltEnd = { x: Params.TiltShiftMaxStrength * 2.0 };
-            var tiltTween = new TWEEN.Tween( tiltStart ).to( tiltEnd, 1000.0 );
-            tiltTween.easing( TWEEN.Easing.Quintic.InOut );
-            tiltTween.start();
-            tiltTween.onUpdate( function()
+            if( effectTiltShiftHBlur )
             {
-                Params.TiltShiftStrength = tiltStart.x;
-            });
-
+                var tiltStart = { x: Params.TiltShiftStrength };
+                var tiltEnd = { x: Params.TiltShiftMaxStrength * 2.0 };
+                var tiltTween = new TWEEN.Tween( tiltStart ).to( tiltEnd, 1000.0 );
+                tiltTween.easing( TWEEN.Easing.Quintic.InOut );
+                tiltTween.start();
+                tiltTween.onUpdate( function()
+                {
+                    Params.TiltShiftStrength = tiltStart.x;
+                });
+            }
 
             // Compute right vector
             var dir0 = this.meshes[ index ].position.clone().normalize();
@@ -1235,25 +1240,28 @@ UG.LocationMarkers.prototype =
             this.titleTargetOpacity = 0.0;
 
             // Apply tilt shift
-            var tiltStart = { x: Params.TiltShiftStrength };
-            var tiltEnd = { x: Params.TiltShiftMaxStrength };
-            var tiltTween = new TWEEN.Tween( tiltStart ).to( tiltEnd, 1000.0 );
-            tiltTween.easing( TWEEN.Easing.Quintic.InOut );
-            tiltTween.start();
-            tiltTween.onUpdate( function()
+            if( effectTiltShiftHBlur )
             {
-                Params.TiltShiftStrength = tiltStart.x;
-            });
-            // tiltshift focus position
-            var tiltPosStart = { x: Params.TiltShiftPosition };
-            var tiltPosEnd = { x: 0.5 };
-            tiltTween = new TWEEN.Tween( tiltPosStart ).to( tiltPosEnd, 1000.0 );
-            tiltTween.easing( TWEEN.Easing.Quintic.InOut );
-            tiltTween.start();
-            tiltTween.onUpdate( function()
-            {
-                Params.TiltShiftPosition = tiltPosStart.x;
-            });
+                var tiltStart = { x: Params.TiltShiftStrength };
+                var tiltEnd = { x: Params.TiltShiftMaxStrength };
+                var tiltTween = new TWEEN.Tween( tiltStart ).to( tiltEnd, 1000.0 );
+                tiltTween.easing( TWEEN.Easing.Quintic.InOut );
+                tiltTween.start();
+                tiltTween.onUpdate( function()
+                {
+                    Params.TiltShiftStrength = tiltStart.x;
+                });
+                // tiltshift focus position
+                var tiltPosStart = { x: Params.TiltShiftPosition };
+                var tiltPosEnd = { x: 0.5 };
+                tiltTween = new TWEEN.Tween( tiltPosStart ).to( tiltPosEnd, 1000.0 );
+                tiltTween.easing( TWEEN.Easing.Quintic.InOut );
+                tiltTween.start();
+                tiltTween.onUpdate( function()
+                {
+                    Params.TiltShiftPosition = tiltPosStart.x;
+                });
+            }
 
             // Non-Selected Marker Global Scale
             var gsTarget = new THREE.Vector2( 1, 1 );
