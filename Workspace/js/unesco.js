@@ -104,39 +104,44 @@ var UNESCO = {};
 		$(document).on('click', ".UNESCO#browse .item.selected a", function(e) {
 			e.preventDefault();
 			
-			var entry = $('#browse .item.selected .container').html();
-			
-			$('#slide-5 .container').html(entry);
-			
-			ns.resize('#slide-5 .container ul');
-		
-			$(".UNESCO#browse").hide();
+			ns.itemClicked();
 
-			$(".UNESCO#menu-button").hide();
-			$(".UNESCO.furniture").hide();
-			$(".UNESCO.close-button").show();
+		});
+		
+		$(document).on('click', ".UNESCO#browse .item:not(.selected) a", function(e) {
+			e.preventDefault();
 			
-			var idx = $(".item.selected").index( "#browse .item.show" );
-					
-			slide_index = idx;
+			var browse = $(".UNESCO#browse");
 			
-			nextitem = ns.nextItem(-1, idx);
+			var old_selected = browse.find(".item.selected");
+			var item = $(this).closest('.item.show');
 			
-			if(!nextitem.length){
-				$(".prev").addClass('disabled');	
-			} else {
-				$(".prev").removeClass('disabled');	
-			}
+			old_selected.removeClass('selected');
 			
-			nextitem = ns.nextItem(1, idx);
+			item.addClass('selected');
 			
-			if(!nextitem.length){
-				$(".next").addClass('disabled');	
-			} else {
-				$(".next").removeClass('disabled');	
-			}
+			console.log(item.attr('class'));
 			
-			$(".UNESCO#slide-5").show();
+			var old_index = old_selected.index( "#browse .item.show" );
+			var item_index = item.index( "#browse .item.show" );
+			
+			var index_diff = old_index - item_index;
+			
+			var item_height = item.height();
+			
+			var item_margin = parseInt(item.css('margin-bottom'), 10);
+			
+			var old_top = parseInt(browse.find(".items-inner").css('top'), 10);
+			
+			console.log(old_top);
+			
+			var new_top = old_top - (item_height + item_margin);
+			
+			console.log(new_top);
+			
+			browse.find(".items-inner").css('top', new_top + 'px');
+			
+			ns.itemClicked();
 
 		});
 
@@ -336,6 +341,45 @@ var UNESCO = {};
 		
 	}
 
+	this.itemClicked = function(){
+		
+		var ns = this;
+		
+		var entry = $('#browse .item.selected .container').html();
+			
+		$('#slide-5 .container').html(entry);
+		
+		ns.resize('#slide-5 .container ul');
+	
+		$(".UNESCO#browse").hide();
+
+		$(".UNESCO#menu-button").hide();
+		$(".UNESCO.furniture").hide();
+		$(".UNESCO.close-button").show();
+		
+		var idx = $(".item.selected").index( "#browse .item.show" );
+				
+		slide_index = idx;
+		
+		nextitem = ns.nextItem(-1, idx);
+		
+		if(!nextitem.length){
+			$(".prev").addClass('disabled');	
+		} else {
+			$(".prev").removeClass('disabled');	
+		}
+		
+		nextitem = ns.nextItem(1, idx);
+		
+		if(!nextitem.length){
+			$(".next").addClass('disabled');	
+		} else {
+			$(".next").removeClass('disabled');	
+		}
+		
+		$(".UNESCO#slide-5").show();
+	}
+	
 	this.next = function(direction){
 		
 		var ns = this;

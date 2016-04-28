@@ -495,11 +495,11 @@ ul.clr li {
 }
 
 #browse .item a {
-	cursor: default;
+
 }
 
 #browse .item.selected a {
-	cursor: pointer;
+;
 }
 
 #browse .items li.image {
