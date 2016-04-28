@@ -982,15 +982,19 @@ function ZoomOutFromLevel1ToLevel0( isMouseWheel )
             // Change state
             appStateMan.SetState( PX.AppStates.AppStateLevel1ToLevel0 );
 
-            var tiltStart = { x: Params.TiltShiftStrength };
-            var tiltEnd = { x: 0.0 };
-            var tiltTween = new TWEEN.Tween( tiltStart ).to( tiltEnd, 1000.0 );
-            tiltTween.easing( TWEEN.Easing.Quintic.InOut );
-            tiltTween.start();
-            tiltTween.onUpdate( function()
+            // Tilf Shift
+            if( effectTiltShiftHBlur )
             {
-                Params.TiltShiftStrength = tiltStart.x;
-            });
+                var tiltStart = { x: Params.TiltShiftStrength };
+                var tiltEnd = { x: 0.0 };
+                var tiltTween = new TWEEN.Tween( tiltStart ).to( tiltEnd, 1000.0 );
+                tiltTween.easing( TWEEN.Easing.Quintic.InOut );
+                tiltTween.start();
+                tiltTween.onUpdate( function()
+                {
+                    Params.TiltShiftStrength = tiltStart.x;
+                });
+            }
 
             // Disable auto scale in main loop
             locationMarkers.zoomLevel1IntroAnimDone = false;
@@ -998,7 +1002,7 @@ function ZoomOutFromLevel1ToLevel0( isMouseWheel )
             // Move camera far far away
             Params.CameraDistance = PX.Lerp( PX.kCameraMinDistance, PX.kCameraMaxDistance, 1.0 );
             var cameraTargetPoint = camera.position.clone().normalize().multiplyScalar( Params.CameraDistance );
-            var tween = new TWEEN.Tween( camera.position ).to( cameraTargetPoint, 2000 ); //Params.AnimTime * 1000.0 );
+            var tween = new TWEEN.Tween( camera.position ).to( cameraTargetPoint, 1000 ); //Params.AnimTime * 1000.0 );
             tween.easing( TWEEN.Easing.Quadratic.InOut );
             tween.start();
 
