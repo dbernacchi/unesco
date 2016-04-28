@@ -251,7 +251,7 @@ ul.clr li {
 	height: 21px;
 	background-image: url(../img/menu/menu-button.png);
 	z-index: 1;
-};
+}
 
 #legend {
 	position: absolute;
@@ -612,8 +612,8 @@ ul.clr li {
 	line-height: 28px;
 	color: #B9CBD5;
 	text-align: center;
-	width: 100%;
-	padding: 40px;
+	width: 80%;
+	padding: 100px;
 }
 
 
@@ -624,6 +624,7 @@ ul.clr li {
    {
       display:block;
    }
+   
 }
 
 

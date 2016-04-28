@@ -68,6 +68,52 @@ var UNESCO = {};
 		
 		initialized = true;
 		
+		if( PX.IsMobile){
+			
+			if(window.innerWidth < window.innerHeight){
+		
+				$('body').css('width', '100%');
+				
+				$('body').css('overflow', 'scroll');
+				
+				$('body').css('margin-top', '5%');
+				
+				$('#portrait-warning').css('width', '100%');
+				
+			} else {
+				
+				var doc_height = $(document).height();
+				
+				var doc_width = $(document).width();
+				
+				$("#glConatiner canvas").css('height', doc_height + 'px');
+				
+				$("#glConatiner canvas").css('width', doc_width + 'px');
+
+				$("#glConatiner canvas").attr('width', doc_width);
+
+				$("#glConatiner canvas").attr('height', doc_height);
+			}
+		}
+		
+		/*
+		$(window).on("orientationchange",function(){
+
+			if(window.innerWidth > window.innerHeight){
+				
+				alert("RELOAD");
+				location.reload(true);
+				
+			} else {
+				alert("DON't RELOAD");
+				//$(":not(#portrait-warning)").hide();
+				
+					
+			}
+
+		});			
+		*/
+		
 		this.resize();
 		
 		$("body").css('background-image', 'url(../webgl/data/textures/background.png)');
@@ -671,7 +717,8 @@ var UNESCO = {};
 
 		var ns = this;
 
-		var window_width = window.innerWidth;
+		//var window_width = window.innerWidth;
+		var window_width = $("body").width();
 
 		if (window_width >= max_width) {
 			percentage = 100;
