@@ -284,14 +284,18 @@ UG.LocationMarkers.prototype =
     }
 
 
-    , OnResize( w, h )
+    , OnResize: function( w, h )
     {
-        this.camera2d.right = Params.WindowWidth;
-        this.camera2d.top = Params.WindowHeight;
-        this.camera2d.updateProjectionMatrix();
+        if( this.camera2d )
+        {
+            this.camera2d.right = Params.WindowWidth;
+            this.camera2d.top = Params.WindowHeight;
+            this.camera2d.updateProjectionMatrix();
+        }
     }
 
-    , FillLocationTypes( locations )
+
+    , FillLocationTypes: function( locations )
     {
         for( var i=0; i<locations.length; ++i )
         {
@@ -732,7 +736,7 @@ UG.LocationMarkers.prototype =
     }
 
 
-    , ChangeSelectedLocationTargetColor( colorHex )
+    , ChangeSelectedLocationTargetColor: function( colorHex )
     {
         //console.log( "ChangeSelectedLocationTargetColor");
 
@@ -744,7 +748,7 @@ UG.LocationMarkers.prototype =
     }
 
 
-    , SetLocationTargetColor( filters, loc )
+    , SetLocationTargetColor: function( filters, loc )
     {
         //console.log( "SetLocationTargetColor");
         for( var i=0; i<3; i++ )

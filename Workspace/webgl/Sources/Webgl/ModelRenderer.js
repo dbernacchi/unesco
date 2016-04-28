@@ -38,7 +38,7 @@ PX.ModelRenderer.prototype =
 {
     constructor: PX.ModelRenderer
 
-    , Init( container, width, height )
+    , Init: function( container, width, height )
     {
         this.container = container;
         this.width = width;
@@ -130,7 +130,7 @@ PX.ModelRenderer.prototype =
     }
 
 
-    , SetupMaterial()
+    , SetupMaterial: function()
     {
         var modelUniforms0 =
         {
@@ -222,7 +222,7 @@ PX.ModelRenderer.prototype =
     }
 
 
-    , Load( path, filename, onProgressCB )
+    , Load: function( path, filename, onProgressCB )
     {
         var scope = this;
 
@@ -296,7 +296,7 @@ PX.ModelRenderer.prototype =
     }
 
 
-    , Update( time, frameTime )
+    , Update: function( time, frameTime )
     {
         //
         mouseDeltaX = mouseX - previousMouseX;
@@ -342,7 +342,7 @@ PX.ModelRenderer.prototype =
     }
 
 
-    , Render()
+    , Render: function()
     {
         this.renderer.clear();
 
@@ -351,7 +351,7 @@ PX.ModelRenderer.prototype =
     }
 
 
-    , OnFrame( time, frameTime )
+    , OnFrame: function( time, frameTime )
     {
         if( ! this.enabled )
             return;
@@ -361,7 +361,7 @@ PX.ModelRenderer.prototype =
     }
 
 
-    , OnResize( w, h )
+    , OnResize: function( w, h )
     {
         if( this.enabled )
         {
@@ -375,7 +375,7 @@ PX.ModelRenderer.prototype =
     }
 
 
-    , Reset()
+    , Reset: function()
     {
         this.enabled = false;
 
@@ -395,7 +395,7 @@ PX.ModelRenderer.prototype =
     }
 
 
-    , Clear()
+    , Clear: function()
     {
         preloaderBG.hide();
         preloaderFG.hide();
