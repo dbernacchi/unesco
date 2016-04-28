@@ -517,15 +517,16 @@ function Setup()
 	        	
 	            var index = $(this).parent().index();
 	            
+				UpdateFilterSwitches( index );
+	            locationMarkers.FilterLocationMeshColors( WebpageStates.FilterSwitches );	
+	            
 	        } else {
 				
-				$("#legend > .clr > li > a" ).addClass('disabled');
-	        	$("#browse").attr('status', "");
-	        	index = 3;
+				UNESCO.filtersOff($(this));
+	
 	        }
 	        
-			UpdateFilterSwitches( index );
-            locationMarkers.FilterLocationMeshColors( WebpageStates.FilterSwitches );	        
+        
         }
     });
 
