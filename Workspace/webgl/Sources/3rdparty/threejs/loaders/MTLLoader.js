@@ -335,15 +335,6 @@ THREE.MTLLoader.MaterialCreator.prototype = {
 					// Diffuse texture map
                     console.log( "MTL: load map texture: ", this.baseUrl + value );
 
-                    /*$.when( this.loadTexture2( "map", this.baseUrl + value ) 
-                    ).done(function ()
-                    {
-                        console.log( PX.AssetsDatabase[ "map" ] );
-                        params[ 'map' ] = PX.AssetsDatabase[ "map" ];
-					    params[ 'map' ].wrapS = this.wrap;
-    					params[ 'map' ].wrapT = this.wrap;
-                    });*/
-
                     params[ "map" ] = this.loadTexture1( this.baseUrl + value );
 
                     /*params[ 'map' ] = this.loadTexture( this.baseUrl + value, undefined, 
@@ -415,17 +406,7 @@ THREE.MTLLoader.MaterialCreator.prototype = {
 					params[ 'bumpMap' ].wrapS = this.wrap;
 					params[ 'bumpMap' ].wrapT = this.wrap;*/
 
-                    /*$.when( this.loadTexture2( "normalMap", this.baseUrl + value ) 
-                    ).done(function ()
-                    {
-                        console.log( PX.AssetsDatabase[ "normalMap" ] );
-                        params[ 'normalMap' ] = PX.AssetsDatabase[ "normalMap" ];
-					    params[ 'normalMap' ].wrapS = this.wrap;
-    					params[ 'normalMap' ].wrapT = this.wrap;
-                    });*/
-
                     params[ "normalMap" ] = this.loadTexture1( this.baseUrl + value );
-
 
                     /*params[ 'normalMap' ] = this.loadTexture( this.baseUrl + value, undefined, 
                     function(){
@@ -454,36 +435,6 @@ THREE.MTLLoader.MaterialCreator.prototype = {
 		return this.materials[ materialName ];
 
 	},
-
-	loadTexture2: function( name, url ) 
-    {
-        var defer = $.Deferred();
-        var loader = new THREE.TextureLoader();
-        loader.load( url
-        , function( tex )
-        {
-            //console.log( tex );
-            PX.AssetsDatabase[ name ] = tex;
-            //texture = tex;
-            //console.log( texture );
-            console.log( "+--+  Loaded MTL Texture:\t\t" + name, url );
-            defer.resolve();
-            //tex = null;
-        }
-        , function()
-        {
-            // progress
-            console.log( "*--* onProgress to load MTL texture" );
-        }
-        , function()
-        {
-            // Error
-            console.log( "**** Failed to load MTL texture" );
-            defer.resolve();
-        } );
-
-        return defer;
-    },
 
 
 	loadTexture1: function( url ) 
