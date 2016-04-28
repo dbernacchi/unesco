@@ -377,6 +377,11 @@ ul.clr li {
 	right: 2%;
 }
 
+#slide-5 .prev.disabled, #slide-5 .next.disabled{
+	opacity: 0.5;
+	cursor: default;
+}
+
 #slide-5 .collapse{
 	display: block;
 	width: 119px;
@@ -544,16 +549,17 @@ ul.clr li {
 #slide-5 ul.clr li.text, #slide-5 ul.clr li.more, #slide-5 ul.clr li.media {
 	margin-right: 20px;
 	width: 299px;
+	
 }
 
-#slide-5 ul.clr li.more{
-	padding-top: 94px;
+#slide-5 ul.clr li.more p {
+	margin: 0;
 }
 
 #slide-5 ul.clr li.media {
 	overflow-y: auto;
 	overflow-x: hidden;
-	height: 700px;
+	height: 600px;
 }
 
 
