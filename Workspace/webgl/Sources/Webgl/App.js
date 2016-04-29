@@ -314,6 +314,11 @@ function Setup()
     sunLight = new THREE.DirectionalLight( 0xffffff );
     sunLight.position.set( 0.7, 0.0, 1.0 );
     scene.add( sunLight );
+    /*if( PX.IsMobile )
+    {
+        var artAmbLight = new THREE.HemisphereLight( 0x3a3a55, 0x020205, 0.5 );
+        scene.add( artAmbLight );
+    }*/
 
     // Composer
     //
