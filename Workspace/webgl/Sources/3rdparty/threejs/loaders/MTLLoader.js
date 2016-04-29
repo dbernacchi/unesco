@@ -293,14 +293,13 @@ THREE.MTLLoader.MaterialCreator.prototype = {
 
 		var mat = this.materialsInfo[ materialName ];
 		var params = {
-
 			name: materialName,
 			side: this.side
 
 		};
 
-		for ( var prop in mat ) {
-
+		for ( var prop in mat ) 
+        {
 			var value = mat[ prop ];
 
 			if ( value === '' ) continue;
@@ -325,7 +324,7 @@ THREE.MTLLoader.MaterialCreator.prototype = {
 					break;
 
 				case 'map_kd':
-
+                {
 					// Diffuse texture map
 
 					/*params[ 'map' ] = this.loadTexture( this.baseUrl + value );
@@ -335,7 +334,25 @@ THREE.MTLLoader.MaterialCreator.prototype = {
 					// Diffuse texture map
                     console.log( "MTL: load map texture: ", this.baseUrl + value );
 
-                    params[ "map" ] = this.loadTexture1( this.baseUrl + value );
+                    //params[ "map" ] = this.loadTexture1( this.baseUrl + value );
+
+                    var mapTexture = new THREE.Texture();
+                    params[ 'map' ] = mapTexture;
+
+                    var mapImage = new Image();
+                    mapImage.src = this.baseUrl + value;
+                    mapImage.onload = function()
+                    {
+                        console.log( "+--+ MAP Texture loaded from image" );
+
+                        mapTexture.image = mapImage;
+                        mapTexture.wrapS = THREE.ClampToEdgeWrapping;
+                        mapTexture.wrapT = THREE.ClampToEdgeWrapping;
+                        mapTexture.magFilter = THREE.LinearFilter;
+                        mapTexture.minFilter = THREE.LinearMipMapLinearFilter;
+                        mapTexture.needsUpdate = true;
+                    }
+
 
                     /*params[ 'map' ] = this.loadTexture( this.baseUrl + value, undefined, 
                     function(){
@@ -352,7 +369,7 @@ THREE.MTLLoader.MaterialCreator.prototype = {
 					params[ 'map' ].wrapT = this.wrap;*/
 
 					break;
-
+                }
 				case 'ns':
 
 					// The specular exponent (defines the focus of the specular highlight)
@@ -386,7 +403,7 @@ THREE.MTLLoader.MaterialCreator.prototype = {
 
 				case 'map_bump':
 				case 'bump':
-
+                {
                     // HACK: get rid of the "-bm" multiplier that comes with "bump" field
                     var temp = value.split( " -" );
                     if( temp.length > 1 )
@@ -406,7 +423,24 @@ THREE.MTLLoader.MaterialCreator.prototype = {
 					params[ 'bumpMap' ].wrapS = this.wrap;
 					params[ 'bumpMap' ].wrapT = this.wrap;*/
 
-                    params[ "normalMap" ] = this.loadTexture1( this.baseUrl + value );
+                    //params[ "normalMap" ] = this.loadTexture1( this.baseUrl + value );
+
+                    var normalMapTexture = new THREE.Texture();
+                    params[ 'normalMap' ] = normalMapTexture;
+
+                    var normalMapImage = new Image();
+                    normalMapImage.src = this.baseUrl + value;
+                    normalMapImage.onload = function()
+                    {
+                        console.log( "+--+ NORMALMAP Texture loaded from image" );
+
+                        normalMapTexture.image = normalMapImage;
+                        normalMapTexture.wrapS = THREE.ClampToEdgeWrapping;
+                        normalMapTexture.wrapT = THREE.ClampToEdgeWrapping;
+                        normalMapTexture.magFilter = THREE.LinearFilter;
+                        normalMapTexture.minFilter = THREE.LinearMipMapLinearFilter;
+                        normalMapTexture.needsUpdate = true;
+                    }
 
                     /*params[ 'normalMap' ] = this.loadTexture( this.baseUrl + value, undefined, 
                     function(){
@@ -423,7 +457,7 @@ THREE.MTLLoader.MaterialCreator.prototype = {
 					params[ 'normalMap' ].wrapT = this.wrap;*/
 
 					break;
-
+                }
 				default:
 					break;
 
@@ -441,6 +475,18 @@ THREE.MTLLoader.MaterialCreator.prototype = {
     {
 		var texture = new THREE.Texture();
 
+        texture.image = new Image();
+        texture.src = url;
+        texture.onload = function()
+        {
+            console.log( "+--+ loadTexture1()  Texture loaded from image" );
+            texture.wrapS = THREE.ClampToEdgeWrapping;
+            texture.wrapT = THREE.ClampToEdgeWrapping;
+            texture.magFilter = THREE.LinearFilter;
+            texture.minFilter = THREE.LinearMipMapLinearFilter;
+            texture.needsUpdate = true;
+        }
+        /*
 		var loader = new THREE.ImageLoader();
 		//loader.setCrossOrigin( this.crossOrigin );
 		//loader.setPath( this.path );
@@ -459,6 +505,7 @@ THREE.MTLLoader.MaterialCreator.prototype = {
             // Error
             console.log( "**** Failed to load MTL texture ", xhr );
         } );
+        */
 
         /*
         var texLoader = new THREE.TextureLoader();
