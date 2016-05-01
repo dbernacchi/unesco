@@ -278,9 +278,12 @@ UG.LocationMarkers.prototype =
         this.level1FilterScaleTarget.push( 1.0 );*/
 
         // Init
-        ////this.markerScene.visible = false;
+        this.billboards.visible = false;
+        this.textRenderer2.visible = false;
         this.locationsGroup.visible = false;
         this.textRenderer.visible = false;
+        this.textRenderer1.visible = false;
+        this.circleRenderer.visible = false;
     }
 
 
@@ -317,6 +320,7 @@ UG.LocationMarkers.prototype =
         this.locationsGroup.visible = false;
         this.textRenderer.visible   = false;
         this.textRenderer1.visible  = false;
+        this.circleRenderer.visible = false;
 
         var target = { x : targetValue, y: targetValue, z: targetValue };
         var tween = new TWEEN.Tween( this.billboardsGroup.scale ).to( target, time );
@@ -339,6 +343,7 @@ UG.LocationMarkers.prototype =
         this.locationsGroup.visible = true;
         this.textRenderer.visible   = true;
         this.textRenderer1.visible  = true;
+        this.circleRenderer.visible = true;
 
         if( this.locationsGroupAnim )
         {
@@ -446,7 +451,7 @@ UG.LocationMarkers.prototype =
 
     , UpdateLocationCircleBillboards: function( time, frameTime, camera )
     {
-        if( this.doPopulation )
+        if( this.doPopulation || !this.billboards.visible || !this.textRenderer2.visible )
             return;
 
         this.textRenderer2.Begin();
@@ -511,7 +516,7 @@ UG.LocationMarkers.prototype =
 
     , UpdateLocationMeshes: function( time, frameTime, camera )
     {
-        if( this.doPopulation )
+        if( this.doPopulation || !this.locationsGroup.visible || !this.textRenderer.visible || !this.textRenderer1.visible )
             return;
 
         // Place only visible clusters/markers
@@ -1511,7 +1516,11 @@ UG.LocationMarkers.prototype =
 
     , MarkerAvoidance: function( markerCluster, frameTime )
     {
-        if( this.doPopulation || this.doAvoidance === false )
+        if( this.doPopulation 
+            || this.doAvoidance === false
+            || !this.locationsGroup.visible 
+            || !this.textRenderer.visible 
+            || !this.textRenderer1.visible )
         {
             //console.log( "no avoidance" );
             return;

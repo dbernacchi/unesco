@@ -93,11 +93,30 @@ function LoadTexture( name, url )
     var defer = $.Deferred();
 
     console.log( "+--+  Load Texture:\t\t" + name, url );
+
+    var customTexture = new THREE.Texture();
+
+    var customImage = new Image();
+    customImage.src = url;
+    customImage.onload = function()
+    {
+        console.log( "+--+  Loaded Texture:\t\t" + name, url );
+        customTexture.image = customImage;
+        customTexture.wrapS = THREE.ClampToEdgeWrapping;
+        customTexture.wrapT = THREE.ClampToEdgeWrapping;
+        customTexture.magFilter = THREE.LinearFilter;
+        customTexture.minFilter = THREE.LinearMipMapLinearFilter;
+        customTexture.needsUpdate = true;
+        PX.AssetsDatabase[ name ] = customTexture;
+        defer.resolve();
+    }
+
+/*
     g_TextureLoader.load( url
     , function( tex )
     {
-        PX.AssetsDatabase[name] = tex;
         console.log( "+--+  Loaded Texture:\t\t" + name, url );
+        PX.AssetsDatabase[name] = tex;
         defer.resolve();
 
         tex = null;
@@ -111,9 +130,9 @@ function LoadTexture( name, url )
         // Error
         console.log( "**** Failed to load texture" );
         defer.resolve();
-    } );
+    } );*/
 
-    return defer; //.promise();
+    return defer.promise();
 }
 
 
