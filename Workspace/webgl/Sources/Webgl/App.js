@@ -433,6 +433,18 @@ function Setup()
                 // Reset time and show explore button
                 startTime = timeNow();
                 currentTime = 0.0;
+
+                var target = { x : 0.0, y: 1.0 };
+                var tween = new TWEEN.Tween( earth.posY ).to( target, 1000 );
+                tween.easing( TWEEN.Easing.Sinusoidal.InOut );
+                tween.delay( 1000 );
+                tween.start();
+                tween.onComplete( function()
+                {
+                    earth.isPosAnimDone = true;
+                    //appStateMan.SetState( PX.AppStates.AppStateEntry );
+                });
+
 				
 				UNESCO.buildBrowse(
 					function(){
@@ -579,6 +591,7 @@ function Setup()
         }
     }*/
 
+    appStateMan.ChangeState( PX.AppStates.AppStateEntry );
 
     //
     startTime = timeNow();

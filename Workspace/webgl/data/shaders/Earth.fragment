@@ -90,6 +90,7 @@ float   Luminance( float3 color )   { return dot( color, float3( 0.2126, 0.7152,
 uniform float4      Params0;
 uniform float4      Params1;
 uniform float4      Params2;
+uniform float       Opacity;
 
 #define AmbientIntensity    Params0.x
 #define DiffuseIntensity    Params0.y
@@ -537,5 +538,5 @@ void main()
     //finalColor.rgb = ToSRGBApprox( ToneMapACESFilm( finalColor.rgb ) );
 
 
-    gl_FragColor = float4( finalColor, 1.0 );
+    gl_FragColor = float4( finalColor, Opacity );
 }

@@ -14,7 +14,7 @@ UG.Earth = function ()
     this.worldMatrix = new THREE.Matrix4();
 
     this.doIntroAnimation = true;
-    this.introScale = { x: 0.001 };
+    this.posY = { x: -10.0, y: 0.0 };
 
     this.currentAngle = { x: 0.0 };
     this.rotationSpeed = 0.0;
@@ -34,6 +34,7 @@ UG.Earth.prototype =
             this.sceneShadow = new THREE.Scene();
 
             var planeMat = new THREE.MeshBasicMaterial( { color: 0xffffff, map: PX.AssetsDatabase["EarthShadow"], opacity: 1.5, transparent: true, vertexColors: THREE.VertexColors } );
+            //var planeMat = new THREE.MeshBasicMaterial( { color: 0xffffff, map: PX.AssetsDatabase["EarthShadow"], opacity: 1.5, transparent: true, vertexColors: THREE.VertexColors } );
             planeMat.side = THREE.DoubleSide;
             planeMat.depthTest = false;
             planeMat.depthWrite = false;
@@ -43,7 +44,8 @@ UG.Earth.prototype =
 	        var objMat = new THREE.Matrix4().multiplyMatrices( matTrans, matRot );
 	        planeGeom.applyMatrix( objMat );
             this.shadowPlaneMesh = new THREE.Mesh( planeGeom, planeMat );
-            this.shadowPlaneMesh.position.set( 0, 0, 0 );
+            this.shadowPlaneMesh.position.set( 0, this.posY.x, 0 );
+            this.shadowPlaneMesh.scale.set( PX.EPSILON + Params.EarthShadowScaleX, PX.EPSILON + Params.EarthShadowScaleY, PX.EPSILON + Params.EarthShadowScaleZ );
             //this.shadowPlaneMesh.renderOrder = 0;
             //scene.add( this.shadowPlaneMesh );
             this.sceneShadow.add( this.shadowPlaneMesh );
@@ -82,6 +84,7 @@ UG.Earth.prototype =
                 , Params1: { type: "v4", value: new THREE.Vector4() }
                 , Params2: { type: "v4", value: new THREE.Vector4() }
                 , Time: { type: "f", value: 0.0 }
+                , Opacity: { type: "f", value: 1.0 }
             }
 
             this.material = new THREE.ShaderMaterial(
@@ -103,47 +106,33 @@ UG.Earth.prototype =
             //this.material.polygonOffsetUnits = 1.0;
 
             this.mesh = new THREE.Mesh( new THREE.SphereGeometry( PX.kEarthScale, PX.kEarthDetailX, PX.kEarthDetailY ), this.material );
-            this.mesh.position.set( 0, 0, 0 );
+            this.mesh.position.set( 0.0, this.posY.x, 0 );
         }
 
         scene.add( this.mesh );
-
-
-        // Add intro tween
-        //
-        var target = { x : 1.0 };
-        var tween = new TWEEN.Tween( this.introScale ).to( target, 2000 );
-        tween.easing( TWEEN.Easing.Sinusoidal.InOut );
-        tween.delay( 2000 );
-        tween.start();
-        tween.onComplete( function()
-        {
-            appStateMan.SetState( PX.AppStates.AppStateEntry );
-        });
     }
+
 
     , Update: function( time, frameTime, camera )
     {
-        // Update globe's scale
-        //
-        this.mesh.scale.set( this.introScale.x, this.introScale.x, this.introScale.x );
-
-
         // Shadow Plane
         //
         if( this.shadowPlaneMesh )
         {
-            this.shadowPlaneMesh.material.opacity = PX.Pow2( this.introScale.x ) * 1.0;
-            this.shadowPlaneMesh.scale.set( PX.EPSILON + Params.EarthShadowScaleX * this.introScale.x, PX.EPSILON + Params.EarthShadowScaleY * this.introScale.x, PX.EPSILON + Params.EarthShadowScaleZ * this.introScale.x );
+            this.shadowPlaneMesh.material.opacity = this.posY.y;
+
+            this.shadowPlaneMesh.position.y = this.posY.x;
             this.shadowPlaneMesh.rotation.setFromRotationMatrix( camera.matrix );
         }
 
+        this.mesh.position.y = this.posY.x;
 
         // Update shader params
         //
         //if( !PX.IsMobile )
         {
             this.uniforms.Time.value = time;
+            this.uniforms.Opacity.value = this.posY.y;
             this.uniforms.Params0.value.set( Params.AmbientIntensity, Params.DiffuseIntensity, Params.SpecularIntensity, Params.NormalMapIntensity );
             this.uniforms.Params1.value.set( Params.CloudsIntensity, Params.CloudsShadowIntensity, Params.CloudsShadowOffset, Params.NightDayMixFactor );
             this.uniforms.Params2.value.set( Params.EarthRoughness, Params.HalfLambertPower, Params.RimAngle, Params.DiffuseRimIntensity );

@@ -15,6 +15,9 @@ PX.ModelRenderer = function()
     this.width = 100.0;
     this.height = 100.0;
 
+    this.entryPos = null;
+    this.doEntryAnim = false;
+
     this.artefactScene = null;
     this.artefactCamera = null;
     this.artefactOrbitControls = null;
@@ -124,6 +127,8 @@ PX.ModelRenderer.prototype =
         this.renderer.domElement.addEventListener('mousedown', OnMouseDown, false);
         this.renderer.domElement.addEventListener('mouseup', OnMouseUp, false);
         this.renderer.domElement.addEventListener('mousewheel', OnMouseWheel, false);*/
+
+        this.entryPos = new THREE.Vector3( 0, -100, 0 );
 
         //
         this.Reset();
@@ -287,13 +292,15 @@ PX.ModelRenderer.prototype =
                     //console.log( "(2) scope.artefactCamera.direction: ", scope.artefactCamera.getWorldDirection() );
                 }
 
+                scope.entryPos.y = -scope.distToCamera * 0.2;
+
                 if( this.trackball ) this.trackball.Reset( scope.artefactCamera, scope.sceneCenter );
 
                 // Need to call this after Reset
                 console.log( "+--+  ModelRenderer enabled" );
                 scope.enabled = true;
             });
-        } );
+        });
     }
 
 
@@ -304,6 +311,12 @@ PX.ModelRenderer.prototype =
         mouseDeltaY = mouseY - previousMouseY;
         previousMouseX = mouseX;
         previousMouseY = mouseY;
+
+        this.entryPos.y += ( 0.0 - this.entryPos.y ) * 0.1;
+        for( var i=0; i<this.artefactScene.children.length; i++ )
+        {
+            this.artefactScene.children[i].position.y = this.entryPos.y;
+        }
 
         if( isMouseDown && this.trackball )
         {
