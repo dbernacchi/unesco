@@ -310,6 +310,22 @@ ul.clr li {
 	opacity: 0.5;
 }
 
+#overlay {
+
+	background: rgba(0, 0, 0, 0.5);
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 1;
+	
+}
+
 #slide-5, #slide-9 {
 
 	background: rgba(0, 0, 0, 0.5);
@@ -414,6 +430,7 @@ ul.clr li {
 	font-weight: 300;
 	line-height: 20px;
 	color: #B9CBD5;
+	z-index: 2;
 }
 
 #about .body {
@@ -448,6 +465,16 @@ ul.clr li {
 
 #browse .container{display: none;}
 
+#browse #arrow-back {
+	width: 32px;
+	height: 23px;
+	display: block;
+	background-image: url(../img/browse/arrow-back.png);
+	position: fixed;
+	left: 100px;
+	top: 50%;	
+}
+
 #browse .arrow.up {
 	width: 23px;
 	height: 32px;
@@ -455,6 +482,7 @@ ul.clr li {
 	display: block;
 	background-image: url(../img/browse/arrow-up.png);
 }
+
 #browse .arrow.down {
 	width: 23px;
 	height: 32px;

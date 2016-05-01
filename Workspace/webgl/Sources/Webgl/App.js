@@ -852,7 +852,7 @@ function Update( time, frameTime )
                 p2d.project( camera );
                 p2d.x = p2d.x * 0.5 + 0.5;
                 Params.TiltShiftPosition = p2d.x;
-                //console.log( "Params.TiltShiftPosition: ", Params.TiltShiftPosition );
+                //console.log( "xxParams.TiltShiftPosition: ", Params.TiltShiftPosition );
             }
         }
     }
@@ -976,6 +976,8 @@ function ZoomInFromLevel0ToLevel1( isUserClickOnLocation )
                     clickedMarkerID = object.id;
 
                     // Show browse immediately on click
+					UNESCO.hideZoomIn();
+	            	UNESCO.hideZoomOut()
                     UNESCO.showBrowse( object.id );
                 } );
             }
