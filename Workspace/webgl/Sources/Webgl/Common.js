@@ -110,10 +110,11 @@ PX =
     , kLocationMarkerScale: 0.6
     , kLocationMarkerDetail: 24 //16
     , kLocationMarkerZScale: 0.2 //0.125
-    , kLocationFontSize: 9
+    , kLocationFontSize: 9  // Level 0 font size
+    , kLocationNameTagFontSize: 8  // Nametag font size
     , kAvoidanceSpeed: 0.031
     , kMaxGridSize: 4
-    , kLocationTextSize: 120.0
+    //, kLocationTextSize: 120.0
     , kLocationColor: new THREE.Color( 0x171c5e )   // Default color
     , kLocationMouseOverColorLevel0: new THREE.Color( 0xa3d5fe )   // Mouse over color Level 0
     , kLocationMouseOverColorLevel1: new THREE.Color( 0xf0fbff )   // Mouse over color Level 1

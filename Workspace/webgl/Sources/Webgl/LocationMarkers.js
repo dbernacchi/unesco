@@ -733,7 +733,7 @@ UG.LocationMarkers.prototype =
 
                 }
 
-                var fontSize = PX.kLocationFontSize;
+                var fontSize = PX.kLocationNameTagFontSize;
 
                 this.textRenderer.AppendText2D( loc.title, loc.positionSS, fontSize, 1.0, false, true );
             }
