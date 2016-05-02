@@ -64,10 +64,6 @@ function PopulateLocationsWithModelInfo( reconstructions )
                 {
                     loc.types[ PX.ModelTypeDestroyed ]++;
                 }
-                else if( res === "under reconstruction" )
-                {
-                    loc.types[ PX.ModelTypeUnderConstruction ]++;
-                }
                 else if( res === "reconstructed" )
                 {
                     loc.types[ PX.ModelTypeReconstructed ]++;

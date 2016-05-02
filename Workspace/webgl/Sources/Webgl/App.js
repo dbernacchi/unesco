@@ -506,47 +506,68 @@ function Setup()
     // Click callbacks on HTML filter buttons
     $(document).on( 'click', "#legend a.clickable", function()
     {
-   
+    	
+    	var index = 3;
    	
         if( appStateMan.IsState( PX.AppStates.AppStateLevel1 ) || appStateMan.IsState( PX.AppStates.AppStateLevel2 ) )
         {
-        	
-        	if($(this).hasClass('disabled')){
-	        	
-	        	$("#legend > .clr > li > a" ).removeClass('disabled');
-	        	
-	        	var cls = $(this).attr('class');
-	        	
-	        	var status = $(this).attr('status');
-	        	
-	        	$("#browse").attr('status', status);
-	        	
-	        	var location_id = $("#browse").attr('location-id');
-	        	
-	        	if(appStateMan.IsState( PX.AppStates.AppStateLevel2 )){
-	        		UNESCO.showBrowse( location_id );
-	        	}
-	        	
-	        	$("#legend > .clr > li > a" ).each(function(){
-	        		
-	        		if(cls != $(this).attr('class')){
-	        			$(this).addClass('disabled');
-	        		}
-	        	});	
-	        	
-	            var index = $(this).parent().index();
-	            
-				UpdateFilterSwitches( index );
-	            locationMarkers.FilterLocationMeshColors( WebpageStates.FilterSwitches );	
-	            
-	        } else {
-				
-				UNESCO.filtersOff($(this));
-	
-	        }
+        	if(!$(this).hasClass('disabled')){
+        		
+        		$(this).addClass('disabled');
+        		
+        		
+        	} else {
+        		
+        		$(this).removeClass('disabled');
 	        
-        
-        }
+	        }
+
+			var filters_on = 0;
+			
+        	$("#legend a").each(function(){
+        		
+	        	if(!$(this).hasClass('disabled')){
+		        	
+		        	index = $(this).parent().index();
+		        	if(index == 1){index = 2;}
+		        	
+		        	var status = $(this).attr('status');
+		        	
+		        	filters_on++;
+		            		            
+		        }      		
+        		
+        	});
+        	
+        	if(filters_on == 1){
+        	
+        			
+        	} else {
+        	
+        		status = "";
+        			
+        		index = 3;
+        		
+        		$("#legend a").removeClass('disabled');
+        		
+        	}
+        	
+        	console.log(filters_on);
+        	
+        	console.log(index);
+        	
+        	$("#browse").attr('status', status);
+        	
+        	var location_id = $("#browse").attr('location-id');
+        	
+        	if(appStateMan.IsState( PX.AppStates.AppStateLevel2 )){
+        		UNESCO.showBrowse( location_id );
+        	}        	
+	        
+			UpdateFilterSwitches( index );
+            locationMarkers.FilterLocationMeshColors( WebpageStates.FilterSwitches );  
+            	        
+	     }
     });
 
 

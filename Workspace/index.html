@@ -1,336 +1,384 @@
 ﻿<!doctype html>
 <html>
-<head>
-   
-    <script>
-      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-    
-      ga('create', 'UA-77075817-1', 'auto');
-      ga('send', 'pageview');
-    
-    </script>
+    <head>
 
-    <script src="webgl/Sources/Webgl/Detector.js"></script>
-    <script src="webgl/Sources/3rdparty/threejs/three.min.js"></script>
-    <!--<script src="webgl/Sources/3rdparty/threejs/Projector.js"></script> -->
-    <script src="webgl/Sources/3rdparty/threejs/loaders/MTLLoader.js"></script>
-    <script src="webgl/Sources/3rdparty/threejs/loaders/OBJLoader.js"></script>
-    <script src="webgl/Sources/3rdparty/threejs/controls/OrbitControls.js"></script>
-    <script src="webgl/Sources/3rdparty/threejs/postprocessing/BloomPass.js"></script>
-    <script src="webgl/Sources/3rdparty/threejs/postprocessing/EffectComposer.js"></script>
-    <script src="webgl/Sources/3rdparty/threejs/postprocessing/ShaderPass.js"></script>
-    <script src="webgl/Sources/3rdparty/threejs/postprocessing/RenderPass.js"></script>
-    <script src="webgl/Sources/3rdparty/threejs/shaders/CopyShader.js"></script>
-    <script src="webgl/Sources/3rdparty/threejs/shaders/ConvolutionShader.js"></script>
-    <script src="webgl/Sources/3rdparty/threejs/shaders/HorizontalTiltShiftShader.js"></script>
-    <script src="webgl/Sources/3rdparty/threejs/shaders/VerticalTiltShiftShader.js"></script>
-    <script src="webgl/Sources/3rdparty/threejs/shaders/FXAAShader.js"></script>
-    <script src="webgl/Sources/3rdparty/jquery/jquery-1.12.2.min.js"></script>
-    <!-- <script src="webgl/Sources/3rdparty/dat.gui.min.js"></script> -->
-    <!-- <script src="webgl/Sources/3rdparty/stats.min.js"></script> -->
-    <!-- <script src="webgl/Sources/3rdparty/suncalc.js"></script> -->
-    <script src="webgl/Sources/3rdparty/markerclusterer.js"></script>
-    <script src="webgl/Sources/3rdparty/Tween.js"></script>
-    <script src="webgl/Sources/3rdparty/dojo.js"></script>
-    <script src="webgl/Sources/3rdparty/sylvester.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB_BvzvNCArogTRPRnbUicqze38-91MNFA"></script>
+        <script>
+			(function(i, s, o, g, r, a, m) {
+				i['GoogleAnalyticsObject'] = r;
+				i[r] = i[r] ||
+				function() {
+					(i[r].q = i[r].q || []).push(arguments)
+				}, i[r].l = 1 * new Date();
+				a = s.createElement(o),
+				m = s.getElementsByTagName(o)[0];
+				a.async = 1;
+				a.src = g;
+				m.parentNode.insertBefore(a, m)
+			})(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
 
-    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Nunito" />
-    <link rel="stylesheet" type="text/css" href="css/unesco.css?1">
-    <script src="js/unesco.js"></script>
+			ga('create', 'UA-77075817-1', 'auto');
+			ga('send', 'pageview');
 
+        </script>
 
+        <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
+        <link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png">
+        <link rel="apple-touch-icon" sizes="120x120" href="/apple-icon-120x120.png">
+        <link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png">
+        <link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png">
+        <link rel="icon" type="image/png" sizes="192x192"  href="/android-icon-192x192.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="manifest" href="/manifest.json">
+        <meta name="msapplication-TileColor" content="#ffffff">
+        <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+        <meta name="theme-color" content="#ffffff">
 
-</head>
-<body>
-<script>
+        <meta property="og:title" content="Reclaiming History"/>
+        <meta property="og:url" content="http://www.reclaimhistory.org"/>
+        <meta property="og:image" content="http://www.reclaimhistory.org/img/share/share.jpg"/>
+        <meta property="og:site_name" content="Reclaiming History"/>
+        <meta property="og:description"
+        content="Let’s recreate the heritage and culture that has been lost around the world. Join us in digitally reconstructing monuments that have been destroyed in this crowdsourced museum Visit & share reclaimhistory.org #reclaimhistory"/>
 
-function readDeviceOrientation() {
+        <script src="webgl/Sources/Webgl/Detector.js"></script>
+        <script src="webgl/Sources/3rdparty/threejs/three.min.js"></script>
+        <!--<script src="webgl/Sources/3rdparty/threejs/Projector.js"></script> -->
+        <script src="webgl/Sources/3rdparty/threejs/loaders/MTLLoader.js"></script>
+        <script src="webgl/Sources/3rdparty/threejs/loaders/OBJLoader.js"></script>
+        <script src="webgl/Sources/3rdparty/threejs/controls/OrbitControls.js"></script>
+        <script src="webgl/Sources/3rdparty/threejs/postprocessing/BloomPass.js"></script>
+        <script src="webgl/Sources/3rdparty/threejs/postprocessing/EffectComposer.js"></script>
+        <script src="webgl/Sources/3rdparty/threejs/postprocessing/ShaderPass.js"></script>
+        <script src="webgl/Sources/3rdparty/threejs/postprocessing/RenderPass.js"></script>
+        <script src="webgl/Sources/3rdparty/threejs/shaders/CopyShader.js"></script>
+        <script src="webgl/Sources/3rdparty/threejs/shaders/ConvolutionShader.js"></script>
+        <script src="webgl/Sources/3rdparty/threejs/shaders/HorizontalTiltShiftShader.js"></script>
+        <script src="webgl/Sources/3rdparty/threejs/shaders/VerticalTiltShiftShader.js"></script>
+        <script src="webgl/Sources/3rdparty/threejs/shaders/FXAAShader.js"></script>
+        <script src="webgl/Sources/3rdparty/jquery/jquery-1.12.2.min.js"></script>
+        <!-- <script src="webgl/Sources/3rdparty/dat.gui.min.js"></script> -->
+        <!-- <script src="webgl/Sources/3rdparty/stats.min.js"></script> -->
+        <!-- <script src="webgl/Sources/3rdparty/suncalc.js"></script> -->
+        <script src="webgl/Sources/3rdparty/markerclusterer.js"></script>
+        <script src="webgl/Sources/3rdparty/Tween.js"></script>
+        <script src="webgl/Sources/3rdparty/dojo.js"></script>
+        <script src="webgl/Sources/3rdparty/sylvester.js"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB_BvzvNCArogTRPRnbUicqze38-91MNFA"></script>
 
-    switch (window.orientation) {  
-    case 0:  
-    
-        // Portrait 
+        <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Nunito" />
 
-        //$(":not(#portrait-warning)").hide();
-        break; 
-        
-    case 180:  
-    
-        // Portrait (Upside-down)
-        //$(":not(#portrait-warning)").hide();
-        break; 
-  
-    case -90:  
-    
-        // Landscape (Clockwise)
-        //alert("RELOAD");
-        location.reload(true);
-        break;  
-  
-    case 90:  
-    
-        // Landscape  (Counterclockwise)
-        //alert("RELOAD");
-        location.reload(true);
-        break;
-    }
-    
-}   
-    
-window.onorientationchange = readDeviceOrientation;
+        <link rel="stylesheet" type="text/css" href="css/logo.css">
+        <link rel="stylesheet" type="text/css" href="css/unesco.css?2">
 
+        <script src="js/logo.js"></script>
+        <script src="js/unesco.js"></script>
 
-if(!Detector.webgl) 
-{
-    Detector.addGetWebGLMessage();
-}
-</script>
+    </head>
+    <body>
 
-<div style="top: -1000px;" id="map"></div>
-<div style="z-index: -1000px;" id="glContainer"></div>
-<div id="glModelContainerTEST"></div>
+        <!--LOCK LANDSCAPE-->
+        <script>
+			function readDeviceOrientation() {
 
-<div style="display: none;" class="preloaderBG" id="preloaderBG"></div>
-<div style="display: none;" class="preloaderFG" id="preloaderFG"></div>
+				switch (window.orientation) {
 
-<!--SPLASH-->
-<div class="UNESCO" id="splash" style="display: none">
+				case -90:
+					// Landscape (Clockwise)
+					location.reload(true);
+					break;
 
-    <!--div class="status-bar-top resize-top"><img src="img/splash/animated/anim_trans.gif"/></div>
-    <div class="status-bar-bottom resize-top"></div-->  
-    
-    
-    <img class="splash-text-top resize resize-margin-top" src="img/splash/splash-text-top.png"/>
-    
-    <div class="explore-container resize resize-margin-bottom resize-margin-top">
-        <a href="#" class="resize explore-button"></a>
-        <div class="resize loading"></div>
-    </div>
-    
-    <img class="splash-text-bottom" src="img/splash/splash-text-bottom.png"/>
-    
-</div>
+				case 90:
+					// Landscape  (Counterclockwise)
+					location.reload(true);
+					break;
+				}
 
-<!--ZOOM-->
-<div class="UNESCO furniture zoom-container resize-left" style="display: none;">
-
-    <div class="zoom-container-inner">
-        
-        <a href="#" class=" resize-margin-bottom" id="zoom-in-button" style="display: none;"></a>    
-        <a href="#" class="" id="zoom-out-button" style="display: none;"></a> 
-           
-    </div>
-    
-</div>
-
-<!--SHARE-->
-<a href="#" class="UNESCO furniture" id="share-button" style="display: none;"></a>
-<ul class="UNESCO share-menu" style="display: none;">
-    <li>
-        <a target="_blank" href="http://twitter.com/share?text=Reclaiming%20History&url=http://reclaimhistory.org" class="twitter"></a>
-    </li>
-    <li>
-        <a target="_blank" href="http://www.facebook.com/sharer.php?u=http://reclaimhistory.org" class="facebook"></a>
-    </li>
-</ul>     
+			}
 
 
-<!--LOGO-->
-<div class="UNESCO resize-top resize-left" id="logo" style="display: none;"></div>
+			window.onorientationchange = readDeviceOrientation;
 
-<!--MENU-->
-<a href="#" class="UNESCO furniture" id="menu-button" style="display: none;"></a>
+        </script>
 
-<!--BOTTOM LOGO-->
-<div id="logo-bottom" class="UNESCO resize-bottom resize-right" style="display: none;"><a href="#" id="logo-bottom-inner"></a></div>
+        <!--WEBGL-->
+        <script>
+			if (!Detector.webgl) {
+				Detector.addGetWebGLMessage();
+			}
+        </script>
 
-<!--LEGEND-->
-<div class="UNESCO resize-left resize-bottom" id="legend" style="display: none;">
+        <div style="top: -1000px;" id="map"></div>
+        <div style="z-index: -1000px;" id="glContainer"></div>
+        <div id="glModelContainerTEST"></div>
 
-    <ul class="clr">
-        <li>
-            <a href="#" class="destroyed disabled clickable" status="Destroyed">DESTROYED</a>
-        </li>
-        <li>
-            <a href="#" class="under disabled clickable" status="UnderReconstruction">UNDER RECONSTRUCTION</a>
-        </li>
-        <li>
-            <a href="#" class="reconstructed clickable" status="Reconstructed">RECONSTRUCTED</a>
-        </li> 
-         
-    </ul>
-    
-</div>
+        <div style="display: none;" class="preloaderBG" id="preloaderBG"></div>
+        <div style="display: none;" class="preloaderFG" id="preloaderFG"></div>
 
-<!--BROWSE-->
-<div class="UNESCO" id="browse" status="Reconstructed" location-id="0" style="display:none;">
-    
-    <a href="#" class="" id="arrow-back"></a>   
-    
-    <ul class="clr">
-        <li class="resize-width items">
-            <div class="items-inner">
-                
-                
-                <div class="clone item resize-margin-bottom" item-id="ITEM_ID" location-id="LOCATION_ID" folder="" filename="" status="">
-                    <ul class="clr">
-                        <li class="image resize-width resize-height">
-                            <a href="#"><img class="resize" src="img/browse/destroyed-thumb.png" /></a>
-                        </li>
-                        <li class="resize-width copy">
-                            <div class="inner">
-                                <div class="title resize-font-size resize-width">
-                                    <span class="name"></span>
-    
-                                    <div class="date">
-                                        
-                                    </div>
-                                </div>
-    
-                                <div class="status resize-margin-left resize-margin-top">
-                                    
-                                </div>
-                             </div>
-                        </li>
-                    </ul> 
-                    <div class="container resize-width resize-margin-top">
-                        
-                        <div class="entry">
+        <!--SPLASH-->
+        <div class="UNESCO" id="splash" style="display: none">
+
+            <div class="splash-text-top resize"></div>
+
+            <div class="explore-container resize resize-margin-bottom resize-margin-top" style="display: none;">
+                <a href="#" class="resize explore-button"></a>
+                <!--div class="resize loading"></div-->
+            </div>
+
+            <div class="splash-text-bottom resize-font-size" style="display: none;">
+
+                Let's recreate the heritage and culture that has been lost
+                <br />
+                around the world. Join us in digitally reconstructing monuments
+                <br />
+                that have been destroyed in this crowsdsourced museum.
+
+            </div>
+
+            <img class="resize splash-logo-bottom" src="img/logo-bottom.png" style="display: none;"></img>
+
+        </div>
+
+        <!--ZOOM-->
+        <div class="UNESCO zoom-container resize-left" style="display: none;">
+
+            <div class="zoom-container-inner">
+
+                <a href="#" class="disabled resize-margin-bottom" id="zoom-in-button"></a>
+                <a href="#" class="disabled" id="zoom-out-button"></a>
+
+            </div>
+
+        </div>
+
+        <!--SHARE-->
+        <a href="#" class="UNESCO furniture resize-left resize-top" id="share-button" style="display: none;"></a>
+        <ul class="UNESCO share-menu resize-left resize-top">
+            <li>
+                <a target="_blank" href="http://twitter.com/share?text=Join%20us%20in%20digitally%20recreating%20monuments%20that%20have%20been%20destroyed%20in%20this%20crowdsourced%20museum.%20Join%20us%20to%20#reclaimhistory&url=http://reclaimhistory.org" class="twitter"></a>
+            </li>
+            <li>
+                <a target="_blank" href="http://www.facebook.com/sharer.php?u=http://reclaimhistory.org" class="facebook"></a>
+            </li>
+        </ul>
+
+        <!--LOGO-->
+        <div class="UNESCO resize-top resize-left" id="logo" style="display: none;"></div>
+
+        <!--MENU-->
+        <a href="#" class="UNESCO furniture resize-right resize-top" id="menu-button" style="display: none;"></a>
+
+        <!--BOTTOM LOGO-->
+        <div id="logo-bottom" class="UNESCO resize-bottom resize-right" style="display: none;">
+            <a href="#" id="logo-bottom-inner"></a>
+        </div>
+
+        <!--LEGEND-->
+        <div class="UNESCO resize-left resize-bottom" id="legend" style="display: none;">
+
+            <ul class="">
+                <li>
+                    <a href="#" class="destroyed disabled clickable" status="Destroyed">DESTROYED MONUMENT</a>
+                </li>
+                <li>
+                    <a href="#" class="reconstructed clickable" status="Reconstructed">DIGITALLY RECONSTRUCTED</a>
+                </li>
+
+            </ul>
+
+        </div>
+
+        <!--BROWSE-->
+        <div class="UNESCO" id="browse" status="Reconstructed" location-id="0" style="display:none;">
+
+            <a href="#" class="" id="arrow-back"></a>
+
+            <ul class="clr">
+                <li class="resize-width items">
+                    <div class="items-inner">
+
+                        <div class="clone item resize-margin-bottom" item-id="ITEM_ID" location-id="LOCATION_ID" folder="" filename="" status="">
                             <ul class="clr">
-                                <li class="text resize-width resize-margin-right ">
-                                  
-                                    <div class="title resize-margin-top resize-margin-bottom">
-                                        <span class="name"></span>
-                                    </div>
-                                    
-                                    <div class="date">
-                                        
-                                    </div>  
-                                    
-                                    <div class="excerpt resize-margin-top resize-margin-bottom">
-                                        
-                                    </div>  
-                                    
-                                    <a href="" class="readmore resize-margin-top resize-margin-bottom"></a>
-                                    <a href="" class="collapse resize-margin-top resize-margin-bottom" style="display: none;"></a>  
-                                       
+                                <li class="image resize-width resize-height">
+                                    <a href="#"><img class="resize" src="img/browse/destroyed-thumb.png" /></a>
                                 </li>
-                                <li class="more resize-width resize-margin-right" style="display:none">
-                            
-                                </li>       
-                                <li class="media resize-width resize-height resize-margin-right" style="display:none">
-                            
-                                    <div class="images">
+                                <li class="resize-width copy">
+                                    <div class="inner">
+                                        <div class="title resize-font-size resize-width">
+                                            <a href="#" class="name"></a>
+
+                                            <a href="#" class="date"></a>
+                                        </div>
+
+                                        <a href="#" class="status resize-margin-left resize-margin-top resize-margin-bottom"></a>
+                                        
+                                        <a href="#" class="more-info-button"></a>
                                         
                                     </div>
-                                    <div class="videos">
-                                        
-                                    </div>
-                                    
-                                </li> 
-                                <li class="slide-image resize-width">
-                                    
-                                    <a href="#" class="thumbnail"><img class="resize" width="616" height="462" src="img/slides/destroyed.png"/></a>
-                                    
-                                    <a href="#" class="magnify"></a>
-                                    
-                                    <a href="http://www.projectmosul.org" target="_blank" class="contribute-button" style="display:none"></a>
-                                    
-                                    
-                                    
-                                </li>     
+                                </li>
                             </ul>
-                        </div> 
+                            <div class="container resize-width resize-margin-top">
 
-                    </div>   
-                </div>
-    
-      
-          </div>
-        </li>
-        <li class="arrows resize-margin-right resize-margin-top">
+                                <div class="entry">
+                                    <ul class="clr">
+                                        <li class="text resize-width resize-margin-right ">
+
+                                            <div class="title resize-margin-top resize-margin-bottom">
+                                                <span class="name"></span>
+                                            </div>
+
+                                            <div class="date">
+
+                                            </div>
+
+                                            <div class="excerpt resize-margin-top resize-margin-bottom">
+
+                                            </div>
+
+                                            <a href="" class="readmore resize-margin-top resize-margin-bottom"></a>
+                                            <a href="" class="collapse resize-margin-top resize-margin-bottom" style="display: none;"></a>
+
+                                        </li>
+                                        <li class="more resize-width resize-margin-right" style="display:none">
+
+                                        </li>
+                                        <li class="media resize-width resize-height resize-margin-right" style="display:none">
+
+                                            <div class="images">
+
+                                            </div>
+                                            <div class="videos">
+
+                                            </div>
+
+                                        </li>
+                                        <li class="slide-image resize-width">
+
+                                            <a href="#" class="thumbnail"><img class="resize" width="616" height="462" src="img/slides/destroyed.png"/></a>
+
+                                            <a href="#" class="magnify"></a>
+
+                                            <a href="#" target="_blank" class="contribute-button" style="display:none"></a>
+
+                                        </li>
+                                    </ul>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </li>
+                <li class="arrows resize-margin-right resize-margin-top">
+
+                    <a href="#" class="arrow up resize-margin-top"></a>
+
+                    <a href="#" class="arrow down resize-margin-top "></a>
+
+                </li>
+
+            </ul>
+
+        </div>
+
+        <!--CLOSE BUTTON-->
+        <a href="#" class="UNESCO close-button page resize-top resize-right" style="display:none;"></a>
+
+        <!--ABOUT-->
+        <div class="UNESCO" id="about" style="display: none;">
+
+            <div class="body resize-margin-bottom resize-margin-top">
+                <p>
+                    Over the last year we have seen countless historical sites destroyed by conflict, war and disasters. It’s not just the buildings and artifacts that are lost but the heritage and culture for people around the world. We’ve created this project to celebrate and safeguard heritage for future generations. Join us in rebuilding history by digitally recreating what was lost and protecting what is still standing.
+                </p>
+                <p>
+                    RebuildingHistory.org is a crowdsourced online musuem. Here people can come together to digitally recreate, experience, learn about and visit monuments that have been lost. We aim to tell the story of heritage lost across the globe.
+                </p>
+                <p>
+                    This effort is made in coordination with #Unite4Heritage, a global movement powered by UNESCO that aims to celebrate and safeguard cultural heritage and diversity around the globe. It began as Project Mosul by Rekrei. They innovated a new way to digitally recreate monuments lost in Iraq. Building on the initial workflow of using crowdsourced images to virtually recreate artefacts using photogrammetry, their web-based platform is evolving to better utilise publicly-available data on the web to assist their volunteers in new ways.  After partnering with Ogilvy and Pet Gorilla, Rekrei will maintain its efforts to rebuild history.
+                </p>
+            </div>
+
+            <a href="#" target="_blank" class="contribute-button"></a>
+
+        </div>
+        
+        <!--PARTICIPATE-->
+        <div class="UNESCO" id="participate" style="display: none;">
+
+            <h1>Participate</h1>
             
-            <a href="#" class="arrow up resize-margin-top"></a>
+            <div class="body resize-margin-bottom resize-margin-top">
+                <p>
+                    Here are the many ways you can participate to<br />
+                    rebuild this monument. </p>
+            </div>
+
+            <ul class="clr">
+                <li><a href="#" class="upload-image button"></a></li>
+                <li><a href="#" class="upload-model button"></a></li>
+            </ul>
             
-            <a href="#" class="arrow down resize-margin-top "></a>
+            <ul class="clr">
+                <li><a href="#" class="sort-photo button"></a></li>
+                <li><a href="#" class="mask-photo button"></a></li>
+            </ul>
+            
+            <ul class="clr">
+                <li><a href="http://www.unite4heritage.org/en/unite4heritage-celebrating-safeguarding-cultural-heritage" target="_blank" class="donate button"></a></li>
+
+            </ul>
                         
-        </li>      
-        
-    </ul>
+        </div>        
 
-</div>
+        <!--SLIDE 5-->
+        <div class="UNESCO" id="slide-5" style="display: none;">
 
-<!--CLOSE BUTTON-->
-<a href="#" class="UNESCO close-button page resize-top resize-right" style="display:none;"></a>
+            <a href="" class="prev"></a>
+            <div class="container resize-width resize-margin-top">
 
-<!--ABOUT-->
-<div class="UNESCO" id="about" style="display: none;">
-    
-    <div class="body resize-margin-bottom resize-margin-top">     
-        <p>
-            Over the last year we have seen countless historical sites destroyed by conflict, war and disasters. It’s not just the buildings and artifacts that are lost but the heritage and culture for people around the world. We’ve created this project to celebrate and safeguard heritage for future generations. Join us in rebuilding history by digitally recreating what was lost and protecting what is still standing. 
-        </p>
-        <p>
-            RebuildingHistory.org is a crowdsourced online musuem. Here people can come together to digitally recreate, experience, learn about and visit monuments that have been lost. We aim to tell the story of heritage lost across the globe. 
-        </p>
-        <p>
-            This effort is made in coordination with #Unite4Heritage, a global movement powered by UNESCO that aims to celebrate and safeguard cultural heritage and diversity around the globe. It began as Project Mosul by Rekrei. They innovated a new way to digitally recreate monuments lost in Iraq. Building on the initial workflow of using crowdsourced images to virtually recreate artefacts using photogrammetry, their web-based platform is evolving to better utilise publicly-available data on the web to assist their volunteers in new ways.  After partnering with Ogilvy and Pet Gorilla, Rekrei will maintain its efforts to rebuild history.       
-        </p>    
-    </div>
-    
-    <a href="http://www.projectmosul.org" target="_blank" class="contribute-button"></a>
-    
-    
-</div>
+            </div>
+            <a href="" class="next"></a>
 
-<!--SLIDE 5-->
-<div class="UNESCO" id="slide-5" style="display: none;">
-    
-    <a href="" class="prev"></a>
-    <div class="container resize-width resize-margin-top">
-            
-        
-    </div>
-    <a href="" class="next"></a>
-    
-</div>
+        </div>
 
-<!--SLIDE 9-->
-<div class="UNESCO" id="slide-9" style="display: none;">
-    <div id="glModelContainer"></div>
-    
-</div>
+        <!--SLIDE 9-->
+        <div class="UNESCO" id="slide-9" style="display: none;">
+            <div id="glModelContainer"></div>
 
-<!--PORTRAIT WARNING-->
-<div id="portrait-warning">
-    
-    <div class="message">
-        <img src="/img/logo.png" /><br />
-        <br />
-        <br />
-        Please turn your device or widen your browser window to view this experience.
-        
-    </div>
-</div>
+        </div>
 
+        <!--PORTRAIT WARNING-->
+        <div id="portrait-warning">
 
-<script src="webgl/Sources/Webgl/Common.js"></script>
-<script src="webgl/Sources/Webgl/Utils.js"></script>
-<script src="webgl/Sources/3rdparty/bmFont.js"></script>
-<script src="webgl/Sources/Webgl/TextRenderer.js"></script>
-<script src="webgl/Sources/Webgl/CircleRenderer.js"></script>
-<script src="webgl/Sources/Webgl/Database.js"></script>
-<script src="webgl/Sources/Webgl/Loaders.js"></script>
-<script src="webgl/Sources/Webgl/AppStateHandler.js"></script>
-<script src="webgl/Sources/Webgl/Camera.js"></script>
-<script src="webgl/Sources/Webgl/Earth.js"></script>
-<script src="webgl/Sources/Webgl/LocationMarkers.js"></script>
-<script src="webgl/Sources/Webgl/ModelRenderer.js"></script>
-<script src="webgl/Sources/Webgl/App.js"></script>
-<script src="webgl/Sources/Webgl/Main.js"></script>
-</body>
+            <div class="message">
+                <img src="/img/logo.png" />
+                <br />
+                <br />
+                <br />
+                Please turn your device or widen your browser window to view this experience.
+
+            </div>
+        </div>
+
+        <script src="webgl/Sources/Webgl/Common.js"></script>
+        <script src="webgl/Sources/Webgl/Utils.js"></script>
+        <script src="webgl/Sources/3rdparty/bmFont.js"></script>
+        <script src="webgl/Sources/Webgl/TextRenderer.js"></script>
+        <script src="webgl/Sources/Webgl/CircleRenderer.js"></script>
+        <script src="webgl/Sources/Webgl/Database.js"></script>
+        <script src="webgl/Sources/Webgl/Loaders.js"></script>
+        <script src="webgl/Sources/Webgl/AppStateHandler.js"></script>
+        <script src="webgl/Sources/Webgl/Camera.js"></script>
+        <script src="webgl/Sources/Webgl/Earth.js"></script>
+        <script src="webgl/Sources/Webgl/LocationMarkers.js"></script>
+        <script src="webgl/Sources/Webgl/ModelRenderer.js"></script>
+        <script src="webgl/Sources/Webgl/App.js"></script>
+        <script src="webgl/Sources/Webgl/Main.js"></script>
+    </body>
 </html>

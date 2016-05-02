@@ -1210,6 +1210,9 @@ UG.LocationMarkers.prototype =
             var tweenogs = new TWEEN.Tween( this.outlineGlobalScale ).to( ogsTarget, Params.AnimTime * 1000.0 * 0.25 );
             tweenogs.easing( TWEEN.Easing.Quadratic.InOut );
             tweenogs.start();
+            
+            UNESCO.hideZoomContainer();
+		
         }
 
         // Level 2
@@ -1328,6 +1331,8 @@ UG.LocationMarkers.prototype =
 
                 scope.currentMouseOverMarkerIndex = -1;
             });
+            
+            UNESCO.showZoomContainer();
         }
 
         return 1;
