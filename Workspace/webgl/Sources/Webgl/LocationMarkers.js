@@ -564,6 +564,7 @@ UG.LocationMarkers.prototype =
                 // Filtered ones are shown, others are scaled to 0 
                 if( WebpageStates.CurrentActiveFilterIndex >= 0 )
                 {
+                    //if( loc.types[ WebpageStates.CurrentActiveFilterIndex ] > 0 )
                     if( loc.types[ WebpageStates.CurrentActiveFilterIndex ] > -1 )
                     {
                         var targetVal = PX.Saturate( loc.types[ WebpageStates.CurrentActiveFilterIndex ] );
@@ -571,6 +572,11 @@ UG.LocationMarkers.prototype =
                         loc.filterScale = PX.Clamp( loc.filterScale, PX.EPSILON, loc.filterScale );
                         locationScale *= loc.filterScale;
                     }
+                    /*else
+                    {
+                        locationScale = 0.1; //1.0;
+                    }*/
+
                 }
                 else
                 {

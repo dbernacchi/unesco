@@ -117,6 +117,10 @@ PX =
     , kLocationColor: new THREE.Color( 0x171c5e )   // Default color
     , kLocationMouseOverColorLevel0: new THREE.Color( 0xa3d5fe )   // Mouse over color Level 0
     , kLocationMouseOverColorLevel1: new THREE.Color( 0xf0fbff )   // Mouse over color Level 1
+    /*, kLocationColors2: [ 
+        new THREE.Color( 0xff0000 ),    // Destroyed
+        new THREE.Color( 0xffff00 ),    // Under Construction
+        new THREE.Color( 0x00ff00 ) ]   // Reconstructed*/
     , kLocationColors2: [ 
         new THREE.Color( 0x1a2e62 ),    // Destroyed
         new THREE.Color( 0x273d90 ),    // Under Construction
