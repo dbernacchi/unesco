@@ -143,7 +143,7 @@ PX.CameraTrackball.prototype =
         
         // Limit the acceleration
         var speedX = 1.0;
-        var speedY = 1.0 / aspectRatio;
+        var speedY = 1.0; // / aspectRatio;
 
         this.rotateAccel.x = PX.Clamp( offsetX * frameTime, -speedX, speedX );
         this.rotateAccel.y = PX.Clamp( offsetY * frameTime, -speedY, speedY );
