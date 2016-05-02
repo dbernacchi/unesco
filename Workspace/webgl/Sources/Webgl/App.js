@@ -527,7 +527,6 @@ function Setup()
         		
         		$(this).addClass('disabled');
         		
-        		
         	} else {
         		
         		$(this).removeClass('disabled');
@@ -536,6 +535,8 @@ function Setup()
 
 			var filters_on = 0;
 			
+			var status = "";
+			
         	$("#legend a").each(function(){
         		
 	        	if(!$(this).hasClass('disabled')){
@@ -543,16 +544,15 @@ function Setup()
 		        	index = $(this).parent().index();
 		        	if(index == 1){index = 2;}
 		        	
-		        	var status = $(this).attr('status');
+		        	status = $(this).attr('status');
 		        	
 		        	filters_on++;
-		            		            
+		   
 		        }      		
         		
         	});
         	
         	if(filters_on == 1){
-        	
         			
         	} else {
         	
@@ -560,7 +560,7 @@ function Setup()
         			
         		index = 3;
         		
-        		$("#legend a").removeClass('disabled');
+        		//$("#legend a").removeClass('disabled');
         		
         	}
         	

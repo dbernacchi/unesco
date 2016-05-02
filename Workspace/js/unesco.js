@@ -20,6 +20,8 @@ var UNESCO = {};
 	 	
 	var preloaded_images = 0;
 	 	
+	var models = {};
+	
 	this.init = function() {
 		
 		var ns = this;
@@ -64,7 +66,7 @@ var UNESCO = {};
 		$(".svg-wrapper").one('webkitAnimationEnd oanimationend msAnimationEnd animationend',   
 		    function(e) {
 		    
-		    	$(".explore-container, .splash-text-bottom, .splash-logo-bottom").show();
+		    	$(".explore-container, .splash-text-bottom, .splash-logo-bottom").css('visibility', 'visible');
 			}
 		);
 
@@ -978,19 +980,19 @@ var UNESCO = {};
 	}
 	
 	this.centerVertical = function(elm) {
-
+		
 		this.centerPrep(elm);
 
 		//HEIGHT
 		var height = elm.height();
-
+		
 		var window_height = window.innerHeight;
-
+		
 		var offset = height / 2;
-
+		
 		var middle = window_height / 2;
-
-		var top = middle - offset;
+		
+		var top = (middle - offset);
 
 		elm.css('top', top + 'px');
 		
@@ -1040,22 +1042,31 @@ var UNESCO = {};
 		var ns = this;
 		
 		var img = new Image();
-		img.onload = function(){ns.afterPreloadImages();}
-		img.src = src;
+		img.onload = function(){ns.afterPreloadImages(src);}
+		img.src = src;	
 		preloaded_images++;
 		
+		console.log("+--+  Load Image:\t\t" + preloaded_images + ":" + src);
 	}
 	
-	this.afterPreloadImages = function(){
+	this.afterPreloadImages = function(src){
 		
 		preloaded_images--;
 
+		console.log("+--+  Loaded Image:\t\t" + preloaded_images + ":" + src);
+		
 		if(!preloaded_images){
 			var exploreButton = $(".UNESCO .explore-button");
 			exploreButton.css('display', 'block');
 			exploreButton.css('opacity', 0.0);
 			exploreButton.fadeTo(1000, 1);
 		}
+		
+	}
+	
+	this.preloadCount = function(){
+		
+		return preloaded_images;
 		
 	}
 	
@@ -1377,10 +1388,10 @@ var UNESCO = {};
 		var ns = this;
 
 		item = data.responseText;
-		if (!item) {
+		if (!item) { 
 			item = data;
 		}
-
+		
 		//model file name
 		val.filename = item.filename;
 
@@ -1464,6 +1475,9 @@ var UNESCO = {};
 			if (item.filename) {
 				content.find('.entry').attr('filename', item.filename);
 				status = 'Reconstructed';
+				
+				models[item.filename] = item;
+				
 			}
 
 			content.find(".image img").attr('src', 'details/' + item.details + '/image.png');
@@ -1554,6 +1568,10 @@ var UNESCO = {};
 		if (reconstructions_loaded == reconstructions.length) {
 			
 			callback();
+			
+			console.log("MODELS");
+			
+			console.log(models);
 			
 		}
 

@@ -5,7 +5,7 @@ var texture_load_checks = 0;
 
 setInterval(function(){ 
 
-	if(texture_load_checks > 4 && textures_to_load > 0){
+	if(texture_load_checks > 4 && (textures_to_load > 0 || UNESCO.preloadCount() > 0)){
 		location.reload(true);	
 	}
 	
