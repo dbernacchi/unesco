@@ -564,16 +564,13 @@ function Setup()
         		
         	}
         	
-        	console.log(filters_on);
-        	
-        	console.log(index);
-        	
         	$("#browse").attr('status', status);
         	
         	var location_id = $("#browse").attr('location-id');
         	
         	if(appStateMan.IsState( PX.AppStates.AppStateLevel2 )){
         		UNESCO.showBrowse( location_id );
+      
         	}        	
 	        
 			UpdateFilterSwitches( index );
@@ -1018,6 +1015,7 @@ function ZoomInFromLevel0ToLevel1( isUserClickOnLocation )
 					UNESCO.hideZoomIn();
 	            	UNESCO.hideZoomOut()
                     UNESCO.showBrowse( object.id );
+                    
                 } );
             }
         }

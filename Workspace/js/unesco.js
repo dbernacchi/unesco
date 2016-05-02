@@ -385,13 +385,10 @@ var UNESCO = {};
 			
 			media.find('iframe').attr('width', more_width);
 			
-
 			var container_width =container.width();
 			
 			var new_width = container_width + (more_width * 2) + (more_margin * 2);
-			
-			container.css('width', new_width + 'px');
-			
+
 			$(".prev").hide();
 			$(".next").hide();
 	
@@ -417,6 +414,18 @@ var UNESCO = {};
 			media.css('visibility', 'visible');			
 			
 			$(this).closest('li').find('.collapse').show();
+						
+			container.animate({
+				
+				width : new_width,
+				
+			}, 1000, function() {
+
+
+			});
+			
+			
+
 		});				
 
 		$(document).on('click', ".collapse", function(e) {
@@ -592,23 +601,30 @@ var UNESCO = {};
 			var container_width = container.width();
 			
 			var new_width = container_width - (more_width * 2) - (more_margin * 2);
+						
+			container.animate({
+				
+				width : new_width,
+				
+			}, 1000, function() {
+
+				more.hide();
+				
+				media.hide();
+				
+				more.css('padding-top', '0');
+				
+				media.css('margin-top', '0');
+				
+				$(".prev").show();
+				$(".next").show();
+				
+				container.find('.readmore').show();
+				
+				container.find('.collapse').hide();
+			});
 			
-			container.css('width', new_width + 'px');
-	
-			more.hide();
 			
-			media.hide();
-			
-			more.css('padding-top', '0');
-			
-			media.css('margin-top', '0');
-			
-			$(".prev").show();
-			$(".next").show();
-			
-			container.find('.readmore').show();
-			
-			container.find('.collapse').hide();
 			
 		}			
 	}
@@ -1008,24 +1024,31 @@ var UNESCO = {};
 		
 		var elm = $(".UNESCO#browse");
 						
+		//set location id				
 		elm.attr('location-id', location_id);
 
 		var status_selector = "";
 
+		//get currently set status
 		var status = elm.attr('status');
 
+		//set status_selector
 		if (status) {
 			status_selector = '[status="' + status + '"]';
 		}
-
+		
+		//reset shown items
 		elm.find(".item").removeClass('show');
 
+		//set location selector
 		var selector = ".item[location-id=" + location_id + "]";
 
+		//combine selectors
 		var filtered_selector = selector + status_selector;
 
+		//get matching items
 		var selected = elm.find(filtered_selector)
-
+		
 		if (selected.length) {
 
 			selected.addClass('show');
@@ -1070,9 +1093,6 @@ var UNESCO = {};
 			$(".arrow.down").addClass('disabled');		
 		}
 		
-		
-			
-		
 	}
 
 	this.legendUnclickable = function(elm, selector, filter) {
@@ -1084,47 +1104,6 @@ var UNESCO = {};
 
 		}
 
-	}
-
-	this.filtersOff = function(elm) {
-
-		var status = elm.attr('status');
-		
-		var off = true;
-		
-		var on = 0;
-		
-		$("#legend a:not([status=" + status + "])").each(function(){
-			
-			if(!$(this).hasClass('disabled')){
-				
-				off = false;	
-				on++;
-			}
-						
-		});
-		
-		if(off){
-			
-			$("#legend a").addClass('clickable');	
-			$("#legend a").removeClass('disabled');		
-			
-			$("#browse").attr('status', "");
-			
-			index = 3;
-		} else if(on == 1){
-			
-			$("#legend a:not([status=" + status + "])").addClass('disabled');		
-			
-			$("#browse").attr('status', "status");
-			
-			var index = elm.parent().index();
-			
-		}
-		
-    	UpdateFilterSwitches( index );
-    	locationMarkers.FilterLocationMeshColors( WebpageStates.FilterSwitches );		
-		
 	}
 
 	this.showZoomContainer = function() {
@@ -1461,6 +1440,7 @@ var UNESCO = {};
 		
 		content.find(".status").html(status_label);
 		content.find(".status").addClass(status_class);
+		content.attr('status', status);
 		
 		//console.log("name: " + item.name + " loc: " + item.location_id + " status: " + status);
 		

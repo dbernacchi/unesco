@@ -477,6 +477,8 @@ ul.clr li {
 	height: 59px;
 	background-image: url(../img/about/participate-button.png);
 	background-repeat: no-repeat;
+	margin-right: 25px;
+	margin-bottom: 25px;
 }
 
 #participate .donate {
@@ -499,7 +501,7 @@ ul.clr li {
 	background-image: url(../img/participate/mask-photo.png);
 }
 
-#participate a.button:hover {
+#participate a.button.coming-soon:hover {
 	background-image: url(../img/participate/coming-soon.png);
 }
 
@@ -643,6 +645,7 @@ ul.clr li {
 	width: 937px;
 	margin: 0 auto;
 	margin-top: 400px;
+	overflow: hidden;
 }
 
 #slide-5 ul.clr li.text, #slide-5 ul.clr li.more, #slide-5 ul.clr li.media {

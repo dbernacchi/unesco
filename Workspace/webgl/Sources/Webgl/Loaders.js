@@ -1,4 +1,17 @@
 ﻿/* global THREE: true } */
+var textures_to_load = 0;
+
+var texture_load_checks = 0;
+
+setInterval(function(){ 
+
+	if(texture_load_checks > 4 && textures_to_load > 0){
+		location.reload(true);	
+	}
+	
+	texture_load_checks++;
+
+}, 5000);
 
 var PX = PX || {};
 
@@ -71,6 +84,7 @@ function LoadText( name, url )
 {
     var defer = $.Deferred();
     console.log( "+--+  Load Text:\t\t" + name, url );
+
     $.ajax({
         url : url,
         dataType: "text",
@@ -80,6 +94,7 @@ function LoadText( name, url )
         {
             PX.AssetsDatabase[ name ] = data;
             console.log( "+--+  Loaded Text:\t\t" + name, url );
+		    
             defer.resolve();
         }
     });
@@ -94,6 +109,11 @@ function LoadTexture( name, url )
 
     console.log( "+--+  Load Texture:\t\t" + name, url );
 
+    textures_to_load++;
+    
+    console.log("+--+  Textures To Load:\t\t" + textures_to_load);
+    
+    
     var customTexture = new THREE.Texture();
 
     var customImage = new Image();
@@ -101,6 +121,11 @@ function LoadTexture( name, url )
     customImage.onload = function()
     {
         console.log( "+--+  Loaded Texture:\t\t" + name, url );
+        
+	    textures_to_load--;
+	    
+	    console.log("+--+  Textures Left To Load:\t\t" + textures_to_load);
+	    
         customTexture.image = customImage;
         customTexture.wrapS = THREE.ClampToEdgeWrapping;
         customTexture.wrapT = THREE.ClampToEdgeWrapping;
