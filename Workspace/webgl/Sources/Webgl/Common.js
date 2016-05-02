@@ -122,9 +122,9 @@ PX =
         new THREE.Color( 0xffff00 ),    // Under Construction
         new THREE.Color( 0x00ff00 ) ]   // Reconstructed*/
     , kLocationColors2: [ 
-        new THREE.Color( 0x1a2e62 ),    // Destroyed
+        new THREE.Color( 0x16194a ),    // Destroyed
         new THREE.Color( 0x273d90 ),    // Under Construction
-        new THREE.Color( 0xa3d5fe ) ]   // Reconstructed
+        new THREE.Color( 0x61b2ff ) ]   // Reconstructed
 
     , kCameraFovY: 36.0
     , kCameraNearPlane: 16.0
