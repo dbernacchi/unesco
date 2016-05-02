@@ -313,7 +313,7 @@ PX.ModelRenderer.prototype =
         previousMouseY = mouseY;
 
         // Make it come from below
-        this.entryPos.y += ( 0.0 - this.entryPos.y ) * 0.1;
+        this.entryPos.y += ( 0.0 - this.entryPos.y ) * 0.075;
         for( var i=0; i<this.artefactScene.children.length; i++ )
         {
             if( this.artefactScene.children[i] instanceof THREE.Mesh 
