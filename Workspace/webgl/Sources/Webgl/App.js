@@ -563,7 +563,7 @@ function Setup()
 
 
     // TEMP:
-/*    var modelFastLane = false;
+    /*var modelFastLane = true;
     if( modelFastLane )
     {
 		UNESCO.hideSplash();
@@ -578,7 +578,7 @@ function Setup()
 		    modelRenderer.Init(modelContainer[0], windowWidth, windowHeight);
 	    }
 	    // @NOTE: We do not pass filename extension. That's added internally in the Loaders
-        var modelIndex = 11;
+        var modelIndex = 8;
         if( PX.ModelNames[ modelIndex ].length > 0 )
         {
                 modelRenderer.Load( PX.ModelRootPath + PX.ModelPaths[ modelIndex ], PX.ModelNames[ modelIndex ], function( per ) {
@@ -947,26 +947,26 @@ function UpdateFilterSwitches( id )
     {
         case PX.ModelTypeDestroyed:
             WebpageStates.FilterSwitches[ PX.ModelTypeDestroyed ]           = 1 - WebpageStates.FilterSwitches[ PX.ModelTypeDestroyed ];
-            WebpageStates.FilterSwitches[ PX.ModelTypeUnderConstruction ]   = 0;
-            WebpageStates.FilterSwitches[ PX.ModelTypeReconstructed ]       = 0;
+            WebpageStates.FilterSwitches[ PX.ModelTypeUnderConstruction ]   = -1;
+            WebpageStates.FilterSwitches[ PX.ModelTypeReconstructed ]       = -1;
             WebpageStates.CurrentActiveFilterIndex                          = ( WebpageStates.FilterSwitches[ PX.ModelTypeDestroyed ] > 0 ) ? 0 : -1;
             break;
         case PX.ModelTypeUnderConstruction:
-            WebpageStates.FilterSwitches[ PX.ModelTypeDestroyed ]           = 0;
+            WebpageStates.FilterSwitches[ PX.ModelTypeDestroyed ]           = -1;
             WebpageStates.FilterSwitches[ PX.ModelTypeUnderConstruction ]   = 1 - WebpageStates.FilterSwitches[ PX.ModelTypeUnderConstruction ];
-            WebpageStates.FilterSwitches[ PX.ModelTypeReconstructed]        = 0;
+            WebpageStates.FilterSwitches[ PX.ModelTypeReconstructed]        = -1;
             WebpageStates.CurrentActiveFilterIndex                          = ( WebpageStates.FilterSwitches[ PX.ModelTypeUnderConstruction ] > 0 ) ? 1 : -1;
             break;
         case PX.ModelTypeReconstructed:
-            WebpageStates.FilterSwitches[ PX.ModelTypeDestroyed ]           = 0;
-            WebpageStates.FilterSwitches[ PX.ModelTypeUnderConstruction ]   = 0;
+            WebpageStates.FilterSwitches[ PX.ModelTypeDestroyed ]           = -1;
+            WebpageStates.FilterSwitches[ PX.ModelTypeUnderConstruction ]   = -1;
             WebpageStates.FilterSwitches[ PX.ModelTypeReconstructed ]       = 1 - WebpageStates.FilterSwitches[ PX.ModelTypeReconstructed ];
             WebpageStates.CurrentActiveFilterIndex                          = ( WebpageStates.FilterSwitches[ PX.ModelTypeReconstructed ] > 0 ) ? 2 : -1;
             break;
         case 3:
-            WebpageStates.FilterSwitches[ PX.ModelTypeDestroyed ]           = 0;
-            WebpageStates.FilterSwitches[ PX.ModelTypeUnderConstruction ]   = 0;
-            WebpageStates.FilterSwitches[ PX.ModelTypeReconstructed ]       = 0;
+            WebpageStates.FilterSwitches[ PX.ModelTypeDestroyed ]           = -1;
+            WebpageStates.FilterSwitches[ PX.ModelTypeUnderConstruction ]   = -1;
+            WebpageStates.FilterSwitches[ PX.ModelTypeReconstructed ]       = -1;
             WebpageStates.CurrentActiveFilterIndex                          = -1;
             break;            
         default:

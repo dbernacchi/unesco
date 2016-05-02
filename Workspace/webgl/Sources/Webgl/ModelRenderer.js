@@ -102,7 +102,7 @@ PX.ModelRenderer.prototype =
         // Create Artefact sun light
         //
         this.artSunLight = new THREE.DirectionalLight( 0xffffff );
-        this.artSunLight.position.set( 0.5, 1, 1 );
+        this.artSunLight.position.set( 0.5, 1.0, 1.0 );
         //artSunLight.position.copy( this.artefactCamera.getWorldDirection() );
         this.artefactScene.add( this.artSunLight );
         var artAmbLight = new THREE.HemisphereLight( 0x7f7faa, 0x040410, 1 );
@@ -312,10 +312,15 @@ PX.ModelRenderer.prototype =
         previousMouseX = mouseX;
         previousMouseY = mouseY;
 
+        // Make it come from below
         this.entryPos.y += ( 0.0 - this.entryPos.y ) * 0.1;
         for( var i=0; i<this.artefactScene.children.length; i++ )
         {
-            this.artefactScene.children[i].position.y = this.entryPos.y;
+            if( this.artefactScene.children[i] instanceof THREE.Mesh 
+                || this.artefactScene.children[i] instanceof THREE.Group )
+            {
+                this.artefactScene.children[i].position.y = this.entryPos.y;
+            }
         }
 
         if( isMouseDown && this.trackball )

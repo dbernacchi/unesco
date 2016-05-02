@@ -12,8 +12,8 @@ UG.LocationMarker = function()
     this.direction      = new THREE.Vector3();
     this.positionSS     = new THREE.Vector3();
     this.scale          = new THREE.Vector3();
-    this.filterScale    = 1.0;
-    this.filterTargetScale = 1.0;
+    this.filterScale    = 0.0;
+    this.filterTargetScale = 0.0;
     this.markerCount    = 0;
     this.types          = [];
     this.color          = null;
@@ -174,7 +174,7 @@ UG.LocationMarkers.prototype =
             lm.index = i;
             //lm.type = rndIdx;
             for( var k=0; k<loc.types.length; k++ )
-                lm.types.push( 0 );
+                lm.types.push( -1 );
 	        this.markers.push( lm );
 
             this.level0Scales.push( new THREE.Vector3( PX.EPSILON, PX.EPSILON, PX.EPSILON ) );
@@ -562,26 +562,24 @@ UG.LocationMarkers.prototype =
 
                 // Scale based on filters
                 // Filtered ones are shown, others are scaled to 0 
-                /*if( WebpageStates.CurrentActiveFilterIndex >= 0 )
+                if( WebpageStates.CurrentActiveFilterIndex >= 0 )
                 {
-                    locationScale *= PX.Saturate( loc.types[ WebpageStates.CurrentActiveFilterIndex ] );
-                    locationScale = PX.Clamp( locationScale, PX.EPSILON, locationScale );
-                }*/
+                    if( loc.types[ WebpageStates.CurrentActiveFilterIndex ] > -1 )
+                    {
+                        var targetVal = PX.Saturate( loc.types[ WebpageStates.CurrentActiveFilterIndex ] );
+                        loc.filterScale += ( targetVal - loc.filterScale ) * 0.1;
+                        loc.filterScale = PX.Clamp( loc.filterScale, PX.EPSILON, loc.filterScale );
+                        locationScale *= loc.filterScale;
+                    }
+                }
+                else
+                {
+                    var targetVal = 1.0;
+                    loc.filterScale += ( targetVal - loc.filterScale ) * 0.1;
+                    loc.filterScale = PX.Clamp( loc.filterScale, PX.EPSILON, loc.filterScale );
+                    locationScale *= loc.filterScale;
+                }
 
-                /*if( WebpageStates.CurrentActiveFilterIndex >= 0 )
-                {
-                    if( loc.types[ WebpageStates.CurrentActiveFilterIndex ] > 0 )
-                    {
-                        locationScale *= this.level1FilterScales[ WebpageStates.CurrentActiveFilterIndex ].x;
-                        locationScale = PX.Clamp( locationScale, PX.EPSILON, locationScale );
-                    }
-                    else
-                    {
-                        locationScale *= this.level1FilterScaleDown;
-                        locationScale = PX.Clamp( locationScale, PX.EPSILON, locationScale );
-                        //console.log( i, locationScale );
-                    }
-                }*/
 
                 loc.scale.set( locationScale, locationScale, locationScale );
 
@@ -1465,11 +1463,25 @@ UG.LocationMarkers.prototype =
                     }
 
                     // Scale based on filters
-                    /*if( WebpageStates.CurrentActiveFilterIndex >= 0 )
+                    // Filtered ones are shown, others are scaled to 0 
+                    if( WebpageStates.CurrentActiveFilterIndex >= 0 )
                     {
-                        locationScale *= PX.Saturate( loc.types[ WebpageStates.CurrentActiveFilterIndex ] );
-                        locationScale = PX.Clamp( locationScale, PX.EPSILON, locationScale );
-                    }*/
+                        if( loc.types[ WebpageStates.CurrentActiveFilterIndex ] > -1 )
+                        {
+                            var targetVal = PX.Saturate( loc.types[ WebpageStates.CurrentActiveFilterIndex ] );
+                            loc.filterScale += ( targetVal - loc.filterScale ) * 0.1;
+                            loc.filterScale = PX.Clamp( loc.filterScale, PX.EPSILON, loc.filterScale );
+                            locationScale *= loc.filterScale;
+                        }
+                        //console.log( i, locationScale, loc.types[ WebpageStates.CurrentActiveFilterIndex ] );
+                    }
+                    else
+                    {
+                        var targetVal = 1.0;
+                        loc.filterScale += ( targetVal - loc.filterScale ) * 0.1;
+                        loc.filterScale = PX.Clamp( loc.filterScale, PX.EPSILON, loc.filterScale );
+                        locationScale *= loc.filterScale;
+                    }
 
                     // Tween location markers
                     var target = new THREE.Vector3( locationScale, locationScale, locationScale );
