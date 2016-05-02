@@ -445,6 +445,8 @@ ul.clr li {
 	z-index: 2;
 }
 
+#participate{width: 506px;}
+
 #about .body, #participate .body {
 	margin-top: 20px;
 	margin-bottom: 40px;
@@ -608,7 +610,7 @@ ul.clr li {
 	width: 200px;
 }
 
-#browse li .inner .title a, #browse li .inner .title a:hover{
+li .inner .title a, li .inner .title a:hover{
 	text-decoration: none;
 	color: #B9CBD5;
 }
@@ -645,7 +647,7 @@ ul.clr li {
 	width: 937px;
 	margin: 0 auto;
 	margin-top: 400px;
-	overflow: hidden;
+	
 }
 
 #slide-5 ul.clr li.text, #slide-5 ul.clr li.more, #slide-5 ul.clr li.media {
@@ -653,6 +655,27 @@ ul.clr li {
 	width: 299px;
 	
 }
+
+/*#slide-5 ul.clr li.more-container {
+	width: 0px;
+	overflow: hidden;
+	
+}*/
+
+#slide-5 ul.clr li.more {
+	/*background-color: red;*/
+	width: 0px;
+	margin-right: 0px;
+	overflow: hidden;	
+}
+
+#slide-5 ul.clr li.media {
+	/*background-color: green;*/
+	width: 0px;
+	margin-right: 0px;
+	overflow: hidden;
+}
+
 
 #slide-5 ul.clr li.more p {
 	margin: 0;

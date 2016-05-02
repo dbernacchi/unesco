@@ -276,8 +276,12 @@ var UNESCO = {};
 		$(".close-button").click(function(e) {
 			e.preventDefault();
 
+			var make_visible = true;
+			
 			if($(".UNESCO#participate").css('display') == 'block'){
 				
+				make_visible = false;
+
 				if($(".UNESCO#participate").attr('from') == 'about'){
 				
 					$(".UNESCO#about").show();
@@ -290,10 +294,6 @@ var UNESCO = {};
 				}
 				
 				$(".UNESCO#participate").hide();
-				
-				
-				
-			
 				
 			} else if($(".UNESCO#about").css('display') == 'block'){
 				
@@ -328,10 +328,11 @@ var UNESCO = {};
 
 			}
 			
-			$(".UNESCO#browse").css('visibility', 'visible');
-			$(".UNESCO#legend").css('visibility', 'visible');
-			$(".UNESCO#share-button").css('visibility', 'visible');
-			
+			if(make_visible){
+				$(".UNESCO#browse").css('visibility', 'visible');
+				$(".UNESCO#legend").css('visibility', 'visible');
+				$(".UNESCO#share-button").css('visibility', 'visible');
+			}
 			
 		});
 			
@@ -374,30 +375,36 @@ var UNESCO = {};
 			var container = $(this).closest('.container');
 			
 			var more = $(this).closest('ul').find('.more');
+
+			more.css('opacity', 0);
 			
-			var more_width = more.width();
+			var text = $(this).closest('ul').find('.text');
 			
-			var more_margin = parseInt(more.css('margin-right'), 10);
+			var text_width = parseInt(text.css('width'), 10);
+			
+			var text_margin = parseInt(text.css('margin-right'), 10);
 			
 			var media = $(this).closest('ul').find('.media');
 			
-			media.find('img').attr('width', more_width);
+			var imgs = media.find('img');
 			
-			media.find('iframe').attr('width', more_width);
+			imgs.attr('width', text_width);
 			
-			var container_width =container.width();
+			var iframes = media.find('iframe');
 			
-			var new_width = container_width + (more_width * 2) + (more_margin * 2);
+			iframes.attr('width', text_width);
+			
+			var multiplier = 1;
+			
+			if(imgs.length || iframes.length){
+				multiplier = 2;	
+			}
+			
+			var new_width = (text_width * multiplier) + (text_margin * multiplier);
 
 			$(".prev").hide();
 			$(".next").hide();
 	
-			more.css('visibility', 'hidden');
-			media.css('visibility', 'hidden');			
-			
-			more.show();
-			media.show();
-
 			var excerpt = container.find('.excerpt');
 			
 			var excerpt_offset = excerpt.offset().top;
@@ -405,25 +412,60 @@ var UNESCO = {};
 			var more_offset = more.offset().top;
 			
 			var new_padding = excerpt_offset - more_offset;
-				
 						
 			more.css('padding-top', new_padding + 'px');
 			media.css('margin-top', new_padding + 'px');			
-
-			more.css('visibility', 'visible');
-			media.css('visibility', 'visible');			
-			
+		
 			$(this).closest('li').find('.collapse').show();
-						
+			
+			var container_width = container.width();
+			
+			var new_container_width = container_width + new_width ;
+
 			container.animate({
 				
-				width : new_width,
+				width : new_container_width,
 				
 			}, 1000, function() {
+
+				more.css('margin-right', text_margin + 'px');
+				
+				more.animate({
+					
+					width : text_width,
+					
+				}, 1000, function() {
+	
+					more.animate({
+						
+						opacity : 1,
+						
+					}, 100, function() {
+		
+		
+					});	
+	
+					if(multiplier == 2){
+						
+						media.css('margin-right', text_margin + 'px');
+						
+						media.animate({
+							
+							width : text_width,
+							
+						}, 1000, function() {
+			
+			
+						});
+					}
+	
+				});
+
 
 
 			});
 			
+
 			
 
 		});				
@@ -441,7 +483,11 @@ var UNESCO = {};
 		
 		var ns = this;
 		
-		var entry = $('#browse .item.selected .container').html();
+		var elm = $('#browse .item.selected .container');
+		
+		ns.setReadMore(elm);
+		
+		var entry = elm.html();
 			
 		$('#slide-5 .container').html(entry);
 		
@@ -496,7 +542,13 @@ var UNESCO = {};
 		
 		if (nextitem.length) {
 				
-			var entry = nextitem.find('.container').html();
+			//var elm = $('#browse .item.selected .container');
+			
+			var elm = nextitem.find('.entry');
+			
+			ns.setReadMore(elm);
+			
+			var entry = elm.html();
 			
 			$('#slide-5 .container').fadeOut('fast', function(){
 				
@@ -600,29 +652,73 @@ var UNESCO = {};
 			
 			var container_width = container.width();
 			
-			var new_width = container_width - (more_width * 2) - (more_margin * 2);
+			container.css('overflow', 'hidden');
+			
+			var imgs = media.find('img');
+			
+			var iframes = media.find('iframe');
+			
+			var multiplier = 1;
+			
+			var media_timing = 0;
+			
+			if(imgs.length || iframes.length){
+				multiplier = 2;	
+				media_timing = 1000;
+			}			
+			
+			var new_width = container_width - (more_width * multiplier) - (more_margin * multiplier);
 						
-			container.animate({
+			container.find('.collapse').hide();
+						
+			more.animate({
 				
-				width : new_width,
+				opacity : 0,
 				
-			}, 1000, function() {
+			}, 100, function() {
 
-				more.hide();
-				
-				media.hide();
-				
-				more.css('padding-top', '0');
-				
-				media.css('margin-top', '0');
-				
-				$(".prev").show();
-				$(".next").show();
-				
-				container.find('.readmore').show();
-				
-				container.find('.collapse').hide();
-			});
+				media.animate({
+					
+					width : 0,
+					
+				}, media_timing, function() {
+	
+					media.css('margin-right', '0');
+					
+					more.animate({
+						
+						width : 0,
+						
+					}, 1000, function() {
+						
+						more.css('margin-right', '0');
+						
+						more.css('padding-top', '0');
+						
+						media.css('margin-top', '0');
+						
+						
+						
+						container.animate({
+							
+							width : new_width,
+							
+						}, 1000, function() {
+							
+							$(".prev").show();
+							$(".next").show();
+							
+							container.find('.readmore').show();
+							
+							
+						});
+			
+					});
+				});
+
+			});				
+						
+			
 			
 			
 			
@@ -714,8 +810,6 @@ var UNESCO = {};
 	this.setArrows = function() {
 		
 		var idx = $("#browse .item.show.selected").index( "#browse .item.show");
-		
-		console.log(idx);
 		
 		if(idx == 0){
 		
@@ -1190,8 +1284,10 @@ var UNESCO = {};
 
 	this.overlayAppend = function() {
 
-		$("body").append('<div id="overlay"></div>');
-
+		if(!$("#overlay").length){
+			
+			$("body").append('<div id="overlay"></div>');
+		}
 	}
 
 	this.overlayRemove = function() {
@@ -1378,7 +1474,7 @@ var UNESCO = {};
 			}
 
 			var p = item.images;
-
+			
 			for (var key in p) {
 				if (p.hasOwnProperty(key)) {
 					//p[key]
@@ -1387,6 +1483,7 @@ var UNESCO = {};
 					var output = obj[Object.keys(obj)[0]];
 
 					content.find(".entry .images").append('<img src="details/' + item.details + '/images/' + output + '" />');
+					
 				}
 			}
 
@@ -1399,6 +1496,7 @@ var UNESCO = {};
 					var output = obj[Object.keys(obj)[0]];
 
 					content.find(".entry .videos").append('<iframe width="420" height="315" src="' + output + '" frameborder="0" allowfullscreen=""></iframe>');
+					
 				}
 			}
 			
@@ -1485,6 +1583,19 @@ var UNESCO = {};
 		$("#legend > .clr > li > a").addClass('clickable');
 
 	}
+	
+	this.setReadMore = function(elm){
+				
+		if(!elm.find('.more').html().trim().length && !elm.find('.images').html().trim().length && !elm.find('.videos').html().trim().length){
+			
+			elm.find('.readmore').css('visibility', 'hidden');
+				
+		} else {
+			elm.find('.readmore').css('visibility', 'visible');
+		}
+		
+	}
+	
 }).apply(UNESCO);
 
 var img = new Image();
