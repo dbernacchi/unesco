@@ -45,7 +45,7 @@ UG.LocationMarkers = function()
 	this.locationsGroup         = null;
 	this.meshes                 = [];
 	this.radarMeshes            = [];
-	this.radarMeshAnims         = [];
+	this.radarMeshAnims         = null;
 	this.radarMeshTweens        = [];
 	this.markers                = [];
 	this.level0Scales           = [];
@@ -136,7 +136,7 @@ UG.LocationMarkers.prototype =
             this.locationsGroup.add( mesh );
             //scene.add( mesh );
 
-            this.radarMeshAnims.push( new THREE.Vector2( 0, 0 ) );
+            this.radarMeshAnims = new THREE.Vector3( 0, -0.3, -0.7 );
         }
 
 
@@ -673,22 +673,29 @@ UG.LocationMarkers.prototype =
             {
                 var p = PX.Utils.FromLatLon( loc.latlon.x, loc.latlon.y, PX.kEarthScale, 0.001 ); //PX.kLocationMarkerScale );
 
-                //console.log( this.radarMeshAnims[0].x, this.radarMeshAnims[1].x, this.radarMeshAnims[2].x );
+                //console.log( this.radarMeshAnims.x, this.radarMeshAnims.y, this.radarMeshAnims.z );
 
-                for( var a=0; a<3; a++ )
-                {
-                    /*var ascale = ( Math.sin( time * 2.0 + a ) * 1.0 );
-                    if( ascale < 0.0 ) ascale = 0.001;
-                    var alpha = ( 1.0 - PX.Saturate( Math.sin( time + a ) ) ) * 0.3;*/
-                    var ascale = PX.EPSILON + this.radarMeshAnims[a].x;
-                    var alpha = ( 1.0 - (this.radarMeshAnims[a].x / 2.0 ) ) * 0.5;
-
-                    //console.log( a, ascale, alpha );
-                    this.radarMeshes[a].position.copy( p ); 
-                    this.radarMeshes[a].quaternion.copy( this.meshes[i].quaternion );
-                    this.radarMeshes[a].scale.set( ascale, ascale, 1 );
-                    this.radarMeshes[a].material.opacity = alpha;
-                }
+                var ss = 2.0;
+                var ascale = PX.EPSILON + PX.Saturate( this.radarMeshAnims.x ) * ss;
+                var alpha = ( 1.0 - (PX.Saturate(this.radarMeshAnims.x) ) ) * 0.5;
+                this.radarMeshes[0].position.copy( p ); 
+                this.radarMeshes[0].quaternion.copy( this.meshes[i].quaternion );
+                this.radarMeshes[0].scale.set( ascale, ascale, 1 );
+                this.radarMeshes[0].material.opacity = alpha;
+                //
+                ascale = PX.EPSILON + PX.Saturate( this.radarMeshAnims.y ) * ss;
+                alpha = ( 1.0 - (PX.Saturate(this.radarMeshAnims.y) ) ) * 0.5;
+                this.radarMeshes[1].position.copy( p ); 
+                this.radarMeshes[1].quaternion.copy( this.meshes[i].quaternion );
+                this.radarMeshes[1].scale.set( ascale, ascale, 1 );
+                this.radarMeshes[1].material.opacity = alpha;
+                //
+                var ascale = PX.EPSILON + PX.Saturate( this.radarMeshAnims.z ) * ss;
+                var alpha = ( 1.0 - (PX.Saturate(this.radarMeshAnims.z) ) ) * 0.5;
+                this.radarMeshes[2].position.copy( p ); 
+                this.radarMeshes[2].quaternion.copy( this.meshes[i].quaternion );
+                this.radarMeshes[2].scale.set( ascale, ascale, 1 );
+                this.radarMeshes[2].material.opacity = alpha;
             }
 
             //
@@ -1227,45 +1234,15 @@ UG.LocationMarkers.prototype =
             tweenw.onComplete( function()
             {
                 scope.radarMeshTweens = [];
-                var targetRadar = { x : 2, y: 0 };
+                var targetRadar = { x : 1, y: 1, z: 1 };
 
-/**                var tweenRadar = new TWEEN.Tween( scope.radarMeshAnims[0] ).to( targetRadar, 2000 );
+                var tweenRadar = new TWEEN.Tween( scope.radarMeshAnims ).to( targetRadar, 3000 );
                 tweenRadar.easing( TWEEN.Easing.Linear.None );
-                //tweenRadar.delay( 1000 );
+                tweenRadar.delay( 1000 );
                 tweenRadar.repeat( 100000 );
-                //
-                var tweenRadar2 = new TWEEN.Tween( scope.radarMeshAnims[1] ).to( targetRadar, 2000 );
-                tweenRadar2.easing( TWEEN.Easing.Linear.None );
-                //tweenRadar2.delay( 1300 );
-                //tweenRadar2.repeat( 100000 );
-                //
-                var tweenRadar3 = new TWEEN.Tween( scope.radarMeshAnims[2] ).to( targetRadar, 2000 );
-                tweenRadar3.easing( TWEEN.Easing.Linear.None );
-                //tweenRadar3.delay( 1600 );
-                //tweenRadar3.repeat( 100000 );
-
-                tweenRadar.chain( tweenRadar2, tweenRadar3 );
-                tweenRadar3.chain( tweenRadar );
-
                 tweenRadar.start();
-                //tweenRadar2.start();
-                //tweenRadar3.start();
-
                 scope.radarMeshTweens.push( tweenRadar );
-                scope.radarMeshTweens.push( tweenRadar2 );
-                scope.radarMeshTweens.push( tweenRadar3 );
-***/
 
-                for( var a=0; a<3; a++ )
-                {
-                    var tweenRadar = new TWEEN.Tween( scope.radarMeshAnims[a] ).to( targetRadar, 2000 );
-                    tweenRadar.easing( TWEEN.Easing.Linear.None );
-                    tweenRadar.delay( 1000 + a*300 );
-                    tweenRadar.repeat( 100000 );
-                    tweenRadar.start();
-
-                    scope.radarMeshTweens.push( tweenRadar );
-                }
 
                 appStateMan.ChangeState( PX.AppStates.AppStateLevel2 );
 
