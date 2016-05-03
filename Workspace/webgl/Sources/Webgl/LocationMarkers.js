@@ -676,22 +676,23 @@ UG.LocationMarkers.prototype =
                 //console.log( this.radarMeshAnims.x, this.radarMeshAnims.y, this.radarMeshAnims.z );
 
                 var ss = 2.0;
+                var alphass = 0.7;
                 var ascale = PX.EPSILON + PX.Saturate( this.radarMeshAnims.x ) * ss;
-                var alpha = ( 1.0 - (PX.Saturate(this.radarMeshAnims.x) ) ) * 0.5;
+                var alpha = ( 1.0 - (PX.Saturate(this.radarMeshAnims.x) ) ) * alphass;
                 this.radarMeshes[0].position.copy( p ); 
                 this.radarMeshes[0].quaternion.copy( this.meshes[i].quaternion );
                 this.radarMeshes[0].scale.set( ascale, ascale, 1 );
                 this.radarMeshes[0].material.opacity = alpha;
                 //
                 ascale = PX.EPSILON + PX.Saturate( this.radarMeshAnims.y ) * ss;
-                alpha = ( 1.0 - (PX.Saturate(this.radarMeshAnims.y) ) ) * 0.5;
+                alpha = ( 1.0 - (PX.Saturate(this.radarMeshAnims.y) ) ) * alphass;
                 this.radarMeshes[1].position.copy( p ); 
                 this.radarMeshes[1].quaternion.copy( this.meshes[i].quaternion );
                 this.radarMeshes[1].scale.set( ascale, ascale, 1 );
                 this.radarMeshes[1].material.opacity = alpha;
                 //
                 var ascale = PX.EPSILON + PX.Saturate( this.radarMeshAnims.z ) * ss;
-                var alpha = ( 1.0 - (PX.Saturate(this.radarMeshAnims.z) ) ) * 0.5;
+                var alpha = ( 1.0 - (PX.Saturate(this.radarMeshAnims.z) ) ) * alphass;
                 this.radarMeshes[2].position.copy( p ); 
                 this.radarMeshes[2].quaternion.copy( this.meshes[i].quaternion );
                 this.radarMeshes[2].scale.set( ascale, ascale, 1 );
