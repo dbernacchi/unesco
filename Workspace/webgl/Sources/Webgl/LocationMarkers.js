@@ -44,6 +44,9 @@ UG.LocationMarkers = function()
 { 
 	this.locationsGroup         = null;
 	this.meshes                 = [];
+	this.radarMeshes            = [];
+	this.radarMeshAnims         = [];
+	this.radarMeshTweens        = [];
 	this.markers                = [];
 	this.level0Scales           = [];
     this.textRenderer           = null;
@@ -114,6 +117,28 @@ UG.LocationMarkers.prototype =
         this.locationsGroup = new THREE.Object3D();
 	    this.locationsGroup.position.set( 0, 0, 0 );
         //this.locationsGroup.renderOrder = 1000;
+
+
+        // Radar
+	    for( var i=0; i<3; ++i )
+	    {
+	        var material = new THREE.MeshBasicMaterial( { color: 0xff0000, opacity: 1.0, transparent: true } );
+	        material.depthWrite = false;
+            material.side = THREE.DoubleSide;
+            material.blending = THREE.AdditiveBlending;
+            //material.blending = THREE.NormalBlending;
+            var geom = new THREE.CircleBufferGeometry( 1.0, PX.kLocationMarkerDetail );
+	        //var matTrans = new THREE.Matrix4().makeTranslation( 0, 0, Params.MarkerCircleDist );
+	        //geom.applyMatrix( matTrans );
+
+	        var mesh = new THREE.Mesh( geom, material );
+            this.radarMeshes.push( mesh );
+            this.locationsGroup.add( mesh );
+            //scene.add( mesh );
+
+            this.radarMeshAnims.push( new THREE.Vector2( 0, 0 ) );
+        }
+
 
         //
 	    for( var i=0; i<locations.length; ++i )
@@ -187,18 +212,12 @@ UG.LocationMarkers.prototype =
         this.textRenderer1.Init( bmFontDescriptor, 2048, 0xffffff, PX.AssetsDatabase["TextAtlasTex"], null );
         this.textRenderer1.material.depthWrite = false;
         this.textRenderer1.material.opacity = 1.0;
-        //this.textRenderer1.material.polygonOffset = true;
-        //this.textRenderer1.material.polygonOffsetFactor = 1.0;
-        //this.textRenderer1.material.polygonOffsetUnits = 1.0;
         this.locationsGroup.add( this.textRenderer1.mesh );
 
 
         this.circleRenderer = new PX.CircleRenderer();
         this.circleRenderer.Init( 4096, 0xffffff, PX.AssetsDatabase["Circle"], null );
-        this.circleRenderer.material.opacity = 0.0;
-        //this.circleRenderer.material.polygonOffset = true;
-        //this.circleRenderer.material.polygonOffsetFactor = -1.0;
-        //this.circleRenderer.material.polygonOffsetUnits = 1.0;
+        this.circleRenderer.material.opacity = 1.0;
         this.locationsGroup.add( this.circleRenderer.mesh );
 
         //
@@ -589,7 +608,7 @@ UG.LocationMarkers.prototype =
 
                 loc.scale.set( locationScale, locationScale, locationScale );
 
-                // If there's a clicked marker, do pulse effect on it
+/*                // If there's a clicked marker, do pulse effect on it
                 // this is used in Level2 when a location has been selected
                 if( i === this.clickedMarkerIndex && appStateMan.IsState( PX.AppStates.AppStateLevel2 ) )
                 //if( i === this.clickedMarkerIndex )
@@ -600,7 +619,7 @@ UG.LocationMarkers.prototype =
                     loc.scale.x += pulse * 0.2;
                     loc.scale.y += pulse * 0.2;
                     loc.scale.z += pulse * 0.2;
-                }
+                }*/
             }
 
             this.meshes[i].material.opacity = this.outlineGlobalScale.x;
@@ -648,20 +667,36 @@ UG.LocationMarkers.prototype =
                 //console.log( WebpageStates.CurrentActiveFilterIndex, loc.types[0], loc.types[1], loc.types[2] );
             }
 
+
+            // Radar FX
+            if( i === this.clickedMarkerIndex && appStateMan.IsState( PX.AppStates.AppStateLevel2 ) )
+            {
+                var p = PX.Utils.FromLatLon( loc.latlon.x, loc.latlon.y, PX.kEarthScale, 0.001 ); //PX.kLocationMarkerScale );
+
+                //console.log( this.radarMeshAnims[0].x, this.radarMeshAnims[1].x, this.radarMeshAnims[2].x );
+
+                for( var a=0; a<3; a++ )
+                {
+                    /*var ascale = ( Math.sin( time * 2.0 + a ) * 1.0 );
+                    if( ascale < 0.0 ) ascale = 0.001;
+                    var alpha = ( 1.0 - PX.Saturate( Math.sin( time + a ) ) ) * 0.3;*/
+                    var ascale = PX.EPSILON + this.radarMeshAnims[a].x;
+                    var alpha = ( 1.0 - (this.radarMeshAnims[a].x / 2.0 ) ) * 0.5;
+
+                    //console.log( a, ascale, alpha );
+                    this.radarMeshes[a].position.copy( p ); 
+                    this.radarMeshes[a].quaternion.copy( this.meshes[i].quaternion );
+                    this.radarMeshes[a].scale.set( ascale, ascale, 1 );
+                    this.radarMeshes[a].material.opacity = alpha;
+                }
+            }
+
             //
             if( this.outlineGlobalScale.x > PX.EPSILON )
             {
-                // Scale based on filters
-                // Filtered ones are shown, others are scaled to 0 
-                var scale = 1.0;
-                /*if( WebpageStates.CurrentActiveFilterIndex >= 0 )
-                {
-                    scale = PX.Saturate( loc.types[ WebpageStates.CurrentActiveFilterIndex ] );
-                }*/
-
                 var outlinePos = new THREE.Vector3();
                 outlinePos.z += Params.OutlineDist;
-                this.circleRenderer.AppendRect( outlinePos, scale * (PX.kLocationMarkerScale + ((Params.OutlineThickness * 0.001) )), this.meshes[i].matrix );
+                this.circleRenderer.AppendRect( outlinePos, (PX.kLocationMarkerScale + ((Params.OutlineThickness * 0.001) )), this.meshes[i].matrix ); //, new THREE.Vector4(1, 1, 1, 1) );
                 //this.circleRenderer.AppendRect( outlinePos, this.outlineGlobalScale.x * (PX.kLocationMarkerScale + ((Params.OutlineThickness * 0.001) / loc.scale.x)), this.meshes[i].matrix );
             }
 	    }
@@ -1175,6 +1210,9 @@ UG.LocationMarkers.prototype =
             else
                 end = new THREE.Quaternion().setFromAxisAngle( v1, PX.ToRadians(40) );
 
+
+            var scope = this;
+
             var positionw = { x: 0.0 };
             var targetw = { x: 1.0 };
             var tweenw = new TWEEN.Tween( positionw ).to( targetw, Params.AnimTime * 1000.0 );
@@ -1188,6 +1226,47 @@ UG.LocationMarkers.prototype =
             });
             tweenw.onComplete( function()
             {
+                scope.radarMeshTweens = [];
+                var targetRadar = { x : 2, y: 0 };
+
+/**                var tweenRadar = new TWEEN.Tween( scope.radarMeshAnims[0] ).to( targetRadar, 2000 );
+                tweenRadar.easing( TWEEN.Easing.Linear.None );
+                //tweenRadar.delay( 1000 );
+                tweenRadar.repeat( 100000 );
+                //
+                var tweenRadar2 = new TWEEN.Tween( scope.radarMeshAnims[1] ).to( targetRadar, 2000 );
+                tweenRadar2.easing( TWEEN.Easing.Linear.None );
+                //tweenRadar2.delay( 1300 );
+                //tweenRadar2.repeat( 100000 );
+                //
+                var tweenRadar3 = new TWEEN.Tween( scope.radarMeshAnims[2] ).to( targetRadar, 2000 );
+                tweenRadar3.easing( TWEEN.Easing.Linear.None );
+                //tweenRadar3.delay( 1600 );
+                //tweenRadar3.repeat( 100000 );
+
+                tweenRadar.chain( tweenRadar2, tweenRadar3 );
+                tweenRadar3.chain( tweenRadar );
+
+                tweenRadar.start();
+                //tweenRadar2.start();
+                //tweenRadar3.start();
+
+                scope.radarMeshTweens.push( tweenRadar );
+                scope.radarMeshTweens.push( tweenRadar2 );
+                scope.radarMeshTweens.push( tweenRadar3 );
+***/
+
+                for( var a=0; a<3; a++ )
+                {
+                    var tweenRadar = new TWEEN.Tween( scope.radarMeshAnims[a] ).to( targetRadar, 2000 );
+                    tweenRadar.easing( TWEEN.Easing.Linear.None );
+                    tweenRadar.delay( 1000 + a*300 );
+                    tweenRadar.repeat( 100000 );
+                    tweenRadar.start();
+
+                    scope.radarMeshTweens.push( tweenRadar );
+                }
+
                 appStateMan.ChangeState( PX.AppStates.AppStateLevel2 );
 
                 trackball.Reset( camera, cameraLookAtPoint );
@@ -1222,6 +1301,8 @@ UG.LocationMarkers.prototype =
         // Level 2
         else if( appStateMan.IsState( PX.AppStates.AppStateLevel2 ) )
         {
+            var scope = this;
+
             // Update raycaster
             var mouseVector = new THREE.Vector2();
             mouseVector.x = 2.0 * (mouseX / windowWidth) - 1.0;
@@ -1234,6 +1315,13 @@ UG.LocationMarkers.prototype =
             {
                 return;
             }
+
+            for( var a=0; a<this.radarMeshTweens.length; a++ )
+            {
+                scope.radarMeshTweens[a].stop();
+            }
+            scope.radarMeshTweens = [];
+
 
             // Change State
             appStateMan.SetState( PX.AppStates.AppStateLevel2ToLevel1 );

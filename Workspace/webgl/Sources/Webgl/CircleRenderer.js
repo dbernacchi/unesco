@@ -11,6 +11,7 @@ PX.CircleRenderer = function ()
 
     this.positions = null;
     this.uvs = null;
+    this.colors = null;
 };
 
 
@@ -21,18 +22,19 @@ PX.CircleRenderer.prototype =
     , Init: function( vertexCount, color, texture, scene )
     {
         //this.material = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
-        this.material = new THREE.MeshBasicMaterial( { map: texture, color: color, opacity: 1.0, transparent: true } );
+        this.material = new THREE.MeshBasicMaterial( { map: texture, color: color, opacity: 1.0, transparent: true } ); //, vertexColors: THREE.VertexColors } );
         this.material.side = THREE.DoubleSide;
+        //this.material.blending = THREE.NormalBlending;
         //this.material.blending = THREE.AdditiveBlending;
         this.material.depthWrite = false;
-        this.material.premultipliedAlpha = true;
+        //this.material.premultipliedAlpha = true;
 
         this.geometry = new THREE.BufferGeometry();
         this.geometry.dynamic = true;
 
 	    var positions = new THREE.BufferAttribute( new Float32Array( vertexCount * 3 * 4 ), 3 );
 	    var uvs = new THREE.BufferAttribute( new Float32Array( vertexCount * 2 * 4 ), 2 );
-	    //var colors = new THREE.BufferAttribute( new Float32Array( vertexCount * 3 * 4 ), 3 );
+	    //var colors = new THREE.BufferAttribute( new Float32Array( vertexCount * 4 * 4 ), 4 );
 	    var indices = [];
 
         for( var i=0; i<vertexCount; ++i )
@@ -54,12 +56,12 @@ PX.CircleRenderer.prototype =
             positions.setXYZ( i*4+3, vertex.x, vertex.y, vertex.z );
 		    uvs.setXY( i*4+3, uv.x, 1.0 - uv.y );
 
-            //colors.setXYZ( i*4+0, 255, 255, 255 );
-            //colors.setXYZ( i*4+1, 255, 255, 255 );
-            //colors.setXYZ( i*4+2, 255, 255, 255 );
+/*            colors.setXYZ( i*4+0, 255, 255, 255 );
+            colors.setXYZ( i*4+1, 255, 255, 255 );
+            colors.setXYZ( i*4+2, 255, 255, 255 );
+            colors.setXYZ( i*4+3, 255, 255, 255 );
             //colors.setXYZ( i*4+3, 255, 255, 255 );
-			
-		    //xOffset += letterxAdvance; 
+*/			
 	    }
 
         // Indices
@@ -81,6 +83,7 @@ PX.CircleRenderer.prototype =
 
         this.positions = this.geometry.attributes.position.array;
         this.uvs = this.geometry.attributes.uv.array;
+        //this.colors = this.geometry.attributes.color.array;
 
         this.mesh = new THREE.Mesh( this.geometry, this.material );
         this.mesh.frustumCulled = false;
@@ -105,10 +108,11 @@ PX.CircleRenderer.prototype =
         //
         this.geometry.attributes.position.needsUpdate = true;
         this.geometry.attributes.uv.needsUpdate = true;
+        //this.geometry.attributes.color.needsUpdate = true;
     }
 
 
-    , AppendRect: function( pos, scale, transform )
+    , AppendRect: function( pos, scale, transform ) //, _color )
     {
 	    // set start position for first string
         //
@@ -197,11 +201,30 @@ PX.CircleRenderer.prototype =
         this.positions[ i*4*3+11 ] = vertex.z;
         this.uvs[ i*4*2+6 ] = uv.x;
         this.uvs[ i*4*2+7 ] = uv.y;
-
+/**
+        //
+        this.colors[ i*4*4+0 ] = _color.x;
+        this.colors[ i*4*4+1 ] = _color.y;
+        this.colors[ i*4*4+2 ] = _color.z;
+        this.colors[ i*4*4+3 ] = _color.w;
+        this.colors[ i*4*4+4 ] = _color.x;
+        this.colors[ i*4*4+5 ] = _color.y;
+        this.colors[ i*4*4+6 ] = _color.z;
+        this.colors[ i*4*4+7 ] = _color.w;
+        this.colors[ i*4*4+8 ] = _color.x;
+        this.colors[ i*4*4+9 ] = _color.y;
+        this.colors[ i*4*4+10 ] = _color.z;
+        this.colors[ i*4*4+11 ] = _color.w;
+        this.colors[ i*4*4+12 ] = _color.x;
+        this.colors[ i*4*4+13 ] = _color.y;
+        this.colors[ i*4*4+14 ] = _color.z;
+        this.colors[ i*4*4+15 ] = _color.w;
+***/
         this.textRenderTextVertexOffset += 4;
     }
 
-    , AppendRectQuat: function( pos, scale, quat )
+    /**
+    , AppendRectQuat: function( pos, scale, quat, _color )
     {
 	    // set start position for first string
         //
@@ -291,7 +314,22 @@ PX.CircleRenderer.prototype =
         this.uvs[ i*4*2+6 ] = uv.x;
         this.uvs[ i*4*2+7 ] = uv.y;
 
+        //
+        this.colors[ i*4*3+0 ] = _color.x;
+        this.colors[ i*4*3+1 ] = _color.y;
+        this.colors[ i*4*3+2 ] = _color.z;
+        this.colors[ i*4*3+3 ] = _color.x;
+        this.colors[ i*4*3+4 ] = _color.y;
+        this.colors[ i*4*3+5 ] = _color.z;
+        this.colors[ i*4*3+6 ] = _color.x;
+        this.colors[ i*4*3+7 ] = _color.y;
+        this.colors[ i*4*3+8 ] = _color.z;
+        this.colors[ i*4*3+9 ] = _color.x;
+        this.colors[ i*4*3+10 ] = _color.y;
+        this.colors[ i*4*3+11 ] = _color.z;
+
         this.textRenderTextVertexOffset += 4;
     }
+**/
 
 };
