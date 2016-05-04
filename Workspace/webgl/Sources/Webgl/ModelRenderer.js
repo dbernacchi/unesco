@@ -2,7 +2,7 @@
 
 var preloaderBG = $(".preloaderBG");
 var preloaderFG = $(".preloaderFG");
-
+var preloader = $(".preloader");
 
 /////////////////////////////////////////////////////////////////////////////////////
 // Representation of a location in memory (read from json)
@@ -231,11 +231,12 @@ PX.ModelRenderer.prototype =
     {
         var scope = this;
 
-		preloaderBG.css( "opacity", 1.0 );
+		/*preloaderBG.css( "opacity", 1.0 );
         preloaderFG.css( "opacity", 1.0 );
         preloaderFG.css( "width", '0%' );
         preloaderBG.show();
-        preloaderFG.show();
+        preloaderFG.show();*/
+        UNESCO.showModelLoader();
 
         //LoadSceneData( path, filename, this.artefactScene,
         LoadOBJScene( path, filename, this.artefactScene, this.materials,
@@ -254,13 +255,16 @@ PX.ModelRenderer.prototype =
         },
         function()
         {
+        	preloader.hide();
+        	
 		    preloaderBG.fadeTo(1000, 0);
             preloaderFG.fadeTo(1000, 0, function()
             {
                 // hide progress
                 preloaderBG.hide();
                 preloaderFG.hide();
-
+				preloader.hide();
+				
                 //console.log( "Reset" );
                 scope.Reset();
 
@@ -418,7 +422,8 @@ PX.ModelRenderer.prototype =
     {
         preloaderBG.hide();
         preloaderFG.hide();
-
+		preloader.hide();
+		
         console.log( "+--+  Scene children count: ", this.artefactScene.children.length );
 
         //

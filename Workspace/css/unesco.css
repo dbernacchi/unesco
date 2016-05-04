@@ -40,6 +40,10 @@
 	background-color: mediumblue;
 	z-index: 1000;
 }
+.preloader {
+	position: absolute;
+	z-index: 2;
+}
 
 body {
 	margin: 0;
@@ -421,8 +425,8 @@ ul.clr li {
 .close-button.page {
 	display: block;
 	position: absolute;
-	right: 20px;
-	top: 20px;
+	right: 100px;
+	top: 64px;
 	width: 34px;
 	height: 30px;
 	background-image: url(../img/close-button.png);
@@ -464,13 +468,13 @@ ul.clr li {
 	float: right;
 }
 
-#about .contribute-button {
+#slide-5 .contribute-button {
 	display: block;
 	width: 200px;
 	height: 59px;
 	background-image: url(../img/about/participate-button.png);
 	background-repeat: no-repeat;
-	float: right;
+
 }
 
 #participate .button {

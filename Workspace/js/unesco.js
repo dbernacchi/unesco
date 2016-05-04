@@ -251,7 +251,7 @@ var UNESCO = {};
 
 		});
 
-		$(".UNESCO#about .contribute-button").click(function(e) {
+		$(document).on('click', ".UNESCO#about .contribute-button", function(e) {
 			e.preventDefault();
 
 			$(".UNESCO#participate").attr('from', 'about');
@@ -262,7 +262,7 @@ var UNESCO = {};
 
 		});
 		
-		$(".UNESCO#slide-5 .contribute-button").click(function(e) {
+		$(document).on('click', ".UNESCO#slide-5 .contribute-button", function(e) {
 			e.preventDefault();
 
 			ns.overlayAppend();
@@ -289,8 +289,7 @@ var UNESCO = {};
 					$(".UNESCO#about").show();
 					
 				} else {
-					
-					$(this).hide();
+				
 					$(".UNESCO#slide-5").show();	
 					
 				}
@@ -321,8 +320,10 @@ var UNESCO = {};
 				
 				ns.resetContainer();
 				
-				$(".preloaderBG").hide();
-				$(".preloaderFG").hide();
+				//$(".preloaderBG").hide();
+				//$(".preloaderFG").hide();
+				$(".preloader").hide();
+				
 				modelRenderer.Clear();
 				Params.MainScene = true;
 				$(".UNESCO#slide-9").hide();
@@ -487,7 +488,7 @@ var UNESCO = {};
 		
 		var elm = $('#browse .item.selected .container');
 		
-		ns.setReadMore(elm);
+		ns.initItem(elm);
 		
 		var entry = elm.html();
 			
@@ -521,14 +522,6 @@ var UNESCO = {};
 			$(".next").removeClass('disabled');	
 		}
 		
-		if(!$(".UNESCO#slide-5").find(".entry").attr('filename')){
-			$(".UNESCO#slide-5").find(".magnify").hide();
-			
-		} else {
-			
-			$(this).find(".magnify").show();
-		}		
-		
 		$(".UNESCO#legend").css('visibility', 'hidden');
 		
 		$(".UNESCO#slide-5").show();
@@ -546,9 +539,10 @@ var UNESCO = {};
 				
 			//var elm = $('#browse .item.selected .container');
 			
-			var elm = nextitem.find('.entry');
 			
-			ns.setReadMore(elm);
+			var elm = nextitem.find('.entry').wrapAll('<div>').parent();
+			
+			ns.initItem(elm);
 			
 			var entry = elm.html();
 			
@@ -1028,7 +1022,8 @@ var UNESCO = {};
 		var imgs = [
 			"../img/splash/explore-button.png",
 			"../img/map/zoom-in.png",
-			"../img/map/zoom-out.png"
+			"../img/map/zoom-out.png",
+			"../img/participate/coming-soon.png"
 		];
 		var arrayLength = imgs.length;
 		for (var i = 0; i < arrayLength; i++) {
@@ -1516,10 +1511,11 @@ var UNESCO = {};
 			
 		}
 
+		var add_participate_button = false;
 		if(!item.excerpt){
 	
 			item.excerpt = "<p>This information hasn't been written yet. Join us to get involved.</p>"
-			
+			add_participate_button = true;
 		} 
 		
 		if(item.excerpt.length > 252){
@@ -1534,6 +1530,10 @@ var UNESCO = {};
 			
 			item.more += rest;
 			
+		}
+		
+		if(add_participate_button){
+			item.excerpt += '<br /><a href="#" class="contribute-button"></a>';	
 		}
 		
 		if(item.more){
@@ -1569,10 +1569,6 @@ var UNESCO = {};
 			
 			callback();
 			
-			console.log("MODELS");
-			
-			console.log(models);
-			
 		}
 
 	}
@@ -1602,7 +1598,8 @@ var UNESCO = {};
 
 	}
 	
-	this.setReadMore = function(elm){
+	this.initItem = function(elm){
+				
 				
 		if(!elm.find('.more').html().trim().length && !elm.find('.images').html().trim().length && !elm.find('.videos').html().trim().length){
 			
@@ -1612,7 +1609,48 @@ var UNESCO = {};
 			elm.find('.readmore').css('visibility', 'visible');
 		}
 		
+		if(!$(".UNESCO#slide-5").find(".entry").attr('filename')){
+			$(".UNESCO#slide-5").find(".magnify").hide();
+			
+		} else {
+			
+			$(this).find(".magnify").show();
+		}			
+		
 	}
+	
+	this.showModelLoader = function(){
+		
+		//$('.splash-text-top').html('<div class="svg-wrapper resize"><svg viewBox="0 0 696.86 358.59" width="700px" height="361px" class="resize">
+		
+		var preloader = $(".preloader");
+		
+		preloader.html($('.splash-text-top').html());
+		
+		var wrapper = $(".svg-wrapper");
+		
+		wrapper.css('width', 'auto');
+		
+		var svg = wrapper.find('svg');
+		 
+		svg.attr('width', '203px');
+		svg.attr('height', '104.69px');
+		
+		var cls = svg.find('.cls-3');
+		
+		cls.css('animation-iteration-count', 'infinite');
+		this.center($(".preloader"));
+		
+		
+		wrapper.one('webkitAnimationEnd oanimationend msAnimationEnd animationend',   
+		    function(e) {
+		    
+		    }
+		);		
+		
+		
+	}
+	
 	
 }).apply(UNESCO);
 
