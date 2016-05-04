@@ -122,20 +122,18 @@ UG.LocationMarkers.prototype =
         // Radar
 	    for( var i=0; i<3; ++i )
 	    {
-	        var material = new THREE.MeshBasicMaterial( { color: 0xff0000, opacity: 1.0, transparent: true } );
+	        var material = new THREE.MeshBasicMaterial( { color: 0x22265c, opacity: 1.0, transparent: true } );
 	        material.depthWrite = false;
             material.side = THREE.DoubleSide;
             material.blending = THREE.AdditiveBlending;
             //material.blending = THREE.NormalBlending;
             var geom = new THREE.CircleBufferGeometry( 1.0, PX.kLocationMarkerDetail );
-	        //var matTrans = new THREE.Matrix4().makeTranslation( 0, 0, Params.MarkerCircleDist );
-	        //geom.applyMatrix( matTrans );
 
 	        var mesh = new THREE.Mesh( geom, material );
             this.radarMeshes.push( mesh );
             this.locationsGroup.add( mesh );
-            //scene.add( mesh );
 
+            // By having negative values i create a delay as they lerp up to 1.0. these are the scale values
             this.radarMeshAnims = new THREE.Vector3( 0, -0.3, -0.7 );
         }
 
@@ -153,27 +151,10 @@ UG.LocationMarkers.prototype =
 	        //var material = new THREE.MeshLambertMaterial( { color: color } );
 	        var material = new THREE.MeshBasicMaterial( { color: color } );
 	        //material.depthWrite = false;
-            //material.polygonOffset = true;
-            //material.polygonOffsetFactor = 0.6;
-            //material.polygonOffsetUnits = 1.0;
             material.side = THREE.DoubleSide;
             var geom = new THREE.CircleBufferGeometry( PX.kLocationMarkerScale, PX.kLocationMarkerDetail );
 	        var matTrans = new THREE.Matrix4().makeTranslation( 0, 0, Params.MarkerCircleDist );
 	        geom.applyMatrix( matTrans );
-            /*
-	        //var material = new THREE.MeshLambertMaterial( { color: color, emissive: 0x003333 } );
-	        var material = new THREE.MeshLambertMaterial( { color: color } );
-	        //var material = new THREE.MeshBasicMaterial( { color: color } );
-	        //material.depthWrite = false;
-            material.polygonOffset = true;
-            material.polygonOffsetFactor = 0.6;
-            material.polygonOffsetUnits = 1.0;
-
-	        var geom = new THREE.CylinderGeometry( PX.kLocationMarkerScale, PX.kLocationMarkerScale, PX.kLocationMarkerScale, PX.kLocationMarkerDetail, 1 );
-	        var matTrans = new THREE.Matrix4().makeTranslation( 0, 0, -PX.kLocationMarkerScale*0.5 );
-	        var matRot = new THREE.Matrix4().makeRotationX( THREE.Math.degToRad( 90.0 ) )
-	        var objMat = new THREE.Matrix4().multiplyMatrices( matTrans, matRot );
-	        geom.applyMatrix( objMat );*/
 
 	        var mesh = new THREE.Mesh( geom, material );
 
