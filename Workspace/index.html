@@ -74,7 +74,7 @@
         <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Nunito" />
 
         <link rel="stylesheet" type="text/css" href="css/logo.css">
-        <link rel="stylesheet" type="text/css" href="css/unesco.css?2">
+        <link rel="stylesheet" type="text/css" href="css/unesco.css?6">
 
         <script src="js/logo.js"></script>
         <script src="js/unesco.js"></script>
@@ -84,21 +84,27 @@
 
         <!--LOCK LANDSCAPE-->
         <script>
+        
+            var file_select = false;
+            
 			function readDeviceOrientation() {
 
-				switch (window.orientation) {
-
-				case -90:
-					// Landscape (Clockwise)
-					location.reload(true);
-					break;
-
-				case 90:
-					// Landscape  (Counterclockwise)
-					location.reload(true);
-					break;
-				}
-
+                if(!file_select){
+    				switch (window.orientation) {
+    
+    				case -90:
+    					// Landscape (Clockwise)
+                     					
+    					location.reload(true);
+    					break;
+    
+    				case 90:
+    					// Landscape  (Counterclockwise)
+    			     
+    					location.reload(true);
+    					break;
+    				}
+                }
 			}
 
 
@@ -186,10 +192,10 @@
 
             <ul class="">
                 <li>
-                    <a href="#" class="destroyed disabled clickable" status="Destroyed">DESTROYED MONUMENT</a>
+                    <a href="#" class="destroyed clickable" status="Destroyed">DESTROYED MONUMENT</a>
                 </li>
                 <li>
-                    <a href="#" class="reconstructed clickable" status="Reconstructed">DIGITALLY RECONSTRUCTED</a>
+                    <a href="#" class="reconstructed disabled clickable" status="Reconstructed">DIGITALLY RECONSTRUCTED</a>
                 </li>
 
             </ul>
@@ -197,7 +203,7 @@
         </div>
 
         <!--BROWSE-->
-        <div class="UNESCO" id="browse" status="Reconstructed" location-id="0" style="display:none;">
+        <div class="UNESCO" id="browse" status="Destroyed" location-id="0" style="display:none;">
 
             <a href="#" class="" id="arrow-back"></a>
 
@@ -297,7 +303,7 @@
         <!--ABOUT-->
         <div class="UNESCO" id="about" style="display: none;">
 
-            <div class="body resize-margin-bottom resize-margin-top">
+            <div class="body resize-margin-bottom resize-margin-top resize-font-size resize-line-height">
                 <p>
                     Over the last year we have seen countless historical sites destroyed by conflict, war and disasters. It’s not just the buildings and artifacts that are lost but the heritage and culture for people around the world. We’ve created this project to celebrate and safeguard heritage for future generations. Join us in rebuilding history by digitally recreating what was lost and protecting what is still standing.
                 </p>
@@ -309,15 +315,84 @@
                 </p>
             </div>
 
-            <a href="#" target="_blank" class="contribute-button"></a>
+            <a href="#" target="_blank" class="contribute-button resize"></a>
 
         </div>
 
         <!--PARTICIPATE-->
         <div class="UNESCO" id="participate" style="display: none;">
 
-            <h1>Participate</h1>
+            <form target="upload_target" action="http://unesco.petgtest.com/cms/index.php" method="post" enctype="multipart/form-data">
 
+                <ul class="clr">
+                    <li class="label resize">
+                        &nbsp;
+                    </li>
+                    <li>
+                            <h1 class="resize-font-size resize-margin-left resize-margin-top">Participate</h1>
+                
+                            <div class="body resize-margin-bottom resize-margin-top resize resize-font-size resize-line-height resize-margin-left resize-margin-top">
+                                <p>
+                                    Join us in reclaiming history.
+                                    <br />
+                                    Submit your images or 3D models here.
+                                </p>
+                            </div>
+                    </li>
+                </ul>
+                
+                <ul class="clr">
+                    <li class="label resize resize-font-size resize-margin-left resize-margin-top">
+                        Email
+                    </li>
+                    <li>
+                        <input type="text" name="email" class="email resize resize-font-size resize-margin-left resize-margin-top"/>
+                    </li>
+                </ul>
+                
+                <ul class="clr">
+                    <li class="label resize resize-font-size resize-margin-left resize-margin-top">
+                        File
+                    </li>
+                    <li>
+                        <label class="blank resize resize-font-size resize-margin-left resize-margin-top">
+                            
+                            
+                        </label>
+                    </li>
+                        
+                    <li>
+                        <label class="file resize resize-font-size resize-margin-left resize-margin-top">
+                            <input type="file" name="file" class="file" style="visibility: hidden" />
+                            
+                        </label>
+                        
+                    </li>
+                </ul>
+                
+                <ul class="clr">
+                    <li class="label resize">
+                        &nbsp;
+                    </li>
+                    <li>
+                        <a href="#" class="upload-button resize resize-margin-left resize-margin-to"></a>
+                    </li>
+                </ul>
+            
+                <ul class="clr">
+                    <li class="label resize">
+                        &nbsp;
+                    </li>
+                    <li>
+                        <iframe id="upload_target" name="upload_target" class="status resize resize-margin-left resize-margin-top" scrolling="no"></iframe>
+                    </li>
+                </ul>
+                
+            </form>            
+            
+            
+            
+            <!--
             <div class="body resize-margin-bottom resize-margin-top">
                 <p>
                     Here are the many ways you can participate to
@@ -346,12 +421,12 @@
 
             <ul class="clr">
                 <li>
-                    <!--http://rekrei.org/donate-->
+                  
                     <a href="" target="_blank" class="donate button resize-margin-right resize-margin-bottom coming-soon"></a>
                 </li>
 
             </ul>
-
+            -->
         </div>
 
         <!--SLIDE 5-->

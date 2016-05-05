@@ -451,14 +451,90 @@ ul.clr li {
 
 #participate{width: 506px;}
 
+#participate .upload-button {
+	display: block;
+	width: 138px;
+	height: 59px;
+	background-image: url(../img/cms/upload-button.png);
+	background-repeat: no-repeat;
+	background-size: contain;
+	margin-left: 10px;
+}
+
+#participate label.blank {
+	display: block;
+	width: 235px;
+	height: 58px;
+	font-size: 14px; 
+	overflow: hidden; 
+	padding-left: 10px;
+}
+
+#participate label.file {
+	display: block;
+	width: 138px;
+	height: 59px;
+	background-image: url(../img/cms/ellipsis-button.png);
+	background-repeat: no-repeat;
+	background-size: contain;
+	cursor: pointer;
+	border: 0px solid;
+}
+
+#participate form{
+	font-size: 28px;
+}
+
+#participate .body{
+	font-size: 14px;
+}
+
+#participate .label{width: 100px;}
+
+#participate input, #participate label{
+	background: transparent;
+    border: 1px solid #fff;
+    height: 59px;
+    width: 383px;
+    font-family: Nunito;
+    font-size: 26px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 300;
+    line-height: 39px;
+    color: #B9CBD5;
+    margin-left: 10px;
+    margin-bottom: 20px;
+}
+
+#participate input.email{
+
+    height: 58px;
+	padding-top: 0px;
+	padding-left: 10px;
+}
+
+#participate h1{margin-bottom: 20px; margin-left: 10px;}
+	
+#participate .status{
+	font-size: 14px;
+	margin-left: 10px;
+    height: 259px;
+    width: 383px;
+    border: 0px solid;
+}
+
+#participate .body {
+
+	 margin-left: 10px;
+}
+ 
 #about .body, #participate .body {
 	margin-top: 20px;
 	margin-bottom: 40px;
 	
 }
 
-#participate h1{margin-bottom: 20px;}
-	
 #about .contribute-button {
 	display: block;
 	width: 200px;
@@ -685,6 +761,10 @@ li .inner .title a, li .inner .title a:hover{
 	margin: 0;
 }
 
+#slide-5 ul.clr li.more strong, #slide-5 ul.clr li.text strong {
+	font-weight: 900;
+}
+
 #slide-5 ul.clr li.media {
 	overflow-y: auto;
 	overflow-x: hidden;
@@ -712,6 +792,12 @@ li .inner .title a, li .inner .title a:hover{
 	background-image: url(../img/slides/magnify.png);
 	background-repeat: no-repeat;
 }
+
+
+
+
+
+
 
 #portrait-warning{
 	display: none;	
@@ -749,7 +835,11 @@ li .inner .title a, li .inner .title a:hover{
    {
       display:block;
    }
-   
+
+   #portrait-warning.file-select
+   {
+      display:none;
+   }   
 }
 
 

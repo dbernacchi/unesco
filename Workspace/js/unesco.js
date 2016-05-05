@@ -57,7 +57,9 @@ var UNESCO = {};
 		this.resize();
 		
 		$( window ).resize(function() {
-		  location.reload(true);
+			if(!PX.IsMobile){
+		  		location.reload(true);
+		  }
 		});
 		
 		$("body").css('background-image', 'url(../webgl/data/textures/background.png)');
@@ -252,8 +254,16 @@ var UNESCO = {};
 		});
 
 		$(document).on('click', ".UNESCO#about .contribute-button", function(e) {
+			
 			e.preventDefault();
 
+			file_select = true;
+			
+			$("#portrait-warning").addClass("file-select");
+			
+			$("#participate .email").val("");
+			$("#participate .blank").html("");
+			$("#participate .status").attr('src', 'about:blank');
 			$(".UNESCO#participate").attr('from', 'about');
 			
 			$("#about").hide();
@@ -266,6 +276,11 @@ var UNESCO = {};
 			e.preventDefault();
 
 			ns.overlayAppend();
+			
+			file_select = true;
+			
+			$("#participate .email").val("");
+			$("#participate .blank").html("");
 			
 			$(".UNESCO#participate").attr('from', 'slide-5');
 			
@@ -283,9 +298,13 @@ var UNESCO = {};
 			if($(".UNESCO#participate").css('display') == 'block'){
 				
 				make_visible = false;
-
-				if($(".UNESCO#participate").attr('from') == 'about'){
+				file_select = false;
 				
+				$("#portrait-warning").removeClass("file-select");
+			
+			
+				if($(".UNESCO#participate").attr('from') == 'about'){
+					
 					$(".UNESCO#about").show();
 					
 				} else {
@@ -307,7 +326,7 @@ var UNESCO = {};
 				
 			} else if($(".UNESCO#slide-5").css('display') == 'block'){
 				
-				ns.overlayRemove();
+				//ns.overlayRemove();
 				$(".UNESCO#slide-5").hide();
 				
 				ns.resetContainer();
@@ -478,7 +497,32 @@ var UNESCO = {};
 
 			ns.resetContainer();
 			
+		});	
+
+		$("#participate .upload-button").click(function(e) {
+		
+			e.preventDefault();
+						
+			$("#participate form").submit();
+			
 		});		
+				
+		$("#participate form").submit(function(e) {
+		
+			$("#participate .status").html("");
+	
+		});	
+		
+		$(document).on('change', "input.file", function(e) {
+			
+			var val = $(this).val();
+			
+			var filename= val.split('\\').pop().split('/').pop();
+			
+			$(".blank").html(filename);
+		});	
+		
+					
 		
 	}
 
@@ -937,6 +981,7 @@ var UNESCO = {};
 			apply($(this), 'right');
 			apply($(this), 'bottom');
 			apply($(this), 'font-size');
+			apply($(this), 'line-height');
 			apply($(this), 'margin-top');
 			apply($(this), 'margin-bottom');
 			apply($(this), 'margin-right');
@@ -1430,19 +1475,21 @@ var UNESCO = {};
 		}
 		
 		//get first paragraph (excerpt)
-		var body = $("<div>" + copy + "</div>");
+		//var body = $("<div>" + copy + "</div>");
 		
-		var excerpt = body.find('p').first().html();
+		//var excerpt = body.find('p').first().html();
 		
 		//get rest (more)
-		body.find('p').first().remove();
+		//body.find('p').first().remove();
 		
-		var more = body.html();
+		//var more = body.html();
 		
-		val.excerpt = excerpt;
+		//val.excerpt = excerpt;
 		
-		val.more = more;
+		//val.more = more;
 		
+		val.excerpt = copy;
+
 		ns.buildItem(key, val, callback);
 
 	}	
@@ -1512,7 +1559,14 @@ var UNESCO = {};
 		}
 
 		var add_participate_button = false;
+		
 		if(!item.excerpt){
+			item.excerpt = "";
+		}
+		
+		var check_excerpt = item.excerpt.replace(/(<([^>]+)>)/ig,"").trim();
+		
+		if(!check_excerpt){
 	
 			item.excerpt = "<p>This information hasn't been written yet. Join us to get involved.</p>"
 			add_participate_button = true;
@@ -1528,7 +1582,7 @@ var UNESCO = {};
 			 
 			item.excerpt = short_text;
 			
-			item.more += rest;
+			item.more = rest;
 			
 		}
 		

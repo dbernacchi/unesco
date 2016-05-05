@@ -473,7 +473,7 @@ function Setup()
                 
                 if( WebpageStates.IsFirstTimeRun )
                 {
-			        UpdateFilterSwitches( PX.ModelTypeReconstructed );
+			        UpdateFilterSwitches( PX.ModelTypeDestroyed );
                     WebpageStates.IsFirstTimeRun = false;
                 }
                 break;
@@ -525,9 +525,13 @@ function Setup()
         {
         	if(!$(this).hasClass('disabled')){
         		
+        		$("#legend a.clickable").removeClass('disabled');
+        		
         		$(this).addClass('disabled');
         		
         	} else {
+        		
+        		$("#legend a.clickable").addClass('disabled');
         		
         		$(this).removeClass('disabled');
 	        
