@@ -123,7 +123,7 @@ PX =
         new THREE.Color( 0xffff00 ),    // Under Construction
         new THREE.Color( 0x00ff00 ) ]   // Reconstructed*/
     , kLocationColors2: [ 
-        new THREE.Color( 0x16194a ),    // Destroyed
+        new THREE.Color( 0x767789 ),    // Destroyed
         new THREE.Color( 0x273d90 ),    // Under Construction
         new THREE.Color( 0x61b2ff ) ]   // Reconstructed
 
