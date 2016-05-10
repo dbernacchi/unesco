@@ -473,7 +473,7 @@ function Setup()
                 
                 if( WebpageStates.IsFirstTimeRun )
                 {
-			        UpdateFilterSwitches( PX.ModelTypeDestroyed );
+			        UpdateFilterSwitches( PX.ModelTypeReconstructed );
                     WebpageStates.IsFirstTimeRun = false;
                 }
                 break;
