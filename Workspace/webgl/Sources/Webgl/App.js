@@ -523,25 +523,83 @@ function Setup()
    	
         if( appStateMan.IsState( PX.AppStates.AppStateLevel1 ) || appStateMan.IsState( PX.AppStates.AppStateLevel2 ) )
         {
-        	if(!$(this).hasClass('disabled')){
+        	
+        	if($(this).hasClass('toggle')){
         		
-        		$("#legend a.clickable").removeClass('disabled');
-        		
-        		$(this).addClass('disabled');
+  	        	if($(this).hasClass('reconstructed')){
+	        		
+	        		$("#legend a.destroyed.label").removeClass('disabled');
+	        		
+	        		$("#legend a.reconstructed.label").addClass('disabled');
+	        		
+	        		$(this).removeClass('reconstructed');
+	        		
+	        		$(this).addClass('destroyed');
+	        		
+	        	} else {
+	        	
+	        		$("#legend a.reconstructed.label").removeClass('disabled');
+	        		
+	        		$("#legend a.destroyed.label").addClass('disabled');
+	        		
+	        		$(this).removeClass('destroyed');
+	        		
+	        		$(this).addClass('reconstructed');
+		        
+	        	}      		
         		
         	} else {
-        		
-        		$("#legend a.clickable").addClass('disabled');
-        		
-        		$(this).removeClass('disabled');
-	        
-	        }
+        	
+	        	if(!$(this).hasClass('disabled')){
+	        		
+	        		$("#legend a.label.clickable").removeClass('disabled');
+	        		
+	        		$(this).addClass('disabled');
 
+	  	        	if($(this).hasClass('reconstructed')){
+		        		
+		        		$("#legend a.toggle").addClass('reconstructed');
+		        		
+		        		$("#legend a.toggle").removeClass('destroyed');
+		        		
+		        	} else {
+		        		
+		        		$("#legend a.toggle").addClass('destroyed');
+		        		
+		        		$("#legend a.toggle").removeClass('reconstructed');
+			        
+		        	} 
+		        		        		
+	        	} else {
+	        		
+	        		$("#legend a.label.clickable").addClass('disabled');
+	        		
+	        		$(this).removeClass('disabled');
+		        
+	  	        	if($(this).hasClass('reconstructed')){
+		        		
+		        		$("#legend a.toggle").addClass('reconstructed');
+		        		
+		        		$("#legend a.toggle").removeClass('destroyed');
+		        		
+		        	} else {
+		        		
+		        		$("#legend a.toggle").addClass('destroyed');
+		        		
+		        		$("#legend a.toggle").removeClass('reconstructed');
+			        
+		        	} 
+		        
+		        
+	        	}
+
+			}
+			
 			var filters_on = 0;
 			
 			var status = "";
 			
-        	$("#legend a").each(function(){
+        	$("#legend a.label").each(function(){
         		
 	        	if(!$(this).hasClass('disabled')){
 		        	
@@ -563,8 +621,6 @@ function Setup()
         		status = "";
         			
         		index = 3;
-        		
-        		//$("#legend a").removeClass('disabled');
         		
         	}
         	

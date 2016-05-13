@@ -22,6 +22,8 @@ var UNESCO = {};
 	 	
 	var models = {};
 	
+	var rekrei_images = {};
+	
 	this.init = function() {
 		
 		var ns = this;
@@ -72,12 +74,33 @@ var UNESCO = {};
 			}
 		);
 
+		$(".UNESCO#browse").bind('mousewheel DOMMouseScroll', function(event){
+		    if (event.originalEvent.wheelDelta > 0 || event.originalEvent.detail < 0) {
+		       
+		       ns.slider(1);
+		        
+		    }
+		    else {
+		       
+		       ns.slider(-1);
+		       
+		    }
+		});
+
 		$(document).on('click', ".UNESCO #arrow-back", function(e) {
 			e.preventDefault();
 			
 			locationMarkers.OnMouseClickEvent( mouseVector3d, camera, false, null );
 
 		});
+		
+		$(document).on('click', "#overlay", function(e) {
+			e.preventDefault();
+			
+			if($(".UNESCO#browse").css('display') != 'none'){
+				locationMarkers.OnMouseClickEvent( mouseVector3d, camera, false, null );
+			}
+		});		
 
 		$(document).on('click', ".UNESCO .arrow.down.disabled", function(e) {
 			e.preventDefault();
@@ -125,13 +148,63 @@ var UNESCO = {};
 			}
 		});
 
-		$(".UNESCO #zoom-out-button").click(function(e) {
+		$(document).on('click', ".UNESCO #zoom-out-button", function(e) {
 			e.preventDefault();
+			
 			if(!$(this).hasClass('disabled')){
 				ns.hideZoomOut();
 				
 				ZoomOutFromLevel1ToLevel0(false);
 			}
+		});
+
+		$(document).on('click', "#logo", function(e) {
+			
+			e.preventDefault();
+			
+			switch( appStateMan.GetCurrentState())
+			        {
+						case PX.AppStates.AppStateEntry:
+			                
+							break;
+						case PX.AppStates.AppStateLevel0:	
+				
+							break;
+			
+			            case PX.AppStates.AppStateLevel1ToLevel0:
+			            
+			                break;
+			
+						case PX.AppStates.AppStateLevel0ToLevel1:
+			                
+			         
+			                ZoomOutFromLevel1ToLevel0(false);
+			                
+			                break;
+			
+						case PX.AppStates.AppStateLevel1:
+			                
+			         
+			                ZoomOutFromLevel1ToLevel0(false);
+			                
+							break;
+								
+						case PX.AppStates.AppStateLevel2:
+			         
+							break;
+			
+						case PX.AppStates.AppStateLevel2ToLevel1:
+							
+							break;
+			
+			            default:
+			                break;
+					}
+			
+			
+			ns.hideZoomOut();
+			ns.showZoomIn();
+			
 		});
 
 		$(document).on('click', ".UNESCO#browse .item.selected a", function(e) {
@@ -317,7 +390,10 @@ var UNESCO = {};
 				
 			} else if($(".UNESCO#about").css('display') == 'block'){
 				
-				ns.overlayRemove();
+				if($(".UNESCO#browse").css('display') == 'none'){
+					ns.overlayRemove();
+				}
+				
 				$(".UNESCO#about").hide();
 				$(".UNESCO.furniture").show();
 				$(this).hide();
@@ -416,10 +492,24 @@ var UNESCO = {};
 			
 			iframes.attr('width', text_width);
 			
-			var multiplier = 1;
+			var multiplier = 0;
+			
+			var show_media = false;
 			
 			if(imgs.length || iframes.length){
-				multiplier = 2;	
+				multiplier += 1;	
+				show_media = true;
+			}
+			
+			var more_speed = 0;
+			
+			if(more.html().trim()){
+				multiplier += 1;
+				more.show();
+				more_speed = 1000;
+			
+			}else {
+				more.hide();	
 			}
 			
 			var new_width = (text_width * multiplier) + (text_margin * multiplier);
@@ -436,8 +526,16 @@ var UNESCO = {};
 			var new_padding = excerpt_offset - more_offset;
 						
 			more.css('padding-top', new_padding + 'px');
-			media.css('margin-top', new_padding + 'px');			
-		
+			
+			if(media.hasClass('add-margin-top')){
+				
+				var media_offset = media.offset().top;
+				
+				var new_margin = excerpt_offset - media_offset;
+				
+				media.css('margin-top', new_margin + 'px');			
+			}
+			
 			$(this).closest('li').find('.collapse').show();
 			
 			var container_width = container.width();
@@ -456,7 +554,7 @@ var UNESCO = {};
 					
 					width : text_width,
 					
-				}, 1000, function() {
+				}, more_speed, function() {
 	
 					more.animate({
 						
@@ -467,7 +565,7 @@ var UNESCO = {};
 		
 					});	
 	
-					if(multiplier == 2){
+					if(show_media){
 						
 						media.css('margin-right', text_margin + 'px');
 						
@@ -698,15 +796,22 @@ var UNESCO = {};
 			
 			var iframes = media.find('iframe');
 			
-			var multiplier = 1;
+			var multiplier = 0;
 			
 			var media_timing = 0;
 			
 			if(imgs.length || iframes.length){
-				multiplier = 2;	
+				multiplier += 1;	
 				media_timing = 1000;
 			}			
 			
+			var more_timing = 0;
+
+			if(more.html().trim()){
+				multiplier += 1;	
+				more_timing = 1000;
+			}	
+						
 			var new_width = container_width - (more_width * multiplier) - (more_margin * multiplier);
 						
 			container.find('.collapse').hide();
@@ -729,15 +834,13 @@ var UNESCO = {};
 						
 						width : 0,
 						
-					}, 1000, function() {
+					}, more_timing, function() {
 						
 						more.css('margin-right', '0');
 						
 						more.css('padding-top', '0');
 						
 						media.css('margin-top', '0');
-						
-						
 						
 						container.animate({
 							
@@ -1022,6 +1125,14 @@ var UNESCO = {};
 		
 		this.centerPrep(elm);
 
+		if(!elm.attr('centered-top')){
+			
+			elm.attr('reset-top', elm.css('top'));
+			
+			elm.attr('centered-top', 'centered-top');
+		
+		}
+		
 		//HEIGHT
 		var height = elm.height();
 		
@@ -1042,7 +1153,15 @@ var UNESCO = {};
 	this.centerHorizontal = function(elm) {
 
 		this.centerPrep(elm);
-
+		
+		if(!elm.attr('centered-left')){
+			
+			elm.attr('reset-left', elm.css('left'));
+			
+			elm.attr('centered-left', 'centered-left');
+		
+		}
+		
 		//WIDTH
 		var width = elm.width();
 
@@ -1061,6 +1180,24 @@ var UNESCO = {};
 		this.centerComplete(elm);
 
 	}
+	
+	this.reset = function(elm) {
+
+		var reset_left = elm.attr('reset-left');
+		
+		if(reset_left){
+			elm.css('left', reset_left);
+			elm.attr('centered-left', '');
+		}
+
+		var reset_top = elm.attr('reset-top');
+		
+		if(reset_top){
+			elm.css('top', reset_top);
+			elm.attr('centered-top', '');
+		}
+
+	}	
 
 	this.showExploreButton = function() {
 
@@ -1123,6 +1260,8 @@ var UNESCO = {};
 	this.showBrowse = function(location_id) {
 
 		var ns = this;
+		
+		ns.reset($("#legend"));
 		
 		ns.hideZoomContainer();
 		
@@ -1305,6 +1444,8 @@ var UNESCO = {};
 
 		this.overlayRemove();
 		
+		this.centerHorizontal($("#legend"));
+
 		$(".UNESCO#legend a").addClass('clickable');
 
 		$(".UNESCO#browse").hide();
@@ -1315,7 +1456,8 @@ var UNESCO = {};
 
 		var elm = $(".UNESCO#legend");
 
-		elm.show();
+		//elm.show();
+		this.centerHorizontal(elm);
 
 	}
 
@@ -1363,19 +1505,32 @@ var UNESCO = {};
 
 		var ns = this;
 
-		//read through reconstructions.json
-		var url = "webgl/data/reconstructions.json";
+		//read through images.json
+		var url = "webgl/data/images.json";
 
 		$.ajax({
 			dataType : "json",
 			url : url,
 			success : function(data) {
 
-				ns.processItems(data, callback);
-			},
-			error : function(data) {
+				rekrei_images = data;
+				
+				//read through reconstructions.json
+				url = "webgl/data/reconstructions.json";
+		
+				$.ajax({
+					dataType : "json",
+					url : url,
+					success : function(data) {
+		
+						ns.processItems(data, callback);
+					},
+					error : function(data) {
+		
+						ns.processItems(data, callback);
+					}
+				});
 
-				ns.processItems(data, callback);
 			}
 		});
 
@@ -1498,6 +1653,10 @@ var UNESCO = {};
 
 		var ns = this;
 		
+		//if no details, look in images for a main image
+		
+		
+		
 		var content = $("#browse .items .clone").clone();
 
 		content.removeClass('clone');
@@ -1522,6 +1681,9 @@ var UNESCO = {};
 				
 			}
 
+			var media = content.find('.media');
+			media.addClass('add-margin-top');
+					
 			content.find(".image img").attr('src', 'details/' + item.details + '/image.png');
 			content.find(".slide-image img").attr('src', 'details/' + item.details + '/image.png');
 
@@ -1556,8 +1718,35 @@ var UNESCO = {};
 				}
 			}
 			
+		} 
+	
+		//look for more images
+		if(item.is_default && item.is_default == 'true'){
+			
+			//look by location_id
+			var lookup_id = item.location_id;
+			var lookup_field = "location_id";
+				
+		} else {
+			//look by reconstruction_id
+			var lookup_id = item.id;
+			var lookup_field = "reconstruction_id";			
 		}
+		
+		var main_image_found = false;
+		
+		if(item.details){
+			main_image_found = true;
+		}
+		
+		main_image_found = ns.rekreiImages(item, content, lookup_id, lookup_field, main_image_found, false);
 
+		if(main_image_found == false && lookup_field == "reconstruction_id"){
+			
+			ns.rekreiImages(item, content, item.location_id, "location_id", main_image_found, true);
+			
+		}
+			
 		var add_participate_button = false;
 		
 		if(!item.excerpt){
@@ -1609,8 +1798,7 @@ var UNESCO = {};
 		content.attr('status', status);
 		
 		//console.log("name: " + item.name + " loc: " + item.location_id + " status: " + status);
-		
-		
+				
 		$("#browse .items .items-inner").append(content);
 
 		//add to browse
@@ -1625,6 +1813,66 @@ var UNESCO = {};
 			
 		}
 
+	}
+	
+	this.rekreiImages = function(item, content, lookup_id, lookup_field, main_image_found, only_main){
+		
+		var count = 0;
+		
+		$.each(rekrei_images, function(key, val) {
+		
+			if(val[lookup_field] == lookup_id){
+				
+				count++;
+				
+				//build url
+				//http://s3.amazonaws.com/rekrei-production/images/images/000/003/574/square/gohistoric_26477_z.jpg
+				
+				var image_url_start = "http://s3.amazonaws.com/rekrei-production/images/images/";
+				
+				var image_url_dir = "000/00";
+				
+				var image_id = val.id;
+				
+				switch(image_id.length) {
+				    case 1:
+				        image_url_dir += "0/00" + image_id;
+				        break;
+				    case 2:
+				        image_url_dir += "0/0" + image_id;
+				        break;
+				    case 3:
+				        image_url_dir += "0/" + image_id;
+				        break;
+				    case 4:
+				        image_url_dir += image_id.slice(0, 1) + "/" + image_id.slice(1);
+				        break;
+				}
+				
+				image_url_dir += "/square/";
+				
+				var image_url = image_url_start + image_url_dir + val.filename;
+				
+				//add image
+				if(count == 1 && !item.details){
+				
+					content.find(".image img").attr('src', image_url);
+					content.find(".slide-image img").attr('src', image_url);		
+					
+					main_image_found = true;
+					
+				} else if(!only_main) {
+					
+					content.find(".entry .images").append('<img src="' + image_url + '" />');
+				}
+				
+				
+					
+			}
+		
+		});
+		
+		return main_image_found;
 	}
 
 	this.reconstructions = function() {
@@ -1663,12 +1911,16 @@ var UNESCO = {};
 			elm.find('.readmore').css('visibility', 'visible');
 		}
 		
-		if(!$(".UNESCO#slide-5").find(".entry").attr('filename')){
-			$(".UNESCO#slide-5").find(".magnify").hide();
+		if(!elm.find(".entry").attr('filename')){
 			
+			$(".magnify").hide();
+			$(".thumbnail").addClass('no-pointer');
+				
 		} else {
 			
-			$(this).find(".magnify").show();
+			$(".magnify").show();
+			$(".thumbnail").removeClass('no-pointer');
+			
 		}			
 		
 	}

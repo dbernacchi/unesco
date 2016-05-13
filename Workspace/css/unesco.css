@@ -209,6 +209,7 @@ ul.clr li {
 }
 
 #logo {
+	display: block;
 	position: absolute;
 	top: 20px;
 	left: 20px;
@@ -221,7 +222,7 @@ ul.clr li {
 	position: absolute;
 	bottom: 64px;
 	right: 59px;
-	z-index: 3;
+	z-index: 1;
 }
 
 #logo-bottom-inner {
@@ -277,7 +278,7 @@ ul.clr li {
 #legend {
 	position: absolute;
 	left: 60px;
-    bottom: 46px;
+    bottom: 73px;
 	font-family: Nunito;
 	font-size: 14px;
 	font-style: normal;
@@ -288,7 +289,7 @@ ul.clr li {
 	z-index: 2;
 }
 
-#legend a, #browse .status {
+#browse .status {
 	display: block;
 	height: 14px;
 	padding: 5px 20px 5px 35px;
@@ -298,6 +299,23 @@ ul.clr li {
 }
 
 #browse .status {cursor: pointer}
+
+#browse .status.destroyed {
+	background: url(../img/legend/dot-destroyed.png) 0 8px no-repeat;
+}
+
+#browse .status.reconstructed {
+	background: url(../img/legend/dot-reconstructed.png) 0 8px no-repeat;
+}
+
+#legend a.label {
+	display: block;
+	height: 14px;
+	padding: 0px 17px;
+	color: #fff;
+	text-decoration: none;
+	cursor: default;
+}
 
 #legend a.disabled {
 	display: block;
@@ -310,12 +328,19 @@ ul.clr li {
 
 }
 
-.destroyed {
-	background: url(../img/legend/dot-destroyed.png) 0 8px no-repeat;
+#legend .toggle {
+	display: block;
+	width: 28px;
+	height: 14px;
+	margin-top: 2px;
 }
 
-.reconstructed {
-	background: url(../img/legend/dot-reconstructed.png) 0 8px no-repeat;
+#legend .toggle.destroyed {
+	background: url(../img/legend/toggle-destroyed.png) no-repeat;
+}
+
+#legend .toggle.reconstructed {
+	background: url(../img/legend/toggle-reconstructed.png) no-repeat;
 }
 
 .destroyed.disabled {
@@ -675,6 +700,7 @@ ul.clr li {
 #browse .items li.copy {
 	width: 400px;
 	display: table;
+	margin-left: 5px;
 }
 
 #browse .items li.text .inner {
@@ -782,6 +808,10 @@ li .inner .title a, li .inner .title a:hover{
 #slide-5 ul.clr li.slide-image {
 	width: 616px;
 	
+}
+
+#slide-5 .thumbnail.no-pointer {
+	cursor: default;
 }
 
 #slide-5 .magnify {

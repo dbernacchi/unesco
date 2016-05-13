@@ -634,7 +634,49 @@
 		"id": "1002",
 		"name": "Nimrud Wall Friese",
 		"description": ""
-	}
+	},
 
+
+	{"details": "","location_id": "5","id": "5","name": "Bhaktapur Durbar Square","description": "", "is_default": "true"},
+	{"details": "","location_id": "6","id": "6","name": "Grand Umayyad Mosque in Aleppo","description": "", "is_default": "true"},
+	
+	{"details": "","location_id": "8","id": "8","name": "The tomb of Djehutyhotep","description": "", "is_default": "true"},
+	{"details": "","location_id": "9","id": "9","name": "Maryam Khatoon Mosque, Mosul","description": "", "is_default": "true"},
+	{"details": "","location_id": "10","id": "10","name": "Mar Behnam Monastery","description": "", "is_default": "true"},
+	
+	{"details": "","location_id": "13","id": "13","name": "Mari","description": "", "is_default": "true"},
+
+	{"details": "","location_id": "14","id": "14","name": "Hamah","description": "", "is_default": "true"},
+	{"details": "","location_id": "17","id": "17","name": "Ayyubid Palace, Aleppo","description": "", "is_default": "true"},
+	{"details": "","location_id": "20","id": "20","name": "Old city of Sanaa","description": "", "is_default": "true"},
+	{"details": "","location_id": "21","id": "21","name": "Ma'arra Mosiac Museum","description": "", "is_default": "true"},
+	
+	{"details": "","location_id": "23","id": "23","name": "Great Mosque of Aleppo","description": "", "is_default": "true"},
+	{"details": "","location_id": "24","id": "24","name": "the temple of Nakrah","description": "", "is_default": "true"},
+	{"details": "","location_id": "25","id": "25","name": "The Dhamar Museum","description": "", "is_default": "true"},
+	
+	{"details": "","location_id": "27","id": "27","name": "Saint Jacques church","description": "", "is_default": "true"},
+
+	{"details": "","location_id": "29","id": "29","name": "Prophet Jonah mosque","description": "", "is_default": "true"},
+	{"details": "","location_id": "30","id": "30","name": "Mary Church","description": "", "is_default": "true"},
+	{"details": "","location_id": "31","id": "31","name": "Nohmul","description": "", "is_default": "true"},
+	{"details": "","location_id": "32","id": "32","name": "Huaca El Paraiso","description": "", "is_default": "true"},
+	
+	{"details": "","location_id": "34","id": "34","name": "The Mappin & Webb building at Bank","description": "", "is_default": "true"},
+	{"details": "","location_id": "35","id": "35","name": "Chapel of Laennec hospital","description": "", "is_default": "true"},
+	{"details": "","location_id": "36","id": "36","name": "The al-Hadi mosque","description": "", "is_default": "true"},
+	{"details": "","location_id": "37","id": "37","name": "Malawi Monuments Museum","description": "", "is_default": "true"},
+	{"details": "","location_id": "38","id": "38","name": "Sidi Sha’ab Mosque","description": "", "is_default": "true"},
+	{"details": "","location_id": "39","id": "39","name": "Karamanli Ahmet Pasha Tomb","description": "", "is_default": "true"},
+	{"details": "","location_id": "40","id": "40","name": "Tomb of Sufi Saint Sufyan Bin Abdullah","description": "", "is_default": "true"},
+	{"details": "","location_id": "41","id": "41","name": "Nineveh","description": "", "is_default": "true"},
+	{"details": "","location_id": "42","id": "42","name": "Apamea","description": "", "is_default": "true"},
+	
+	{"details": "","location_id": "44","id": "44","name": "Ebla","description": "", "is_default": "true"},
+	{"details": "","location_id": "45","id": "45","name": "Halabiyah Castle","description": "", "is_default": "true"},
+	{"details": "","location_id": "47","id": "47","name": "Aleppo Citadel","description": "", "is_default": "true"},
+	{"details": "","location_id": "48","id": "48","name": "Resafa","description": "", "is_default": "true"},
+	{"details": "","location_id": "49","id": "49","name": "Krak des Chevaliers","description": "", "is_default": "true"},
+	{"details": "","location_id": "50","id": "50","name": "Al-Hadba Minaret (al-Noree Grand Mosque)","description": "", "is_default": "true"}
 
 ]
