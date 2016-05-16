@@ -662,21 +662,21 @@ UG.LocationMarkers.prototype =
                 var alpha = ( 1.0 - (PX.Saturate(this.radarMeshAnims.x) ) ) * alphass;
                 this.radarMeshes[0].position.copy( p ); 
                 this.radarMeshes[0].quaternion.copy( this.meshes[i].quaternion );
-                this.radarMeshes[0].scale.set( ascale, ascale, 1 );
+                this.radarMeshes[0].scale.set( PX.Clamp(ascale, 0, ascale ), PX.Clamp(ascale, 0, ascale ), 1 );
                 this.radarMeshes[0].material.opacity = alpha;
                 //
                 ascale = PX.EPSILON + PX.Saturate( this.radarMeshAnims.y ) * ss;
                 alpha = ( 1.0 - (PX.Saturate(this.radarMeshAnims.y) ) ) * alphass;
                 this.radarMeshes[1].position.copy( p ); 
                 this.radarMeshes[1].quaternion.copy( this.meshes[i].quaternion );
-                this.radarMeshes[1].scale.set( ascale, ascale, 1 );
+                this.radarMeshes[1].scale.set( PX.Clamp(ascale, 0, ascale ), PX.Clamp(ascale, 0, ascale ), 1 );
                 this.radarMeshes[1].material.opacity = alpha;
                 //
                 var ascale = PX.EPSILON + PX.Saturate( this.radarMeshAnims.z ) * ss;
                 var alpha = ( 1.0 - (PX.Saturate(this.radarMeshAnims.z) ) ) * alphass;
                 this.radarMeshes[2].position.copy( p ); 
                 this.radarMeshes[2].quaternion.copy( this.meshes[i].quaternion );
-                this.radarMeshes[2].scale.set( ascale, ascale, 1 );
+                this.radarMeshes[2].scale.set( PX.Clamp(ascale, 0, ascale ), PX.Clamp(ascale, 0, ascale ), 1 );
                 this.radarMeshes[2].material.opacity = alpha;
             }
 
@@ -1218,6 +1218,13 @@ UG.LocationMarkers.prototype =
                 scope.radarMeshTweens = [];
                 var targetRadar = { x : 1, y: 1, z: 1 };
 
+                scope.radarMeshes[0].visible = true;
+                scope.radarMeshes[1].visible = true;
+                scope.radarMeshes[2].visible = true;
+
+                // Starting points
+                scope.radarMeshAnims.set( 0, -0.3, -0.7 );
+
                 var tweenRadar = new TWEEN.Tween( scope.radarMeshAnims ).to( targetRadar, 3000 );
                 tweenRadar.easing( TWEEN.Easing.Linear.None );
                 tweenRadar.delay( 1000 );
@@ -1280,6 +1287,14 @@ UG.LocationMarkers.prototype =
                 scope.radarMeshTweens[a].stop();
             }
             scope.radarMeshTweens = [];
+            // Starting points
+            scope.radarMeshAnims.set( 0, 0, 0 );
+            scope.radarMeshes[0].scale.set( PX.EPSILON, PX.EPSILON, PX.EPSILON );
+            scope.radarMeshes[1].scale.set( PX.EPSILON, PX.EPSILON, PX.EPSILON );
+            scope.radarMeshes[2].scale.set( PX.EPSILON, PX.EPSILON, PX.EPSILON );
+            scope.radarMeshes[0].visible = false;
+            scope.radarMeshes[1].visible = false;
+            scope.radarMeshes[2].visible = false;
 
 
             // Change State
