@@ -68,10 +68,10 @@ var locationsDB = [];
 var locationsDBMap = new Map();
 
 // Earth rotation
-var earthAccel = new THREE.Vector2();
-var earthVel = new THREE.Vector2();
-var earthVelDamp = 0.97;
-var earthAngle = new THREE.Vector2();
+//var earthAccel = new THREE.Vector2();
+//var earthVel = new THREE.Vector2();
+//var earthVelDamp = 0.985;
+//var earthAngle = new THREE.Vector2();
 
 
 // Timer
@@ -420,7 +420,7 @@ function Setup()
     trackball = new PX.CameraTrackball();
     trackball.Init( camera );
     trackball.rotateFactor = 0.5;
-    trackball.damping = 0.1;
+    trackball.damping = 0.05;
 
     // Add a callback that reports when a state change happens
     //
