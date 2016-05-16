@@ -54,6 +54,14 @@ if(array_key_exists('email', $_POST) && filter_var($_POST['email'], FILTER_VALID
     $upload_ok = 0;
 }
 
+$location = "";
+
+if(array_key_exists('location', $_POST) ){
+	
+	$location = $_POST['location'];
+	
+} 
+
 if($upload_ok){
 	
 	move_uploaded_file($_FILES["file"]["tmp_name"], $target_file);
@@ -78,7 +86,7 @@ if($upload_ok){
 	
 	$mail->AltBody    = "Submission from $email"; // optional, comment out and test
 	
-	$mail->MsgHTML("Submission from $email");
+	$mail->MsgHTML("Submission from $email. Location provided is: $location");
 	
 	$mail->AddAttachment($target_file);      // attachment
 	

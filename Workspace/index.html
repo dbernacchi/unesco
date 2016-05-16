@@ -2,6 +2,8 @@
 <html>
     <head>
 
+        <meta name="viewport" content="width=device-width, user-scalable=0, minimal-ui">
+        
         <title>Reclaiming History</title>
         <meta name="description" content="Let’s recreate the heritage and culture that has been lost around the world. Join us in digitally reconstructing monuments that have been destroyed in this crowdsourced museum Visit & share reclaimhistory.org #reclaimhistory">
         <meta name="keywords" content="Reclaiming History, Reclaim History">
@@ -47,9 +49,8 @@
         <meta property="og:url" content="http://www.reclaimhistory.org"/>
         <meta property="og:image" content="http://www.reclaimhistory.org/img/share/share.jpg"/>
         <meta property="og:site_name" content="Reclaiming History"/>
-        <meta property="og:description"
-        content="Let’s recreate the heritage and culture that has been lost around the world. Join us in digitally reconstructing monuments that have been destroyed in this crowdsourced museum Visit & share reclaimhistory.org #reclaimhistory"/>
-
+        <meta property="og:description" content="Let’s recreate the heritage and culture that has been lost around the world. Join us in digitally reconstructing monuments that have been destroyed in this crowdsourced museum Visit & share reclaimhistory.org #reclaimhistory"/>
+ 
         <script src="webgl/Sources/Webgl/Detector.js"></script>
         <script src="webgl/Sources/3rdparty/threejs/three.min.js"></script>
         <!--<script src="webgl/Sources/3rdparty/threejs/Projector.js"></script> -->
@@ -77,8 +78,9 @@
 
         <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Nunito" />
 
+        <link rel="stylesheet" type="text/css" href="css/reset.css">
         <link rel="stylesheet" type="text/css" href="css/logo.css">
-        <link rel="stylesheet" type="text/css" href="css/unesco.css?7">
+        <link rel="stylesheet" type="text/css" href="css/unesco.css?11">
 
         <script src="js/logo.js"></script>
         <script src="js/unesco.js"></script>
@@ -116,6 +118,7 @@
 
         </script>
 
+
         <!--WEBGL-->
         <script>
 			if (!Detector.webgl) {
@@ -123,7 +126,7 @@
 			}
         </script>
 
-        <div style="top: -1000px;" id="map"></div>
+        <div id="map"></div>
         <div style="z-index: -1000px;" id="glContainer"></div>
         <div id="glModelContainerTEST"></div>
 
@@ -209,10 +212,11 @@
 
         </div>
 
+        <!--BROWSE BACK ARROW-->
+        <a href="#" class="resize-left" id="arrow-back"></a>
+        
         <!--BROWSE-->
         <div class="UNESCO" id="browse" status="Reconstructed" location-id="0" style="display:none;">
-
-            <a href="#" class="resize-left" id="arrow-back"></a>
 
             <ul class="clr">
                 <li class="resize-width items">
@@ -225,13 +229,13 @@
                                 </li>
                                 <li class="resize-width resize-margin-left copy">
                                     <div class="inner">
-                                        <div class="title resize-font-size resize-width">
-                                            <a href="#" class="name"></a>
+                                        <div class="title resize-width">
+                                            <a href="#" class="resize-font-size resize-line-height name"></a>
 
-                                            <a href="#" class="date"></a>
+                                            <a href="#" class="resize-font-size resize-line-height date"></a>
                                         </div>
-
-                                        <a href="#" class="status resize-margin-left resize-margin-top resize-margin-bottom"></a>
+                                        
+                                        <a href="#" class="status resize-margin-left resize-margin-top resize-margin-bottom resize-font-size resize-line-height"></a>
 
                                         <a href="#" class="more-info-button"></a>
 
@@ -308,18 +312,20 @@
         <a href="#" class="UNESCO close-button page resize-top resize-right" style="display:none;"></a>
 
         <!--ABOUT-->
-        <div class="UNESCO" id="about" style="display: none;">
+        <div class="resize resize-margin-top UNESCO" id="about" style="display: none;">
 
-            <div class="body resize-margin-bottom resize-margin-top resize-font-size resize-line-height">
+            <div class="body resize-margin-bottom resize-margin-top resize-line-height">
                 
-                <iframe class="resize" style="margin: 0 auto;" src="https://player.vimeo.com/video/166517566" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+                <iframe class="resize" style="margin: 0 auto;" src="https://vimeo.com/166812390" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
                 
                 <p>
                     Over the last year we have seen countless historical sites destroyed by conflict, war and disasters. It’s not just the buildings and artifacts that are lost but the heritage and culture for people around the world. We’ve created this project to celebrate and safeguard heritage for future generations. Join us in rebuilding history by digitally recreating what was lost and protecting what is still standing.
                 </p>
+                <br />
                 <p>
                     ReclaimHistory.org is a crowdsourced online musuem. Here people can come together to digitally recreate, experience, learn about and visit monuments that have been lost. We aim to tell the story of heritage lost across the globe.
                 </p>
+                <br />
                 <p>
                     This effort is made in coordination with #Unite4Heritage, a global movement powered by UNESCO that aims to celebrate and safeguard cultural heritage and diversity around the globe. It began as Project Mosul by Rekrei. They innovated a new way to digitally recreate monuments lost in Iraq. Building on the initial workflow of using crowdsourced images to virtually recreate artefacts using photogrammetry, their web-based platform is evolving to better utilise publicly-available data on the web to assist their volunteers in new ways.  After partnering with Ogilvy and Pet Gorilla, Rekrei will maintain its efforts to rebuild history.
                 </p>
@@ -335,13 +341,13 @@
             <form target="upload_target" action="http://unesco.petgtest.com/cms/index.php" method="post" enctype="multipart/form-data">
 
                 <ul class="clr">
-                    <li class="label resize">
+                    <li class="label resize resize-font-size resize-line-height">
                         &nbsp;
                     </li>
                     <li>
-                            <h1 class="resize-font-size resize-margin-left resize-margin-top">Participate</h1>
+                            <h1 class=" resize resize-line-height">Participate</h1>
                 
-                            <div class="body resize-margin-bottom resize-margin-top resize resize-font-size resize-line-height resize-margin-left resize-margin-top">
+                            <div class="body resize resize-line-height">
                                 <p>
                                     Join us in reclaiming history.
                                     <br />
@@ -352,27 +358,38 @@
                 </ul>
                 
                 <ul class="clr">
-                    <li class="label resize resize-font-size resize-margin-left resize-margin-top">
+                    <li class="label resize resize-font-size">
                         Email
                     </li>
+                    
                     <li>
-                        <input type="text" name="email" class="email resize resize-font-size resize-margin-left resize-margin-top"/>
+                        <input type="text" name="email" class="email resize resize-font-size"/>
                     </li>
                 </ul>
-                
+
                 <ul class="clr">
-                    <li class="label resize resize-font-size resize-margin-left resize-margin-top">
+                    <li class="label resize resize-font-size">
+                        Location
+                    </li>
+                    
+                    <li>
+                        <input type="text" name="location" class="location resize resize-font-size"/>
+                    </li>
+                </ul>
+                                
+                <ul class="clr">
+                    <li class="label resize resize-font-size ">
                         File
                     </li>
                     <li>
-                        <label class="blank resize resize-font-size resize-margin-left resize-margin-top">
+                        <label class="blank resize resize-font-size">
                             
                             
                         </label>
                     </li>
                         
                     <li>
-                        <label class="file resize resize-font-size resize-margin-left resize-margin-top">
+                        <label class="file resize ">
                             <input type="file" name="file" class="file" style="visibility: hidden" />
                             
                         </label>
@@ -385,7 +402,7 @@
                         &nbsp;
                     </li>
                     <li>
-                        <a href="#" class="upload-button resize resize-margin-left resize-margin-to"></a>
+                        <a href="#" class="upload-button  resize"></a>
                     </li>
                 </ul>
             
@@ -394,7 +411,7 @@
                         &nbsp;
                     </li>
                     <li>
-                        <iframe id="upload_target" name="upload_target" class="status resize resize-margin-left resize-margin-top" scrolling="no"></iframe>
+                        <iframe id="upload_target" name="upload_target" class="status resize" scrolling="no"></iframe>
                     </li>
                 </ul>
                 
@@ -468,7 +485,7 @@
 
             </div>
         </div>
-
+        
         <script src="webgl/Sources/Webgl/Common.js"></script>
         <script src="webgl/Sources/Webgl/Utils.js"></script>
         <script src="webgl/Sources/3rdparty/bmFont.js"></script>
